@@ -92,7 +92,8 @@ int main(int argc, char **argv) {
 	//      => norms saved inside .ply files
 	//      => .flg formats : normal direction normalized.
 	// 1.0.5 => does not crash when selecting thousands of objets
-	strcpy (Version,"1.2");	
+	// 1.2.1 => version which should compile under linux, thanks to Stephan
+	strcpy (Version,"1.2.1");	
  
 	printf("Version : %s\n",Version);
 	
