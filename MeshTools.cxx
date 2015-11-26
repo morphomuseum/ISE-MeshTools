@@ -44,7 +44,19 @@ using namespace std;
 #include <vtkPointData.h>
 #include <vtkIdList.h>
 
-
+#ifdef __linux__
+#include <string.h>
+#include<stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+struct passwd *pw = getpwuid(getuid());
+const char *homedir = pw->pw_dir;
+const char *inifile = "/.MeshTools.ini";
+char inipath[256]; // <- danger, only storage for 256 characters.
+#else // not linux
+const char * inipath  = "MeshTools.ini";
+#endif
 
 
 
@@ -1086,8 +1098,13 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_lambda = 100;
 	this->blend_value =50;
 
-
-	CDataFile ExistingDF("MeshTools.ini", 1);
+	// get user directory
+#ifdef __linux__
+	strncpy(inipath, homedir, sizeof(inipath));
+	strncat(inipath, inifile, sizeof(inipath));
+#endif
+	std::cout << inipath << std::endl;
+	CDataFile ExistingDF(inipath, 1);
 	select_mode = kpressed = 0;
 	this->disp_cull_face = 0;
 	bool_change_mode = 1;
@@ -4535,7 +4552,7 @@ void MeshTools::ShowOrientation()
 }
 void MeshTools::save_ini_param()
 {
-	CDataFile ExistingDF("MeshTools.ini", 1);
+	CDataFile ExistingDF(inipath, 1);
 	
 	ExistingDF.SetFloat("lightpos1", lightpos1,"","lightposition");
 	ExistingDF.SetFloat("lightpos2", lightpos2,"","lightposition");
