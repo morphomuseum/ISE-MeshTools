@@ -46,7 +46,6 @@ using namespace std;
 
 #ifdef __linux__
 #include <string.h>
-#include<stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
@@ -1103,7 +1102,7 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	strncpy(inipath, homedir, sizeof(inipath));
 	strncat(inipath, inifile, sizeof(inipath));
 #endif
-	std::cout << inipath << std::endl;
+	std::cout << "Init file is at "  <<  inipath << std::endl;
 	CDataFile ExistingDF(inipath, 1);
 	select_mode = kpressed = 0;
 	this->disp_cull_face = 0;
