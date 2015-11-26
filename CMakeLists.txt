@@ -71,12 +71,37 @@ FIND_PACKAGE(OpenGL)
     INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})    
   ENDIF(FLTK_FOUND)
 
+# define needed VTK Modules 
+set( required_vtk_modules
+  vtkCommonComputationalGeometry
+  vtkCommonCore
+  vtkCommonDataModel
+  vtkCommonExecutionModel
+  vtkCommonMath
+  vtkCommonMisc
+  vtkCommonSystem
+  vtkCommonTransforms
+  vtkFiltersCore
+  vtkFiltersGeneral
+  vtkIOCore
+  vtkIOGeometry
+  vtkIOLegacy
+  vtkIOXML
+  vtkIOXMLParser
+  vtkFiltersModeling
+  vtkFiltersHybrid
+  vtkIOImport
+  vtkRenderingCore
+  vtkRenderingOpenGL
+  vtkIOPLY
+  )
+find_package( VTK REQUIRED COMPONENTS ${required_vtk_modules} )
 
-FIND_PACKAGE(VTK REQUIRED)
+OPTION(CMAKE_INSTALL_PREFIX ".")
 INCLUDE(${VTK_USE_FILE})
- IF(VTK_FOUND)
-    INCLUDE_DIRECTORIES(${VTK_INCLUDE_DIR})    
-  ENDIF(VTK_FOUND)
+IF(VTK_FOUND)
+  INCLUDE_DIRECTORIES(${VTK_INCLUDE_DIR})    
+ENDIF(VTK_FOUND)
 
   IF(OPENGL_glu_LIBRARY)
       SET( OPENGL_GLU_FOUND "YES" )
@@ -92,4 +117,10 @@ TARGET_LINK_LIBRARIES( MeshTools
 	${FLTK_LIBRARIES} 
 	${OPENGL_LIBRARIES}
 	${VTK_LIBRARIES}
+	
   )
+INSTALL(TARGETS MeshTools
+  RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)  
+
+
