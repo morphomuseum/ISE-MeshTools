@@ -473,6 +473,8 @@ void SetZoom(float zoom);
 float GetZoom();
 void Mesh_SetLandmarkSize(float landmark_size2);
 float Mesh_GetLandmarkSize();
+void set_g_landmark_auto_rendering_size(int render_mode);
+int get_g_landmark_auto_rendering_size();
 
 
 void Set_fov_adapt(int fov_adapt);

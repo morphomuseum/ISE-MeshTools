@@ -3845,9 +3845,29 @@ void MeshToolsUI::cb_Ok_scc_lightning_colour(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_scc_lightning_colour_i(o,v);
 }
 
+void MeshToolsUI::cb_auto_landmark_size_i(Fl_Check_Button* o, void*) {
+  if (((Fl_Button *)o)->value()==1)
+{
+
+	Landmark_Size2->deactivate();
+}
+else
+{
+
+	Landmark_Size2->activate();
+};
+}
+void MeshToolsUI::cb_auto_landmark_size(Fl_Check_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->user_data()))->cb_auto_landmark_size_i(o,v);
+}
+
 void MeshToolsUI::cb_Ok_scc_lm_i(Fl_Button*, void*) {
   MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
+);
+
+MT->set_g_landmark_auto_rendering_size(
+auto_landmark_size->value()
 );
 
 MT->set_g_flag_length(
@@ -7979,7 +7999,7 @@ void MeshToolsUI::cb_save_errors_curve(Fl_Button* o, void* v) {
 }
 
 MeshToolsUI::MeshToolsUI() {
-  { mainWindow = new Fl_Double_Window(1002, 692, "Interactive SoftwarE : MeshTools");
+  { mainWindow = new Fl_Double_Window(1000, 700, "Interactive SoftwarE : MeshTools");
     mainWindow->box(FL_UP_BOX);
     mainWindow->color((Fl_Color)55);
     mainWindow->labelsize(12);
@@ -8536,7 +8556,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Group* Bottom
     mainWindow->end();
   } // Fl_Double_Window* mainWindow
-  { camWindow = new Fl_Double_Window(165, 320, "Camera options");
+  { camWindow = new Fl_Double_Window(157, 312, "Camera options");
     camWindow->color((Fl_Color)174);
     camWindow->user_data((void*)(this));
     { Cam_near = new Fl_Value_Input(99, 15, 52, 25, "Camera near :");
@@ -8579,7 +8599,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     camWindow->set_non_modal();
     camWindow->end();
   } // Fl_Double_Window* camWindow
-  { optWindow = new Fl_Double_Window(342, 316, "General options");
+  { optWindow = new Fl_Double_Window(366, 319, "General options");
     optWindow->color((Fl_Color)94);
     optWindow->user_data((void*)(this));
     { open_surface_option = new Fl_Group(10, 25, 350, 160, "Behaviour when opening surfaces : ");
@@ -8639,7 +8659,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     optWindow->set_non_modal();
     optWindow->end();
   } // Fl_Double_Window* optWindow
-  { opt_lc_Window = new Fl_Double_Window(365, 300, "Lightning and colour options");
+  { opt_lc_Window = new Fl_Double_Window(378, 337, "Lightning and colour options");
     opt_lc_Window->color((Fl_Color)94);
     opt_lc_Window->user_data((void*)(this));
     { Window_group = new Fl_Group(15, 25, 335, 23, "Windows");
@@ -8717,44 +8737,48 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(360, 316, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(354, 353, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
-    { Fl_Group* o = new Fl_Group(0, 15, 357, 120, "Landmarks rendering");
+    { Fl_Group* o = new Fl_Group(10, 15, 350, 160, "Landmarks rendering");
       o->box(FL_BORDER_BOX);
       o->color((Fl_Color)93);
-      { landmark_type_radio_buttons = new Fl_Group(18, 37, 314, 55, "Draw Landmarks As : ");
+      { landmark_type_radio_buttons = new Fl_Group(24, 37, 314, 55, "Draw Landmarks As : ");
         landmark_type_radio_buttons->box(FL_BORDER_BOX);
         landmark_type_radio_buttons->color((Fl_Color)94);
         landmark_type_radio_buttons->align(Fl_Align(FL_ALIGN_TOP_LEFT));
-        { pt_sphere = new Fl_Round_Button(20, 38, 25, 24, "Spheres");
+        { pt_sphere = new Fl_Round_Button(26, 38, 25, 24, "Spheres");
           pt_sphere->type(102);
           pt_sphere->down_box(FL_ROUND_DOWN_BOX);
           pt_sphere->value(1);
         } // Fl_Round_Button* pt_sphere
-        { pt_needle = new Fl_Round_Button(20, 61, 22, 11, "Needles");
+        { pt_needle = new Fl_Round_Button(26, 61, 22, 11, "Needles");
           pt_needle->type(102);
           pt_needle->down_box(FL_ROUND_DOWN_BOX);
         } // Fl_Round_Button* pt_needle
         landmark_type_radio_buttons->end();
       } // Fl_Group* landmark_type_radio_buttons
-      { Landmark_Size2 = new Fl_Value_Input(154, 94, 28, 25, "Landmark Size(mm) :");
+      { Landmark_Size2 = new Fl_Value_Input(240, 135, 28, 25, "Landmark rendering size (mm) :");
         Landmark_Size2->align(Fl_Align(36));
       } // Fl_Value_Input* Landmark_Size2
+      { auto_landmark_size = new Fl_Check_Button(30, 110, 25, 25, "Adjust automatically landmark rendering size");
+        auto_landmark_size->down_box(FL_DOWN_BOX);
+        auto_landmark_size->callback((Fl_Callback*)cb_auto_landmark_size);
+      } // Fl_Check_Button* auto_landmark_size
       o->end();
     } // Fl_Group* o
-    { Ok_scc_lm = new Fl_Button(150, 285, 65, 25, "Ok");
+    { Ok_scc_lm = new Fl_Button(150, 310, 65, 25, "Ok");
       Ok_scc_lm->color((Fl_Color)133);
       Ok_scc_lm->selection_color((Fl_Color)92);
       Ok_scc_lm->callback((Fl_Callback*)cb_Ok_scc_lm);
     } // Fl_Button* Ok_scc_lm
-    { Fl_Group* o = new Fl_Group(5, 171, 350, 109, "Flags setting");
+    { Fl_Group* o = new Fl_Group(10, 196, 350, 109, "Flags setting");
       o->box(FL_BORDER_BOX);
       o->color((Fl_Color)93);
-      { Flag_g_length = new Fl_Value_Input(140, 230, 28, 25, "Flag length (mm) :");
+      { Flag_g_length = new Fl_Value_Input(143, 255, 28, 25, "Flag length (mm) :");
         Flag_g_length->align(Fl_Align(36));
       } // Fl_Value_Input* Flag_g_length
-      { Flag_g_colour = new Fl_Button(30, 187, 140, 26, "Flag colour");
+      { Flag_g_colour = new Fl_Button(33, 212, 140, 26, "Flag colour");
         Flag_g_colour->color((Fl_Color)42);
         Flag_g_colour->labelcolor(FL_GRAY0);
         Flag_g_colour->callback((Fl_Callback*)cb_Flag_g_colour);
@@ -10577,7 +10601,7 @@ trix\" (old version correction)");
     densifyWindow->set_modal();
     densifyWindow->end();
   } // Fl_Double_Window* densifyWindow
-  { nameWindow = new Fl_Double_Window(269, 155, "Edit  Name");
+  { nameWindow = new Fl_Double_Window(261, 147, "Edit  Name");
     nameWindow->color((Fl_Color)215);
     nameWindow->user_data((void*)(this));
     { Ok_name = new Fl_Button(15, 66, 175, 24, "Ok (first selected object)");
@@ -10788,7 +10812,7 @@ trix\" (old version correction)");
     lmkrangeselectWindow->set_non_modal();
     lmkrangeselectWindow->end();
   } // Fl_Double_Window* lmkrangeselectWindow
-  { Registration_Window = new Fl_Double_Window(1061, 589, "Registration");
+  { Registration_Window = new Fl_Double_Window(1053, 581, "Registration");
     Registration_Window->color((Fl_Color)215);
     Registration_Window->user_data((void*)(this));
     Registration_Window->hotspot(Registration_Window);
@@ -11235,7 +11259,7 @@ void MeshToolsUI::show(int argc, char **argv) {
   mainWindow->show(argc, argv);
   int disp = MT->Get_mode_cam_centre_of_mass();
   Move_cam_centre_of_mass->value(disp);
-  mainWindow->size_range(629,659);
+  mainWindow->size_range(700,1000);
 }
 
 void MeshToolsUI::cam_show() {
@@ -11291,6 +11315,7 @@ void MeshToolsUI::options_lc_hide() {
 void MeshToolsUI::options_lm_show() {
   int landmark_type;
   int landmark_type2;
+  int auto_rendering_size;
   Landmark_Size2->value(MT->Mesh_GetLandmarkSize());
   landmark_type = MT->Mesh_GetLandmarkType();
   landmark_type2=0;
@@ -11306,6 +11331,18 @@ void MeshToolsUI::options_lm_show() {
   c = fl_rgb_color(r,g,b);
   Flag_g_colour->color(c);
   Flag_g_colour->redraw();
+  
+  
+  auto_rendering_size = MT->get_g_landmark_auto_rendering_size();
+  auto_landmark_size->value(auto_rendering_size);
+  if (auto_rendering_size ==1)
+  {
+  	Landmark_Size2->deactivate();
+  }
+  else
+  {
+  	Landmark_Size2->activate();
+  }
   
   opt_lm_Window->show();
 }

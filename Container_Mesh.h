@@ -76,6 +76,7 @@ public:
 	void Object_Move_Up();
 	void Mesh_TPS( int basis, float percentage);
 	void Compute_Global_Mean();
+	void Compute_Global_MinMax();
 	void Set_Active_Scalar();
 	void Initialize_Scalar(int scalar);
 	void Remove_Scalar(int scalar);

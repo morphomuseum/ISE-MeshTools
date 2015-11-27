@@ -52,11 +52,15 @@ int level; //If 0, this means this object is the big_root object (Obj_Root)
 
 float mean[3];
 int nmean; // number of poinds used to compute nmean;
+void Compute_Global_MinMax();
+
+
 void Compute_Global_Mean(); // Compute center of mass of all selected objects (only applies to root objects)
 void Compute_Global_Scalar_List();
 void Compute_Name_Lists();
  void Update_RGB();
 void Calculate_GlobalMean(float *x, float *y, float *z, int *nb, int only_selected); // compute center of masse of this object (should not be root)
+void Calculate_Global_MinMax(float *minx, float *maxx, float *miny, float *maxy, float *minz, float *maxz);
 int GetNumtri();
 void MergeObjects(vtkSmartPointer<vtkAppendPolyData> mergedObjects, int mode);
 void SC_calc_depth();

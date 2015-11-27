@@ -1137,9 +1137,12 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_scalar_list_selected.clear();
 	g_landmark_size = 10; // 10 mm landmarks
 	g_landmark_size =  ExistingDF.GetFloat("size", "landmarks");
+	g_landmark_auto_rendering_size = ExistingDF.GetFloat("auto_rendering_size", "landmarks");
 	
+
 	
     g_landmark_type =  ExistingDF.GetInt("type", "landmarks");
+
 	g_display_all=  ExistingDF.GetInt("all", "display");
 	g_fov_adapt =  ExistingDF.GetInt("adapt", "fov");
 	
@@ -4592,6 +4595,51 @@ void MeshTools::Mesh_SetLandmarkType(int landmark_type2)
 }
 int MeshTools::Mesh_GetLandmarkType()
 {return g_landmark_type;}
+void MeshTools::set_g_landmark_auto_rendering_size(int render_mode)
+{
+	if (render_mode == 0)
+	{
+		g_landmark_auto_rendering_size = 0;
+	}
+	else
+	{
+		g_landmark_auto_rendering_size = 1;
+		//g_landmark_size = Cont_Mesh.dmean / 50;
+		Cont_Mesh.Compute_Global_MinMax();
+		std::cout << "" << std::endl;
+		std::cout << "min et max X:" << g_minx<<"   |    "<< g_maxx << std::endl;
+		std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
+		std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
+		std::cout << "" << std::endl;
+
+		float mean_size = 0;
+		mean_size += g_maxx;
+		mean_size += g_maxy;
+		mean_size += g_maxz;
+		mean_size -= g_mean_all[0];
+		mean_size -= g_mean_all[1];
+		mean_size -= g_mean_all[2];
+		g_landmark_size = 1;
+		if (mean_size > 0) { mean_size /= 6; 
+		if (g_landmark_type == 0)
+			{
+				g_landmark_size = mean_size / 10;
+			}
+		else
+		{
+			g_landmark_size = mean_size / 3;
+		}
+		}
+		
+
+		Cont_Mesh.Mesh_container_setlandmarksize(g_landmark_size);
+
+	}
+}
+int MeshTools::get_g_landmark_auto_rendering_size()
+{
+	return	g_landmark_auto_rendering_size;
+}
 
 float MeshTools::Mesh_GetLandmarkSize()
 {return g_landmark_size;}
@@ -4679,6 +4727,7 @@ void MeshTools::save_ini_param()
 	ExistingDF.SetInt("all", g_display_all,"","display");
 	
 	ExistingDF.SetFloat("size", g_landmark_size,"","landmarks");
+	ExistingDF.SetFloat("auto_rendering_size", g_landmark_auto_rendering_size, "", "landmarks");
 	ExistingDF.SetInt("type", g_landmark_type,"","landmarks");
 	ExistingDF.SetInt("move_at_cm", g_move_cm,"","surfaces");
 	ExistingDF.SetInt("move_at_cm", g_mode_cam_centre_of_mass, "", "camera");

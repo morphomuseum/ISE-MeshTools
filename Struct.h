@@ -133,6 +133,7 @@ extern float rotx, roty, rotz, rotx2, roty2, rotz2,tx,ty,tz, tx2, ty2, tz2, g_zo
 extern int dispmode;
 extern int cpt_dispmode4and5;
 extern float g_landmark_size;
+extern int g_landmark_auto_rendering_size;
 extern int g_display_all;
 extern int g_grid_plane;
 extern int g_landmark_type;
@@ -173,6 +174,12 @@ extern float g_lambda; // mean of selected objects
 extern float g_mean[3];
 extern int g_nmean;
 extern float g_mean_all[3];
+extern float g_minx;
+extern float g_miny;
+extern float g_minz;
+extern float g_maxx;
+extern float g_maxy;
+extern float g_maxz;
 extern int g_mode_cam_centre_of_mass;
 extern int g_nmean_all;
 extern char Version[50];

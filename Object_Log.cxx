@@ -859,12 +859,36 @@ void OBJECT_LOG::Compute_Name_Lists()
 		MyMesh->Compute_Name_Lists();		
 	}
 }
+void OBJECT_LOG::Compute_Global_MinMax()
+{
+	float minx = 9999999999;
+	float maxx = -9999999999;
+	float miny = 9999999999;
+	float maxy = -9999999999;
+	float minz = 9999999999;
+	float maxz = -9999999999;
 
+	glPushMatrix();
+	glLoadIdentity();
+	this->Calculate_Global_MinMax(&minx, &maxx, &miny, &maxy, &minz, &maxz ); 
+
+	
+	g_minx = minx;
+	std::cout << "new g_minx:" << g_minx << std::endl;
+	g_maxx = maxx;
+	g_miny = miny;
+	g_maxy = maxy;
+	g_minz = minz;
+	g_maxz = maxz;
+
+	glPopMatrix();
+}
 void OBJECT_LOG::Compute_Global_Mean()
 {
 	float meanx=0;
 	float meany=0;
 	float meanz =0;
+	
 	int nmean=0;
 	glPushMatrix();
 	glLoadIdentity();		
@@ -1141,6 +1165,83 @@ void OBJECT_LOG::Calculate_GlobalMean(float *x, float *y, float *z, int *nb, int
 	*nb = nbverts;
 	
 
+}
+
+
+void OBJECT_LOG::Calculate_Global_MinMax(float *minx, float *maxx, float *miny, float *maxy, float *minz, float *maxz)
+{
+
+	
+
+
+	//std::cout<<"Calculate_GlobalMean min max: "<<level<<" selected="<<selected<< std::endl;
+	float inx = 999999999, axx =-999999999, iny = 999999999, axy = -999999999, inz = 999999999, axz = -999999999;	
+	float tmpminx = 999999999, tmpmaxx = -999999999, tmpminy = 999999999, tmpmaxy = -999999999, tmpminz = 999999999, tmpmaxz = -999999999;
+	int nbtmp = 0;
+	OBJECT_MESH *MyMesh;
+	
+	//Mean of the Object stack
+	glMatrix  wc_mat2;
+	//this->get_world_coordinates_matrix(wc_mat2);
+	//getmatrix(wc_mat2);
+
+
+
+	glPushMatrix();
+	if (level == 0) { glLoadIdentity(); }
+	else
+	{
+		glMultMatrixf((GLfloat*) this->Mat2);
+		if (level == 1)
+		{
+			glTranslated(
+				this->mean[0],
+				this->mean[1],
+				this->mean[2]
+				);
+		}
+		glMultMatrixf((GLfloat*) this->Mat1); //Aspect
+		if (level == 1)
+		{
+			glTranslated(
+				-this->mean[0],
+				-this->mean[1],
+				-this->mean[2]
+				);
+		}
+	}
+
+	if (this->OBJECTS != NULL)
+	{
+		MyMesh = this->OBJECTS;
+		
+			MyMesh->Calculate_Global_MinMax(&tmpminx, &tmpmaxx, &tmpminy, &tmpmaxy, &tmpminz, &tmpmaxz);
+			//std::cout << "tmpminx=" << tmpminx << std::endl;
+			
+		
+		
+
+
+	}
+	
+	glPopMatrix();	
+	if (tmpminx < inx) { inx = tmpminx; 
+	//std::cout << "new inx in obj log:" << inx << std::endl;
+	}
+	if (tmpminy < iny) { iny = tmpminy; }
+	if (tmpminz < inz) { inz = tmpminz; }
+
+	if (tmpmaxx > axx) { axx = tmpmaxx; }
+	if (tmpmaxy > axy) { axy = tmpmaxy; }
+	if (tmpmaxz > axz) { axz = tmpmaxz; }
+
+	*minx = inx;
+	*maxx = axx;
+	*miny = iny;
+	*maxy = axy;
+	*minz = inz;
+	*maxz = axz;
+	std::cout << "inx *minx calc obj log:" << *minx << std::endl;
 }
 
 void OBJECT_LOG::rollinit_objects()

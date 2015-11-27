@@ -1056,6 +1056,11 @@ public:
   Fl_Round_Button *pt_sphere;
   Fl_Round_Button *pt_needle;
   Fl_Value_Input *Landmark_Size2;
+  Fl_Check_Button *auto_landmark_size;
+private:
+  inline void cb_auto_landmark_size_i(Fl_Check_Button*, void*);
+  static void cb_auto_landmark_size(Fl_Check_Button*, void*);
+public:
   Fl_Button *Ok_scc_lm;
 private:
   inline void cb_Ok_scc_lm_i(Fl_Button*, void*);
