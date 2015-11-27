@@ -124,6 +124,7 @@ public:
 	void Update_RGB();
 	int Get_Active_Scalar();
 	int Get_Display_All();
+	int Get_mode_cam_centre_of_mass();	
 	void Set_Display_All(int all);
 	void Remove_Scalar(int scalar);
 	void Initialize_Scalar(int scalar);

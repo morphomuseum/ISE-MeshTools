@@ -699,11 +699,15 @@ float MeshTools::getTranslationFactor()
 
 }
 
+int MeshTools::Get_mode_cam_centre_of_mass()
+{
+	return g_mode_cam_centre_of_mass;
+}
+
 int MeshTools::Get_Display_All()
 {
 	return g_display_all;
 }
-
 
 void MeshTools::Set_Display_All(int all)
 {
@@ -1136,6 +1140,8 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_fov_adapt =  ExistingDF.GetInt("adapt", "fov");
 	
 	g_move_cm =  ExistingDF.GetInt("move_at_cm", "surfaces");
+	g_mode_cam_centre_of_mass = ExistingDF.GetInt("move_at_cm", "camera");
+	
 	g_auto_zoom =  ExistingDF.GetInt("auto_zoom", "surfaces");
 	g_color_scale_id=ExistingDF.GetInt("id","color_scale");
 	//std::cout<<"Constructor: g_color_scale_id"<<g_color_scale_id<<std::endl;
@@ -4667,9 +4673,11 @@ void MeshTools::save_ini_param()
 	ExistingDF.SetInt("id", g_active_tag,"","active_tag");
 
 	ExistingDF.SetInt("all", g_display_all,"","display");
+	
 	ExistingDF.SetFloat("size", g_landmark_size,"","landmarks");
 	ExistingDF.SetInt("type", g_landmark_type,"","landmarks");
 	ExistingDF.SetInt("move_at_cm", g_move_cm,"","surfaces");
+	ExistingDF.SetInt("move_at_cm", g_mode_cam_centre_of_mass, "", "camera");
 	ExistingDF.SetInt("adapt", g_fov_adapt ,"","fov");
 	
 	
@@ -4836,6 +4844,8 @@ void MeshTools::save_ini_param()
 	ExistingDF.SetFloat("b", g_tag_colors[24][2],"","tag_24");
 	ExistingDF.SetFloat("a", g_tag_colors[24][3],"","tag_24");
 	ExistingDF.SetValue("label", g_tag_labels[24],"","tag_24");
+
+	
 
 	//std::cout<<"ir"<<g_tag_colors[24][0]<<"ig"<<g_tag_colors[24][1]<<"ib"<<g_tag_colors[24][1]<<std::endl;
 	
