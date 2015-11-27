@@ -7343,8 +7343,8 @@ void MeshTools::Open_NTW_File()
 					if (i==0)
 					{
 						
-						length=(int)strlen(oneline);						
-						strncpy(param1, oneline, length-1);
+					  //length=(int)strlen(oneline);						
+					  //strncpy(param1, oneline, length-1);
 						
 						std::string meshname = param1;
 						std::string STLext (".stl");
