@@ -10,14 +10,14 @@ class MeshToolsUI {open
       label {Interactive SoftwarE : MeshTools}
       callback {options_hide();
 cam_hide();
-exit(0);}
-      private image {pixmap/s_face.gif} xywh {574 122 944 681} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);} open selected
+      private image {pixmap/s_face.gif} xywh {194 214 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
-        xywh {0 -5 947 63}
+        xywh {0 0 1002 50}
       } {
         Fl_Group Unresizable {open
-          xywh {0 0 917 50}
+          xywh {0 0 949 50}
         } {
           Fl_Button Del {
             callback {int test;
@@ -340,7 +340,7 @@ orientation_update();}
             }
           }
           Fl_Menu_Button Viewing_options {
-            label {Viewing opt.} open
+            label {Viewing opt.}
             xywh {55 0 100 25} color 55
           } {
             MenuItem SET_GENERAL_COLOUR_LIGHTNING {
@@ -354,7 +354,7 @@ orientation_update();}
               xywh {90 90 100 20}
             }
             Submenu Camera_submenu {
-              label Camera
+              label Camera open
               xywh {0 0 62 20}
             } {
               MenuItem SET_CAMERA_OPT {
@@ -363,7 +363,7 @@ orientation_update();}
                 xywh {55 55 100 20}
               }
               Submenu Camera_center {
-                label {Camera rotation center at ...}
+                label {Camera rotation center at ...} open
                 xywh {10 10 100 20}
               } {
                 MenuItem CAP0 {
@@ -371,6 +371,12 @@ orientation_update();}
                   callback {MT->Cam_Center_At_Landmark(-1);
 MT->redraw();}
                   xywh {5 5 100 20}
+                }
+                MenuItem CAPBAR {
+                  label {Centre of mass of all loaded meshes}
+                  callback {MT->Cam_Center_At_Landmark(-2);
+MT->redraw();}
+                  xywh {15 15 100 20}
                 }
                 MenuItem CAP1 {
                   label {landmark 1}
@@ -446,7 +452,7 @@ MT->redraw();}
               }
             }
             Submenu Display_Options {
-              label {Object rendering options} open
+              label {Object rendering options}
               xywh {0 0 62 20}
             } {
               MenuItem DISP_SURFACE {
@@ -826,7 +832,7 @@ MT->redraw();}
             }
           }
           Fl_Menu_Button SC_options {
-            label Scalars open
+            label Scalars
             tooltip {Compute attributes. These are values attributed to vertices which can subsequently be displayed as color maps (see viewing options to display color maps)} xywh {490 0 90 25} color 55
           } {
             MenuItem Scalars_SHOW {
@@ -1074,83 +1080,83 @@ MT->redraw();}
             callback {MT->Object_Move_Up();
 MT->Landmark_Move_Up();
 MT->redraw();}
-            tooltip {Object list : move object(s) up} image {./pixmap/s_dessous_17.gif} xywh {275 25 20 12} color 55
+            tooltip {Object list : move object(s) up} image {./pixmap/s_dessous_17.gif} xywh {301 25 20 12} color 55
           }
           Fl_Button Bt_move_down {
             callback {MT->Object_Move_Down();
 MT->Landmark_Move_Down();
 MT->redraw();}
-            tooltip {Object list : move object(s) down} image {./pixmap/s_dessus_17.gif} xywh {275 37 20 11} color 55 align 16
+            tooltip {Object list : move object(s) down} image {./pixmap/s_dessus_17.gif} xywh {301 37 20 11} color 55 align 16
           }
           Fl_Button Bt_light_right {
             callback {MT->SetLightPosition(5);
 MT->redraw();}
-            tooltip {Lightning : from right side} image {./pixmap/s_right_17.gif} xywh {295 25 25 23} color 55 align 64
+            tooltip {Lightning : from right side} image {./pixmap/s_right_17.gif} xywh {321 25 25 23} color 55 align 64
           }
           Fl_Button Bt_light_left {
             callback {MT->SetLightPosition(6);
 MT->redraw();}
-            tooltip {Lightning : from left side} image {./pixmap/s_left_17.gif} xywh {320 25 25 23} color 55 align 80
+            tooltip {Lightning : from left side} image {./pixmap/s_left_17.gif} xywh {346 25 25 23} color 55 align 80
           }
           Fl_Button Bt_light_face {
             callback {MT->SetLightPosition(1);
 MT->redraw();}
-            tooltip {Lightning : from front side} image {./pixmap/s_face_17.gif} xywh {344 25 25 23} color 55 align 144
+            tooltip {Lightning : from front side} image {./pixmap/s_face_17.gif} xywh {370 25 25 23} color 55 align 144
           }
           Fl_Button Bt_light_back {
             callback {MT->SetLightPosition(2);
 MT->redraw();}
-            tooltip {Lightning : from backside} image {./pixmap/s_back_18.gif} xywh {369 25 25 23} color 55 align 128
+            tooltip {Lightning : from backside} image {./pixmap/s_back_18.gif} xywh {395 25 25 23} color 55 align 128
           }
           Fl_Button Bt_light_above {
             callback {MT->SetLightPosition(4);
 MT->redraw();}
-            tooltip {Lightning : from above} image {./pixmap/s_dessus_18.gif} xywh {394 25 25 23} color 55 align 16
+            tooltip {Lightning : from above} image {./pixmap/s_dessus_18.gif} xywh {420 25 25 23} color 55 align 16
           }
           Fl_Button Bt_light_below {
             callback {MT->SetLightPosition(3);
 MT->redraw();}
-            tooltip {Lightning: from below} image {./pixmap/s_dessous_18.gif} xywh {419 25 25 23} color 55
+            tooltip {Lightning: from below} image {./pixmap/s_dessous_18.gif} xywh {445 25 25 23} color 55
           }
           Fl_Button Bt_pos_left {
             callback {MT->Set_Grid_Plane(1);
 MT->SetPosition(5);
 MT->redraw();}
-            tooltip {Move camera : view object from left side} image {./pixmap/left2.gif} xywh {468 25 25 23} color 55 align 80
+            tooltip {Move camera : view object from left side} image {./pixmap/left2.gif} xywh {494 25 25 23} color 55 align 80
           }
           Fl_Button Bt_pos_right {
             callback {MT->Set_Grid_Plane(1);
 MT->SetPosition(6);
 MT->redraw();}
-            tooltip {Move camera : view object from right side} image {./pixmap/right2.gif} xywh {444 25 24 23} color 55 align 64
+            tooltip {Move camera : view object from right side} image {./pixmap/right2.gif} xywh {470 25 24 23} color 55 align 64
           }
           Fl_Button Bt_pos_face {
             callback {MT->Set_Grid_Plane(0);
 MT->SetPosition(1);
 MT->redraw();}
-            tooltip {Move camera : view object from font side} image {./pixmap/front2.gif} xywh {491 25 25 23} color 55 align 144
+            tooltip {Move camera : view object from font side} image {./pixmap/front2.gif} xywh {517 25 25 23} color 55 align 144
           }
           Fl_Button Bt_pos_back {
             callback {MT->Set_Grid_Plane(0);
 MT->SetPosition(2);
 MT->redraw();}
-            tooltip {Move camera : view object from back side} image {./pixmap/back2.gif} xywh {516 25 25 23} color 55 align 128
+            tooltip {Move camera : view object from back side} image {./pixmap/back2.gif} xywh {542 25 25 23} color 55 align 128
           }
           Fl_Button Bt_pos_above {
             callback {MT->Set_Grid_Plane(2);
 MT->SetPosition(4);
 MT->redraw();}
-            tooltip {Move camera : view object from above} image {./pixmap/above2.gif} xywh {541 25 25 23} color 55
+            tooltip {Move camera : view object from above} image {./pixmap/above2.gif} xywh {567 25 25 23} color 55
           }
           Fl_Button Bt_pos_below {
             callback {MT->Set_Grid_Plane(2);
 MT->SetPosition(3);
 MT->redraw();}
-            tooltip {Move camera : view object from below} image {./pixmap/below2.gif} xywh {564 25 25 23} color 55
+            tooltip {Move camera : view object from below} image {./pixmap/below2.gif} xywh {590 25 25 23} color 55
           }
           Fl_Button Matrix_button {
             callback {mat_show();}
-            tooltip {Edit first selected object position and aspect matrices} image {./pixmap/mat.gif} xywh {589 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected object position and aspect matrices} image {./pixmap/mat.gif} xywh {615 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_button {
             callback {//((Fl_Button *)o)->value(1);
@@ -1164,15 +1170,15 @@ MT->Change_Scalars_Display_Mode();
 MT->SetColorScaleId(0);// calls update_rgb
 MT->Update_RGB();
 MT->redraw();}
-            tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {614 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {640 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_Show {
             callback {sc_show();}
-            tooltip {Open Scalar Window} image {./pixmap/edit_color_scale.gif} xywh {639 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Open Scalar Window} image {./pixmap/edit_color_scale.gif} xywh {665 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Show_Tag_Window2 {
             callback {tags_show();}
-            tooltip {Show tag window} image {./pixmap/Show_Tag_Window2.gif} xywh {689 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Show tag window} image {./pixmap/Show_Tag_Window2.gif} xywh {715 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Tag_mode_off {
             callback {((Fl_Button *)o)->value(1);
@@ -1182,7 +1188,7 @@ MT->Desactivate_Tags_Display_Mode();
 //MT->SetColorScaleId(1);
 MT->SetModeTool(0);
 MT->redraw();}
-            tooltip {Normal select mode : selected surfaces are grey / unselected ones are colored} image {./pixmap/Normal_select_mode.gif} xywh {714 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
+            tooltip {Normal select mode : selected surfaces are grey / unselected ones are colored} image {./pixmap/Normal_select_mode.gif} xywh {740 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
           }
           Fl_Button Tag_mode_on {
             callback {((Fl_Button *)o)->value(1);
@@ -1194,7 +1200,7 @@ MT->Set_Active_Scalar(-1);
 
 //MT->SetModeTool(0);
 MT->redraw();}
-            tooltip {Tag select mode : selected surfaces are colored / unselected ones are grey} image {./pixmap/Tag_select_mode.gif} xywh {741 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Tag select mode : selected surfaces are colored / unselected ones are grey} image {./pixmap/Tag_select_mode.gif} xywh {767 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Pencil {
             callback {((Fl_Button *)o)->value(1);
@@ -1205,7 +1211,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Pencil();
 MT->redraw();}
-            tooltip {Activate pencil tagging mode} image {./pixmap/pencil.gif} xywh {766 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
+            tooltip {Activate pencil tagging mode} image {./pixmap/pencil.gif} xywh {792 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
           }
           Fl_Button Magic_Wand {
             callback {((Fl_Button *)o)->value(1);
@@ -1216,7 +1222,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Magic_Wand();
 MT->redraw();}
-            tooltip {Activate magic wand tagging mode} image {./pixmap/magic_wand.gif} xywh {791 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Activate magic wand tagging mode} image {./pixmap/magic_wand.gif} xywh {817 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Flood_Fill {
             callback {((Fl_Button *)o)->value(1);
@@ -1227,7 +1233,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Flood_Fill();
 MT->redraw();}
-            tooltip {Activateflood fill tagging mode} image {./pixmap/Flood_fill.gif} xywh {816 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Activateflood fill tagging mode} image {./pixmap/Flood_fill.gif} xywh {842 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Lasso_plus {
             callback {MT->Set_Active_Scalar(-1);
@@ -1235,11 +1241,11 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->SetModeTool(2);
 MT->redraw();}
-            tooltip {Lasso tag + : draw a lasso contour using several left clicks + a final right click. Then either middle click, or press "t"+ left or right click} image {./pixmap/Lasso_plus.gif} xywh {842 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Lasso tag + : draw a lasso contour using several left clicks + a final right click. Then either middle click, or press "t"+ left or right click} image {./pixmap/Lasso_plus.gif} xywh {868 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Edit_flag {
             callback {flag_show();}
-            tooltip {Edit first selected flag label, length and colour} image {pixmap/Flag02.png} xywh {867 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected flag label, length and colour} image {pixmap/Flag02.png} xywh {893 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Show_Tag_Window {
             callback {if (((Fl_Button *)o)->value()==0)
@@ -1252,33 +1258,49 @@ MT->Change_Tags_Display_Mode();
 MT->SetColorScaleId(-1);//may call update_rgb
 MT->Update_RGB();
 MT->redraw();}
-            tooltip {Display tags} image {./pixmap/Show_Tag_Window.gif} xywh {665 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Display tags} image {./pixmap/Show_Tag_Window.gif} xywh {691 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Edit_name {
             callback {name_show();}
-            tooltip {Edit first selected surface name} image {./pixmap/name.png} xywh {890 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected surface name} image {./pixmap/name.png} xywh {916 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Orientation {
             callback {MT->ShowOrientation();
 MT->redraw();}
-            tooltip {Show/hide orientation} image {./pixmap/grid2.gif} xywh {250 25 25 23} color 55 selection_color 23
+            tooltip {Show/hide orientation} image {./pixmap/grid2.gif} xywh {276 25 25 23} color 55 selection_color 23
+          }
+          Fl_Button Move_cam_centre_of_mass {
+            callback {if (((Fl_Button *)o)->value()==0)
+{
+((Fl_Button *)o)->value(1);
+MT->Cam_Center_At_Landmark(-2);
+
+}
+else
+{
+((Fl_Button *)o)->value(0);
+MT->Cam_Center_At_Landmark(-1);
+}
+
+MT->redraw();}
+            tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {250 25 25 23} color 55 selection_color 23
           }
         }
         Fl_Group Resizable {
-          xywh {915 0 32 50} resizable
+          xywh {980 0 22 50} resizable
         } {}
       }
       Fl_Group Bottom {open
-        xywh {-12 48 957 652} resizable
+        xywh {0 50 1000 650} resizable
       } {
         Fl_Box MT {
           label {MeshTools 3D window}
-          xywh {40 50 886 591} when 1 resizable
+          xywh {40 50 940 610} when 1 resizable
           code0 {\#include "MeshTools.h"}
           class MeshTools
         }
         Fl_Group WW {open
-          xywh {-12 48 52 652} color 207
+          xywh {0 50 40 650} color 207
         } {
           Fl_Group WW_unresizable {open
             xywh {0 50 40 550}
@@ -1287,14 +1309,14 @@ MT->redraw();}
               label Z
               callback {MT->panz2(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Move selected objects along viewing z axis} xywh {20 76 20 225} type {Vert Knob} color 215 minimum -100 maximum 100 step 0.1
+              tooltip {Move selected objects along viewing z axis} xywh {20 61 20 225} type {Vert Knob} color 215 minimum -100 maximum 100 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
             Fl_Roller zroll1 {
               callback {MT->rollz2(((Fl_Roller *)o)->value());
 MT->redraw();}
-              tooltip {Rotate selected objects around viewing z axis} xywh {0 75 20 230} box DOWN_BOX color 23 selection_color 255 minimum -180 maximum 180 step 0.1
+              tooltip {Rotate selected objects around viewing z axis} xywh {0 60 20 230} box DOWN_BOX color 23 selection_color 255 minimum -180 maximum 180 step 0.1
               code0 {\#include "SpecialRoller4.h"}
               class SpecialRoller4
             }
@@ -1302,33 +1324,33 @@ MT->redraw();}
               label Y
               callback {MT->pany2(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Move selected objects along viewing y axis} xywh {20 320 20 231} type {Vert Knob} color 215 minimum -100 maximum 100 step 0.1
+              tooltip {Move selected objects along viewing y axis} xywh {20 305 20 231} type {Vert Knob} color 215 minimum -100 maximum 100 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
             Fl_Roller yroll1 {
               callback {MT->rolly2(((Fl_Roller *)o)->value());
 MT->redraw();}
-              tooltip {Rotate selected objects around viewing y axis} xywh {0 321 20 230} box DOWN_BOX color 23 selection_color 255 minimum -180 maximum 180 step 0.1
+              tooltip {Rotate selected objects around viewing y axis} xywh {0 306 20 230} box DOWN_BOX color 23 selection_color 255 minimum -180 maximum 180 step 0.1
               code0 {\#include "SpecialRoller4.h"}
               class SpecialRoller4
             }
           }
           Fl_Group WW_resizable {
-            xywh {0 650 40 50} resizable
+            xywh {0 660 40 40} resizable
           } {}
         }
         Fl_Group EE {open
-          xywh {924 50 21 616} align 0
+          xywh {980 50 20 650} align 0
         } {
           Fl_Group EE_unresizable {open
-            xywh {924 50 21 616}
+            xywh {980 50 20 610}
           } {
             Fl_Slider zpan {
               label cp
               callback {MT->panz(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Displace clipping plane} xywh {926 233 19 239} type {Vert Knob} color 92 labelsize 7 minimum -100 maximum 100 step 0.1
+              tooltip {Displace clipping plane} xywh {981 217 19 239} type {Vert Knob} color 92 labelsize 7 minimum -100 maximum 100 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
@@ -1336,7 +1358,7 @@ MT->redraw();}
               label rZ
               callback {MT->rollz(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Rotate camera along viewing z axis} xywh {926 67 19 152} type {Vert Knob} color 92 minimum -45 maximum 45 step 0.1
+              tooltip {Rotate camera along viewing z axis} xywh {981 51 19 152} type {Vert Knob} color 92 minimum -45 maximum 45 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
@@ -1344,7 +1366,7 @@ MT->redraw();}
               label Zoom
               callback {MT->SetZoom(((Fl_Roller *)o)->value());
 MT->redraw();}
-              tooltip Zoom xywh {926 521 19 145} box DOWN_BOX color 55 selection_color 255 labelsize 7 align 6 minimum -50 maximum 50 step 0.5
+              tooltip Zoom xywh {981 505 19 145} box DOWN_BOX color 55 selection_color 255 labelsize 7 align 6 minimum -50 maximum 50 step 0.5
               code0 {\#include "SpecialRoller4.h"}
               class SpecialRoller4
             }
@@ -1361,7 +1383,7 @@ MT->redraw();}
 );
 
 MT->redraw();}
-              tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {925 480 20 20}
+              tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {980 464 20 20}
             }
             Fl_Button CP_normal_cp2 {
               callback {MT->cam_validate(
@@ -1376,37 +1398,37 @@ MT->redraw();}
 );
 
 MT->redraw();}
-              tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {925 500 20 20}
+              tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {980 484 20 20}
             }
           }
           Fl_Group EE_resizable {
-            xywh {925 635 20 25} resizable
+            xywh {980 660 20 40} resizable
           } {}
         }
         Fl_Group SS {open
-          xywh {50 634 875 66} color 207
+          xywh {40 659 940 41} color 207
         } {
           Fl_Group SS_unresizable {open
-            xywh {50 634 350 56}
+            xywh {40 660 360 40}
           } {
             Fl_Slider xpan1 {
-              label y
+              label x
               callback {MT->panx2(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Move selected objects along viewing x axis} xywh {85 639 255 21} type {Horz Knob} color 215 align 4 minimum -100 maximum 100 step 0.1
+              tooltip {Move selected objects along viewing x axis} xywh {85 660 255 20} type {Horz Knob} color 215 align 4 minimum -100 maximum 100 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
             Fl_Roller xroll1 {
               callback {MT->rollx2(((Fl_Roller *)o)->value());
 MT->redraw();}
-              tooltip {Rotate selected objects around viewing x axis} xywh {85 660 255 20} type Horizontal box DOWN_BOX color 55 selection_color 255 minimum -180 maximum 180 step 0.1
+              tooltip {Rotate selected objects around viewing x axis} xywh {85 680 255 20} type Horizontal box DOWN_BOX color 55 selection_color 255 minimum -180 maximum 180 step 0.1
               code0 {\#include "SpecialRoller4.h"}
               class SpecialRoller4
             }
           }
           Fl_Group SS_resizable {open
-            xywh {395 635 530 65} resizable
+            xywh {400 660 580 40} resizable
           } {}
         }
       }
@@ -2125,32 +2147,36 @@ MyName->value(Name.c_str());}
       }
     }
     Fl_Window versionWindow {
-      label About
-      xywh {620 112 505 132} type Double modal visible
+      label About open
+      xywh {1469 375 597 151} type Double hide modal
     } {
       Fl_Button Ok_Version {
         label Ok
         callback {version_hide();}
-        xywh {210 105 65 25}
+        xywh {265 120 65 25}
       }
       Fl_Input Version {
         label {Version :}
-        xywh {200 10 70 25} box NO_BOX
+        xywh {168 6 70 25} box NO_BOX
       }
       Fl_Input Copyright {
-        label {Copyright : Renaud Lebrun and Cécile Peladan 2013-2015}
-        xywh {503 30 15 25} box NO_BOX
+        label {Copyright : Renaud Lebrun, Stefan Schlager and Cécile Peladan 2013-2015}
+        xywh {580 26 15 25} box NO_BOX
       }
       Fl_Input Contact {
         label {Contact : renaud.lebrun<at>um2.fr}
-        xywh {360 50 15 25} box NO_BOX
+        xywh {328 46 15 25} box NO_BOX
       }
       Fl_Input Website {
         label {Website : http://morphomuseum.com/meshtools}
-        xywh {438 70 15 25} box NO_BOX
+        xywh {406 66 15 25} box NO_BOX
       }
       Fl_Box {} {
-        image {pixmap/Mesh_Tools_Icon.png} xywh {18 16 100 68}
+        image {pixmap/Mesh_Tools_Icon.png} xywh {3 12 100 68}
+      }
+      Fl_Input Git {
+        label {Source repository : https://github.com/morphomuseum/ISE-MeshTools}
+        xywh {487 86 15 25} box NO_BOX
       }
     }
     Fl_Window smoothWindow {
@@ -5455,8 +5481,7 @@ color_data->activate();
 	mainWindow->icon((char*)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
 \#endif	
 mainWindow->show(argc, argv);
-mainWindow->size_range(629,659);} {selected
-    }
+mainWindow->size_range(629,659);} {}
   }
   Function {cam_show()} {} {
     code {camWindow->show();

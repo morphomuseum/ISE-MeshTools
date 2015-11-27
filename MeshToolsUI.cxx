@@ -494,6 +494,14 @@ void MeshToolsUI::cb_CAP0(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_CAP0_i(o,v);
 }
 
+void MeshToolsUI::cb_CAPBAR_i(Fl_Menu_*, void*) {
+  MT->Cam_Center_At_Landmark(-2);
+MT->redraw();
+}
+void MeshToolsUI::cb_CAPBAR(Fl_Menu_* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_CAPBAR_i(o,v);
+}
+
 void MeshToolsUI::cb_CAP1_i(Fl_Menu_*, void*) {
   MT->Cam_Center_At_Landmark(1);
 MT->redraw();
@@ -700,6 +708,7 @@ Fl_Menu_Item MeshToolsUI::menu_Viewing_options[] = {
  {"Camera options", 0,  (Fl_Callback*)MeshToolsUI::cb_SET_CAMERA_OPT, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Camera rotation center at ...", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Origin", 0,  (Fl_Callback*)MeshToolsUI::cb_CAP0, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Centre of mass of all loaded meshes", 0,  (Fl_Callback*)MeshToolsUI::cb_CAPBAR, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"landmark 1", 0,  (Fl_Callback*)MeshToolsUI::cb_CAP1, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"landmark 2", 0,  (Fl_Callback*)MeshToolsUI::cb_CAP2, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"landmark 3", 0,  (Fl_Callback*)MeshToolsUI::cb_CAP3, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -737,32 +746,33 @@ Fl_Menu_Item* MeshToolsUI::Camera_submenu = MeshToolsUI::menu_Viewing_options + 
 Fl_Menu_Item* MeshToolsUI::SET_CAMERA_OPT = MeshToolsUI::menu_Viewing_options + 3;
 Fl_Menu_Item* MeshToolsUI::Camera_center = MeshToolsUI::menu_Viewing_options + 4;
 Fl_Menu_Item* MeshToolsUI::CAP0 = MeshToolsUI::menu_Viewing_options + 5;
-Fl_Menu_Item* MeshToolsUI::CAP1 = MeshToolsUI::menu_Viewing_options + 6;
-Fl_Menu_Item* MeshToolsUI::CAP2 = MeshToolsUI::menu_Viewing_options + 7;
-Fl_Menu_Item* MeshToolsUI::CAP3 = MeshToolsUI::menu_Viewing_options + 8;
-Fl_Menu_Item* MeshToolsUI::CAP4 = MeshToolsUI::menu_Viewing_options + 9;
-Fl_Menu_Item* MeshToolsUI::CAP5 = MeshToolsUI::menu_Viewing_options + 10;
-Fl_Menu_Item* MeshToolsUI::CAP6 = MeshToolsUI::menu_Viewing_options + 11;
-Fl_Menu_Item* MeshToolsUI::CAP7 = MeshToolsUI::menu_Viewing_options + 12;
-Fl_Menu_Item* MeshToolsUI::CAP8 = MeshToolsUI::menu_Viewing_options + 13;
-Fl_Menu_Item* MeshToolsUI::CAP9 = MeshToolsUI::menu_Viewing_options + 14;
-Fl_Menu_Item* MeshToolsUI::CAP10 = MeshToolsUI::menu_Viewing_options + 15;
-Fl_Menu_Item* MeshToolsUI::DISP_100PX_IN_MM = MeshToolsUI::menu_Viewing_options + 17;
-Fl_Menu_Item* MeshToolsUI::RESET_CAMERA = MeshToolsUI::menu_Viewing_options + 18;
-Fl_Menu_Item* MeshToolsUI::Display_Options = MeshToolsUI::menu_Viewing_options + 20;
-Fl_Menu_Item* MeshToolsUI::DISP_SURFACE = MeshToolsUI::menu_Viewing_options + 21;
-Fl_Menu_Item* MeshToolsUI::DISP_WIREFRAME = MeshToolsUI::menu_Viewing_options + 22;
-Fl_Menu_Item* MeshToolsUI::DISP_SORT = MeshToolsUI::menu_Viewing_options + 23;
-Fl_Menu_Item* MeshToolsUI::DISP_SORT2 = MeshToolsUI::menu_Viewing_options + 24;
-Fl_Menu_Item* MeshToolsUI::DISP_FLAT = MeshToolsUI::menu_Viewing_options + 25;
-Fl_Menu_Item* MeshToolsUI::DISP_TRI_GOU = MeshToolsUI::menu_Viewing_options + 26;
-Fl_Menu_Item* MeshToolsUI::DISP_CULLFACE = MeshToolsUI::menu_Viewing_options + 27;
-Fl_Menu_Item* MeshToolsUI::DISP_GRID_SIZE = MeshToolsUI::menu_Viewing_options + 29;
-Fl_Menu_Item* MeshToolsUI::SET_GENERAL_LANDMARK_RENDERING = MeshToolsUI::menu_Viewing_options + 30;
-Fl_Menu_Item* MeshToolsUI::DISP_LANDMARKNUM = MeshToolsUI::menu_Viewing_options + 31;
-Fl_Menu_Item* MeshToolsUI::DISP_CURVE = MeshToolsUI::menu_Viewing_options + 32;
-Fl_Menu_Item* MeshToolsUI::DISP_ORIENTATION = MeshToolsUI::menu_Viewing_options + 33;
-Fl_Menu_Item* MeshToolsUI::VBO_ACTIVATED = MeshToolsUI::menu_Viewing_options + 34;
+Fl_Menu_Item* MeshToolsUI::CAPBAR = MeshToolsUI::menu_Viewing_options + 6;
+Fl_Menu_Item* MeshToolsUI::CAP1 = MeshToolsUI::menu_Viewing_options + 7;
+Fl_Menu_Item* MeshToolsUI::CAP2 = MeshToolsUI::menu_Viewing_options + 8;
+Fl_Menu_Item* MeshToolsUI::CAP3 = MeshToolsUI::menu_Viewing_options + 9;
+Fl_Menu_Item* MeshToolsUI::CAP4 = MeshToolsUI::menu_Viewing_options + 10;
+Fl_Menu_Item* MeshToolsUI::CAP5 = MeshToolsUI::menu_Viewing_options + 11;
+Fl_Menu_Item* MeshToolsUI::CAP6 = MeshToolsUI::menu_Viewing_options + 12;
+Fl_Menu_Item* MeshToolsUI::CAP7 = MeshToolsUI::menu_Viewing_options + 13;
+Fl_Menu_Item* MeshToolsUI::CAP8 = MeshToolsUI::menu_Viewing_options + 14;
+Fl_Menu_Item* MeshToolsUI::CAP9 = MeshToolsUI::menu_Viewing_options + 15;
+Fl_Menu_Item* MeshToolsUI::CAP10 = MeshToolsUI::menu_Viewing_options + 16;
+Fl_Menu_Item* MeshToolsUI::DISP_100PX_IN_MM = MeshToolsUI::menu_Viewing_options + 18;
+Fl_Menu_Item* MeshToolsUI::RESET_CAMERA = MeshToolsUI::menu_Viewing_options + 19;
+Fl_Menu_Item* MeshToolsUI::Display_Options = MeshToolsUI::menu_Viewing_options + 21;
+Fl_Menu_Item* MeshToolsUI::DISP_SURFACE = MeshToolsUI::menu_Viewing_options + 22;
+Fl_Menu_Item* MeshToolsUI::DISP_WIREFRAME = MeshToolsUI::menu_Viewing_options + 23;
+Fl_Menu_Item* MeshToolsUI::DISP_SORT = MeshToolsUI::menu_Viewing_options + 24;
+Fl_Menu_Item* MeshToolsUI::DISP_SORT2 = MeshToolsUI::menu_Viewing_options + 25;
+Fl_Menu_Item* MeshToolsUI::DISP_FLAT = MeshToolsUI::menu_Viewing_options + 26;
+Fl_Menu_Item* MeshToolsUI::DISP_TRI_GOU = MeshToolsUI::menu_Viewing_options + 27;
+Fl_Menu_Item* MeshToolsUI::DISP_CULLFACE = MeshToolsUI::menu_Viewing_options + 28;
+Fl_Menu_Item* MeshToolsUI::DISP_GRID_SIZE = MeshToolsUI::menu_Viewing_options + 30;
+Fl_Menu_Item* MeshToolsUI::SET_GENERAL_LANDMARK_RENDERING = MeshToolsUI::menu_Viewing_options + 31;
+Fl_Menu_Item* MeshToolsUI::DISP_LANDMARKNUM = MeshToolsUI::menu_Viewing_options + 32;
+Fl_Menu_Item* MeshToolsUI::DISP_CURVE = MeshToolsUI::menu_Viewing_options + 33;
+Fl_Menu_Item* MeshToolsUI::DISP_ORIENTATION = MeshToolsUI::menu_Viewing_options + 34;
+Fl_Menu_Item* MeshToolsUI::VBO_ACTIVATED = MeshToolsUI::menu_Viewing_options + 35;
 
 void MeshToolsUI::cb_INVERT_i(Fl_Menu_*, void*) {
   MT->Mesh_invert();
@@ -3342,6 +3352,45 @@ static const char *idata_grid2[] = {
 "%%%%%%%%%%%%%%%%%%%%"
 };
 static Fl_Pixmap image_grid2(idata_grid2);
+
+void MeshToolsUI::cb_Move_cam_centre_of_mass_i(Fl_Button* o, void*) {
+  if (((Fl_Button *)o)->value()==0)
+{
+((Fl_Button *)o)->value(1);
+MT->Cam_Center_At_Landmark(-2);
+
+}
+else
+{
+((Fl_Button *)o)->value(0);
+MT->Cam_Center_At_Landmark(-1);
+}
+
+MT->redraw();
+}
+void MeshToolsUI::cb_Move_cam_centre_of_mass(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Move_cam_centre_of_mass_i(o,v);
+}
+
+static const char *idata_Move_cam[] = {
+"15 14 -5 1",
+" \377\377\377!\377\377\377\"\363u\17#\333]\t$\0\0\0",
+"$              ",
+"$$             ",
+"$             $",
+"  $$$$$$$$   $ ",
+"  $\"\"\"\"\"\"$$ $  ",
+"  $\"\"\"\"\"$##$   ",
+"  $\"\"\"\"\"$##  $$",
+"  $\"\"\"\"\"\"$$$   ",
+"  $$$$$$$$! $  ",
+"      $      $ ",
+"     $$$      $",
+"    $ $ $      ",
+"    $  $$      ",
+"   $   $ $     "
+};
+static Fl_Pixmap image_Move_cam(idata_Move_cam);
 
 void MeshToolsUI::cb_zpan1_i(SpecialSlider2* o, void*) {
   MT->panz2(((Fl_Slider *)o)->value());
@@ -7929,15 +7978,15 @@ void MeshToolsUI::cb_save_errors_curve(Fl_Button* o, void* v) {
 }
 
 MeshToolsUI::MeshToolsUI() {
-  { mainWindow = new Fl_Double_Window(936, 673, "Interactive SoftwarE : MeshTools");
+  { mainWindow = new Fl_Double_Window(1000, 700, "Interactive SoftwarE : MeshTools");
     mainWindow->box(FL_UP_BOX);
     mainWindow->color((Fl_Color)55);
     mainWindow->labelsize(12);
     mainWindow->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
     mainWindow->align(Fl_Align(FL_ALIGN_RIGHT));
     mainWindow->when(FL_WHEN_CHANGED);
-    { Top = new Fl_Group(0, -5, 947, 63);
-      { Unresizable = new Fl_Group(0, 0, 917, 50);
+    { Top = new Fl_Group(0, 0, 1002, 50);
+      { Unresizable = new Fl_Group(0, 0, 949, 50);
         { Del = new Fl_Button(0, 25, 25, 23);
           Del->tooltip("Delete");
           Del->color((Fl_Color)55);
@@ -8042,101 +8091,101 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Grid->image(image_grid3);
           Grid->callback((Fl_Callback*)cb_Grid);
         } // Fl_Button* Grid
-        { Bt_move_up = new Fl_Button(275, 25, 20, 12);
+        { Bt_move_up = new Fl_Button(301, 25, 20, 12);
           Bt_move_up->tooltip("Object list : move object(s) up");
           Bt_move_up->color((Fl_Color)55);
           Bt_move_up->image(image_s_dessous_17);
           Bt_move_up->callback((Fl_Callback*)cb_Bt_move_up);
         } // Fl_Button* Bt_move_up
-        { Bt_move_down = new Fl_Button(275, 37, 20, 11);
+        { Bt_move_down = new Fl_Button(301, 37, 20, 11);
           Bt_move_down->tooltip("Object list : move object(s) down");
           Bt_move_down->color((Fl_Color)55);
           Bt_move_down->image(image_s_dessus_17);
           Bt_move_down->callback((Fl_Callback*)cb_Bt_move_down);
           Bt_move_down->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_move_down
-        { Bt_light_right = new Fl_Button(295, 25, 25, 23);
+        { Bt_light_right = new Fl_Button(321, 25, 25, 23);
           Bt_light_right->tooltip("Lightning : from right side");
           Bt_light_right->color((Fl_Color)55);
           Bt_light_right->image(image_s_right_17);
           Bt_light_right->callback((Fl_Callback*)cb_Bt_light_right);
           Bt_light_right->align(Fl_Align(FL_ALIGN_CLIP));
         } // Fl_Button* Bt_light_right
-        { Bt_light_left = new Fl_Button(320, 25, 25, 23);
+        { Bt_light_left = new Fl_Button(346, 25, 25, 23);
           Bt_light_left->tooltip("Lightning : from left side");
           Bt_light_left->color((Fl_Color)55);
           Bt_light_left->image(image_s_left_17);
           Bt_light_left->callback((Fl_Callback*)cb_Bt_light_left);
           Bt_light_left->align(Fl_Align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_light_left
-        { Bt_light_face = new Fl_Button(344, 25, 25, 23);
+        { Bt_light_face = new Fl_Button(370, 25, 25, 23);
           Bt_light_face->tooltip("Lightning : from front side");
           Bt_light_face->color((Fl_Color)55);
           Bt_light_face->image(image_s_face_17);
           Bt_light_face->callback((Fl_Callback*)cb_Bt_light_face);
           Bt_light_face->align(Fl_Align(FL_ALIGN_WRAP|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_light_face
-        { Bt_light_back = new Fl_Button(369, 25, 25, 23);
+        { Bt_light_back = new Fl_Button(395, 25, 25, 23);
           Bt_light_back->tooltip("Lightning : from backside");
           Bt_light_back->color((Fl_Color)55);
           Bt_light_back->image(image_s_back_18);
           Bt_light_back->callback((Fl_Callback*)cb_Bt_light_back);
           Bt_light_back->align(Fl_Align(FL_ALIGN_WRAP));
         } // Fl_Button* Bt_light_back
-        { Bt_light_above = new Fl_Button(394, 25, 25, 23);
+        { Bt_light_above = new Fl_Button(420, 25, 25, 23);
           Bt_light_above->tooltip("Lightning : from above");
           Bt_light_above->color((Fl_Color)55);
           Bt_light_above->image(image_s_dessus_18);
           Bt_light_above->callback((Fl_Callback*)cb_Bt_light_above);
           Bt_light_above->align(Fl_Align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_light_above
-        { Bt_light_below = new Fl_Button(419, 25, 25, 23);
+        { Bt_light_below = new Fl_Button(445, 25, 25, 23);
           Bt_light_below->tooltip("Lightning: from below");
           Bt_light_below->color((Fl_Color)55);
           Bt_light_below->image(image_s_dessous_18);
           Bt_light_below->callback((Fl_Callback*)cb_Bt_light_below);
         } // Fl_Button* Bt_light_below
-        { Bt_pos_left = new Fl_Button(468, 25, 25, 23);
+        { Bt_pos_left = new Fl_Button(494, 25, 25, 23);
           Bt_pos_left->tooltip("Move camera : view object from left side");
           Bt_pos_left->color((Fl_Color)55);
           Bt_pos_left->image(image_left2);
           Bt_pos_left->callback((Fl_Callback*)cb_Bt_pos_left);
           Bt_pos_left->align(Fl_Align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_pos_left
-        { Bt_pos_right = new Fl_Button(444, 25, 24, 23);
+        { Bt_pos_right = new Fl_Button(470, 25, 24, 23);
           Bt_pos_right->tooltip("Move camera : view object from right side");
           Bt_pos_right->color((Fl_Color)55);
           Bt_pos_right->image(image_right2);
           Bt_pos_right->callback((Fl_Callback*)cb_Bt_pos_right);
           Bt_pos_right->align(Fl_Align(FL_ALIGN_CLIP));
         } // Fl_Button* Bt_pos_right
-        { Bt_pos_face = new Fl_Button(491, 25, 25, 23);
+        { Bt_pos_face = new Fl_Button(517, 25, 25, 23);
           Bt_pos_face->tooltip("Move camera : view object from font side");
           Bt_pos_face->color((Fl_Color)55);
           Bt_pos_face->image(image_front2);
           Bt_pos_face->callback((Fl_Callback*)cb_Bt_pos_face);
           Bt_pos_face->align(Fl_Align(FL_ALIGN_WRAP|FL_ALIGN_INSIDE));
         } // Fl_Button* Bt_pos_face
-        { Bt_pos_back = new Fl_Button(516, 25, 25, 23);
+        { Bt_pos_back = new Fl_Button(542, 25, 25, 23);
           Bt_pos_back->tooltip("Move camera : view object from back side");
           Bt_pos_back->color((Fl_Color)55);
           Bt_pos_back->image(image_back2);
           Bt_pos_back->callback((Fl_Callback*)cb_Bt_pos_back);
           Bt_pos_back->align(Fl_Align(FL_ALIGN_WRAP));
         } // Fl_Button* Bt_pos_back
-        { Bt_pos_above = new Fl_Button(541, 25, 25, 23);
+        { Bt_pos_above = new Fl_Button(567, 25, 25, 23);
           Bt_pos_above->tooltip("Move camera : view object from above");
           Bt_pos_above->color((Fl_Color)55);
           Bt_pos_above->image(image_above2);
           Bt_pos_above->callback((Fl_Callback*)cb_Bt_pos_above);
         } // Fl_Button* Bt_pos_above
-        { Bt_pos_below = new Fl_Button(564, 25, 25, 23);
+        { Bt_pos_below = new Fl_Button(590, 25, 25, 23);
           Bt_pos_below->tooltip("Move camera : view object from below");
           Bt_pos_below->color((Fl_Color)55);
           Bt_pos_below->image(image_below2);
           Bt_pos_below->callback((Fl_Callback*)cb_Bt_pos_below);
         } // Fl_Button* Bt_pos_below
-        { Matrix_button = new Fl_Button(589, 25, 25, 23);
+        { Matrix_button = new Fl_Button(615, 25, 25, 23);
           Matrix_button->tooltip("Edit first selected object position and aspect matrices");
           Matrix_button->color((Fl_Color)55);
           Matrix_button->selection_color(FL_DARK1);
@@ -8144,7 +8193,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Matrix_button->callback((Fl_Callback*)cb_Matrix_button);
           Matrix_button->when(FL_WHEN_CHANGED);
         } // Fl_Button* Matrix_button
-        { Color_Scale_button = new Fl_Button(614, 25, 25, 23);
+        { Color_Scale_button = new Fl_Button(640, 25, 25, 23);
           Color_Scale_button->tooltip("Draw / Stop drawing object scalars as colour scales");
           Color_Scale_button->down_box(FL_DOWN_BOX);
           Color_Scale_button->color((Fl_Color)55);
@@ -8153,7 +8202,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Color_Scale_button->callback((Fl_Callback*)cb_Color_Scale_button);
           Color_Scale_button->when(FL_WHEN_CHANGED);
         } // Fl_Button* Color_Scale_button
-        { Color_Scale_Show = new Fl_Button(639, 25, 25, 23);
+        { Color_Scale_Show = new Fl_Button(665, 25, 25, 23);
           Color_Scale_Show->tooltip("Open Scalar Window");
           Color_Scale_Show->down_box(FL_DOWN_BOX);
           Color_Scale_Show->color((Fl_Color)55);
@@ -8162,7 +8211,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Color_Scale_Show->callback((Fl_Callback*)cb_Color_Scale_Show);
           Color_Scale_Show->when(FL_WHEN_CHANGED);
         } // Fl_Button* Color_Scale_Show
-        { Show_Tag_Window2 = new Fl_Button(689, 25, 25, 23);
+        { Show_Tag_Window2 = new Fl_Button(715, 25, 25, 23);
           Show_Tag_Window2->tooltip("Show tag window");
           Show_Tag_Window2->down_box(FL_DOWN_BOX);
           Show_Tag_Window2->color((Fl_Color)55);
@@ -8171,7 +8220,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Show_Tag_Window2->callback((Fl_Callback*)cb_Show_Tag_Window2);
           Show_Tag_Window2->when(FL_WHEN_CHANGED);
         } // Fl_Button* Show_Tag_Window2
-        { Tag_mode_off = new Fl_Button(714, 25, 25, 23);
+        { Tag_mode_off = new Fl_Button(740, 25, 25, 23);
           Tag_mode_off->tooltip("Normal select mode : selected surfaces are grey / unselected ones are colored");
           Tag_mode_off->down_box(FL_DOWN_BOX);
           Tag_mode_off->value(1);
@@ -8181,7 +8230,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Tag_mode_off->callback((Fl_Callback*)cb_Tag_mode_off);
           Tag_mode_off->when(FL_WHEN_CHANGED);
         } // Fl_Button* Tag_mode_off
-        { Tag_mode_on = new Fl_Button(741, 25, 25, 23);
+        { Tag_mode_on = new Fl_Button(767, 25, 25, 23);
           Tag_mode_on->tooltip("Tag select mode : selected surfaces are colored / unselected ones are grey");
           Tag_mode_on->down_box(FL_DOWN_BOX);
           Tag_mode_on->color((Fl_Color)55);
@@ -8190,7 +8239,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Tag_mode_on->callback((Fl_Callback*)cb_Tag_mode_on);
           Tag_mode_on->when(FL_WHEN_CHANGED);
         } // Fl_Button* Tag_mode_on
-        { Pencil = new Fl_Button(766, 25, 25, 23);
+        { Pencil = new Fl_Button(792, 25, 25, 23);
           Pencil->tooltip("Activate pencil tagging mode");
           Pencil->down_box(FL_DOWN_BOX);
           Pencil->value(1);
@@ -8200,7 +8249,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Pencil->callback((Fl_Callback*)cb_Pencil);
           Pencil->when(FL_WHEN_CHANGED);
         } // Fl_Button* Pencil
-        { Magic_Wand = new Fl_Button(791, 25, 25, 23);
+        { Magic_Wand = new Fl_Button(817, 25, 25, 23);
           Magic_Wand->tooltip("Activate magic wand tagging mode");
           Magic_Wand->down_box(FL_DOWN_BOX);
           Magic_Wand->color((Fl_Color)55);
@@ -8209,7 +8258,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Magic_Wand->callback((Fl_Callback*)cb_Magic_Wand);
           Magic_Wand->when(FL_WHEN_CHANGED);
         } // Fl_Button* Magic_Wand
-        { Flood_Fill = new Fl_Button(816, 25, 25, 23);
+        { Flood_Fill = new Fl_Button(842, 25, 25, 23);
           Flood_Fill->tooltip("Activateflood fill tagging mode");
           Flood_Fill->down_box(FL_DOWN_BOX);
           Flood_Fill->color((Fl_Color)55);
@@ -8218,7 +8267,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Flood_Fill->callback((Fl_Callback*)cb_Flood_Fill);
           Flood_Fill->when(FL_WHEN_CHANGED);
         } // Fl_Button* Flood_Fill
-        { Lasso_plus = new Fl_Button(842, 25, 25, 23);
+        { Lasso_plus = new Fl_Button(868, 25, 25, 23);
           Lasso_plus->tooltip("Lasso tag + : draw a lasso contour using several left clicks + a final right \
 click. Then either middle click, or press \"t\"+ left or right click");
           Lasso_plus->down_box(FL_DOWN_BOX);
@@ -8228,7 +8277,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Lasso_plus->callback((Fl_Callback*)cb_Lasso_plus);
           Lasso_plus->when(FL_WHEN_CHANGED);
         } // Fl_Button* Lasso_plus
-        { Edit_flag = new Fl_Button(867, 25, 25, 23);
+        { Edit_flag = new Fl_Button(893, 25, 25, 23);
           Edit_flag->tooltip("Edit first selected flag label, length and colour");
           Edit_flag->color((Fl_Color)55);
           Edit_flag->selection_color(FL_DARK1);
@@ -8236,7 +8285,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Edit_flag->callback((Fl_Callback*)cb_Edit_flag);
           Edit_flag->when(FL_WHEN_CHANGED);
         } // Fl_Button* Edit_flag
-        { Show_Tag_Window = new Fl_Button(665, 25, 25, 23);
+        { Show_Tag_Window = new Fl_Button(691, 25, 25, 23);
           Show_Tag_Window->tooltip("Display tags");
           Show_Tag_Window->down_box(FL_DOWN_BOX);
           Show_Tag_Window->color((Fl_Color)55);
@@ -8245,7 +8294,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Show_Tag_Window->callback((Fl_Callback*)cb_Show_Tag_Window);
           Show_Tag_Window->when(FL_WHEN_CHANGED);
         } // Fl_Button* Show_Tag_Window
-        { Edit_name = new Fl_Button(890, 25, 25, 23);
+        { Edit_name = new Fl_Button(916, 25, 25, 23);
           Edit_name->tooltip("Edit first selected surface name");
           Edit_name->color((Fl_Color)55);
           Edit_name->selection_color(FL_DARK1);
@@ -8253,23 +8302,30 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Edit_name->callback((Fl_Callback*)cb_Edit_name);
           Edit_name->when(FL_WHEN_CHANGED);
         } // Fl_Button* Edit_name
-        { Orientation = new Fl_Button(250, 25, 25, 23);
+        { Orientation = new Fl_Button(276, 25, 25, 23);
           Orientation->tooltip("Show/hide orientation");
           Orientation->color((Fl_Color)55);
           Orientation->selection_color((Fl_Color)23);
           Orientation->image(image_grid2);
           Orientation->callback((Fl_Callback*)cb_Orientation);
         } // Fl_Button* Orientation
+        { Move_cam_centre_of_mass = new Fl_Button(250, 25, 25, 23);
+          Move_cam_centre_of_mass->tooltip("Move camera center at origin or centre of mass of all objects");
+          Move_cam_centre_of_mass->color((Fl_Color)55);
+          Move_cam_centre_of_mass->selection_color((Fl_Color)23);
+          Move_cam_centre_of_mass->image(image_Move_cam);
+          Move_cam_centre_of_mass->callback((Fl_Callback*)cb_Move_cam_centre_of_mass);
+        } // Fl_Button* Move_cam_centre_of_mass
         Unresizable->end();
       } // Fl_Group* Unresizable
-      { Resizable = new Fl_Group(915, 0, 32, 50);
+      { Resizable = new Fl_Group(980, 0, 22, 50);
         Resizable->end();
         Fl_Group::current()->resizable(Resizable);
       } // Fl_Group* Resizable
       Top->end();
     } // Fl_Group* Top
-    { Bottom = new Fl_Group(-12, 48, 957, 652);
-      { MT = new MeshTools(40, 50, 886, 591, "MeshTools 3D window");
+    { Bottom = new Fl_Group(0, 50, 1000, 650);
+      { MT = new MeshTools(40, 50, 940, 610, "MeshTools 3D window");
         MT->box(FL_NO_BOX);
         MT->color(FL_BACKGROUND_COLOR);
         MT->selection_color(FL_BACKGROUND_COLOR);
@@ -8281,10 +8337,10 @@ click. Then either middle click, or press \"t\"+ left or right click");
         MT->when(FL_WHEN_CHANGED);
         Fl_Group::current()->resizable(MT);
       } // MeshTools* MT
-      { WW = new Fl_Group(-12, 48, 52, 652);
+      { WW = new Fl_Group(0, 50, 40, 650);
         WW->color((Fl_Color)207);
         { WW_unresizable = new Fl_Group(0, 50, 40, 550);
-          { zpan1 = new SpecialSlider2(20, 76, 20, 225, "Z");
+          { zpan1 = new SpecialSlider2(20, 61, 20, 225, "Z");
             zpan1->tooltip("Move selected objects along viewing z axis");
             zpan1->type(4);
             zpan1->box(FL_DOWN_BOX);
@@ -8301,7 +8357,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zpan1->align(Fl_Align(FL_ALIGN_BOTTOM));
             zpan1->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* zpan1
-          { zroll1 = new SpecialRoller4(0, 75, 20, 230);
+          { zroll1 = new SpecialRoller4(0, 60, 20, 230);
             zroll1->tooltip("Rotate selected objects around viewing z axis");
             zroll1->box(FL_DOWN_BOX);
             zroll1->color((Fl_Color)23);
@@ -8317,7 +8373,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zroll1->align(Fl_Align(FL_ALIGN_BOTTOM));
             zroll1->when(FL_WHEN_CHANGED);
           } // SpecialRoller4* zroll1
-          { ypan1 = new SpecialSlider2(20, 320, 20, 231, "Y");
+          { ypan1 = new SpecialSlider2(20, 305, 20, 231, "Y");
             ypan1->tooltip("Move selected objects along viewing y axis");
             ypan1->type(4);
             ypan1->box(FL_DOWN_BOX);
@@ -8334,7 +8390,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             ypan1->align(Fl_Align(FL_ALIGN_BOTTOM));
             ypan1->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* ypan1
-          { yroll1 = new SpecialRoller4(0, 321, 20, 230);
+          { yroll1 = new SpecialRoller4(0, 306, 20, 230);
             yroll1->tooltip("Rotate selected objects around viewing y axis");
             yroll1->box(FL_DOWN_BOX);
             yroll1->color((Fl_Color)23);
@@ -8352,16 +8408,16 @@ click. Then either middle click, or press \"t\"+ left or right click");
           } // SpecialRoller4* yroll1
           WW_unresizable->end();
         } // Fl_Group* WW_unresizable
-        { WW_resizable = new Fl_Group(0, 650, 40, 50);
+        { WW_resizable = new Fl_Group(0, 660, 40, 40);
           WW_resizable->end();
           Fl_Group::current()->resizable(WW_resizable);
         } // Fl_Group* WW_resizable
         WW->end();
       } // Fl_Group* WW
-      { EE = new Fl_Group(924, 50, 21, 616);
+      { EE = new Fl_Group(980, 50, 20, 650);
         EE->align(Fl_Align(FL_ALIGN_CENTER));
-        { EE_unresizable = new Fl_Group(924, 50, 21, 616);
-          { zpan = new SpecialSlider2(926, 233, 19, 239, "cp");
+        { EE_unresizable = new Fl_Group(980, 50, 20, 610);
+          { zpan = new SpecialSlider2(981, 217, 19, 239, "cp");
             zpan->tooltip("Displace clipping plane");
             zpan->type(4);
             zpan->box(FL_DOWN_BOX);
@@ -8378,7 +8434,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zpan->align(Fl_Align(FL_ALIGN_BOTTOM));
             zpan->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* zpan
-          { zroll = new SpecialSlider2(926, 67, 19, 152, "rZ");
+          { zroll = new SpecialSlider2(981, 51, 19, 152, "rZ");
             zroll->tooltip("Rotate camera along viewing z axis");
             zroll->type(4);
             zroll->box(FL_DOWN_BOX);
@@ -8395,7 +8451,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zroll->align(Fl_Align(FL_ALIGN_BOTTOM));
             zroll->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* zroll
-          { zoom = new SpecialRoller4(926, 521, 19, 145, "Zoom");
+          { zoom = new SpecialRoller4(981, 505, 19, 145, "Zoom");
             zoom->tooltip("Zoom");
             zoom->box(FL_DOWN_BOX);
             zoom->color((Fl_Color)55);
@@ -8411,28 +8467,28 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zoom->align(Fl_Align(FL_ALIGN_BOTTOM_LEFT));
             zoom->when(FL_WHEN_CHANGED);
           } // SpecialRoller4* zoom
-          { CP_cut_half2 = new Fl_Button(925, 480, 20, 20);
+          { CP_cut_half2 = new Fl_Button(980, 464, 20, 20);
             CP_cut_half2->tooltip("Displace clipping plane to z=0");
             CP_cut_half2->image(image_Clipping_plane_z0);
             CP_cut_half2->callback((Fl_Callback*)cb_CP_cut_half2);
           } // Fl_Button* CP_cut_half2
-          { CP_normal_cp2 = new Fl_Button(925, 500, 20, 20);
+          { CP_normal_cp2 = new Fl_Button(980, 484, 20, 20);
             CP_normal_cp2->tooltip("Replace clipping place normally");
             CP_normal_cp2->image(image_Clipping_plane_normal);
             CP_normal_cp2->callback((Fl_Callback*)cb_CP_normal_cp2);
           } // Fl_Button* CP_normal_cp2
           EE_unresizable->end();
         } // Fl_Group* EE_unresizable
-        { EE_resizable = new Fl_Group(925, 635, 20, 25);
+        { EE_resizable = new Fl_Group(980, 660, 20, 40);
           EE_resizable->end();
           Fl_Group::current()->resizable(EE_resizable);
         } // Fl_Group* EE_resizable
         EE->end();
       } // Fl_Group* EE
-      { SS = new Fl_Group(50, 634, 875, 66);
+      { SS = new Fl_Group(40, 659, 940, 41);
         SS->color((Fl_Color)207);
-        { SS_unresizable = new Fl_Group(50, 634, 350, 56);
-          { xpan1 = new SpecialSlider2(85, 639, 255, 21, "y");
+        { SS_unresizable = new Fl_Group(40, 660, 360, 40);
+          { xpan1 = new SpecialSlider2(85, 660, 255, 20, "x");
             xpan1->tooltip("Move selected objects along viewing x axis");
             xpan1->type(5);
             xpan1->box(FL_DOWN_BOX);
@@ -8449,7 +8505,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             xpan1->align(Fl_Align(FL_ALIGN_LEFT));
             xpan1->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* xpan1
-          { xroll1 = new SpecialRoller4(85, 660, 255, 20);
+          { xroll1 = new SpecialRoller4(85, 680, 255, 20);
             xroll1->tooltip("Rotate selected objects around viewing x axis");
             xroll1->type(1);
             xroll1->box(FL_DOWN_BOX);
@@ -8468,7 +8524,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           } // SpecialRoller4* xroll1
           SS_unresizable->end();
         } // Fl_Group* SS_unresizable
-        { SS_resizable = new Fl_Group(395, 635, 530, 65);
+        { SS_resizable = new Fl_Group(400, 660, 580, 40);
           SS_resizable->end();
           Fl_Group::current()->resizable(SS_resizable);
         } // Fl_Group* SS_resizable
@@ -8897,26 +8953,30 @@ trix\" (old version correction)");
     matWindow->set_non_modal();
     matWindow->end();
   } // Fl_Double_Window* matWindow
-  { versionWindow = new Fl_Double_Window(497, 124, "About");
+  { versionWindow = new Fl_Double_Window(597, 151, "About");
     versionWindow->user_data((void*)(this));
-    { Ok_Version = new Fl_Button(210, 105, 65, 25, "Ok");
+    { Ok_Version = new Fl_Button(265, 120, 65, 25, "Ok");
       Ok_Version->callback((Fl_Callback*)cb_Ok_Version);
     } // Fl_Button* Ok_Version
-    { Version = new Fl_Input(200, 10, 70, 25, "Version :");
+    { Version = new Fl_Input(168, 6, 70, 25, "Version :");
       Version->box(FL_NO_BOX);
     } // Fl_Input* Version
-    { Copyright = new Fl_Input(503, 30, 15, 25, "Copyright : Renaud Lebrun and C\303\251""cile Peladan 2013-2015");
+    { Copyright = new Fl_Input(580, 26, 15, 25, "Copyright : Renaud Lebrun, Stefan Schlager and C\303\251""cile Peladan 2013-2\
+015");
       Copyright->box(FL_NO_BOX);
     } // Fl_Input* Copyright
-    { Contact = new Fl_Input(360, 50, 15, 25, "Contact : renaud.lebrun<at>um2.fr");
+    { Contact = new Fl_Input(328, 46, 15, 25, "Contact : renaud.lebrun<at>um2.fr");
       Contact->box(FL_NO_BOX);
     } // Fl_Input* Contact
-    { Website = new Fl_Input(438, 70, 15, 25, "Website : http://morphomuseum.com/meshtools");
+    { Website = new Fl_Input(406, 66, 15, 25, "Website : http://morphomuseum.com/meshtools");
       Website->box(FL_NO_BOX);
     } // Fl_Input* Website
-    { Fl_Box* o = new Fl_Box(18, 16, 100, 68);
+    { Fl_Box* o = new Fl_Box(3, 12, 100, 68);
       o->image(image_Mesh_Tools_Icon);
     } // Fl_Box* o
+    { Git = new Fl_Input(487, 86, 15, 25, "Source repository : https://github.com/morphomuseum/ISE-MeshTools");
+      Git->box(FL_NO_BOX);
+    } // Fl_Input* Git
     versionWindow->set_modal();
     versionWindow->end();
   } // Fl_Double_Window* versionWindow

@@ -172,6 +172,9 @@ extern float g_lambda; // mean of selected objects
 
 extern float g_mean[3];
 extern int g_nmean;
+extern float g_mean_all[3];
+extern int g_mode_cam_centre_of_mass;
+extern int g_nmean_all;
 extern char Version[50];
 
 extern int Disp_Vertices_Ids;

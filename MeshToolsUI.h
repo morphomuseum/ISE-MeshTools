@@ -212,6 +212,11 @@ private:
   inline void cb_CAP0_i(Fl_Menu_*, void*);
   static void cb_CAP0(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *CAPBAR;
+private:
+  inline void cb_CAPBAR_i(Fl_Menu_*, void*);
+  static void cb_CAPBAR(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *CAP1;
 private:
   inline void cb_CAP1_i(Fl_Menu_*, void*);
@@ -885,6 +890,11 @@ private:
   inline void cb_Orientation_i(Fl_Button*, void*);
   static void cb_Orientation(Fl_Button*, void*);
 public:
+  Fl_Button *Move_cam_centre_of_mass;
+private:
+  inline void cb_Move_cam_centre_of_mass_i(Fl_Button*, void*);
+  static void cb_Move_cam_centre_of_mass(Fl_Button*, void*);
+public:
   Fl_Group *Resizable;
   Fl_Group *Bottom;
   MeshTools *MT;
@@ -1149,6 +1159,7 @@ public:
   Fl_Input *Copyright;
   Fl_Input *Contact;
   Fl_Input *Website;
+  Fl_Input *Git;
   Fl_Double_Window *smoothWindow;
   Fl_Value_Input *S_Iteration_number;
   Fl_Button *Ok_smooth;
