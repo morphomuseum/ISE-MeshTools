@@ -8902,6 +8902,7 @@ void MeshTools::Open_Mesh_File()
 							
 							this->Compute_Global_Mean();
 							this->Compute_Global_Scalar_List();
+							//this->rollinit_camera();
 							//this->SetMode(MODE_STL);
 						}
 						this->redraw();

@@ -5,6 +5,7 @@
 void MeshToolsUI::cb_mainWindow_i(Fl_Double_Window*, void*) {
   options_hide();
 cam_hide();
+
 exit(0);
 }
 void MeshToolsUI::cb_mainWindow(Fl_Double_Window* o, void* v) {
@@ -3365,7 +3366,7 @@ else
 ((Fl_Button *)o)->value(0);
 MT->Cam_Center_At_Landmark(-1);
 }
-
+MT->save_ini_param();
 MT->redraw();
 }
 void MeshToolsUI::cb_Move_cam_centre_of_mass(Fl_Button* o, void* v) {
@@ -7978,7 +7979,7 @@ void MeshToolsUI::cb_save_errors_curve(Fl_Button* o, void* v) {
 }
 
 MeshToolsUI::MeshToolsUI() {
-  { mainWindow = new Fl_Double_Window(1000, 700, "Interactive SoftwarE : MeshTools");
+  { mainWindow = new Fl_Double_Window(1002, 692, "Interactive SoftwarE : MeshTools");
     mainWindow->box(FL_UP_BOX);
     mainWindow->color((Fl_Color)55);
     mainWindow->labelsize(12);
@@ -8578,7 +8579,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     camWindow->set_non_modal();
     camWindow->end();
   } // Fl_Double_Window* camWindow
-  { optWindow = new Fl_Double_Window(366, 307, "General options");
+  { optWindow = new Fl_Double_Window(342, 316, "General options");
     optWindow->color((Fl_Color)94);
     optWindow->user_data((void*)(this));
     { open_surface_option = new Fl_Group(10, 25, 350, 160, "Behaviour when opening surfaces : ");
@@ -8638,7 +8639,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     optWindow->set_non_modal();
     optWindow->end();
   } // Fl_Double_Window* optWindow
-  { opt_lc_Window = new Fl_Double_Window(373, 294, "Lightning and colour options");
+  { opt_lc_Window = new Fl_Double_Window(365, 300, "Lightning and colour options");
     opt_lc_Window->color((Fl_Color)94);
     opt_lc_Window->user_data((void*)(this));
     { Window_group = new Fl_Group(15, 25, 335, 23, "Windows");
@@ -8716,7 +8717,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(368, 324, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(360, 316, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(0, 15, 357, 120, "Landmarks rendering");
@@ -8763,7 +8764,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_lm_Window->set_non_modal();
     opt_lm_Window->end();
   } // Fl_Double_Window* opt_lm_Window
-  { opt_rd_Window = new Fl_Double_Window(361, 254, "Rendering options");
+  { opt_rd_Window = new Fl_Double_Window(353, 271, "Rendering options");
     opt_rd_Window->color((Fl_Color)94);
     opt_rd_Window->user_data((void*)(this));
     { fast_display_option = new Fl_Group(7, 25, 350, 60, "Object rendering when moving object/camera :");
@@ -11232,6 +11233,8 @@ void MeshToolsUI::show(int argc, char **argv) {
   	mainWindow->icon((char*)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
   #endif	
   mainWindow->show(argc, argv);
+  int disp = MT->Get_mode_cam_centre_of_mass();
+  Move_cam_centre_of_mass->value(disp);
   mainWindow->size_range(629,659);
 }
 

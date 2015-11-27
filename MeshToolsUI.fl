@@ -12,7 +12,7 @@ class MeshToolsUI {open
 cam_hide();
 
 exit(0);} open
-      private image {pixmap/s_face.gif} xywh {1456 238 992 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+      private image {pixmap/s_face.gif} xywh {1456 238 1002 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {
         xywh {0 0 1002 50}
