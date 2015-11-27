@@ -907,6 +907,10 @@ void MeshTools::Compute_Global_Mean()
 { // Compute center of mass of all selected objects
 	
 	this->Cont_Mesh.Compute_Global_Mean();
+	if (g_mode_cam_centre_of_mass == 1)
+	{
+		this->Cam_Centre_At_Landmark(-2);
+	}
 	
 }
 
@@ -2785,7 +2789,7 @@ void MeshTools::color_setobjcolor (uchar r, uchar g, uchar b)
 
 	
 }
-void MeshTools::Cam_Center_At_Landmark(int landmark_number)
+void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 {
 	if (landmark_number>=0)
 	{
@@ -7561,6 +7565,7 @@ void MeshTools::Open_NTW_File()
 			}//if file exists
 		}//default
 	}//switch
+	this->Compute_Global_Mean();
 	this->redraw();
 	
 }
@@ -8902,8 +8907,7 @@ void MeshTools::Open_Mesh_File()
 							
 							this->Compute_Global_Mean();
 							this->Compute_Global_Scalar_List();
-							//this->rollinit_camera();
-							//this->SetMode(MODE_STL);
+							
 						}
 						this->redraw();
 					}//if file exists
@@ -8912,7 +8916,7 @@ void MeshTools::Open_Mesh_File()
 				}
 	}
 		
-	//szFile = fl_file_chooser("Load SURFACE", "*.{stl,STL,vtk,VTK,obj,OBJ,ply,PLY}", "");	
+	
 		
 }
 /*

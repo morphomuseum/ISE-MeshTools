@@ -488,7 +488,7 @@ void MeshToolsUI::cb_SET_CAMERA_OPT(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP0_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(-1);
+  MT->Cam_Centre_At_Landmark(-1);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP0(Fl_Menu_* o, void* v) {
@@ -496,7 +496,7 @@ void MeshToolsUI::cb_CAP0(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAPBAR_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(-2);
+  MT->Cam_Centre_At_Landmark(-2);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAPBAR(Fl_Menu_* o, void* v) {
@@ -504,7 +504,7 @@ void MeshToolsUI::cb_CAPBAR(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP1_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(1);
+  MT->Cam_Centre_At_Landmark(1);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP1(Fl_Menu_* o, void* v) {
@@ -512,7 +512,7 @@ void MeshToolsUI::cb_CAP1(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP2_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(2);
+  MT->Cam_Centre_At_Landmark(2);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP2(Fl_Menu_* o, void* v) {
@@ -520,7 +520,7 @@ void MeshToolsUI::cb_CAP2(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP3_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(3);
+  MT->Cam_Centre_At_Landmark(3);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP3(Fl_Menu_* o, void* v) {
@@ -528,7 +528,7 @@ void MeshToolsUI::cb_CAP3(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP4_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(4);
+  MT->Cam_Centre_At_Landmark(4);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP4(Fl_Menu_* o, void* v) {
@@ -536,7 +536,7 @@ void MeshToolsUI::cb_CAP4(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP5_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(5);
+  MT->Cam_Centre_At_Landmark(5);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP5(Fl_Menu_* o, void* v) {
@@ -544,7 +544,7 @@ void MeshToolsUI::cb_CAP5(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP6_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(6);
+  MT->Cam_Centre_At_Landmark(6);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP6(Fl_Menu_* o, void* v) {
@@ -552,7 +552,7 @@ void MeshToolsUI::cb_CAP6(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP7_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(7);
+  MT->Cam_Centre_At_Landmark(7);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP7(Fl_Menu_* o, void* v) {
@@ -560,7 +560,7 @@ void MeshToolsUI::cb_CAP7(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP8_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(8);
+  MT->Cam_Centre_At_Landmark(8);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP8(Fl_Menu_* o, void* v) {
@@ -568,7 +568,7 @@ void MeshToolsUI::cb_CAP8(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP9_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(9);
+  MT->Cam_Centre_At_Landmark(9);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP9(Fl_Menu_* o, void* v) {
@@ -576,7 +576,7 @@ void MeshToolsUI::cb_CAP9(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_CAP10_i(Fl_Menu_*, void*) {
-  MT->Cam_Center_At_Landmark(10);
+  MT->Cam_Centre_At_Landmark(10);
 MT->redraw();
 }
 void MeshToolsUI::cb_CAP10(Fl_Menu_* o, void* v) {
@@ -3358,13 +3358,13 @@ void MeshToolsUI::cb_Move_cam_centre_of_mass_i(Fl_Button* o, void*) {
   if (((Fl_Button *)o)->value()==0)
 {
 ((Fl_Button *)o)->value(1);
-MT->Cam_Center_At_Landmark(-2);
+MT->Cam_Centre_At_Landmark(-2);
 
 }
 else
 {
 ((Fl_Button *)o)->value(0);
-MT->Cam_Center_At_Landmark(-1);
+MT->Cam_Centre_At_Landmark(-1);
 }
 MT->save_ini_param();
 MT->redraw();

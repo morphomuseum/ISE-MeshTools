@@ -14,7 +14,7 @@ cam_hide();
 exit(0);} open
       private image {pixmap/s_face.gif} xywh {1456 238 1002 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
-      Fl_Group Top {
+      Fl_Group Top {open
         xywh {0 0 1002 50}
       } {
         Fl_Group Unresizable {open
@@ -341,7 +341,7 @@ orientation_update();}
             }
           }
           Fl_Menu_Button Viewing_options {
-            label {Viewing opt.}
+            label {Viewing opt.} open
             xywh {55 0 100 25} color 55
           } {
             MenuItem SET_GENERAL_COLOUR_LIGHTNING {
@@ -369,73 +369,73 @@ orientation_update();}
               } {
                 MenuItem CAP0 {
                   label Origin
-                  callback {MT->Cam_Center_At_Landmark(-1);
+                  callback {MT->Cam_Centre_At_Landmark(-1);
 MT->redraw();}
                   xywh {5 5 100 20}
                 }
                 MenuItem CAPBAR {
                   label {Centre of mass of all loaded meshes}
-                  callback {MT->Cam_Center_At_Landmark(-2);
+                  callback {MT->Cam_Centre_At_Landmark(-2);
 MT->redraw();}
                   xywh {15 15 100 20}
                 }
                 MenuItem CAP1 {
                   label {landmark 1}
-                  callback {MT->Cam_Center_At_Landmark(1);
+                  callback {MT->Cam_Centre_At_Landmark(1);
 MT->redraw();}
                   xywh {15 15 100 20}
                 }
                 MenuItem CAP2 {
                   label {landmark 2}
-                  callback {MT->Cam_Center_At_Landmark(2);
+                  callback {MT->Cam_Centre_At_Landmark(2);
 MT->redraw();}
                   xywh {25 25 100 20}
                 }
                 MenuItem CAP3 {
                   label {landmark 3}
-                  callback {MT->Cam_Center_At_Landmark(3);
+                  callback {MT->Cam_Centre_At_Landmark(3);
 MT->redraw();}
                   xywh {35 35 100 20}
                 }
                 MenuItem CAP4 {
                   label {landmark 4}
-                  callback {MT->Cam_Center_At_Landmark(4);
+                  callback {MT->Cam_Centre_At_Landmark(4);
 MT->redraw();}
                   xywh {45 45 100 20}
                 }
                 MenuItem CAP5 {
                   label {landmark 5}
-                  callback {MT->Cam_Center_At_Landmark(5);
+                  callback {MT->Cam_Centre_At_Landmark(5);
 MT->redraw();}
                   xywh {55 55 100 20}
                 }
                 MenuItem CAP6 {
                   label {landmark 6}
-                  callback {MT->Cam_Center_At_Landmark(6);
+                  callback {MT->Cam_Centre_At_Landmark(6);
 MT->redraw();}
                   xywh {65 65 100 20}
                 }
                 MenuItem CAP7 {
                   label {landmark 7}
-                  callback {MT->Cam_Center_At_Landmark(7);
-MT->redraw();}
+                  callback {MT->Cam_Centre_At_Landmark(7);
+MT->redraw();} selected
                   xywh {75 75 100 20}
                 }
                 MenuItem CAP8 {
                   label {landmark 8}
-                  callback {MT->Cam_Center_At_Landmark(8);
+                  callback {MT->Cam_Centre_At_Landmark(8);
 MT->redraw();}
                   xywh {85 85 100 20}
                 }
                 MenuItem CAP9 {
                   label {landmark 9}
-                  callback {MT->Cam_Center_At_Landmark(9);
+                  callback {MT->Cam_Centre_At_Landmark(9);
 MT->redraw();}
                   xywh {95 95 100 20}
                 }
                 MenuItem CAP10 {
                   label {landmark 10}
-                  callback {MT->Cam_Center_At_Landmark(10);
+                  callback {MT->Cam_Centre_At_Landmark(10);
 MT->redraw();}
                   xywh {105 105 100 20}
                 }
@@ -1274,13 +1274,13 @@ MT->redraw();}
             callback {if (((Fl_Button *)o)->value()==0)
 {
 ((Fl_Button *)o)->value(1);
-MT->Cam_Center_At_Landmark(-2);
+MT->Cam_Centre_At_Landmark(-2);
 
 }
 else
 {
 ((Fl_Button *)o)->value(0);
-MT->Cam_Center_At_Landmark(-1);
+MT->Cam_Centre_At_Landmark(-1);
 }
 MT->save_ini_param();
 MT->redraw();}
@@ -1291,7 +1291,7 @@ MT->redraw();}
           xywh {980 0 22 50} resizable
         } {}
       }
-      Fl_Group Bottom {
+      Fl_Group Bottom {open
         xywh {0 50 1000 650} resizable
       } {
         Fl_Box MT {
@@ -5484,8 +5484,7 @@ color_data->activate();
 mainWindow->show(argc, argv);
 int disp = MT->Get_mode_cam_centre_of_mass();
 Move_cam_centre_of_mass->value(disp);
-mainWindow->size_range(629,659);} {selected
-    }
+mainWindow->size_range(629,659);} {}
   }
   Function {cam_show()} {} {
     code {camWindow->show();

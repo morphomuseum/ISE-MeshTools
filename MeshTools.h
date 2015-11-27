@@ -133,7 +133,7 @@ public:
 	int Get_Active_Tag();
 	float scalars_get_min();
 	float scalars_get_max();
-	void Cam_Center_At_Landmark (int landmark_number);
+	void Cam_Centre_At_Landmark (int landmark_number);
 	float Get_Grid_Size();
 	void Set_Grid_Size(float size);
 	int Get_Blend();
