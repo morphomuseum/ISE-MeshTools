@@ -903,6 +903,7 @@ void MeshTools::Compute_Global_Mean()
 { // Compute center of mass of all selected objects
 	
 	this->Cont_Mesh.Compute_Global_Mean();
+	
 }
 
 char* MeshTools::ftoa( double f, double sigfigs )
@@ -1035,7 +1036,12 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_mean[0]=0;
 	g_mean[1]=0;
 	g_mean[2]=0;
+	g_mean_all[0] = 0;
+	g_mean_all[1] = 0;
+	g_mean_all[2] = 0;
+
 	g_nmean=0;
+	g_nmean_all = 0;
 
 	grid_size = 10;
 	typedef float *floatptr;
@@ -1985,7 +1991,19 @@ void MeshTools::drawGrid()
   GLfloat green2[] = {0., .2, 0., 1.};
   GLfloat black[] = {0., 0., 0., 1.};
   GLfloat mat_shininess[] = {7.};		
-
+  float delt[3];
+  if (g_mode_cam_centre_of_mass == 1)
+  {
+	  delt[0] = g_mean_all[0];
+	  delt[1] = g_mean_all[1];
+	  delt[2] = g_mean_all[2];
+  }
+  else
+  {
+	  delt[0] = 0;
+	  delt[1] = 0;
+	  delt[2] = 0;
+  }
   //std::cout<<"g_grid_plane="<<g_grid_plane<<std::endl;
   if (g_grid_plane==2)
   {
@@ -1994,8 +2012,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(10*i*size_factor,100*size_factor,0.);
-			glVertex3f(10*i*size_factor,-100*size_factor,0.);
+			glVertex3f(10*i*size_factor+ delt[0],100*size_factor+delt[1],0.+delt[2]);
+			glVertex3f(10*i*size_factor + delt[0],-100*size_factor+delt[1],0. + delt[2]);
 		
 			
 			count++;
@@ -2006,8 +2024,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			 glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(-100*size_factor,10*i*size_factor,0.);
-			glVertex3f(100*size_factor,10*i*size_factor,0.);
+			glVertex3f(-100*size_factor + delt[0],10*i*size_factor + delt[1],0. + delt[2]);
+			glVertex3f(100*size_factor + delt[0],10*i*size_factor + delt[1],0. + delt[2]);
 			
 			
 			count++;
@@ -2023,8 +2041,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(10*i*size_factor,0,100*size_factor);
-			glVertex3f(10*i*size_factor,0,-100*size_factor);
+			glVertex3f(10*i*size_factor + delt[0],0 + delt[1],100*size_factor + delt[2]);
+			glVertex3f(10*i*size_factor + delt[0],0 + delt[1],-100*size_factor + delt[2]);
 		
 			
 			count++;
@@ -2036,8 +2054,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			 glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(-100*size_factor,0,10*i*size_factor);
-			glVertex3f(100*size_factor,0,10*i*size_factor);
+			glVertex3f(-100*size_factor + delt[0],0 + delt[1],10*i*size_factor + delt[2]);
+			glVertex3f(100*size_factor + delt[0],0 + delt[1],10*i*size_factor + delt[2]);
 			
 			
 			count++;
@@ -2053,8 +2071,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			 glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(0,-100*size_factor,10*i*size_factor);
-			glVertex3f(0,100*size_factor,10*i*size_factor);
+			glVertex3f(0 + delt[0],-100*size_factor + delt[1],10*i*size_factor + delt[2]);
+			glVertex3f(0 + delt[0],100*size_factor + delt[1],10*i*size_factor + delt[2]);
 			
 			
 			count++;
@@ -2067,8 +2085,8 @@ void MeshTools::drawGrid()
 			glColor3f(color_grid[0], color_grid[1], color_grid[2]);
 			 glBegin(GL_LINES);     
 			//glNormal3f(0.,0.,1.);
-			glVertex3f(0,10*i*size_factor,-100*size_factor);
-			glVertex3f(0,10*i*size_factor,100*size_factor);
+			glVertex3f(0 + delt[0],10*i*size_factor + delt[1],-100*size_factor + delt[2]);
+			glVertex3f(0 + delt[0],10*i*size_factor + delt[1],100*size_factor + delt[2]);
 			
 			
 			count++;
@@ -2078,7 +2096,16 @@ void MeshTools::drawGrid()
  }
 
 glLineWidth(2);
-glColor3f(1.0, 0.7, 0.1);
+if (g_mode_cam_centre_of_mass == 0)
+{
+	glColor3f(1.0, 0.7, 0.1);
+}
+else
+{
+	glColor3f(0.0, 0.7, 1.0);
+}
+
+
 
 		 glBegin(GL_LINES);  
 
@@ -2087,28 +2114,28 @@ glColor3f(1.0, 0.7, 0.1);
  if (g_grid_plane ==0)
   {
 		//glNormal3f(0.,0.,1.);
-		glVertex3f(0,0,-100*size_factor);
-		glVertex3f(0,0,100*size_factor);
-		glVertex3f(0,-100*size_factor,0);
-		glVertex3f(0,100*size_factor,0);
+		glVertex3f(0 + delt[0],0 + delt[1],-100*size_factor + delt[2]);
+		glVertex3f(0 + delt[0],0 + delt[1],100*size_factor + delt[2]);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],0 + delt[2]);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],0 + delt[2]);
 
 		
  }
 if (g_grid_plane ==1)
   {
-	  glVertex3f(0,0,-100*size_factor);
-		glVertex3f(0,0,100*size_factor);				
-		glVertex3f(-100*size_factor,0,0);
-		glVertex3f(100*size_factor,0,0);
+	  glVertex3f(0 + delt[0],0 + delt[1],-100*size_factor + delt[2]);
+		glVertex3f(0 + delt[0],0 + delt[1],100*size_factor + delt[2]);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],0 + delt[2]);
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],0 + delt[2]);
  }
 
 if (g_grid_plane ==2)
   {
 					
-		glVertex3f(-100*size_factor,0,0);
-		glVertex3f(100*size_factor,0,0);
-		glVertex3f(0,-100*size_factor,0);
-		glVertex3f(0,100*size_factor,0);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],0 + delt[2]);
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],0 + delt[2]);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],0 + delt[2]);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],0 + delt[2]);
  }
 
 // Frames
@@ -2116,71 +2143,71 @@ if (g_grid_plane ==2)
   {
 		
 	   // 0, y , -z
-		glVertex3f(0,100*size_factor,-100*size_factor);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],-100*size_factor + delt[2]);
 		// 0, y , z
-		glVertex3f(0,100*size_factor,100*size_factor);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],100*size_factor + delt[2]);
 
 		// 0, -y , z
-		glVertex3f(0,-100*size_factor,100*size_factor);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],100*size_factor + delt[2]);
 		// 0, y , z
-		glVertex3f(0,100*size_factor,100*size_factor);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],100*size_factor + delt[2]);
 
 		// 0, -y , -z
-		glVertex3f(0,-100*size_factor,-100*size_factor);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],-100*size_factor + delt[2]);
 		// 0, -y , z
-		glVertex3f(0,-100*size_factor,100*size_factor);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],100*size_factor + delt[2]);
 
 		// 0, -y , -z
-		glVertex3f(0,-100*size_factor,-100*size_factor);
+		glVertex3f(0 + delt[0],-100*size_factor + delt[1],-100*size_factor + delt[2]);
 		// 0, y , -z
-		glVertex3f(0,100*size_factor,-100*size_factor);
+		glVertex3f(0 + delt[0],100*size_factor + delt[1],-100*size_factor + delt[2]);
 
  }
   if (g_grid_plane ==1)
   {
 	   // x, 0 , -z
-		glVertex3f(100*size_factor,0,-100*size_factor);
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],-100*size_factor + delt[2]);
 		// x, 0 , +z
-		glVertex3f(100*size_factor,0,100*size_factor);		
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],100*size_factor + delt[2]);
 
 		// -x, 0 , z
-		glVertex3f(-100*size_factor,0,100*size_factor);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],100*size_factor + delt[2]);
 		// x, 0 , z
-		glVertex3f(100*size_factor,0,100*size_factor);
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],100*size_factor + delt[2]);
 		
 		// -x, 0 , -z
-		glVertex3f(-100*size_factor,0,-100*size_factor);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],-100*size_factor + delt[2]);
 		// -x, 0 , z
-		glVertex3f(-100*size_factor,0,100*size_factor);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],100*size_factor + delt[2]);
 
 		// -x, 0 , -z
-		glVertex3f(-100*size_factor,0,-100*size_factor);
+		glVertex3f(-100*size_factor + delt[0],0 + delt[1],-100*size_factor + delt[2]);
 		// x, 0 , -z
-		glVertex3f(100*size_factor,0,-100*size_factor);
+		glVertex3f(100*size_factor + delt[0],0 + delt[1],-100*size_factor + delt[2]);
 		
  }
    if (g_grid_plane ==2)
   {
 
 	   // x , -y, 0
-		glVertex3f(100*size_factor,-100*size_factor,0);
+		glVertex3f(100*size_factor + delt[0],-100*size_factor + delt[1],0 + delt[2]);
 		//x, +y,0 
-		glVertex3f(100*size_factor,100*size_factor,0);
+		glVertex3f(100*size_factor + delt[0],100*size_factor + delt[1],0 + delt[2]);
 
 		//-x, y, 0
-		glVertex3f(-100*size_factor,100*size_factor,0);
+		glVertex3f(-100*size_factor + delt[0],100*size_factor + delt[1],0 + delt[2]);
 		//x, y, 0
-		glVertex3f(100*size_factor,100*size_factor,0);
+		glVertex3f(100*size_factor + delt[0],100*size_factor + delt[1],0 + delt[2]);
 
 		//-x, -y, 0
-		glVertex3f(-100*size_factor,-100*size_factor,0);
+		glVertex3f(-100*size_factor + delt[0],-100*size_factor + delt[1],0 + delt[2]);
 		//-x, y, 0
-		glVertex3f(-100*size_factor,100*size_factor,0);
+		glVertex3f(-100*size_factor + delt[0],100*size_factor + delt[1],0 + delt[2]);
 		
 		// -x, -y , 0
-		glVertex3f(-100*size_factor,-100*size_factor,0);
+		glVertex3f(-100*size_factor + delt[0],-100*size_factor + delt[1],0 + delt[2]);
 		// x, -y , 0
-		glVertex3f(100*size_factor,-100*size_factor,0);
+		glVertex3f(100*size_factor + delt[0],-100*size_factor + delt[1],0 + delt[2]);
 		
 		
    }
@@ -2197,16 +2224,16 @@ glMaterialfv(GL_FRONT,GL_AMBIENT,jaune);
   glMaterialfv(GL_FRONT,GL_SHININESS,jaune);
   glMaterialfv(GL_FRONT,GL_EMISSION,jaune);
 
-  glRasterPos3f(101*size_factor,0.0f,0.0f);
+  glRasterPos3f(101*size_factor + delt[0],0.0f + delt[1],0.0f + delt[2]);
 
 printString("x");
-glRasterPos3f(101*size_factor,0.0f,0.0f);
+glRasterPos3f(101*size_factor + delt[0],0.0f + delt[1],0.0f + delt[2]);
 printString("x");
 
 
-glRasterPos3f(-101*size_factor,0.0f,0.0f);
+glRasterPos3f(-101*size_factor + delt[0],0.0f + delt[1],0.0f + delt[2]);
 printString("-x");
-glRasterPos3f(-101*size_factor,0.0f,0.0f);
+glRasterPos3f(-101*size_factor + delt[0],0.0f + delt[1],0.0f + delt[2]);
 printString("-x");
 }
 
@@ -2219,11 +2246,11 @@ glMaterialfv(GL_FRONT,GL_AMBIENT,orange);
   glMaterialfv(GL_FRONT,GL_SHININESS,orange);
   glMaterialfv(GL_FRONT,GL_EMISSION,orange);
 
-glRasterPos3f(0.0f,101*size_factor,0.0f);
+glRasterPos3f(0.0f + delt[0],101*size_factor + delt[1],0.0f + delt[2]);
 printString("y");
-glRasterPos3f(0.0f,101*size_factor,0.0f);
+glRasterPos3f(0.0f + delt[0],101*size_factor + delt[1],0.0f + delt[2]);
 printString("y");
-glRasterPos3f(0.0f,-101*size_factor,0.0f);
+glRasterPos3f(0.0f + delt[0],-101*size_factor + delt[1],0.0f + delt[2]);
 printString("-y");
 
 }
@@ -2235,13 +2262,13 @@ glMaterialfv(GL_FRONT,GL_AMBIENT,rouge);
   glMaterialfv(GL_FRONT,GL_SHININESS,rouge);
   glMaterialfv(GL_FRONT,GL_EMISSION,rouge);
 
-glRasterPos3f(0.0f,0.0f,101*size_factor);
+glRasterPos3f(0.0f + delt[0],0.0f + delt[1],101*size_factor + delt[2]);
 printString("z");
-glRasterPos3f(0.0f,0.0f,101*size_factor);
+glRasterPos3f(0.0f + delt[0],0.0f + delt[1],101*size_factor + delt[2]);
 printString("z");
-glRasterPos3f(0.0f,0.0f,-101*size_factor);
+glRasterPos3f(0.0f + delt[0], 0.0f + delt[1], -101 * size_factor + delt[2]);
 printString("-z");
-glRasterPos3f(0.0f,0.0f,-101*size_factor);
+glRasterPos3f(0.0f + delt[0], 0.0f + delt[1], -101 * size_factor + delt[2]);
 printString("-z");
 
 }
@@ -2754,7 +2781,32 @@ void MeshTools::color_setobjcolor (uchar r, uchar g, uchar b)
 }
 void MeshTools::Cam_Center_At_Landmark(int landmark_number)
 {
-	this->Cont_Mesh.Get_Landmark_Coordinates(landmark_number, &camera.atx, &camera.aty, &camera.atz, this->landmark_mode); 
+	if (landmark_number>=0)
+	{
+		this->Cont_Mesh.Get_Landmark_Coordinates(landmark_number, &camera.atx, &camera.aty, &camera.atz, this->landmark_mode);
+		g_mode_cam_centre_of_mass = 0;
+	}
+	else if  (landmark_number==-1)
+	{
+		camera.atx = 0;
+		camera.aty = 0;
+		camera.atz = 0;
+		camera.tx = 0;
+		camera.ty = 0;
+		camera.tz = -100;
+		g_mode_cam_centre_of_mass = 0;
+	}
+	else
+	{
+		camera.atx = g_mean_all[0];
+		camera.aty = g_mean_all[1];
+		camera.atz = g_mean_all[2];
+		camera.tx = -g_mean_all[0];
+		camera.ty = -g_mean_all[1];
+		camera.tz = camera.tz-g_mean_all[2];
+		g_mode_cam_centre_of_mass = 1;
+	}
+
 }
 
 //static clock_t current_time = 0;/// pour calculer le FPS
@@ -2877,6 +2929,8 @@ void MeshTools::draw() {
 				float opt_fov_depth = this->Get_Optimal_FOV_Depth();
 				camera.far1 = opt_fov_depth;
 				camera.tz = -opt_fov_depth/2;	
+
+				
 			}
 		}
 		//Output 
@@ -3782,17 +3836,20 @@ void MeshTools::panx2(float x)
 {
 
 	ty2 = zoom*x/100;
+	bool_change_pos_obj = 1;
 }
 void MeshTools::pany2(float y)
 {
 
 	tz2 = -zoom*y/100;
+	bool_change_pos_obj = 1;
 //}
 }
 void MeshTools::panz2(float z)
 {
 	
 	tx2 = zoom*z/100;
+	bool_change_pos_obj = 1;
 }
 void MeshTools::panz(float z)
 {
@@ -3806,6 +3863,7 @@ void MeshTools::rollx(float x){
 void MeshTools::rollx2(float x){
 
 	rotz2 = x;
+	bool_change_pos_obj = 1;
 }
 void MeshTools::rolly(float y){
 
@@ -3815,6 +3873,7 @@ void MeshTools::rolly(float y){
 void MeshTools::rolly2(float y){
 
 	roty2 =y;
+	bool_change_pos_obj = 1;
 }
 
 void MeshTools::rollz(float z){
@@ -3824,6 +3883,7 @@ void MeshTools::rollz(float z){
 void MeshTools::rollz2(float z){
 
 	rotx2 =-z;
+	bool_change_pos_obj = 1;
 
 
 }
@@ -3857,6 +3917,18 @@ void MeshTools::rollinit_objects()
 	tx2 = 0;
 	ty2 = 0;
 	tz2 = 0;
+	bool_change_pos_obj = 0;
+	// tz correction in case we rotate the camera around some place away from 0 0 0
+	if (g_mode_cam_centre_of_mass == 1)
+	{
+		camera.atx = g_mean_all[0];
+		camera.aty = g_mean_all[1];
+		camera.atz = g_mean_all[2];
+		camera.tx = -g_mean_all[0];
+		camera.ty = -g_mean_all[1];
+		//camera.tz -= g_mean_all[2];
+	}
+
 	
 }
 void MeshTools::rollinit_camera()

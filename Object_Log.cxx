@@ -869,7 +869,7 @@ void OBJECT_LOG::Compute_Global_Mean()
 	glPushMatrix();
 	glLoadIdentity();		
 	this->Calculate_GlobalMean(&meanx, &meany,&meanz, &nmean, 1); // computes only for selected things
-	glPopMatrix();
+	
 	if (nmean >0)
 	{
 		g_mean[0]=meanx/nmean;
@@ -884,7 +884,23 @@ void OBJECT_LOG::Compute_Global_Mean()
 		g_mean[0]=0;
 		g_nmean=0;
 	}
+	this->Calculate_GlobalMean(&meanx, &meany, &meanz, &nmean, 0); // computes for all objects
 
+	if (nmean >0)
+	{
+		g_mean_all[0] = meanx / nmean;
+		g_mean_all[1] = meany / nmean;
+		g_mean_all[2] = meanz / nmean;
+		g_nmean_all = nmean;
+	}
+	else
+	{
+		g_mean_all[1] = 0;
+		g_mean_all[2] = 0;
+		g_mean_all[0] = 0;
+		g_nmean_all = 0;
+	}
+	glPopMatrix();
 	/*std::cout << "g_mean[0]:"<<g_mean[0]<< std::endl;
     std::cout << "g_mean[1]:"<<g_mean[1]<< std::endl;
 	std::cout << "g_mean[2]:"<<g_mean[2]<< std::endl;
@@ -945,9 +961,9 @@ void OBJECT_LOG::Calculate_GlobalMean(float *x, float *y, float *z, int *nb, int
 	if (this->OBJECTS !=NULL)
 	{
 		MyMesh = this->OBJECTS;
-		if (level==0) { // Objet basal : on veut calculer le centre de masse des objets sélectionnés
+		if (level==0) { // Objet basal : on veut calculer le centre de masse des objets ... sélectionnés ou pas
 			
-			MyMesh->Calculate_GlobalMean (&tmpx, &tmpy, &tmpz, &nbtmp, 1);
+			MyMesh->Calculate_GlobalMean (&tmpx, &tmpy, &tmpz, &nbtmp, only_selected);
 			
 			/*if (nbtmp>0)
 			{

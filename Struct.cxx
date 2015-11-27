@@ -10,9 +10,12 @@
  float g_zoom;
  int dispmode;
  int cpt_dispmode4and5;
- float g_mean[3];
+ float g_mean[3];//mean of all selected objects
+ float g_mean_all[3];// mean of all objects
  int g_nmean;
- int Disp_Vertices_Ids;
+ int g_nmean_all;
+ int g_mode_cam_centre_of_mass; // camera is set at center of mass => if 1, we draw the grid "blue!"
+int Disp_Vertices_Ids;
 int Disp_Triangle_Ids;
 int Disp_Scalars_Mode;
 int Disp_Tags_Mode;
