@@ -7524,10 +7524,10 @@ void MeshTools::Open_NTW_File()
 						if (ok)
 						{
 							
-							length= (int)strlen(oneline);						
+						  //length= (int)strlen(oneline);						
 							//strncpy(param1, oneline, length-1);
-							std::string posfile=oneline;
-							posfile = posfile.substr(0, (posfile.length()-1));// for some reason
+							std::string posfile=param1;
+							//posfile = posfile.substr(0, (posfile.length()-1));// for some reason
 												
 							std::string posfilename = fl_filename_name(posfile.c_str());										
 							if(posfile.length()==posfilename.length())
