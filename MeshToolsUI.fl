@@ -10,8 +10,9 @@ class MeshToolsUI {open
       label {Interactive SoftwarE : MeshTools}
       callback {options_hide();
 cam_hide();
-exit(0);} open selected
-      private image {pixmap/s_face.gif} xywh {194 214 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+
+exit(0);} open
+      private image {pixmap/s_face.gif} xywh {1456 238 1002 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -340,7 +341,7 @@ orientation_update();}
             }
           }
           Fl_Menu_Button Viewing_options {
-            label {Viewing opt.}
+            label {Viewing opt.} open
             xywh {55 0 100 25} color 55
           } {
             MenuItem SET_GENERAL_COLOUR_LIGHTNING {
@@ -368,73 +369,73 @@ orientation_update();}
               } {
                 MenuItem CAP0 {
                   label Origin
-                  callback {MT->Cam_Center_At_Landmark(-1);
+                  callback {MT->Cam_Centre_At_Landmark(-1);
 MT->redraw();}
                   xywh {5 5 100 20}
                 }
                 MenuItem CAPBAR {
                   label {Centre of mass of all loaded meshes}
-                  callback {MT->Cam_Center_At_Landmark(-2);
+                  callback {MT->Cam_Centre_At_Landmark(-2);
 MT->redraw();}
                   xywh {15 15 100 20}
                 }
                 MenuItem CAP1 {
                   label {landmark 1}
-                  callback {MT->Cam_Center_At_Landmark(1);
+                  callback {MT->Cam_Centre_At_Landmark(1);
 MT->redraw();}
                   xywh {15 15 100 20}
                 }
                 MenuItem CAP2 {
                   label {landmark 2}
-                  callback {MT->Cam_Center_At_Landmark(2);
+                  callback {MT->Cam_Centre_At_Landmark(2);
 MT->redraw();}
                   xywh {25 25 100 20}
                 }
                 MenuItem CAP3 {
                   label {landmark 3}
-                  callback {MT->Cam_Center_At_Landmark(3);
+                  callback {MT->Cam_Centre_At_Landmark(3);
 MT->redraw();}
                   xywh {35 35 100 20}
                 }
                 MenuItem CAP4 {
                   label {landmark 4}
-                  callback {MT->Cam_Center_At_Landmark(4);
+                  callback {MT->Cam_Centre_At_Landmark(4);
 MT->redraw();}
                   xywh {45 45 100 20}
                 }
                 MenuItem CAP5 {
                   label {landmark 5}
-                  callback {MT->Cam_Center_At_Landmark(5);
+                  callback {MT->Cam_Centre_At_Landmark(5);
 MT->redraw();}
                   xywh {55 55 100 20}
                 }
                 MenuItem CAP6 {
                   label {landmark 6}
-                  callback {MT->Cam_Center_At_Landmark(6);
+                  callback {MT->Cam_Centre_At_Landmark(6);
 MT->redraw();}
                   xywh {65 65 100 20}
                 }
                 MenuItem CAP7 {
                   label {landmark 7}
-                  callback {MT->Cam_Center_At_Landmark(7);
-MT->redraw();}
+                  callback {MT->Cam_Centre_At_Landmark(7);
+MT->redraw();} selected
                   xywh {75 75 100 20}
                 }
                 MenuItem CAP8 {
                   label {landmark 8}
-                  callback {MT->Cam_Center_At_Landmark(8);
+                  callback {MT->Cam_Centre_At_Landmark(8);
 MT->redraw();}
                   xywh {85 85 100 20}
                 }
                 MenuItem CAP9 {
                   label {landmark 9}
-                  callback {MT->Cam_Center_At_Landmark(9);
+                  callback {MT->Cam_Centre_At_Landmark(9);
 MT->redraw();}
                   xywh {95 95 100 20}
                 }
                 MenuItem CAP10 {
                   label {landmark 10}
-                  callback {MT->Cam_Center_At_Landmark(10);
+                  callback {MT->Cam_Centre_At_Landmark(10);
 MT->redraw();}
                   xywh {105 105 100 20}
                 }
@@ -1273,15 +1274,15 @@ MT->redraw();}
             callback {if (((Fl_Button *)o)->value()==0)
 {
 ((Fl_Button *)o)->value(1);
-MT->Cam_Center_At_Landmark(-2);
+MT->Cam_Centre_At_Landmark(-2);
 
 }
 else
 {
 ((Fl_Button *)o)->value(0);
-MT->Cam_Center_At_Landmark(-1);
+MT->Cam_Centre_At_Landmark(-1);
 }
-
+MT->save_ini_param();
 MT->redraw();}
             tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {250 25 25 23} color 55 selection_color 23
           }
@@ -1536,7 +1537,7 @@ MT->redraw();}
     }
     Fl_Window optWindow {
       label {General options}
-      xywh {992 427 366 307} type Double color 94 hide non_modal
+      xywh {922 439 342 316} type Double color 94 hide non_modal
     } {
       Fl_Group open_surface_option {
         label {Behaviour when opening surfaces : }
@@ -1608,7 +1609,7 @@ options_hide();}
     }
     Fl_Window opt_lc_Window {
       label {Lightning and colour options}
-      xywh {32 54 373 294} type Double color 94 hide non_modal
+      xywh {36 58 365 300} type Double color 94 hide non_modal
     } {
       Fl_Group Window_group {
         label Windows open
@@ -1709,7 +1710,7 @@ options_lc_hide();}
     }
     Fl_Window opt_lm_Window {
       label {Landmark and flag options}
-      xywh {-32000 -32000 368 324} type Double color 94 hide non_modal
+      xywh {8 30 360 316} type Double color 94 hide non_modal
     } {
       Fl_Group {} {
         label {Landmarks rendering} open
@@ -1780,7 +1781,7 @@ MT->redraw();}
     }
     Fl_Window opt_rd_Window {
       label {Rendering options}
-      xywh {8 31 361 254} type Double color 94 hide non_modal
+      xywh {12 35 353 271} type Double color 94 hide non_modal
     } {
       Fl_Group fast_display_option {
         label {Object rendering when moving object/camera :}
@@ -2147,7 +2148,7 @@ MyName->value(Name.c_str());}
       }
     }
     Fl_Window versionWindow {
-      label About open
+      label About
       xywh {1469 375 597 151} type Double hide modal
     } {
       Fl_Button Ok_Version {
@@ -5481,6 +5482,8 @@ color_data->activate();
 	mainWindow->icon((char*)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
 \#endif	
 mainWindow->show(argc, argv);
+int disp = MT->Get_mode_cam_centre_of_mass();
+Move_cam_centre_of_mass->value(disp);
 mainWindow->size_range(629,659);} {}
   }
   Function {cam_show()} {} {
@@ -6315,7 +6318,8 @@ extractrangeWindow->show();} {}
   Function {deleteregion_hide()} {} {
     code {deleteregionWindow->hide();} {}
   }
-  Function {flag_show()} {} {
+  Function {flag_show()} {open
+  } {
     code {flagWindow->show();
 flag_update();
 /*label = MT->get_flag();
@@ -6331,7 +6335,8 @@ Flag_Colour->redraw();*/} {}
   Function {flag_hide()} {} {
     code {flagWindow->hide();} {}
   }
-  Function {flag_update()} {} {
+  Function {flag_update()} {open
+  } {
     code {std::string label ="Flag";
 label = MT->get_flag();
 Flag_Label->value(label.c_str());
@@ -6488,8 +6493,7 @@ x_minus_l->value(x2.c_str());} {}
   Function {registration_ICP_hide()} {} {
     code {Registration_Window->hide();} {}
   }
-  Function {registration_ICP_show()} {open
-  } {
+  Function {registration_ICP_show()} {} {
     code {if(MT->bool_ICP){
 	icp_source_name->clear();
 	icp_target_name->clear();
@@ -6513,8 +6517,7 @@ Registration_Window->show();} {}
   Function {errors_curve_ICP_hide()} {} {
     code {Errors_curv_Window->hide();} {}
   }
-  Function {errors_curv_ICP_show()} {open
-  } {
+  Function {errors_curv_ICP_show()} {} {
     code {Errors_curv_Window->show();
 InitializeChart(box_curve,0);
 InitializeChart(box_curve1,1);
@@ -6529,7 +6532,7 @@ Display_Text(caption_textmode,text_mode,FL_BLACK);
 Initialize_time_Table(table_time);
 Initialize_error_Table(table_error);} {}
   }
-  Function {InitializeChart(Fl_Chart * chart,int ind)} {open return_type void
+  Function {InitializeChart(Fl_Chart * chart,int ind)} {return_type void
   } {
     code {chart->clear();
 float height=125.0;
@@ -6589,14 +6592,13 @@ for (int i=0;i<size;i++)
  }
 }} {}
   }
-  Function {Display_Text(Fl_Text_Display *caption,const char* str,Fl_Color n)} {open
-  } {
+  Function {Display_Text(Fl_Text_Display *caption,const char* str,Fl_Color n)} {} {
     code {Fl_Text_Buffer *buff = new Fl_Text_Buffer();
 caption->buffer(buff);// attach text buffer to display widget
 caption->textcolor(n);
 buff->text(str);   // add some text to buffer} {}
   }
-  Function {Initialize_time_Table(Fl_Browser *table)} {open return_type void
+  Function {Initialize_time_Table(Fl_Browser *table)} {return_type void
   } {
     code {table->clear();
 std::ostringstream sTotaltime;
@@ -6669,7 +6671,7 @@ if(MT->bool_ICP == true){
  text=sentence.c_str();
 Display_Text(time_total,text,FL_BLACK);} {}
   }
-  Function {Initialize_error_Table(Fl_Browser *table)} {open return_type void
+  Function {Initialize_error_Table(Fl_Browser *table)} {return_type void
   } {
     code {table->clear();
 std::ostringstream sTotaltime;
@@ -6724,7 +6726,7 @@ if(MT->bool_ICP == true){
 	}
  }} {}
   }
-  Function {select_mode_text(vtkSmartPointer<vtkFloatArray> tab,int i)} {open return_type {char *}
+  Function {select_mode_text(vtkSmartPointer<vtkFloatArray> tab,int i)} {return_type {char *}
   } {
     code {static char *val_mode;
 int mode =tab->GetComponent(i,0);
@@ -6748,7 +6750,7 @@ else if(mode==20)
 	val_mode="LA";
  return val_mode;  // retourne le nom du mode} {}
   }
-  Function {Update_Chart_scale(vtkSmartPointer<vtkFloatArray> tab,float chart_height)} {open return_type int
+  Function {Update_Chart_scale(vtkSmartPointer<vtkFloatArray> tab,float chart_height)} {return_type int
   } {
     code {//on cherche la valeur maximum pour ajuster les courbures dans le graphique
 int total_index=3;
