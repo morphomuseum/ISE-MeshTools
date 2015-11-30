@@ -44,19 +44,14 @@ using namespace std;
 #include <vtkPointData.h>
 #include <vtkIdList.h>
 
-#ifdef __linux__
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
-struct passwd *pw = getpwuid(getuid());
-const char *homedir = pw->pw_dir;
+#ifndef WIN32
+const char *homedir = std::getenv("HOME");
 const char *inifile = "/.MeshTools.ini";
-char inipath[256]; // <- danger, only storage for 256 characters.
 #else // not linux
-const char * inipath  = "MeshTools.ini";
+const char *homedir = std::getenv("APPDATA");
+const char *inifile  = "\\MeshTools.ini";
 #endif
-
+char inipath[256]; // <- danger, only storage for 256 characters.
 
 
 
@@ -1104,10 +1099,8 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	this->blend_value =50;
 
 	// get user directory
-#ifdef __linux__
 	strncpy(inipath, homedir, sizeof(inipath));
 	strncat(inipath, inifile, sizeof(inipath));
-#endif
 	std::cout << "Init file is at "  <<  inipath << std::endl;
 	CDataFile ExistingDF(inipath, 1);
 	select_mode = kpressed = 0;
