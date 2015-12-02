@@ -21,7 +21,7 @@ To add the PPA and install MeshTools run:
 1. Get Dependencies: Devel versions of ```fltk1.3, VTK (>=6.1), glew, xinerama, cmake```. (On Ubuntu this would be the packages:   ```cmake, libfltk1.3-dev, libglew-dev, libvtk6-dev, libxinerama-dev  ```)
 
 
-      * If your distribution comes with an older version of VTK, you need to build and install it yorself: http://www.vtk.org/Wiki/VTK/Configure_and_Build
+      * If your distribution comes with an older version of VTK, you need to build and install it yourself: http://www.vtk.org/Wiki/VTK/Configure_and_Build
 * Get MeshTools sources: Download [tarball](https://github.com/morphomuseum/ISE-MeshTools/archive/master.zip) or clone the repo:
   
   ```git clone https://github.com/morphomuseum/ISE-MeshTools.git```
