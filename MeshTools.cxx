@@ -44,8 +44,14 @@ using namespace std;
 #include <vtkPointData.h>
 #include <vtkIdList.h>
 
-
-
+#ifndef WIN32
+const char *homedir = std::getenv("HOME");
+const char *inifile = "/.MeshTools.ini";
+#else // not linux
+const char *homedir = std::getenv("APPDATA");
+const char *inifile  = "\\MeshTools.ini";
+#endif
+char inipath[256]; // <- danger, only storage for 256 characters.
 
 
 
@@ -1100,8 +1106,11 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_lambda = 100;
 	this->blend_value =50;
 
-
-	CDataFile ExistingDF("MeshTools.ini", 1);
+	// get user directory
+	strncpy(inipath, homedir, sizeof(inipath));
+	strncat(inipath, inifile, sizeof(inipath));
+	std::cout << "Init file is at "  <<  inipath << std::endl;
+	CDataFile ExistingDF(inipath, 1);
 	select_mode = kpressed = 0;
 	this->disp_cull_face = 0;
 	bool_change_mode = 1;
@@ -4617,7 +4626,7 @@ void MeshTools::ShowOrientation()
 }
 void MeshTools::save_ini_param()
 {
-	CDataFile ExistingDF("MeshTools.ini", 1);
+	CDataFile ExistingDF(inipath, 1);
 	
 	ExistingDF.SetFloat("lightpos1", lightpos1,"","lightposition");
 	ExistingDF.SetFloat("lightpos2", lightpos2,"","lightposition");
