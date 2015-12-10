@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0303 
+version 1.0302 
 header_name {MeshToolsUI.h} 
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
@@ -11,8 +11,8 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);} open
-      private image {pixmap/s_face.gif} xywh {1456 238 1002 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);}
+      private image {pixmap/s_face.gif} xywh {403 130 992 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -418,7 +418,7 @@ MT->redraw();}
                 MenuItem CAP7 {
                   label {landmark 7}
                   callback {MT->Cam_Centre_At_Landmark(7);
-MT->redraw();} selected
+MT->redraw();}
                   xywh {75 75 100 20}
                 }
                 MenuItem CAP8 {
@@ -1436,7 +1436,7 @@ MT->redraw();}
     }
     Fl_Window camWindow {
       label {Camera options}
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 165 320} type Double color 174 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {8 30 157 312} type Double color 174 hide non_modal
     } {
       Fl_Value_Input Cam_near {
         label {Camera near :}
@@ -1537,7 +1537,7 @@ MT->redraw();}
     }
     Fl_Window optWindow {
       label {General options}
-      xywh {922 439 342 316} type Double color 94 hide non_modal
+      xywh {780 432 366 319} type Double color 94 hide non_modal
     } {
       Fl_Group open_surface_option {
         label {Behaviour when opening surfaces : }
@@ -1609,7 +1609,7 @@ options_hide();}
     }
     Fl_Window opt_lc_Window {
       label {Lightning and colour options}
-      xywh {36 58 365 300} type Double color 94 hide non_modal
+      xywh {72 94 378 337} type Double color 94 hide non_modal
     } {
       Fl_Group Window_group {
         label Windows open
@@ -1710,34 +1710,52 @@ options_lc_hide();}
     }
     Fl_Window opt_lm_Window {
       label {Landmark and flag options}
-      xywh {8 30 360 316} type Double color 94 hide non_modal
+      xywh {449 191 374 371} type Double color 94 hide resizable non_modal
     } {
       Fl_Group {} {
         label {Landmarks rendering} open
-        xywh {0 15 357 120} box BORDER_BOX color 93
+        xywh {10 28 350 160} box BORDER_BOX color 93
       } {
         Fl_Group landmark_type_radio_buttons {
           label {Draw Landmarks As : } open
-          xywh {18 37 314 55} box BORDER_BOX color 94 align 5
+          xywh {24 50 314 55} box BORDER_BOX color 94 align 5
         } {
           Fl_Round_Button pt_sphere {
             label Spheres
-            xywh {20 38 25 24} type Radio down_box ROUND_DOWN_BOX value 1
+            xywh {26 51 25 24} type Radio down_box ROUND_DOWN_BOX value 1
           }
           Fl_Round_Button pt_needle {
             label Needles
-            xywh {20 61 22 11} type Radio down_box ROUND_DOWN_BOX
+            xywh {26 74 22 11} type Radio down_box ROUND_DOWN_BOX
           }
         }
         Fl_Value_Input Landmark_Size2 {
-          label {Landmark Size(mm) :}
-          xywh {154 94 28 25} align 36
+          label {Landmark rendering size (mm) :}
+          xywh {240 148 28 25} align 36
+        }
+        Fl_Check_Button auto_landmark_size {
+          label {Adjust automatically landmark rendering size}
+          callback {if (((Fl_Button *)o)->value()==1)
+{
+
+	Landmark_Size2->deactivate();
+}
+else
+{
+
+	Landmark_Size2->activate();
+}}
+          xywh {30 123 25 25} down_box DOWN_BOX
         }
       }
       Fl_Button Ok_scc_lm {
         label Ok
         callback {MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
+);
+
+MT->set_g_landmark_auto_rendering_size(
+auto_landmark_size->value()
 );
 
 MT->set_g_flag_length(
@@ -1754,15 +1772,15 @@ MT->save_ini_param();
 
 MT->redraw();
 options_lm_hide();}
-        xywh {150 285 65 25} color 133 selection_color 92
+        xywh {150 335 65 25} color 133 selection_color 92
       }
       Fl_Group {} {
         label {Flags setting} open
-        xywh {5 171 350 109} box BORDER_BOX color 93
+        xywh {10 217 350 109} box BORDER_BOX color 93
       } {
         Fl_Value_Input Flag_g_length {
           label {Flag length (mm) :}
-          xywh {140 230 28 25} align 36
+          xywh {143 276 28 25} align 36
         }
         Fl_Button Flag_g_colour {
           label {Flag colour}
@@ -1775,7 +1793,7 @@ o->color(c);
 o->redraw();
 MT->set_g_flag_colour(r,g,b);
 MT->redraw();}
-          xywh {30 187 140 26} color 42 labelcolor 32
+          xywh {33 233 140 26} color 42 labelcolor 32
         }
       }
     }
@@ -4300,7 +4318,7 @@ MT->redraw();}
     }
     Fl_Window nameWindow {
       label {Edit  Name}
-      image {pixmap/s_back_13.gif} xywh {921 304 269 155} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {925 308 261 147} type Double color 215 hide non_modal
     } {
       Fl_Button Ok_name {
         label {Ok (first selected object)}
@@ -4448,8 +4466,8 @@ tags_convert_hide();}
       }
     }
     Fl_Window orientationWindow {
-      label {Edit orientation labels}
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 251 239} type Double color 215 hide non_modal
+      label {Edit orientation labels} open
+      image {pixmap/s_back_13.gif} xywh {62 146 243 231} type Double color 215 resizable non_modal visible
     } {
       Fl_Button Ok_orientation {
         label Ok
@@ -4465,13 +4483,13 @@ x2 = x_minus_l->value();
 MT->set_orientation_labels(z1,z2,y1,y2,x1,x2);
 MT->save_ini_param();
 MT->redraw();
-//name_hide();}
-        tooltip {Set name to "label" value to first selected surface object} xywh {55 197 65 25} color 134 selection_color 92
+//name_hide();} selected
+        tooltip {Set name to "label" value to first selected surface object} xywh {55 200 65 25} color 134 selection_color 92
       }
       Fl_Button Cancel_orientation {
         label Cancel
         callback {orientation_hide();}
-        tooltip {Cancel current action} xywh {121 198 65 25} color 133 selection_color 132
+        tooltip {Cancel current action} xywh {121 200 65 25} color 133 selection_color 132
       }
       Fl_Input z_plus_l {
         label {+z:}
@@ -4570,7 +4588,7 @@ MT->redraw();}
     }
     Fl_Window Registration_Window {
       label Registration
-      image {pixmap/s_back_13.gif} xywh {34 63 1061 589} type Double color 215 hide hotspot
+      image {pixmap/s_back_13.gif} xywh {38 67 1053 581} type Double color 215 hide hotspot
     } {
       Fl_Group once_icp_ok {open
         xywh {740 5 315 580} box EMBOSSED_BOX color 166
@@ -5306,7 +5324,7 @@ val_result->value(result);}
           }
         }
         Fl_Group parameters {
-          label Parameters
+          label Parameters open
           xywh {430 35 295 110} box ENGRAVED_BOX color 175 labelfont 1
         } {
           Fl_Button save_parameters {
@@ -5484,7 +5502,7 @@ color_data->activate();
 mainWindow->show(argc, argv);
 int disp = MT->Get_mode_cam_centre_of_mass();
 Move_cam_centre_of_mass->value(disp);
-mainWindow->size_range(629,659);} {}
+mainWindow->size_range(700,1000);} {}
   }
   Function {cam_show()} {} {
     code {camWindow->show();
@@ -5532,9 +5550,11 @@ opt_lc_Window->show();} {}
   Function {options_lc_hide()} {} {
     code {opt_lc_Window->hide();} {}
   }
-  Function {options_lm_show()} {} {
+  Function {options_lm_show()} {open
+  } {
     code {int landmark_type;
 int landmark_type2;
+int auto_rendering_size;
 Landmark_Size2->value(MT->Mesh_GetLandmarkSize());
 landmark_type = MT->Mesh_GetLandmarkType();
 landmark_type2=0;
@@ -5550,6 +5570,18 @@ MT->get_g_flag_color(&r,&g,&b);
 c = fl_rgb_color(r,g,b);
 Flag_g_colour->color(c);
 Flag_g_colour->redraw();
+
+
+auto_rendering_size = MT->get_g_landmark_auto_rendering_size();
+auto_landmark_size->value(auto_rendering_size);
+if (auto_rendering_size ==1)
+{
+	Landmark_Size2->deactivate();
+}
+else
+{
+	Landmark_Size2->activate();
+}
 
 opt_lm_Window->show();} {}
   }

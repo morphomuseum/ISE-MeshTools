@@ -909,11 +909,11 @@ void MeshTools::Print_Global_Scalar_List()
            }
 }
 
-void MeshTools::Compute_Global_Mean()
+void MeshTools::Compute_Global_Mean(int only_selected)
 { // Compute center of mass of all selected objects
 	
-	this->Cont_Mesh.Compute_Global_Mean();
-	if (g_mode_cam_centre_of_mass == 1)
+	this->Cont_Mesh.Compute_Global_Mean(only_selected);
+	if (g_mode_cam_centre_of_mass == 1 && only_selected ==0)
 	{
 		this->Cam_Centre_At_Landmark(-2);
 	}
@@ -1146,9 +1146,12 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_scalar_list_selected.clear();
 	g_landmark_size = 10; // 10 mm landmarks
 	g_landmark_size =  ExistingDF.GetFloat("size", "landmarks");
+	g_landmark_auto_rendering_size = ExistingDF.GetFloat("auto_rendering_size", "landmarks");
 	
+
 	
     g_landmark_type =  ExistingDF.GetInt("type", "landmarks");
+
 	g_display_all=  ExistingDF.GetInt("all", "display");
 	g_fov_adapt =  ExistingDF.GetInt("adapt", "fov");
 	
@@ -3602,12 +3605,12 @@ void MeshTools::Change_Disp_Triangle_Ids()
 void MeshTools::Ungroup()
 {
 	Cont_Mesh.Mesh_Ungroup();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 }
 void MeshTools::Group()
 {
 	Cont_Mesh.Mesh_Group();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 }
 void MeshTools::Mesh_Add_landmark()
 {
@@ -3622,7 +3625,7 @@ void MeshTools::Mesh_UnselectAll()
 {
 
 	Cont_Mesh.Mesh_UnselectAll();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	this->Compute_Global_Scalar_List();
 
 }
@@ -3631,7 +3634,7 @@ void MeshTools::Mesh_SelectAll()
 {
 
 	Cont_Mesh.Mesh_SelectAll();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3814,14 +3817,22 @@ void MeshTools::Delete()
 //	{ 
 		this->Mesh_Delete();
 //}
-this->Compute_Global_Mean();	
+this->Compute_Global_Mean(0);
+if (g_landmark_auto_rendering_size)
+{
+	this->Adjust_landmark_rendering_size();
+}
 this->Compute_Global_Scalar_List();
 }
 
 void MeshTools::Mesh_DeleteSmallVolume (float volume)
 {
 	Cont_Mesh.Mesh_Delete(2, 100, volume);	
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3829,7 +3840,11 @@ void MeshTools::Mesh_DeleteSmallVolume (float volume)
 void MeshTools::Mesh_DeleteSmall (int numtri)
 {
 	Cont_Mesh.Mesh_Delete(1, numtri, 0);		
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3943,8 +3958,8 @@ void MeshTools::rollinit_objects()
 		camera.atx = g_mean_all[0];
 		camera.aty = g_mean_all[1];
 		camera.atz = g_mean_all[2];
-		camera.tx = -g_mean_all[0];
-		camera.ty = -g_mean_all[1];
+		//camera.tx = -g_mean_all[0];
+		//camera.ty = -g_mean_all[1];
 		//camera.tz -= g_mean_all[2];
 	}
 
@@ -4017,7 +4032,7 @@ void MeshTools::Mesh_Select(int x1, int x2, int y1, int y2, int select_mode)
 	//std::cout<<"Start Mesh Select"<<std::endl;
 	Cont_Mesh.Mesh_Select(xmin, xmax, ymin, ymax, select_mode);
 	//std::cout<<"Compute global mean"<<std::endl;
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	//std::cout<<"Compute global scalar list"<<std::endl;
 	this->Compute_Global_Scalar_List();
 	//std::cout<<"Mesh Select done"<<std::endl;
@@ -4601,6 +4616,59 @@ void MeshTools::Mesh_SetLandmarkType(int landmark_type2)
 }
 int MeshTools::Mesh_GetLandmarkType()
 {return g_landmark_type;}
+void MeshTools::set_g_landmark_auto_rendering_size(int render_mode)
+{
+	if (render_mode == 0)
+	{
+		g_landmark_auto_rendering_size = 0;
+	}
+	else
+	{
+		g_landmark_auto_rendering_size = 1;
+		this->Adjust_landmark_rendering_size();
+
+	}
+}
+void MeshTools::Adjust_landmark_rendering_size()
+{
+	//g_landmark_size = Cont_Mesh.dmean / 50;
+	Cont_Mesh.Compute_Global_MinMax();
+	std::cout << "" << std::endl;
+	std::cout << "min et max X:" << g_minx << "   |    " << g_maxx << std::endl;
+	std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
+	std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
+	std::cout << "" << std::endl;
+
+	float mean_size = 0;
+	mean_size += abs(g_maxx - g_minx);
+	mean_size += abs(g_maxy - g_miny);
+	mean_size += abs(g_maxz - g_minz);
+	//mean_size -= g_mean_all[0];
+	//mean_size -= g_mean_all[1];
+	//mean_size -= g_mean_all[2];
+	g_landmark_size = 1;
+	if (mean_size > 0) {
+		mean_size /= 6;
+		if (g_landmark_type == 0)
+		{
+			//needles
+			g_landmark_size = mean_size / 10;
+		}
+		else
+		{
+			//spheres
+			g_landmark_size = mean_size / 12;
+		}
+	}
+
+
+	Cont_Mesh.Mesh_container_setlandmarksize(g_landmark_size);
+
+}
+int MeshTools::get_g_landmark_auto_rendering_size()
+{
+	return	g_landmark_auto_rendering_size;
+}
 
 float MeshTools::Mesh_GetLandmarkSize()
 {return g_landmark_size;}
@@ -4688,6 +4756,7 @@ void MeshTools::save_ini_param()
 	ExistingDF.SetInt("all", g_display_all,"","display");
 	
 	ExistingDF.SetFloat("size", g_landmark_size,"","landmarks");
+	ExistingDF.SetFloat("auto_rendering_size", g_landmark_auto_rendering_size, "", "landmarks");
 	ExistingDF.SetInt("type", g_landmark_type,"","landmarks");
 	ExistingDF.SetInt("move_at_cm", g_move_cm,"","surfaces");
 	ExistingDF.SetInt("move_at_cm", g_mode_cam_centre_of_mass, "", "camera");
@@ -6691,7 +6760,11 @@ void MeshTools::Open_POS_File()
 		}//default
 	}//switch
 					
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	
 }
 void MeshTools::Open_POS_File_Inv()
@@ -6991,7 +7064,11 @@ void MeshTools::Open_POS_File_Inv()
 			}//if file exists
 		}//default
 	}//switch
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	
 }
 
@@ -7574,7 +7651,11 @@ void MeshTools::Open_NTW_File()
 			}//if file exists
 		}//default
 	}//switch
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->redraw();
 	
 }
@@ -8845,14 +8926,14 @@ void MeshTools::Open_Mesh_File()
 								std::cout << "FloatNorms POINTS is null " << std::endl;
 						}
 
-						if (MyObj->GetNumberOfPoints()>10)
+						if (MyObj->GetNumberOfPoints() > 10)
 						{
 
 
-							std::string newname=fl_filename_name(filename.c_str());
+							std::string newname = fl_filename_name(filename.c_str());
 
-							int nPos = newname.find_first_of(".");			
-							if ( nPos > -1 )
+							int nPos = newname.find_first_of(".");
+							if (nPos > -1)
 							{
 								newname = newname.substr(0, nPos);
 							}
@@ -8861,32 +8942,32 @@ void MeshTools::Open_Mesh_File()
 							My_Obj->Set_Active_Scalar();
 							int numpoints = My_Obj->GetNumberOfPoints();
 							int numtriangles = My_Obj->GetNumberOfCells();
-							std::cout << "Number of points:"<<numpoints<< std::endl;
-							std::cout << "Number of cells:"<<numtriangles<< std::endl;
+							std::cout << "Number of points:" << numpoints << std::endl;
+							std::cout << "Number of cells:" << numtriangles << std::endl;
 
 							//std::cout << "2 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-							
+
 							//std::cout << "3 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-						
-							My_Obj->selected = 1;		
-							
-							
+
+							My_Obj->selected = 1;
+
+
 							cout << "color init: ";
 							vtkSmartPointer<vtkUnsignedCharArray> newcolors =
 								vtkSmartPointer<vtkUnsignedCharArray>::New();
 							newcolors->SetNumberOfComponents(4);
 							newcolors->SetNumberOfTuples(numpoints);
 							//ici init_RGB ou RGB_i
-							if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL){
+							if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL) {
 								newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
-								
+
 								for (int i = 0; i < numpoints; i++)
 									newcolors->SetComponent(i, 3, 255.);
-								
+
 								newcolors->SetName("Init_RGB");
 								My_Obj->GetPointData()->AddArray(newcolors);
 							}
-							cout << "ok."<<endl;
+							cout << "ok." << endl;
 
 							My_Obj->color[0] = color_obj[0];
 							My_Obj->color[1] = color_obj[1];
@@ -8895,26 +8976,30 @@ void MeshTools::Open_Mesh_File()
 
 							My_Obj->bool_init_buf = 0;
 							// Only update RGB if not exists!
-							
-							 vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)My_Obj->GetPointData()->GetScalars("RGB");
-							if (test ==NULL)
+
+							vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)My_Obj->GetPointData()->GetScalars("RGB");
+							if (test == NULL)
 							{
 								My_Obj->Update_RGB();
 							}
-							
+
 
 							//std::cout << "4 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-							
-							
+
+
 							//Move object at center of mass only in some cases
-							if(g_move_cm==1)
+							if (g_move_cm == 1)
 							{
-								My_Obj->Mat2[3][0]= -My_Obj->mean[0];
-								My_Obj->Mat2[3][1]=-My_Obj->mean[1]; 
-								My_Obj->Mat2[3][2]=-My_Obj->mean[2];
+								My_Obj->Mat2[3][0] = -My_Obj->mean[0];
+								My_Obj->Mat2[3][1] = -My_Obj->mean[1];
+								My_Obj->Mat2[3][2] = -My_Obj->mean[2];
 							}
-							
-							this->Compute_Global_Mean();
+
+							this->Compute_Global_Mean(0);
+							if (g_landmark_auto_rendering_size)
+							{
+								this->Adjust_landmark_rendering_size();
+							}
 							this->Compute_Global_Scalar_List();
 							
 						}

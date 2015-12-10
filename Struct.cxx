@@ -12,6 +12,12 @@
  int cpt_dispmode4and5;
  float g_mean[3];//mean of all selected objects
  float g_mean_all[3];// mean of all objects
+ float g_minx;
+ float g_miny;
+ float g_minz;
+ float g_maxx;
+ float g_maxy;
+ float g_maxz;
  int g_nmean;
  int g_nmean_all;
  int g_mode_cam_centre_of_mass; // camera is set at center of mass => if 1, we draw the grid "blue!"
@@ -23,6 +29,7 @@ int Disp_Tags_Mode;
 float Min_Color;
 float Max_Color;
 float g_landmark_size;
+int g_landmark_auto_rendering_size;
 int g_display_all;
 int g_grid_plane;
 int g_landmark_type;

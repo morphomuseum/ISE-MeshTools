@@ -2299,7 +2299,75 @@ void OBJECT_MESH::Compute_Name_Lists()
 		this->nextobj->Compute_Name_Lists();		
 	}
 }
+void OBJECT_MESH::Calculate_Global_MinMax(float *minx, float *maxx, float *miny, float *maxy, float *minz, float *maxz)
+{
 
+
+
+	//std::cout << " *minx initial value=:" << *minx << std::endl;
+	//std::cout<<"Calculate_GlobalMean min max: "<<level<<" selected="<<selected<< std::endl;
+	float inx = 999999999, axx = -999999999, iny = 999999999, axy = -999999999, inz = 999999999, axz = -999999999;
+	float vv1[3], vv[3];
+
+	float tmpminx, tmpmaxx, tmpminy, tmpmaxy, tmpminz, tmpmaxz;
+	int nbverts = 0;
+
+	glMatrix  wc_mat;
+	this->get_world_coordinates_matrix(wc_mat);
+	
+	nbverts = this->numvert;
+	double vvd[3];
+
+	for (int i = 0; i<this->numvert; i++)	// for each vertex of this
+	{
+		this->GetPoint(i, vvd);
+		vv1[0] = (float)vvd[0];
+		vv1[1] = (float)vvd[1];
+		vv1[2] = (float)vvd[2];
+		ApplyTransformation(vv1, vv, wc_mat);
+		tmpminx = vv[0];
+		//std::cout
+		tmpmaxx = vv[0];
+		tmpminy = vv[1];
+		tmpmaxy = vv[1];
+		tmpminz = vv[2];
+		tmpmaxz = vv[2];
+
+
+		if (tmpminx < inx) { inx = tmpminx; 
+		//	std::cout << "new inx:" << inx << std::endl; 
+		}
+		if (tmpminy < iny) { iny = tmpminy; }
+		if (tmpminz < inz) { inz = tmpminz; }
+
+		if (tmpmaxx > axx) { axx = tmpmaxx; }
+		if (tmpmaxy > axy) { axy = tmpmaxy; }
+		if (tmpmaxz > axz) { axz = tmpmaxz; }
+
+	}
+	
+	if (this->nextobj != NULL)
+	{
+		this->nextobj->Calculate_Global_MinMax(&inx, &axx, &iny, &axy, &inz, &axz);
+	}
+	
+	//std::cout << "inx after a nextobj:" << inx << std::endl;
+	//std::cout << "*minx compared:" << *minx << std::endl;
+	if (*minx > inx) {
+		*minx = inx; 
+		//std::cout << "new *minx:" << *minx << std::endl;
+	}
+	if (*miny > iny) { *miny = iny; }
+	if (*minz > inz) { *minz = inz; }
+
+	if (*maxx < axx) { *maxx = axx; }
+	if (*maxy < axy) { *maxy = axy; }
+	if (*maxz < axz) { *maxz = axz; }
+
+	
+	//std::cout << " *minx set to:" << *minx << std::endl;
+
+}
 void OBJECT_MESH::Calculate_GlobalMean (float *meanx, float *meany, float *meanz,  int *nb, int only_selected)
 {
 	// Que faire quand on n'est pas l'objet basal ????

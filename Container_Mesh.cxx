@@ -5841,14 +5841,19 @@ void CONTAINER_MESH::Set_Blend(int blend_value)
 
 }
 
-void CONTAINER_MESH::Compute_Global_Mean()
+void CONTAINER_MESH::Compute_Global_Mean(int only_selected)
 { 
 	
 	// Compute center of mass of all selected objects
-	this->OBJECTS_ROOT->Compute_Global_Mean();
+	this->OBJECTS_ROOT->Compute_Global_Mean(only_selected);
 }
 
+void CONTAINER_MESH::Compute_Global_MinMax()
+{
 
+	// Compute center of mass of all selected objects
+	this->OBJECTS_ROOT->Compute_Global_MinMax();
+}
 void CONTAINER_MESH::Compute_Global_Scalar_List()
 { 
 	

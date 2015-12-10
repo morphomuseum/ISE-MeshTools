@@ -163,6 +163,7 @@ public:
 		void  Test_Scalar_Selected(std::string myScalar);
 		void  Update_Distinct_Selected_Names(std::string Name);
 		void Calculate_GlobalMean (float *meanx, float *meany, float *meanz, int *nb, int only_selected);
+		void Calculate_Global_MinMax(float *minx, float *maxx, float *miny, float *maxy, float *minz, float *maxz);
 		void Compute_Global_Scalar_List();
 		void Compute_Name_Lists();
 		int Mesh_Select (float xmin, float xmax, float ymin, float ymax);
