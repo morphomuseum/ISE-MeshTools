@@ -265,7 +265,7 @@ void SC_calc_thickness_between_objects(float thickness_max_distance,
 	void Active_InitRGB();
 	void VBO_activated(bool bool_vbo);
 	void FileCurv(OBJECT_MESH * object);
-
+	void Adjust_landmark_rendering_size();
 void Mesh_TPS( int basis, float percentage);
 void Compute_Global_Mean(int only_selected = 1);
 void Compute_Name_Lists();

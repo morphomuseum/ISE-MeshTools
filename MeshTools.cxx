@@ -3808,7 +3808,11 @@ void MeshTools::Delete()
 //	{ 
 		this->Mesh_Delete();
 //}
-this->Compute_Global_Mean(0);	
+this->Compute_Global_Mean(0);
+if (g_landmark_auto_rendering_size)
+{
+	this->Adjust_landmark_rendering_size();
+}
 this->Compute_Global_Scalar_List();
 }
 
@@ -3816,6 +3820,10 @@ void MeshTools::Mesh_DeleteSmallVolume (float volume)
 {
 	Cont_Mesh.Mesh_Delete(2, 100, volume);	
 	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3824,6 +3832,10 @@ void MeshTools::Mesh_DeleteSmall (int numtri)
 {
 	Cont_Mesh.Mesh_Delete(1, numtri, 0);		
 	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->Compute_Global_Scalar_List();
 }
 
@@ -4604,37 +4616,45 @@ void MeshTools::set_g_landmark_auto_rendering_size(int render_mode)
 	else
 	{
 		g_landmark_auto_rendering_size = 1;
-		//g_landmark_size = Cont_Mesh.dmean / 50;
-		Cont_Mesh.Compute_Global_MinMax();
-		std::cout << "" << std::endl;
-		std::cout << "min et max X:" << g_minx<<"   |    "<< g_maxx << std::endl;
-		std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
-		std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
-		std::cout << "" << std::endl;
-
-		float mean_size = 0;
-		mean_size += g_maxx;
-		mean_size += g_maxy;
-		mean_size += g_maxz;
-		mean_size -= g_mean_all[0];
-		mean_size -= g_mean_all[1];
-		mean_size -= g_mean_all[2];
-		g_landmark_size = 1;
-		if (mean_size > 0) { mean_size /= 6; 
-		if (g_landmark_type == 0)
-			{
-				g_landmark_size = mean_size / 10;
-			}
-		else
-		{
-			g_landmark_size = mean_size / 3;
-		}
-		}
-		
-
-		Cont_Mesh.Mesh_container_setlandmarksize(g_landmark_size);
+		this->Adjust_landmark_rendering_size();
 
 	}
+}
+void MeshTools::Adjust_landmark_rendering_size()
+{
+	//g_landmark_size = Cont_Mesh.dmean / 50;
+	Cont_Mesh.Compute_Global_MinMax();
+	std::cout << "" << std::endl;
+	std::cout << "min et max X:" << g_minx << "   |    " << g_maxx << std::endl;
+	std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
+	std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
+	std::cout << "" << std::endl;
+
+	float mean_size = 0;
+	mean_size += abs(g_maxx - g_minx);
+	mean_size += abs(g_maxy - g_miny);
+	mean_size += abs(g_maxz - g_minz);
+	//mean_size -= g_mean_all[0];
+	//mean_size -= g_mean_all[1];
+	//mean_size -= g_mean_all[2];
+	g_landmark_size = 1;
+	if (mean_size > 0) {
+		mean_size /= 6;
+		if (g_landmark_type == 0)
+		{
+			//needles
+			g_landmark_size = mean_size / 10;
+		}
+		else
+		{
+			//spheres
+			g_landmark_size = mean_size / 12;
+		}
+	}
+
+
+	Cont_Mesh.Mesh_container_setlandmarksize(g_landmark_size);
+
 }
 int MeshTools::get_g_landmark_auto_rendering_size()
 {
@@ -6732,6 +6752,10 @@ void MeshTools::Open_POS_File()
 	}//switch
 					
 	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	
 }
 void MeshTools::Open_POS_File_Inv()
@@ -7032,6 +7056,10 @@ void MeshTools::Open_POS_File_Inv()
 		}//default
 	}//switch
 	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	
 }
 
@@ -7615,6 +7643,10 @@ void MeshTools::Open_NTW_File()
 		}//default
 	}//switch
 	this->Compute_Global_Mean(0);
+	if (g_landmark_auto_rendering_size)
+	{
+		this->Adjust_landmark_rendering_size();
+	}
 	this->redraw();
 	
 }
@@ -8885,14 +8917,14 @@ void MeshTools::Open_Mesh_File()
 								std::cout << "FloatNorms POINTS is null " << std::endl;
 						}
 
-						if (MyObj->GetNumberOfPoints()>10)
+						if (MyObj->GetNumberOfPoints() > 10)
 						{
 
 
-							std::string newname=fl_filename_name(filename.c_str());
+							std::string newname = fl_filename_name(filename.c_str());
 
-							int nPos = newname.find_first_of(".");			
-							if ( nPos > -1 )
+							int nPos = newname.find_first_of(".");
+							if (nPos > -1)
 							{
 								newname = newname.substr(0, nPos);
 							}
@@ -8901,32 +8933,32 @@ void MeshTools::Open_Mesh_File()
 							My_Obj->Set_Active_Scalar();
 							int numpoints = My_Obj->GetNumberOfPoints();
 							int numtriangles = My_Obj->GetNumberOfCells();
-							std::cout << "Number of points:"<<numpoints<< std::endl;
-							std::cout << "Number of cells:"<<numtriangles<< std::endl;
+							std::cout << "Number of points:" << numpoints << std::endl;
+							std::cout << "Number of cells:" << numtriangles << std::endl;
 
 							//std::cout << "2 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-							
+
 							//std::cout << "3 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-						
-							My_Obj->selected = 1;		
-							
-							
+
+							My_Obj->selected = 1;
+
+
 							cout << "color init: ";
 							vtkSmartPointer<vtkUnsignedCharArray> newcolors =
 								vtkSmartPointer<vtkUnsignedCharArray>::New();
 							newcolors->SetNumberOfComponents(4);
 							newcolors->SetNumberOfTuples(numpoints);
 							//ici init_RGB ou RGB_i
-							if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL){
+							if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL) {
 								newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
-								
+
 								for (int i = 0; i < numpoints; i++)
 									newcolors->SetComponent(i, 3, 255.);
-								
+
 								newcolors->SetName("Init_RGB");
 								My_Obj->GetPointData()->AddArray(newcolors);
 							}
-							cout << "ok."<<endl;
+							cout << "ok." << endl;
 
 							My_Obj->color[0] = color_obj[0];
 							My_Obj->color[1] = color_obj[1];
@@ -8935,26 +8967,30 @@ void MeshTools::Open_Mesh_File()
 
 							My_Obj->bool_init_buf = 0;
 							// Only update RGB if not exists!
-							
-							 vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)My_Obj->GetPointData()->GetScalars("RGB");
-							if (test ==NULL)
+
+							vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)My_Obj->GetPointData()->GetScalars("RGB");
+							if (test == NULL)
 							{
 								My_Obj->Update_RGB();
 							}
-							
+
 
 							//std::cout << "4 Mean x:"<<My_Obj->mean[0]<< "Mean y:"<<My_Obj->mean[1]<< "Mean z:"<<My_Obj->mean[2]<< std::endl;
-							
-							
+
+
 							//Move object at center of mass only in some cases
-							if(g_move_cm==1)
+							if (g_move_cm == 1)
 							{
-								My_Obj->Mat2[3][0]= -My_Obj->mean[0];
-								My_Obj->Mat2[3][1]=-My_Obj->mean[1]; 
-								My_Obj->Mat2[3][2]=-My_Obj->mean[2];
+								My_Obj->Mat2[3][0] = -My_Obj->mean[0];
+								My_Obj->Mat2[3][1] = -My_Obj->mean[1];
+								My_Obj->Mat2[3][2] = -My_Obj->mean[2];
 							}
-							
+
 							this->Compute_Global_Mean(0);
+							if (g_landmark_auto_rendering_size)
+							{
+								this->Adjust_landmark_rendering_size();
+							}
 							this->Compute_Global_Scalar_List();
 							
 						}
