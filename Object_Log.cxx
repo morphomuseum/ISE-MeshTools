@@ -883,7 +883,7 @@ void OBJECT_LOG::Compute_Global_MinMax()
 
 	glPopMatrix();
 }
-void OBJECT_LOG::Compute_Global_Mean()
+void OBJECT_LOG::Compute_Global_Mean(int only_selected)
 {
 	float meanx=0;
 	float meany=0;
@@ -908,21 +908,24 @@ void OBJECT_LOG::Compute_Global_Mean()
 		g_mean[0]=0;
 		g_nmean=0;
 	}
-	this->Calculate_GlobalMean(&meanx, &meany, &meanz, &nmean, 0); // computes for all objects
+	if (only_selected == 0)
+	{
+		this->Calculate_GlobalMean(&meanx, &meany, &meanz, &nmean, 0); // computes for all objects
 
-	if (nmean >0)
-	{
-		g_mean_all[0] = meanx / nmean;
-		g_mean_all[1] = meany / nmean;
-		g_mean_all[2] = meanz / nmean;
-		g_nmean_all = nmean;
-	}
-	else
-	{
-		g_mean_all[1] = 0;
-		g_mean_all[2] = 0;
-		g_mean_all[0] = 0;
-		g_nmean_all = 0;
+		if (nmean > 0)
+		{
+			g_mean_all[0] = meanx / nmean;
+			g_mean_all[1] = meany / nmean;
+			g_mean_all[2] = meanz / nmean;
+			g_nmean_all = nmean;
+		}
+		else
+		{
+			g_mean_all[1] = 0;
+			g_mean_all[2] = 0;
+			g_mean_all[0] = 0;
+			g_nmean_all = 0;
+		}
 	}
 	glPopMatrix();
 	/*std::cout << "g_mean[0]:"<<g_mean[0]<< std::endl;

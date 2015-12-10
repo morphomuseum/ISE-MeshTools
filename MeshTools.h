@@ -267,7 +267,7 @@ void SC_calc_thickness_between_objects(float thickness_max_distance,
 	void FileCurv(OBJECT_MESH * object);
 
 void Mesh_TPS( int basis, float percentage);
-void Compute_Global_Mean();
+void Compute_Global_Mean(int only_selected = 1);
 void Compute_Name_Lists();
 void Compute_Global_Scalar_List();
 

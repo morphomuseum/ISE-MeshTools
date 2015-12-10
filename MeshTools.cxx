@@ -903,11 +903,11 @@ void MeshTools::Print_Global_Scalar_List()
            }
 }
 
-void MeshTools::Compute_Global_Mean()
+void MeshTools::Compute_Global_Mean(int only_selected)
 { // Compute center of mass of all selected objects
 	
-	this->Cont_Mesh.Compute_Global_Mean();
-	if (g_mode_cam_centre_of_mass == 1)
+	this->Cont_Mesh.Compute_Global_Mean(only_selected);
+	if (g_mode_cam_centre_of_mass == 1 && only_selected ==0)
 	{
 		this->Cam_Centre_At_Landmark(-2);
 	}
@@ -3596,12 +3596,12 @@ void MeshTools::Change_Disp_Triangle_Ids()
 void MeshTools::Ungroup()
 {
 	Cont_Mesh.Mesh_Ungroup();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 }
 void MeshTools::Group()
 {
 	Cont_Mesh.Mesh_Group();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 }
 void MeshTools::Mesh_Add_landmark()
 {
@@ -3616,7 +3616,7 @@ void MeshTools::Mesh_UnselectAll()
 {
 
 	Cont_Mesh.Mesh_UnselectAll();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	this->Compute_Global_Scalar_List();
 
 }
@@ -3625,7 +3625,7 @@ void MeshTools::Mesh_SelectAll()
 {
 
 	Cont_Mesh.Mesh_SelectAll();
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3808,14 +3808,14 @@ void MeshTools::Delete()
 //	{ 
 		this->Mesh_Delete();
 //}
-this->Compute_Global_Mean();	
+this->Compute_Global_Mean(0);	
 this->Compute_Global_Scalar_List();
 }
 
 void MeshTools::Mesh_DeleteSmallVolume (float volume)
 {
 	Cont_Mesh.Mesh_Delete(2, 100, volume);	
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3823,7 +3823,7 @@ void MeshTools::Mesh_DeleteSmallVolume (float volume)
 void MeshTools::Mesh_DeleteSmall (int numtri)
 {
 	Cont_Mesh.Mesh_Delete(1, numtri, 0);		
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
 	this->Compute_Global_Scalar_List();
 }
 
@@ -3937,8 +3937,8 @@ void MeshTools::rollinit_objects()
 		camera.atx = g_mean_all[0];
 		camera.aty = g_mean_all[1];
 		camera.atz = g_mean_all[2];
-		camera.tx = -g_mean_all[0];
-		camera.ty = -g_mean_all[1];
+		//camera.tx = -g_mean_all[0];
+		//camera.ty = -g_mean_all[1];
 		//camera.tz -= g_mean_all[2];
 	}
 
@@ -4011,7 +4011,7 @@ void MeshTools::Mesh_Select(int x1, int x2, int y1, int y2, int select_mode)
 	//std::cout<<"Start Mesh Select"<<std::endl;
 	Cont_Mesh.Mesh_Select(xmin, xmax, ymin, ymax, select_mode);
 	//std::cout<<"Compute global mean"<<std::endl;
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(1);
 	//std::cout<<"Compute global scalar list"<<std::endl;
 	this->Compute_Global_Scalar_List();
 	//std::cout<<"Mesh Select done"<<std::endl;
@@ -6731,7 +6731,7 @@ void MeshTools::Open_POS_File()
 		}//default
 	}//switch
 					
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
 	
 }
 void MeshTools::Open_POS_File_Inv()
@@ -7031,7 +7031,7 @@ void MeshTools::Open_POS_File_Inv()
 			}//if file exists
 		}//default
 	}//switch
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
 	
 }
 
@@ -7614,7 +7614,7 @@ void MeshTools::Open_NTW_File()
 			}//if file exists
 		}//default
 	}//switch
-	this->Compute_Global_Mean();
+	this->Compute_Global_Mean(0);
 	this->redraw();
 	
 }
@@ -8954,7 +8954,7 @@ void MeshTools::Open_Mesh_File()
 								My_Obj->Mat2[3][2]=-My_Obj->mean[2];
 							}
 							
-							this->Compute_Global_Mean();
+							this->Compute_Global_Mean(0);
 							this->Compute_Global_Scalar_List();
 							
 						}

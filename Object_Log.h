@@ -55,7 +55,7 @@ int nmean; // number of poinds used to compute nmean;
 void Compute_Global_MinMax();
 
 
-void Compute_Global_Mean(); // Compute center of mass of all selected objects (only applies to root objects)
+void Compute_Global_Mean(int only_selected = 1); // Compute center of mass of all selected objects (only applies to root objects)
 void Compute_Global_Scalar_List();
 void Compute_Name_Lists();
  void Update_RGB();
