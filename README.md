@@ -38,7 +38,7 @@ To add the PPA and install MeshTools run:
 Windows binaries are downloadable at the following address : http://morphomuseum.com/meshtools 
   
 ##Build MeshTools on Windows
-###1) install visual studio express for desktop ()
+###1) install visual studio express for desktop.
 ###2) download and install glew (http://glew.sourceforge.net/). 
 ###3) download and install CMAKE (>=3.3.x) (http://cmake.org).
 ###4) download and build FLTK (1.3.x) (http://fltk.org) using CMAKE. 
