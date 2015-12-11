@@ -264,6 +264,7 @@ void SC_calc_thickness_between_objects(float thickness_max_distance,
 	void Mesh_draw_ICPMode_info(int x, int y);
 	void Active_InitRGB();
 	void VBO_activated(bool bool_vbo);
+	float get_objects_centre_of_mass(int xyz);
 	void FileCurv(OBJECT_MESH * object);
 	void Adjust_landmark_rendering_size();
 void Mesh_TPS( int basis, float percentage);

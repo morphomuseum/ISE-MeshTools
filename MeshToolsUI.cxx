@@ -3450,7 +3450,14 @@ void MeshToolsUI::cb_zoom(SpecialRoller4* o, void* v) {
 }
 
 void MeshToolsUI::cb_CP_cut_half2_i(Fl_Button*, void*) {
-  MT->cam_validate(
+  float tz = 0;
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz = 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+MT->cam_validate(
 	MT->cam_getnear(),
 	MT->cam_getfar(),
 	MT->cam_getaz(),
@@ -3458,7 +3465,7 @@ void MeshToolsUI::cb_CP_cut_half2_i(Fl_Button*, void*) {
 	MT->cam_gettw(),
 	MT->cam_gettx(),
 	MT->cam_getty(),
-	0
+	tz
 );
 
 MT->redraw();
@@ -3536,7 +3543,15 @@ static unsigned char idata_Clipping_plane_z0[] =
 static Fl_RGB_Image image_Clipping_plane_z0(idata_Clipping_plane_z0, 20, 20, 4, 0);
 
 void MeshToolsUI::cb_CP_normal_cp2_i(Fl_Button*, void*) {
-  MT->cam_validate(
+  float tz = -0.5*MT->cam_getfar();
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz += 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+
+MT->cam_validate(
 	MT->cam_getnear(),
 	MT->cam_getfar(),
 	MT->cam_getaz(),
@@ -3544,8 +3559,8 @@ void MeshToolsUI::cb_CP_normal_cp2_i(Fl_Button*, void*) {
 	MT->cam_gettw(),
 	MT->cam_gettx(),
 	MT->cam_getty(),
-	-0.5*MT->cam_getfar()
-);
+        tz
+       );
 
 MT->redraw();
 }
@@ -3673,7 +3688,15 @@ Cam_az->value(MT->cam_getaz());
 Cam_el->value(MT->cam_getel());
 Cam_tw->value(MT->cam_gettw());
 //MT->panz(0);
-Cam_tz->value(0);
+
+float tz = 0;
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz = 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+Cam_tz->value(tz);
 MT->cam_validate(
 Cam_near->value(),
 Cam_far->value(),
@@ -3701,7 +3724,13 @@ Cam_az->value(MT->cam_getaz());
 Cam_el->value(MT->cam_getel());
 Cam_tw->value(MT->cam_gettw());
 //MT->panz(-0.5*Cam_far->value());
-Cam_tz->value(-0.5*Cam_far->value());
+float tz = -0.5*MT->cam_getfar();
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz += 	-1*MT->get_objects_centre_of_mass(2);
+}
+Cam_tz->value(tz);
 MT->cam_validate(
 Cam_near->value(),
 Cam_far->value(),
@@ -8556,7 +8585,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Group* Bottom
     mainWindow->end();
   } // Fl_Double_Window* mainWindow
-  { camWindow = new Fl_Double_Window(157, 312, "Camera options");
+  { camWindow = new Fl_Double_Window(200, 325, "Camera options");
     camWindow->color((Fl_Color)174);
     camWindow->user_data((void*)(this));
     { Cam_near = new Fl_Value_Input(99, 15, 52, 25, "Camera near :");
@@ -8598,6 +8627,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Button* CP_normal_cp
     camWindow->set_non_modal();
     camWindow->end();
+    camWindow->resizable(camWindow);
   } // Fl_Double_Window* camWindow
   { optWindow = new Fl_Double_Window(366, 319, "General options");
     optWindow->color((Fl_Color)94);
@@ -8737,7 +8767,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(370, 370, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(374, 371, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(10, 28, 350, 160, "Landmarks rendering");
@@ -10721,7 +10751,7 @@ trix\" (old version correction)");
     tags_convert_Window->set_non_modal();
     tags_convert_Window->end();
   } // Fl_Double_Window* tags_convert_Window
-  { orientationWindow = new Fl_Double_Window(251, 239, "Edit orientation labels");
+  { orientationWindow = new Fl_Double_Window(251, 251, "Edit orientation labels");
     orientationWindow->color((Fl_Color)215);
     orientationWindow->user_data((void*)(this));
     { Ok_orientation = new Fl_Button(55, 200, 65, 25, "Ok");

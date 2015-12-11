@@ -1145,6 +1145,7 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	
 	g_scalar_list_selected.clear();
 	g_landmark_size = 10; // 10 mm landmarks
+
 	g_landmark_size =  ExistingDF.GetFloat("size", "landmarks");
 	g_landmark_auto_rendering_size = ExistingDF.GetFloat("auto_rendering_size", "landmarks");
 	
@@ -2801,6 +2802,19 @@ void MeshTools::color_setobjcolor (uchar r, uchar g, uchar b)
 
 	
 }
+float MeshTools::get_objects_centre_of_mass(int xyz)
+{
+	if (xyz >= 0 && xyz < 3) {
+		return g_mean_all[xyz]
+			;
+	}
+	else
+
+	{
+		return 0;
+	}
+
+}
 void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 {
 	if (landmark_number>=0)
@@ -2943,11 +2957,13 @@ void MeshTools::draw() {
 		
 			if (g_fov_adapt==0)
 			{
+				//to change!!!!
 				camera.tz = -100;
 				camera.far1 = 200;
 			}
 			else
 			{
+				// to change according to object size!!!
 				float opt_fov_depth = this->Get_Optimal_FOV_Depth();
 				camera.far1 = opt_fov_depth;
 				camera.tz = -opt_fov_depth/2;	

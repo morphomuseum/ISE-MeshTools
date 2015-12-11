@@ -11,8 +11,8 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);}
-      private image {pixmap/s_face.gif} xywh {403 130 992 692} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);} open
+      private image {pixmap/s_face.gif} xywh {-32000 -32000 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -1372,7 +1372,14 @@ MT->redraw();}
               class SpecialRoller4
             }
             Fl_Button CP_cut_half2 {
-              callback {MT->cam_validate(
+              callback {float tz = 0;
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz = 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+MT->cam_validate(
 	MT->cam_getnear(),
 	MT->cam_getfar(),
 	MT->cam_getaz(),
@@ -1380,14 +1387,22 @@ MT->redraw();}
 	MT->cam_gettw(),
 	MT->cam_gettx(),
 	MT->cam_getty(),
-	0
+	tz
 );
 
 MT->redraw();}
               tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {980 464 20 20}
             }
             Fl_Button CP_normal_cp2 {
-              callback {MT->cam_validate(
+              callback {float tz = -0.5*MT->cam_getfar();
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz += 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+
+MT->cam_validate(
 	MT->cam_getnear(),
 	MT->cam_getfar(),
 	MT->cam_getaz(),
@@ -1395,8 +1410,8 @@ MT->redraw();}
 	MT->cam_gettw(),
 	MT->cam_gettx(),
 	MT->cam_getty(),
-	-0.5*MT->cam_getfar()
-);
+        tz
+       );
 
 MT->redraw();}
               tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {980 484 20 20}
@@ -1435,8 +1450,8 @@ MT->redraw();}
       }
     }
     Fl_Window camWindow {
-      label {Camera options}
-      image {pixmap/s_back_13.gif} xywh {8 30 157 312} type Double color 174 hide non_modal
+      label {Camera options} open
+      image {pixmap/s_back_13.gif} xywh {16 38 200 325} type Double color 174 hide resizable non_modal
     } {
       Fl_Value_Input Cam_near {
         label {Camera near :}
@@ -1495,7 +1510,15 @@ Cam_az->value(MT->cam_getaz());
 Cam_el->value(MT->cam_getel());
 Cam_tw->value(MT->cam_gettw());
 //MT->panz(0);
-Cam_tz->value(0);
+
+float tz = 0;
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz = 	-1*MT->get_objects_centre_of_mass(2);
+}
+
+Cam_tz->value(tz);
 MT->cam_validate(
 Cam_near->value(),
 Cam_far->value(),
@@ -1520,7 +1543,13 @@ Cam_az->value(MT->cam_getaz());
 Cam_el->value(MT->cam_getel());
 Cam_tw->value(MT->cam_gettw());
 //MT->panz(-0.5*Cam_far->value());
-Cam_tz->value(-0.5*Cam_far->value());
+float tz = -0.5*MT->cam_getfar();
+int dispmode = MT->Get_mode_cam_centre_of_mass();
+if (dispmode ==1)
+{
+	tz += 	-1*MT->get_objects_centre_of_mass(2);
+}
+Cam_tz->value(tz);
 MT->cam_validate(
 Cam_near->value(),
 Cam_far->value(),
@@ -1531,7 +1560,7 @@ Cam_tx->value(),
 Cam_ty->value(),
 Cam_tz->value()
 );
-MT->redraw();}
+MT->redraw();} selected
         tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {117 252 25 23} color 84 selection_color 92 align 128
       }
     }
@@ -4466,8 +4495,8 @@ tags_convert_hide();}
       }
     }
     Fl_Window orientationWindow {
-      label {Edit orientation labels} open
-      image {pixmap/s_back_13.gif} xywh {62 146 243 231} type Double color 215 resizable non_modal visible
+      label {Edit orientation labels}
+      image {pixmap/s_back_13.gif} xywh {66 150 251 251} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_orientation {
         label Ok
@@ -4483,7 +4512,7 @@ x2 = x_minus_l->value();
 MT->set_orientation_labels(z1,z2,y1,y2,x1,x2);
 MT->save_ini_param();
 MT->redraw();
-//name_hide();} selected
+//name_hide();}
         tooltip {Set name to "label" value to first selected surface object} xywh {55 200 65 25} color 134 selection_color 92
       }
       Fl_Button Cancel_orientation {
@@ -5494,8 +5523,7 @@ color_data->activate();
       }
     }
   }
-  Function {show(int argc, char **argv)} {open
-  } {
+  Function {show(int argc, char **argv)} {} {
     code {\#ifdef WIN32
 	mainWindow->icon((char*)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
 \#endif	
