@@ -1110,7 +1110,17 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	strncpy(inipath, homedir, sizeof(inipath));
 	strncat(inipath, inifile, sizeof(inipath));
 	std::cout << "Init file is at "  <<  inipath << std::endl;
+	CDataFile ExistingDF2(inipath, 1);
+	int ini_file_exists = ExistingDF2.GetInt("exists", "ini_file");
+	std::cout << "ini file exists:" << ini_file_exists << std::endl;
+	if (ini_file_exists !=1)
+	{
+		this->initialize_ini_file();
+		
+	}
+
 	CDataFile ExistingDF(inipath, 1);
+
 	select_mode = kpressed = 0;
 	this->disp_cull_face = 0;
 	bool_change_mode = 1;
@@ -4708,10 +4718,253 @@ void MeshTools::ShowOrientation()
 	else
 	{ showorientation =0;}
 }
+void MeshTools::initialize_ini_file()
+{
+	CDataFile ExistingDF(inipath, 1);
+
+	ExistingDF.SetInt("exists", 1, "", "ini_file");
+	ExistingDF.SetInt("id", 0,"", "color_scale");
+	ExistingDF.SetFloat("lightpos1", 90, "", "lightposition");
+	ExistingDF.SetFloat("lightpos2", 0, "", "lightposition");
+	ExistingDF.SetFloat("ambiant", 0.25, "", "lightposition");
+	ExistingDF.SetFloat("diffuse", 1.0, "", "lightposition");
+	ExistingDF.SetFloat("specular", 0.2, "", "lightposition");
+
+
+
+	ExistingDF.SetFloat("r", 1.0, "", "color_arrow");
+	ExistingDF.SetFloat("g", 0.0, "", "color_arrow");
+	ExistingDF.SetFloat("b", 0.0, "", "color_arrow");
+
+	ExistingDF.SetFloat("r", 0.65, "", "color_grid");
+	ExistingDF.SetFloat("g", 0.65, "", "color_grid");
+	ExistingDF.SetFloat("b", 0.65, "", "color_grid");
+
+	ExistingDF.SetFloat("r", 0.3, "", "color_back");
+	ExistingDF.SetFloat("g", 0.3, "", "color_back");
+	ExistingDF.SetFloat("b", 0.3, "", "color_back");
+
+	ExistingDF.SetFloat("r", 0.63, "", "color_obj");
+	ExistingDF.SetFloat("g", 0.57, "", "color_obj");
+	ExistingDF.SetFloat("b", 0.37, "", "color_obj");
+
+	ExistingDF.SetFloat("r", 1, "", "g_flag_color");
+	ExistingDF.SetFloat("g", 0, "", "g_flag_color");
+	ExistingDF.SetFloat("b", 0, "", "g_flag_color");
+	ExistingDF.SetFloat("length", 30, "", "g_flag_length");
+
+	ExistingDF.SetFloat("r", 0, "", "color_surf_max");
+	ExistingDF.SetFloat("g", 0, "", "color_surf_max");
+	ExistingDF.SetFloat("b", 1, "", "color_surf_max");
+
+	ExistingDF.SetFloat("r", 0, "", "color_surf_min");
+	ExistingDF.SetFloat("g", 1, "", "color_surf_min");
+	ExistingDF.SetFloat("b", 0, "", "color_surf_min");
+
+	ExistingDF.SetFloat("r", 0, "", "color_distnorm_max");
+	ExistingDF.SetFloat("g",0, "", "color_distnorm_max");
+	ExistingDF.SetFloat("b", 1, "", "color_distnorm_max");
+
+	ExistingDF.SetFloat("r", 0, "", "color_distnorm_min");
+	ExistingDF.SetFloat("g", 1, "", "color_distnorm_min");
+	ExistingDF.SetFloat("b", 0, "", "color_distnorm_min");
+
+	ExistingDF.SetFloat("color_surf_range_min", 0, "", "color_surf_range");
+	ExistingDF.SetFloat("color_surf_range_max", 10, "", "color_surf_range");
+
+	ExistingDF.SetFloat("color_distnorm_range_min", -10, "", "color_distnorm_range");
+	ExistingDF.SetFloat("color_distnorm_range_max", 10, "", "color_distnorm_range");
+	
+
+	ExistingDF.SetInt("id", 1, "", "active_tag");
+
+	ExistingDF.SetInt("all", 1, "", "display");
+
+	ExistingDF.SetFloat("size", 10, "", "landmarks");
+	ExistingDF.SetFloat("auto_rendering_size", 1, "", "landmarks");
+	ExistingDF.SetInt("type", 1, "", "landmarks");
+	ExistingDF.SetInt("move_at_cm", 0, "", "surfaces");
+	ExistingDF.SetInt("move_at_cm", 0, "", "camera");
+	ExistingDF.SetInt("adapt", 1, "", "fov");
+
+
+	ExistingDF.SetInt("auto_zoom", 0, "", "surfaces");
+	ExistingDF.SetInt("auto_delete", 0, "", "structure");
+	ExistingDF.SetInt("2_sides", 0, "", "lightning");
+
+	ExistingDF.SetValue("z_plus", "dorsal", "", "orientation");
+	ExistingDF.SetValue("z_minus", "ventral", "", "orientation");
+
+	ExistingDF.SetValue("y_plus", "left", "", "orientation");
+	ExistingDF.SetValue("y_minus", "right", "", "orientation");
+
+	ExistingDF.SetValue("x_plus", "mesial", "", "orientation");
+	ExistingDF.SetValue("x_minus", "distal", "", "orientation");
+
+
+	ExistingDF.SetFloat("r",1, "", "tag_00");
+	ExistingDF.SetFloat("g", 0, "", "tag_00");
+	ExistingDF.SetFloat("b", 0, "", "tag_00");
+	ExistingDF.SetFloat("a", 1, "", "tag_00");
+	ExistingDF.SetValue("label", "exterior", "", "tag_00");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_01");
+	ExistingDF.SetFloat("g", 1, "", "tag_01");
+	ExistingDF.SetFloat("b", 0, "", "tag_01");
+	ExistingDF.SetFloat("a", 1, "", "tag_01");
+	ExistingDF.SetValue("label", "tag 01", "", "tag_01");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_02");
+	ExistingDF.SetFloat("g", 0, "", "tag_02");
+	ExistingDF.SetFloat("b", 1, "", "tag_02");
+	ExistingDF.SetFloat("a", 1, "", "tag_02");
+	ExistingDF.SetValue("label", "tag 02", "", "tag_02");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_03");
+	ExistingDF.SetFloat("g", 1, "", "tag_03");
+	ExistingDF.SetFloat("b", 0, "", "tag_03");
+	ExistingDF.SetFloat("a", 1, "", "tag_03");
+	ExistingDF.SetValue("label", "tag 03", "", "tag_03");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_04");
+	ExistingDF.SetFloat("g", 0, "", "tag_04");
+	ExistingDF.SetFloat("b", 1, "", "tag_04");
+	ExistingDF.SetFloat("a", 1, "", "tag_04");
+	ExistingDF.SetValue("label", "tag 04", "", "tag_04");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_05");
+	ExistingDF.SetFloat("g", 1, "", "tag_05");
+	ExistingDF.SetFloat("b", 1, "", "tag_05");
+	ExistingDF.SetFloat("a", 1, "", "tag_05");
+	ExistingDF.SetValue("label", "tag 05", "", "tag_05");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_06");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_06");
+	ExistingDF.SetFloat("b", 0, "", "tag_06");
+	ExistingDF.SetFloat("a", 1, "", "tag_06");
+	ExistingDF.SetValue("label", "tag 06", "", "tag_06");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_07");
+	ExistingDF.SetFloat("g", 0, "", "tag_07");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_07");
+	ExistingDF.SetFloat("a", 1, "", "tag_03");
+	ExistingDF.SetValue("label", "tag 07", "", "tag_07");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_08");
+	ExistingDF.SetFloat("g", 1, "", "tag_08");
+	ExistingDF.SetFloat("b", 0, "", "tag_08");
+	ExistingDF.SetFloat("a", 1, "", "tag_08");
+	ExistingDF.SetValue("label", "tag 08", "", "tag_08");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_09");
+	ExistingDF.SetFloat("g", 1, "", "tag_09");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_09");
+	ExistingDF.SetFloat("a", 1, "", "tag_09");
+	ExistingDF.SetValue("label", "tag 09", "", "tag_09");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_10");
+	ExistingDF.SetFloat("g", 0, "", "tag_10");
+	ExistingDF.SetFloat("b", 1, "", "tag_10");
+	ExistingDF.SetFloat("a", 1, "", "tag_10");
+	ExistingDF.SetValue("label", "tag 10", "", "tag_10");
+
+
+	ExistingDF.SetFloat("r", 0, "", "tag_11");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_11");
+	ExistingDF.SetFloat("b", 1, "", "tag_11");
+	ExistingDF.SetFloat("a", 1, "", "tag_11");
+	ExistingDF.SetValue("label", "tag 11", "", "tag_11");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_12");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_12");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_12");
+	ExistingDF.SetFloat("a", 1, "", "tag_12");
+	ExistingDF.SetValue("label", "tag 12", "", "tag_12");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_13");
+	ExistingDF.SetFloat("g", 1, "", "tag_13");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_13");
+	ExistingDF.SetFloat("a", 1, "", "tag_13");
+	ExistingDF.SetValue("label", "tag 13", "", "tag_13");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_14");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_14");
+	ExistingDF.SetFloat("b", 1, "", "tag_14");
+	ExistingDF.SetFloat("a", 1, "", "tag_14");
+	ExistingDF.SetValue("label", "tag 14", "", "tag_14");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_15");
+	ExistingDF.SetFloat("g", 0, "", "tag_15");
+	ExistingDF.SetFloat("b", 0, "", "tag_15");
+	ExistingDF.SetFloat("a", 1, "", "tag_15");
+	ExistingDF.SetValue("label", "tag 15", "", "tag_15");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_16");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_16");
+	ExistingDF.SetFloat("b", 0, "", "tag_16");
+	ExistingDF.SetFloat("a", 1, "", "tag_16");
+	ExistingDF.SetValue("label", "tag 16", "", "tag_16");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_17");
+	ExistingDF.SetFloat("g", 0, "", "tag_17");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_17");
+	ExistingDF.SetFloat("a", 1, "", "tag_17");
+	ExistingDF.SetValue("label", "tag 17", "", "tag_17");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_18");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_18");
+	ExistingDF.SetFloat("b", 0, "", "tag_18");
+	ExistingDF.SetFloat("a", 1, "", "tag_18");
+	ExistingDF.SetValue("label", "tag 18", "", "tag_18");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_19");
+	ExistingDF.SetFloat("g", 0, "", "tag_19");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_19");
+	ExistingDF.SetFloat("a", 1, "", "tag_19");
+	ExistingDF.SetValue("label", "tag 19", "", "tag_19");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_20");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_20");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_20");
+	ExistingDF.SetFloat("a", 1, "", "tag_20");
+	ExistingDF.SetValue("label", "tag 20", "", "tag_20");
+
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_21");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_21");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_21");
+	ExistingDF.SetFloat("a", 1, "", "tag_21");
+	ExistingDF.SetValue("label", "tag 21", "", "tag_21");
+
+	ExistingDF.SetFloat("r", 0.7, "", "tag_22");
+	ExistingDF.SetFloat("g", 0.3, "", "tag_22");
+	ExistingDF.SetFloat("b", 0, "", "tag_22");
+	ExistingDF.SetFloat("a", 1, "", "tag_22");
+	ExistingDF.SetValue("label", "tag 22", "", "tag_22");
+
+	ExistingDF.SetFloat("r", 0.3, "", "tag_23");
+	ExistingDF.SetFloat("g",0.7, "", "tag_23");
+	ExistingDF.SetFloat("b", 0, "", "tag_23");
+	ExistingDF.SetFloat("a", 1, "", "tag_23");
+	ExistingDF.SetValue("label", "tag 23", "", "tag_23");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_24");
+	ExistingDF.SetFloat("g", 0.3, "", "tag_24");
+	ExistingDF.SetFloat("b", 0.7, "", "tag_24");
+	ExistingDF.SetFloat("a", 1, "", "tag_24");
+	ExistingDF.SetValue("label", "tag 24", "", "tag_24");
+
+	//std::cout<<"ir"<<g_tag_colors[24][0]<<"ig"<<g_tag_colors[24][1]<<"ib"<<g_tag_colors[24][1]<<std::endl;
+
+	ExistingDF.Save();
+
+}
 void MeshTools::save_ini_param()
 {
 	CDataFile ExistingDF(inipath, 1);
-	
+
+
+	ExistingDF.SetInt("id", g_color_scale_id, "", "color_scale");
 	ExistingDF.SetFloat("lightpos1", lightpos1,"","lightposition");
 	ExistingDF.SetFloat("lightpos2", lightpos2,"","lightposition");
 	ExistingDF.SetFloat("ambiant", ambiant,"","lightposition");

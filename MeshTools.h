@@ -444,6 +444,7 @@ void Curve_start(int direction);
 void Stick_Selected_Landmarks_On_Surfaces();
 void Save_NTW_File();
 void save_ini_param();
+void initialize_ini_file();
 int Save_POS_File();
 void Save_Infos();
 int Save_POS_File(OBJECT_MESH *My_Obj, std::string filename);
