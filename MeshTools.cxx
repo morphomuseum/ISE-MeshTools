@@ -4666,9 +4666,10 @@ void MeshTools::Adjust_landmark_rendering_size()
 	std::cout << "" << std::endl;
 
 	float mean_size = 0;
-	mean_size += abs(g_maxx - g_minx);
-	mean_size += abs(g_maxy - g_miny);
-	mean_size += abs(g_maxz - g_minz);
+	
+	mean_size += g_maxx - g_minx;
+	mean_size += g_maxy - g_miny;
+	mean_size += g_maxz - g_minz;
 	//mean_size -= g_mean_all[0];
 	//mean_size -= g_mean_all[1];
 	//mean_size -= g_mean_all[2];
@@ -4678,12 +4679,12 @@ void MeshTools::Adjust_landmark_rendering_size()
 		if (g_landmark_type == 0)
 		{
 			//needles
-			g_landmark_size = mean_size / 10;
+			g_landmark_size = mean_size / 8;
 		}
 		else
 		{
 			//spheres
-			g_landmark_size = mean_size / 12;
+			g_landmark_size = mean_size / 20;
 		}
 	}
 
@@ -5439,7 +5440,7 @@ return 1;
 }
 
 
-int MeshTools::Save_flags()
+int MeshTools::Save_FLG_File()
 {
 	
 	int ok=1;
@@ -5561,7 +5562,7 @@ int MeshTools::Save_flags()
 	
 }
 
-int MeshTools::Save_Orientation()
+int MeshTools::Save_ORI_File()
 {
 	
 	std::string filename;
@@ -5621,7 +5622,7 @@ int MeshTools::Save_Orientation()
 	return 1;			
 }
 
-int MeshTools::Save_Tags()
+int MeshTools::Save_TAG_File()
 {
 	
 	std::string filename;
@@ -6607,7 +6608,7 @@ int MeshTools::Save_POS_File()
 
 
 
-void MeshTools::Open_Pos_File( std::string filename, OBJECT_MESH * My_Obj)
+void MeshTools::Open_POS_File( std::string filename, OBJECT_MESH * My_Obj)
 {
 
 
@@ -7645,6 +7646,8 @@ void MeshTools::Open_NTW_File()
 	
 	
 	int i=0;
+	int lmk = 0;
+	int flg = 0;
 	int length;
 	std::string filename;
 	Fl_Native_File_Chooser fnfc;
@@ -7693,224 +7696,355 @@ void MeshTools::Open_NTW_File()
 				int ok=0;
 				while (!feof(filein)) 
 				{		
+
 					sscanf(oneline, "%s\n", param1);
-					
-					if (i==0)
+					std::string myline = param1;
+
+					std::string FLGext(".flg");
+					std::string FLGext2(".FLG");
+					std::string VERext(".ver");
+					std::string VERext2(".VER");
+					std::string CURext(".cur");
+					std::string CURext2(".CUR");
+					std::string STVext(".stv");
+					std::string STVext2(".STV");
+					std::string TAGext(".tag");
+					std::string TAGext2(".TAG");
+					std::string ORIext(".ori");
+					std::string ORIext2(".ORI");
+					int lmk_file = 0;
+
+					std::size_t found = myline.find(FLGext);
+					std::size_t found2 = myline.find(FLGext2);
+					if (found != std::string::npos || found2 != std::string::npos)
 					{
-						
-					  //length=(int)strlen(oneline);						
-					  //strncpy(param1, oneline, length-1);
-						
-						std::string meshname = param1;
-						std::string STLext (".stl");
-						std::string STLext2 (".STL");
-						std::string VTKext (".vtk");
-						std::string VTKext2 (".VTK");
-						std::string OBJext (".obj");
-						std::string OBJext2 (".OBJ");
-						std::string PLYext (".ply");
-						std::string PLYext2 (".PLY");
-						
-						int type =0; //0 = stl, 1 = vtk, 2 = obj, 3 = ply
-						std::size_t found = meshname.find(STLext);
-						std::size_t found2 = meshname.find(STLext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{type=0; 
-							//STL
-						}
-
-						//std::cout << "0Type= " <<type<< std::endl;
-						found = meshname.find(VTKext);
-						found2 = meshname.find(VTKext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{type=1; //VTK
-						}
-						//std::cout << "1Type= " <<type<< std::endl;
-						found = meshname.find(OBJext);
-						found2 = meshname.find(OBJext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{type=2; //OBJ
-						}
-						//std::cout << "2Type= " <<type<< std::endl;
-						found = meshname.find(PLYext);
-						found2 = meshname.find(PLYext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{type=3; //PLY
-						}
-						//std::cout << "3Type= " <<type<< std::endl;
-
-						std::string meshfilename = fl_filename_name(meshname.c_str());
-						OBJECT_MESH *MyObj = NULL;
-						vtkSmartPointer<vtkPolyDataNormals> ObjNormals =  vtkSmartPointer<vtkPolyDataNormals>::New();		
-
-						if(meshname.length()==meshfilename.length())
+						lmk_file = 1;
+						// Now open flag file!
+						std::string flgfilename = fl_filename_name(myline.c_str());
+						if (myline.length() == flgfilename.length())
 						{
-							meshname= path.c_str();
-							meshname.append(meshfilename.c_str());
+							myline = path.c_str();
+							myline.append(flgfilename.c_str());
 						}
+						std::cout << "Try to load flag file :<<" << myline.c_str() << std::endl;
+						this->Open_FLG_File(myline);
+					
+					}
 
-						if (type ==0)
+					found = myline.find(VERext);
+					found2 = myline.find(VERext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						int landmark_mode = 0;
+						// Now open flag file!
+						std::string verfilename = fl_filename_name(myline.c_str());
+						if (myline.length() == verfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(verfilename.c_str());
+						}
+						std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
+						this->Open_VER_File(landmark_mode, myline);
+						// Now open VER file !
+						
+					}
+
+					found = myline.find(CURext);
+					found2 = myline.find(CURext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open flag file!
+						std::string curfilename = fl_filename_name(myline.c_str());
+						if (myline.length() == curfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(curfilename.c_str());
+						}
+						std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+						this->Open_CUR_File(myline);
+						
+
+					}
+
+					found = myline.find(STVext);
+					found2 = myline.find(STVext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						std::string stvfilename = fl_filename_name(myline.c_str());
+						if (myline.length() == stvfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(stvfilename.c_str());
+						}
+						std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+						this->Open_STV_File(myline);
+						// Now open CUR file !
+						
+
+					}
+					found = myline.find(ORIext);
+					found2 = myline.find(ORIext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						std::string orifilename = fl_filename_name(myline.c_str());
+						if (myline.length() == orifilename.length())
+						{
+							myline = path.c_str();
+							myline.append(orifilename.c_str());
+						}
+						std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+						this->Open_ORI_File(myline);
+						// Now open CUR file !
+
+
+					}
+
+					found = myline.find(TAGext);
+					found2 = myline.find(TAGext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						std::string tagfilename = fl_filename_name(myline.c_str());
+						if (myline.length() == tagfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(tagfilename.c_str());
+						}
+						std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+						this->Open_TAG_File(myline);
+						// Now open CUR file !
+
+
+					}
+
+					if (lmk_file == 0)
+					{
+						if (i == 0)
 						{
 
-							vtkSmartPointer<vtkSTLReader> reader =
-							vtkSmartPointer<vtkSTLReader>::New();
+							//length=(int)strlen(oneline);						
+							//strncpy(param1, oneline, length-1);
+							std::string meshname = param1;
+							
+							std::string STLext(".stl");
+							std::string STLext2(".STL");
+							std::string VTKext(".vtk");
+							std::string VTKext2(".VTK");
+							std::string OBJext(".obj");
+							std::string OBJext2(".OBJ");
+							std::string PLYext(".ply");
+							std::string PLYext2(".PLY");
 
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-						}
-						else if (type ==1)
-						{
-							vtkSmartPointer<vtkPolyDataReader> reader =
-							vtkSmartPointer<vtkPolyDataReader>::New();
+							int type = 0; //0 = stl, 1 = vtk, 2 = obj, 3 = ply
+							found = meshname.find(STLext);
+							found2 = meshname.find(STLext2);
+							if (found != std::string::npos || found2 != std::string::npos)
+							{
+								type = 0;
+								//STL
+							}
 
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-						
-						}
-						else if (type ==2)
-						{
-							vtkSmartPointer<vtkOBJReader> reader =
-							vtkSmartPointer<vtkOBJReader>::New();
+							//std::cout << "0Type= " <<type<< std::endl;
+							found = meshname.find(VTKext);
+							found2 = meshname.find(VTKext2);
+							if (found != std::string::npos || found2 != std::string::npos)
+							{
+								type = 1; //VTK
+							}
+							//std::cout << "1Type= " <<type<< std::endl;
+							found = meshname.find(OBJext);
+							found2 = meshname.find(OBJext2);
+							if (found != std::string::npos || found2 != std::string::npos)
+							{
+								type = 2; //OBJ
+							}
+							//std::cout << "2Type= " <<type<< std::endl;
+							found = meshname.find(PLYext);
+							found2 = meshname.find(PLYext2);
+							if (found != std::string::npos || found2 != std::string::npos)
+							{
+								type = 3; //PLY
+							}
+							//std::cout << "3Type= " <<type<< std::endl;
 
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-						
-						}
-						else
-						{
-							vtkSmartPointer<vtkPLYReader> reader =
-							vtkSmartPointer<vtkPLYReader>::New();
+							std::string meshfilename = fl_filename_name(meshname.c_str());
+							OBJECT_MESH *MyObj = NULL;
+							vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
 
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-						
-						}
-						
+							if (meshname.length() == meshfilename.length())
+							{
+								meshname = path.c_str();
+								meshname.append(meshfilename.c_str());
+							}
 
-						
-						
-						ObjNormals->ComputePointNormalsOn();
-						ObjNormals->ComputeCellNormalsOn();
-						//ObjNormals->AutoOrientNormalsOff();
-						ObjNormals->ConsistencyOff();
-						ObjNormals->Update();
-				
-						 vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
-						 cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
-						 cleanPolyDataFilter->PieceInvariantOff();
-						cleanPolyDataFilter->ConvertLinesToPointsOff();
-						cleanPolyDataFilter->ConvertPolysToLinesOff();
-						cleanPolyDataFilter->ConvertStripsToPolysOff();
-						cleanPolyDataFilter->PointMergingOn();
-					   cleanPolyDataFilter->Update();
+							if (type == 0)
+							{
 
-						MyObj= (OBJECT_MESH*)cleanPolyDataFilter->GetOutput();
-						
-						std::cout << "\nNumber of points 1:"<<MyObj->GetNumberOfPoints()<< std::endl;
-						std::cout << "\nNumber of cells 1:"<<MyObj->GetNumberOfCells()<< std::endl;		
+								vtkSmartPointer<vtkSTLReader> reader =
+									vtkSmartPointer<vtkSTLReader>::New();
 
-				
-						vtkFloatArray* norms = vtkFloatArray::SafeDownCast
-							(MyObj->GetCellData()->GetNormals());
-								std::cout << "Safe cell downcast done ! " << std::endl;
-						if(norms)
-						{
+								reader->SetFileName(meshname.c_str());
+								reader->Update();
+								ObjNormals->SetInputData(reader->GetOutput());
+								//MyObj= (OBJECT_MESH*)reader->GetOutput();
+							}
+							else if (type == 1)
+							{
+								vtkSmartPointer<vtkPolyDataReader> reader =
+									vtkSmartPointer<vtkPolyDataReader>::New();
+
+								reader->SetFileName(meshname.c_str());
+								reader->Update();
+								ObjNormals->SetInputData(reader->GetOutput());
+								//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+							}
+							else if (type == 2)
+							{
+								vtkSmartPointer<vtkOBJReader> reader =
+									vtkSmartPointer<vtkOBJReader>::New();
+
+								reader->SetFileName(meshname.c_str());
+								reader->Update();
+								ObjNormals->SetInputData(reader->GetOutput());
+								//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+							}
+							else
+							{
+								vtkSmartPointer<vtkPLYReader> reader =
+									vtkSmartPointer<vtkPLYReader>::New();
+
+								reader->SetFileName(meshname.c_str());
+								reader->Update();
+								ObjNormals->SetInputData(reader->GetOutput());
+								//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+							}
+
+
+
+
+							ObjNormals->ComputePointNormalsOn();
+							ObjNormals->ComputeCellNormalsOn();
+							//ObjNormals->AutoOrientNormalsOff();
+							ObjNormals->ConsistencyOff();
+							ObjNormals->Update();
+
+							vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+							cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+							cleanPolyDataFilter->PieceInvariantOff();
+							cleanPolyDataFilter->ConvertLinesToPointsOff();
+							cleanPolyDataFilter->ConvertPolysToLinesOff();
+							cleanPolyDataFilter->ConvertStripsToPolysOff();
+							cleanPolyDataFilter->PointMergingOn();
+							cleanPolyDataFilter->Update();
+
+							MyObj = (OBJECT_MESH*)cleanPolyDataFilter->GetOutput();
+
+							std::cout << "\nNumber of points 1:" << MyObj->GetNumberOfPoints() << std::endl;
+							std::cout << "\nNumber of cells 1:" << MyObj->GetNumberOfCells() << std::endl;
+
+
+							vtkFloatArray* norms = vtkFloatArray::SafeDownCast
+								(MyObj->GetCellData()->GetNormals());
+							std::cout << "Safe cell downcast done ! " << std::endl;
+							if (norms)
+							{
 
 								std::cout << "There are here " << norms->GetNumberOfTuples()
-							  << " Float Cell normals in norms" << std::endl;
-						}
-						else
-						{
+									<< " Float Cell normals in norms" << std::endl;
+							}
+							else
+							{
 								std::cout << "FloatNorms CELL is null " << std::endl;
-						}
+							}
 
-						norms = vtkFloatArray::SafeDownCast
-							(MyObj->GetPointData()->GetNormals());
-								std::cout << "Safe point downcast done ! " << std::endl;
-						if(norms)
-						{
+							norms = vtkFloatArray::SafeDownCast
+								(MyObj->GetPointData()->GetNormals());
+							std::cout << "Safe point downcast done ! " << std::endl;
+							if (norms)
+							{
 
 								std::cout << "There are  " << norms->GetNumberOfTuples()
-							  << " Float POINT normals in norms" << std::endl;
-						}
-						else
-						{
-								std::cout << "FloatNorms POINTS is null " << std::endl;
-						}
-
-				
-						if (MyObj->GetNumberOfPoints()>10)
-						{
-
-							ok=1;
-							
-							std::string newname=fl_filename_name(param1);
-
-							int nPos = newname.find_first_of(".");			
-							if ( nPos > -1 )
-							{
-								newname = newname.substr(0, nPos);
-							}			
-
-							CheckingName(&newname);
-							My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());	
-							My_Obj->Set_Active_Scalar();
-							
-							My_Obj->selected=1;
-							std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> loaded"<< std::endl;
-						}
-						else
-						{
-							ok=0;
-						}
-													
-						
-					}
-					if (i==1)
-					{	
-						if (ok)
-						{
-							
-						  //length= (int)strlen(oneline);						
-							//strncpy(param1, oneline, length-1);
-							std::string posfile=param1;
-							//posfile = posfile.substr(0, (posfile.length()-1));// for some reason
-												
-							std::string posfilename = fl_filename_name(posfile.c_str());										
-							if(posfile.length()==posfilename.length())
-							{
-								posfile= path.c_str();
-								posfile.append(posfilename.c_str());
+									<< " Float POINT normals in norms" << std::endl;
 							}
-							std::cout <<"Try to load position :<<"<<posfile.c_str()<< std::endl;
-							this->Open_Pos_File(posfile, My_Obj);
-							//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
-							My_Obj->selected =0;
+							else
+							{
+								std::cout << "FloatNorms POINTS is null " << std::endl;
+							}
+
+
+							if (MyObj->GetNumberOfPoints() > 10)
+							{
+
+								ok = 1;
+
+								std::string newname = fl_filename_name(param1);
+
+								int nPos = newname.find_first_of(".");
+								if (nPos > -1)
+								{
+									newname = newname.substr(0, nPos);
+								}
+
+								CheckingName(&newname);
+								My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());
+								My_Obj->Set_Active_Scalar();
+
+								My_Obj->selected = 1;
+								std::cout << "Object <<" << My_Obj->name.c_str() << ">> loaded" << std::endl;
+							}
+							else
+							{
+								ok = 0;
+							}
+
+
 						}
-					}
-					if (i==2)
-					{
-						if (ok)
+						if (i == 1)
 						{
-							sscanf(oneline, "%f %f %f %f\n", &color1, &color2,&color3, &color4);
-							//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
-							My_Obj->color[0] = color1; My_Obj->color[1] = color2;My_Obj->color[2] = color3; My_Obj->color[3] = color4;
-							My_Obj->blend =color4;
-							My_Obj->Update_RGB();
+							if (ok)
+							{
+
+								//length= (int)strlen(oneline);						
+								  //strncpy(param1, oneline, length-1);
+								std::string posfile = param1;
+								//posfile = posfile.substr(0, (posfile.length()-1));// for some reason
+
+								std::string posfilename = fl_filename_name(posfile.c_str());
+								if (posfile.length() == posfilename.length())
+								{
+									posfile = path.c_str();
+									posfile.append(posfilename.c_str());
+								}
+								std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
+								this->Open_POS_File(posfile, My_Obj);
+								//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
+								My_Obj->selected = 0;
+							}
+						}
+						if (i == 2)
+						{
+							if (ok)
+							{
+								sscanf(oneline, "%f %f %f %f\n", &color1, &color2, &color3, &color4);
+								//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
+								My_Obj->color[0] = color1; My_Obj->color[1] = color2; My_Obj->color[2] = color3; My_Obj->color[3] = color4;
+								My_Obj->blend = color4;
+								My_Obj->Update_RGB();
+							}
+						}
+						i++;
+						if (i > 2)
+						{
+							i = 0;
 						}
 					}
-					i ++;
-					if (i>2)
-					{i = 0;}
-					
 					readstr(filein,oneline); //read next line
 						
 				}//While scanff...						
@@ -7933,16 +8067,101 @@ void MeshTools::Selected_Landmarks_Change_Orientation()
 	Cont_Mesh.Selected_Landmarks_Change_Orientation(0);
 	Cont_Mesh.Selected_Landmarks_Change_Orientation(1);
 }
+void MeshTools::Open_VER_File(int landmark_mode, std::string filename)
+{
+	float  param2, param3, param4, param5, param6, param7;
+	char param1[50];
+	FILE	*filein;									// Filename To Open
+														//	OBJECT_LANDMARK * My_Landmark;
+	char	oneline[255];
 
+	std::string VERext(".ver");
+	std::string VERext2(".VER");
+	std::string LMKext(".lmk");
+	std::string LMKext2(".LMK");
+
+	//char *szFile = fl_file_chooser("Load landmarks", "*.{ver,VER,lmk,LMK}", "");	
+	int file_exists = 1;
+	ifstream file(filename.c_str());
+	if (file)
+	{
+		//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+		file.close();
+	}
+	else
+	{
+
+		std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+		file_exists = 0;
+	}
+
+	if (file_exists == 1)
+	{
+
+		int type = 0; //0 = lmk, 1 = ver
+		std::size_t found = filename.find(VERext);
+		std::size_t found2 = filename.find(VERext2);
+		if (found != std::string::npos || found2 != std::string::npos)
+		{
+			type = 1; //VER
+
+		}
+		else
+		{
+			type = 0;
+		}
+
+		//filein = fopen(szFile, "rt");
+		filein = fopen(filename.c_str(), "r");
+		readstr(filein, oneline);
+		feof(filein);
+		std::cout << "Try open landmark file " << std::endl;
+		std::cout << "feof(filein)" << feof(filein) << std::endl;
+
+		vtkSmartPointer<vtkFloatArray> param_list = vtkSmartPointer<vtkFloatArray>::New();
+		param_list->SetNumberOfComponents(1);
+
+		while (!feof(filein))
+		{
+			//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
+			//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));
+			if (type == 1)
+			{
+				sscanf(oneline, "%s %f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7);
+				param_list->InsertNextTuple1(param2);
+				param_list->InsertNextTuple1(param3);
+				param_list->InsertNextTuple1(param4);
+				param_list->InsertNextTuple1(param5);
+				param_list->InsertNextTuple1(param6);
+				param_list->InsertNextTuple1(param7);
+			}
+			else
+			{
+				sscanf(oneline, "%s %f %f %f\n", param1, &param2, &param3, &param4);
+				param_list->InsertNextTuple1(param2);
+				param_list->InsertNextTuple1(param3);
+				param_list->InsertNextTuple1(param4);
+			}
+			create_landmarks(landmark_mode, param_list, type);
+
+			param_list = vtkSmartPointer<vtkFloatArray>::New();
+			param_list->SetNumberOfComponents(1);
+
+
+			readstr(filein, oneline); //read next line
+
+		}//While scanff...
+		fclose(filein);
+		
+	}//if file exists
+
+
+
+}
 void MeshTools::Open_Landmarks(int landmark_mode)
 {
 
-	float  param2, param3, param4, param5, param6, param7;
-	float m_ve[3], m_ven[3], leng;
-	char param1[50];	
-	FILE	*filein;									// Filename To Open
-//	OBJECT_LANDMARK * My_Landmark;
-	char	oneline[255];
+
 	
 
 	Fl_Native_File_Chooser fnfc;
@@ -7964,84 +8183,9 @@ void MeshTools::Open_Landmarks(int landmark_mode)
 		default: 
 		{						
 			std::string filename = this->correct_filename(fnfc.filename());
-			//char *szFile = fl_file_chooser("Load landmarks", "*.{ver,VER,lmk,LMK}", "");	
-			int file_exists=1;
-			ifstream file(filename.c_str());		
-			if (file)
-			{
-				//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
-				file.close();
-			}
-			else
-			{
-				
-				std::cout<<"file:"<<filename.c_str()<<" does not exists."<<std::endl;			
-				file_exists =0;
-			}
+			this->Open_VER_File(landmark_mode, filename);
+			break;
 			
-			if (file_exists==1)
-			{
-				std::string VERext (".ver");
-				std::string VERext2 (".VER");
-				std::string LMKext (".lmk");
-				std::string LMKext2 (".LMK");
-				
-				int type =0; //0 = lmk, 1 = ver
-				std::size_t found = filename.find(VERext);
-				std::size_t found2 = filename.find(VERext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					type=1; //VER
-					
-				}
-				else
-				{
-					type=0;
-				}
-			
-				//filein = fopen(szFile, "rt");
-				filein =fopen(filename.c_str(), "r");	
-				readstr(filein,oneline);
-				feof(filein);
-				std::cout << "Try open landmark file "  << std::endl;
-				std::cout << "feof(filein)"  <<feof(filein)<< std::endl;
-				
-				vtkSmartPointer<vtkFloatArray> param_list = vtkSmartPointer<vtkFloatArray>::New();
-				param_list->SetNumberOfComponents(1);
-
-				while (!feof(filein)) 
-				{		
-					//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
-					//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));
-					if (type ==1)
-					{
-						sscanf(oneline, "%s %f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7);
-						param_list->InsertNextTuple1(param2);
-						param_list->InsertNextTuple1(param3);
-						param_list->InsertNextTuple1(param4);
-						param_list->InsertNextTuple1(param5);
-						param_list->InsertNextTuple1(param6);
-						param_list->InsertNextTuple1(param7);
-					}
-					else
-					{
-						sscanf(oneline, "%s %f %f %f\n", param1, &param2, &param3, &param4);
-						param_list->InsertNextTuple1(param2);
-						param_list->InsertNextTuple1(param3);
-						param_list->InsertNextTuple1(param4);
-					}
-					create_landmarks(landmark_mode,param_list,type);
-
-					param_list = vtkSmartPointer<vtkFloatArray>::New();
-					param_list->SetNumberOfComponents(1);
-
-					
-					readstr(filein,oneline); //read next line
-						
-				}//While scanff...
-				fclose (filein);
-				break;
-			}//if file exists
 		}//default	
 	}//switch		
 
@@ -8162,16 +8306,183 @@ void MeshTools::create_landmarks(int landmark_mode, vtkFloatArray* param_list, i
 	//std::cout << "Landmark well added: " << std::endl;
 }
 
-
-void MeshTools::Open_flags()
+void MeshTools::Open_FLG_File(std::string filename)
 {
-	
+
 	float m_ve[3], m_ven[3], leng;
-	
-	float  param1, param2, param3, param4,param5, param6, param7, param8, param9, param10;
+
+	float  param1, param2, param3, param4, param5, param6, param7, param8, param9, param10;
 	FILE	*filein;									// Filename To Open
+
 	OBJECT_LANDMARK * My_Landmark;
 	char	oneline[1000];
+
+	
+		int file_exists = 1;
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+			filein = fopen(filename.c_str(), "r");
+			readstr(filein, oneline);
+
+			feof(filein);
+			std::cout << "Try open flag file " << std::endl;
+			int cpt = 1;
+			std::string slabel;
+
+			while (!feof(filein))
+			{
+				//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
+				//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));			
+				if (cpt % 2 == 0)
+				{
+					sscanf(oneline, "%f %f %f %f %f %f %f %f %f %f\n", &param1, &param2, &param3, &param4, &param5,
+						&param6, &param7, &param8, &param9, &param10
+						);
+					float length = 25;
+					float r, g, b;
+					r = 0.5;
+					g = 0.5;
+					b = 0.5;
+					if (param7> 0 && param7<500000) { length = param7; }
+					if (param8 >= 0 && param8 <= 1.0) { r = param8; }
+					if (param9 >= 0 && param9 <= 1.0) { g = param9; }
+					if (param10 >= 0 && param10 <= 1.0) { b = param10; }
+					//std::cout<<"Param8="<<param8<<std::endl;
+					//std::cout<<"Param9="<<param9<<std::endl;
+					//std::cout<<"Param10="<<param10<<std::endl;
+					m_ve[0] = param1; m_ve[1] = param2; m_ve[2] = param3;
+					m_ven[0] = param4 - param1; m_ven[1] = param5 - param2; m_ven[2] = param6 - param3;
+					//std::cout << "Read line"  << param1 <<"  "<< param2<<"  " <<param3<<"  "
+					//	<<param4 <<"  "<<param5<<"  " <<param6<<"  " <<param7 <<std::endl;
+
+					leng = sqrt(m_ven[0] * m_ven[0] + m_ven[1] * m_ven[1] + m_ven[2] * m_ven[2]);
+					if (leng != 0)
+					{
+						m_ven[0] /= leng;
+						m_ven[1] /= leng;
+						m_ven[2] /= leng;
+					}
+					//std::cout << "leng: "  << leng << std::endl;
+					//Cont_Mesh.Mesh_container_newlandmark(landmark_size);	
+
+					My_Landmark = new OBJECT_LANDMARK;
+					//std::cout << "New object created: "  << leng << std::endl;
+					My_Landmark->is_flag = 1;
+					My_Landmark->flag_length = length;
+					My_Landmark->color[0] = r;
+					My_Landmark->color[1] = g;
+					My_Landmark->color[2] = b;
+					My_Landmark->color[3] = 1;
+
+					glMatrix M1, M2;
+					glPushMatrix();
+					glLoadIdentity();
+					//getMatrix((GLfloat*) M1);
+					getmatrix(M2);
+					getmatrix(M1);
+					glPopMatrix();
+
+					M1[0][0] = M1[1][1] = M1[2][2] = g_landmark_size;
+
+					// translation 
+					M2[3][0] = m_ve[0]; M2[3][1] = m_ve[1]; M2[3][2] = m_ve[2];
+
+					// rotation 
+					// Landmark object oriented along x axis : 0 0 1 
+					// assume rot.  
+					// 1) around z 
+					// 2)    around x 
+					// -> values sinz,cosz,sinx,cosx need to be computed
+
+					float cosz = m_ven[0]; // nx
+					float sinz = sqrt(1.0 - (cosz*cosz));
+					float cosx, sinx;
+					if (sinz == 0.0) // just in case we are in the speciale case
+					{
+						cosx = 1.0; sinx = 0.0;
+					}
+					else
+					{
+						cosx = m_ven[1] / sinz;
+
+						sinx = m_ven[2] / sinz;
+					}
+
+					M2[0][0] = cosz; //=nx
+					M2[0][1] = cosx*sinz; //=ny
+					M2[0][2] = sinx *sinz;    //=nz
+
+					M2[1][0] = -sinz;
+					M2[1][1] = cosx*cosz;
+					M2[1][2] = sinx*cosz;
+
+					M2[2][0] = 0;
+					M2[2][1] = -sinx;
+					M2[2][2] = cosx;
+
+					My_Landmark->Mat1[0][0] = M1[0][0];
+					My_Landmark->Mat1[1][1] = M1[1][1];
+					My_Landmark->Mat1[2][2] = M1[2][2];
+
+					My_Landmark->Mat2[0][0] = M2[0][0];
+					My_Landmark->Mat2[0][1] = M2[0][1];
+					My_Landmark->Mat2[0][2] = M2[0][2];
+					My_Landmark->Mat2[0][3] = M2[0][3];
+					My_Landmark->Mat2[1][0] = M2[1][0];
+					My_Landmark->Mat2[1][1] = M2[1][1];
+					My_Landmark->Mat2[1][2] = M2[1][2];
+					My_Landmark->Mat2[1][3] = M2[1][3];
+					My_Landmark->Mat2[2][0] = M2[2][0];
+					My_Landmark->Mat2[2][1] = M2[2][1];
+					My_Landmark->Mat2[2][2] = M2[2][2];
+					My_Landmark->Mat2[2][3] = M2[2][3];
+					My_Landmark->Mat2[3][0] = M2[3][0];
+					My_Landmark->Mat2[3][1] = M2[3][1];
+					My_Landmark->Mat2[3][2] = M2[3][2];
+					My_Landmark->Mat2[3][3] = M2[3][3];
+				
+
+
+					Cont_Mesh.Add_Landmark(My_Landmark, 2);
+					//std::string slabel = label;
+					My_Landmark->flag_label = slabel.c_str();
+
+				}
+				else
+				{
+					slabel = oneline;
+					slabel = slabel.substr(0, (slabel.length() - 1));
+					//sscanf(oneline, "%s\n", label);
+					//std::cout<<"oneline:"<<oneline<<std::endl;
+					//std::cout<<"label:"<<label<<std::endl;
+				}
+				cpt++;
+				//std::cout << "Landmark well added: " << std::endl;
+				readstr(filein, oneline); //read next line
+
+			}//While scanff...
+			fclose(filein);
+		}//if file exists
+		
+
+}
+void MeshTools::Open_FLG_File()
+{
+	
+	
 	
 	Fl_Native_File_Chooser fnfc;
 	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);				
@@ -8192,167 +8503,7 @@ void MeshTools::Open_flags()
 		default: 
 		{						
 			std::string filename = this->correct_filename(fnfc.filename());	
-			int file_exists=1;
-			ifstream file(filename.c_str());		
-			if (file)
-			{
-				//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
-				file.close();
-			}
-			else
-			{
-				
-				std::cout<<"file:"<<filename.c_str()<<" does not exists."<<std::endl;			
-				file_exists =0;
-			}
-			
-			if (file_exists==1)
-			{
-				filein =fopen(filename.c_str(), "r");	
-				readstr(filein,oneline);
-								
-				feof(filein);
-				std::cout << "Try open flag file "  << std::endl;
-				int cpt=1;
-				std::string slabel;
-
-				while (!feof(filein)) 
-				{		
-					//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
-					//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));			
-					if (cpt%2 ==0)
-					{
-						sscanf(oneline, "%f %f %f %f %f %f %f %f %f %f\n", &param1, &param2, &param3, &param4, &param5, 
-							&param6, &param7, &param8, &param9, &param10
-							);			
-						float length = 25;
-						float r,g,b;
-						r=0.5;
-						g=0.5;
-						b=0.5;
-						if (param7> 0 && param7<500000){length = param7;}
-						if (param8>= 0 && param8<=1.0){r = param8;}
-						if (param9>= 0 && param9<=1.0){g = param9;}
-						if (param10>= 0 && param10<=1.0){b = param10;}
-						//std::cout<<"Param8="<<param8<<std::endl;
-						//std::cout<<"Param9="<<param9<<std::endl;
-						//std::cout<<"Param10="<<param10<<std::endl;
-						m_ve[0] = param1;m_ve[1] = param2;m_ve[2] = param3;				
-						m_ven[0] = param4-param1;m_ven[1] = param5-param2;m_ven[2] = param6-param3;
-						//std::cout << "Read line"  << param1 <<"  "<< param2<<"  " <<param3<<"  "
-						//	<<param4 <<"  "<<param5<<"  " <<param6<<"  " <<param7 <<std::endl;
-					
-						leng = sqrt(m_ven[0]*m_ven[0] + m_ven[1]*m_ven[1] + m_ven[2]*m_ven[2]);
-						if (leng != 0)
-							{
-							m_ven[0]/=leng;
-							m_ven[1]/=leng;
-							m_ven[2]/=leng;
-							}
-						//std::cout << "leng: "  << leng << std::endl;
-						//Cont_Mesh.Mesh_container_newlandmark(landmark_size);	
-
-						My_Landmark = new OBJECT_LANDMARK;
-						//std::cout << "New object created: "  << leng << std::endl;
-						My_Landmark->is_flag=1;
-						My_Landmark->flag_length=length;
-						My_Landmark->color[0]=r;
-						My_Landmark->color[1]=g;
-						My_Landmark->color[2]=b;
-						My_Landmark->color[3]=1;
-
-						glMatrix M1,M2;
-						glPushMatrix();
-						glLoadIdentity();
-						//getMatrix((GLfloat*) M1);
-						getmatrix(M2);
-						getmatrix(M1);
-						glPopMatrix();
-						
-						M1[0][0]=M1[1][1]=M1[2][2]=g_landmark_size;			
-						
-						// translation 
- 						M2[3][0]=m_ve[0];M2[3][1]=m_ve[1];M2[3][2]=m_ve[2];
-			         
-					  // rotation 
-					  // Landmark object oriented along x axis : 0 0 1 
-					  // assume rot.  
-						// 1) around z 
-						// 2)    around x 
-					  // -> values sinz,cosz,sinx,cosx need to be computed
-					  
-					  float cosz=m_ven[0]; // nx
-					  float sinz = sqrt(1.0-(cosz*cosz));
-					  float cosx,sinx;
-					  if(sinz==0.0) // just in case we are in the speciale case
-					  {
-						cosx=1.0;sinx=0.0;	
-					  }
-					  else
-					  {
-						cosx= m_ven[1]/sinz;
-						
-						sinx=m_ven[2]/sinz;
-					  }
-			         
-						 M2[0][0]=cosz; //=nx
-						 M2[0][1]=cosx*sinz; //=ny
-						 M2[0][2]=sinx *sinz;    //=nz
-				        
-						 M2[1][0]=-sinz;
-						 M2[1][1]=cosx*cosz;
-						 M2[1][2]=sinx*cosz;
-
-						 M2[2][0]=0; 
-						 M2[2][1]= -sinx; 
-						 M2[2][2]=cosx; 
-						
-						My_Landmark->Mat1[0][0]=M1[0][0];
-						My_Landmark->Mat1[1][1]=M1[1][1];
-						My_Landmark->Mat1[2][2]=M1[2][2];
-
-						My_Landmark->Mat2[0][0]=M2[0][0];
-						My_Landmark->Mat2[0][1]=M2[0][1];
-						My_Landmark->Mat2[0][2]=M2[0][2];
-						My_Landmark->Mat2[0][3]=M2[0][3];
-						My_Landmark->Mat2[1][0]=M2[1][0];
-						My_Landmark->Mat2[1][1]=M2[1][1];
-						My_Landmark->Mat2[1][2]=M2[1][2];
-						My_Landmark->Mat2[1][3]=M2[1][3];
-						My_Landmark->Mat2[2][0]=M2[2][0];
-						My_Landmark->Mat2[2][1]=M2[2][1];
-						My_Landmark->Mat2[2][2]=M2[2][2];
-						My_Landmark->Mat2[2][3]=M2[2][3];
-						My_Landmark->Mat2[3][0]=M2[3][0];
-						My_Landmark->Mat2[3][1]=M2[3][1];
-						My_Landmark->Mat2[3][2]=M2[3][2];
-						My_Landmark->Mat2[3][3]=M2[3][3];
-						//My_Landmark->color[0] = 1;
-						//My_Landmark->color[1] = 1;
-						//My_Landmark->color[2] = 1;
-						//My_Landmark->color[3] = 1;
-						
-						
-						Cont_Mesh.Add_Landmark(My_Landmark, 2);
-						//std::string slabel = label;
-						My_Landmark->flag_label = slabel.c_str();
-
-					}
-					else
-					{
-						slabel =oneline;
-						slabel = slabel.substr(0, (slabel.length()-1));
-						//sscanf(oneline, "%s\n", label);
-						//std::cout<<"oneline:"<<oneline<<std::endl;
-						//std::cout<<"label:"<<label<<std::endl;
-					}
-					cpt++;
-					//std::cout << "Landmark well added: " << std::endl;
-					readstr(filein,oneline); //read next line
-						
-				}//While scanff...
-				fclose (filein);
-			}//if file exists
+			this->Open_FLG_File(filename);
 			break;
 		}//default
 	
@@ -8362,32 +8513,14 @@ this->redraw();
 	
 }
 
-void MeshTools::Open_Tags()
+void MeshTools::Open_TAG_File(std::string filename)
 {
 	
 	float  param1, param2, param3, param4;
 	FILE	*filein;									// Filename To Open
 	char	oneline[1000];	
 	//char *sFile = fl_file_chooser("Load tags", "*.{tag,TAG}", "");
-	Fl_Native_File_Chooser fnfc;
-	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);				
-	fnfc.title("Load tags");				
-	fnfc.filter("Tags\t*.{tag,TAG}");		
-	switch ( fnfc.show() ) 
-	{
-		case -1: 
-		{
-			//std::cout<<"ERROR: "<<fnfc.errmsg()<<"\n";   
-			break;  // ERROR
-		}
-		case  1: 
-		{
-			//std::cout<<"CANCEL\n";     
-			break;  // CANCEL
-		 }
-		default: 
-		{						
-			std::string filename = this->correct_filename(fnfc.filename());
+	
 			int file_exists=1;
 			ifstream file(filename.c_str());		
 			if (file)
@@ -8438,20 +8571,96 @@ void MeshTools::Open_Tags()
 				}//While scanff...
 				fclose (filein);	
 			}//if file exists
-			break;
-		}//default	
-	}//switch	
-	this->redraw();
+		
+	
 	
 }
 
-void MeshTools::Open_Orientation()
+void MeshTools::Open_TAG_File()
 {
-	
+
 	float  param1, param2, param3, param4;
 	FILE	*filein;									// Filename To Open
-	char	oneline[1000];	
+	char	oneline[1000];
 	//char *sFile = fl_file_chooser("Load tags", "*.{tag,TAG}", "");
+	Fl_Native_File_Chooser fnfc;
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
+	fnfc.title("Load tags");
+	fnfc.filter("Tags\t*.{tag,TAG}");
+	switch (fnfc.show())
+	{
+	case -1:
+	{
+		//std::cout<<"ERROR: "<<fnfc.errmsg()<<"\n";   
+		break;  // ERROR
+	}
+	case  1:
+	{
+		//std::cout<<"CANCEL\n";     
+		break;  // CANCEL
+	}
+	default:
+	{
+		std::string filename = this->correct_filename(fnfc.filename());
+		this->Open_TAG_File(filename);
+		break;
+	}//default	
+	}//switch	
+	this->redraw();
+
+}
+
+void MeshTools::Open_ORI_File(std::string filename)
+{
+
+	float  param1, param2, param3, param4;
+	FILE	*filein;									// Filename To Open
+	char	oneline[1000];
+	
+		int file_exists = 1;
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+			filein = fopen(filename.c_str(), "r");
+			readstr(filein, oneline);
+			int cpt = 1;
+			int ic = 0;
+
+			while (!feof(filein) && ic<6)
+			{
+
+				//sscanf(oneline, "%s\n", label);
+				std::string slabel = oneline;
+
+				slabel = slabel.substr(0, (slabel.length() - 1));
+
+				g_orientation_labels[ic] = slabel.c_str();
+				ic++;
+
+				cpt++;
+				readstr(filein, oneline); //read next line					
+			}//While scanff...
+			fclose(filein);
+		}//if file exists
+	
+	
+
+}
+
+void MeshTools::Open_ORI_File()
+{
+	
 	Fl_Native_File_Chooser fnfc;
 	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);				
 	fnfc.title("Load orientation labels");				
@@ -8471,8 +8680,29 @@ void MeshTools::Open_Orientation()
 		default: 
 		{						
 			std::string filename = this->correct_filename(fnfc.filename());
-			int file_exists=1;
-			ifstream file(filename.c_str());		
+			this->Open_ORI_File(filename);
+			break;
+		}//default	
+	}//switch	
+	this->redraw();	
+	
+}
+void MeshTools::Open_CUR_File(std::string filename)
+{
+	
+
+		float  param2, param3, param4, param5, param6, param7;
+		int param8;
+		float m_ved[3], m_veh[3], m_ven[3], leng; //ved is first landmarks // veh is handles
+		char param1[10];
+		FILE	*filein;									// Filename To Open
+		OBJECT_LANDMARK * My_LandmarkD;
+		OBJECT_LANDMARK * My_LandmarkH;
+		char	oneline[255];
+		int start;
+
+		int file_exists = 1;
+		ifstream file(filename.c_str());
 			if (file)
 			{
 				//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
@@ -8480,54 +8710,161 @@ void MeshTools::Open_Orientation()
 			}
 			else
 			{
-				
-				std::cout<<"file:"<<filename.c_str()<<" does not exists."<<std::endl;			
-				file_exists =0;
+
+				std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+				file_exists = 0;
 			}
-			
-			if (file_exists==1)
+
+			if (file_exists == 1)
 			{
-				filein =fopen(filename.c_str(), "r");	
-				readstr(filein,oneline);
-				//std::cout << "Try open Tag file "  << std::endl;
-				//std::cout << "feof(filein)"  <<feof(filein)<< std::endl;
-				int cpt=1;
-				int ic=0;
-			
-				while (!feof(filein) && ic<6) 
-				{		
-					
-						//sscanf(oneline, "%s\n", label);
-						std::string slabel = oneline;
 
-						slabel = slabel.substr(0, (slabel.length()-1));
+				//filein = fopen(szFile, "rt");
+				filein = fopen(filename.c_str(), "rt");
+				readstr(filein, oneline);
+				while (!feof(filein))
+				{
+					//sscanf_s(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
+					sscanf(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
+					m_ved[0] = param2; m_ved[1] = param3; m_ved[2] = param4;
+					m_veh[0] = param5; m_veh[1] = param6; m_veh[2] = param7;
+					start = param8;
+					//if (start !=1){start=0;}
+					m_ven[0] = 0; m_ven[1] = 0; m_ven[2] = 1;
+					leng = sqrt(m_ven[0] * m_ven[0] + m_ven[1] * m_ven[1] + m_ven[2] * m_ven[2]);
+					if (leng != 0)
+					{
+						m_ven[0] /= leng;
+						m_ven[1] /= leng;
+						m_ven[2] /= leng;
+					}
+					//m_ven[0] = param5;m_ven[1] = param6;m_ven[2] = param7;
+					My_LandmarkD = new OBJECT_LANDMARK;
+					My_LandmarkH = new OBJECT_LANDMARK;
+					glMatrix M1, M2;
+					glPushMatrix();
+					glLoadIdentity();
+					//getMatrix((GLfloat*) M1);
+					getmatrix(M2);
+					getmatrix(M1);
+					glPopMatrix();
+					M1[0][0] = M1[1][1] = M1[2][2] = g_landmark_size;
+					// transl. components:
+					M2[3][0] = m_ved[0]; M2[3][1] = m_ved[1]; M2[3][2] = m_ved[2];
+					// rot. components:
+					// assume rot. about x and z axes:
+					// -> values sinx,cosx,sinz,cosz
+					float cosx = m_ven[2];
+					float sinx = sqrt(1.0 - (cosx*cosx));
+					float cosz, sinz;
+					if (sinx == 0.0)
+					{
+						cosz = 1.0; sinz = 0.0;	// no rotation around z
+					}
+					else
+					{
+						cosz = -m_ven[1] / sinx;
+						sinz = m_ven[0] / sinx;
+					}
+					M2[0][0] = cosz; M2[0][1] = sinz; M2[0][2] = 0;
+					M2[1][0] = -cosx*sinz; M2[1][1] = cosx*cosz; M2[1][2] = sinx;
+					M2[2][0] = m_ven[0]; M2[2][1] = m_ven[1]; M2[2][2] = m_ven[2];
+					My_LandmarkD->curve_start = start;
+					My_LandmarkD->Mat1[0][0] = M1[0][0];
+					My_LandmarkD->Mat1[1][1] = M1[1][1];
+					My_LandmarkD->Mat1[2][2] = M1[2][2];
 
-						g_orientation_labels[ic]= slabel.c_str();
-						ic++;
-						
-					cpt++;
-					readstr(filein,oneline); //read next line					
-				}//While scanff...
-				fclose (filein);	
+					My_LandmarkD->Mat2[0][0] = M2[0][0];
+					My_LandmarkD->Mat2[0][1] = M2[0][1];
+					My_LandmarkD->Mat2[0][2] = M2[0][2];
+					My_LandmarkD->Mat2[0][3] = M2[0][3];
+					My_LandmarkD->Mat2[1][0] = M2[1][0];
+					My_LandmarkD->Mat2[1][1] = M2[1][1];
+					My_LandmarkD->Mat2[1][2] = M2[1][2];
+					My_LandmarkD->Mat2[1][3] = M2[1][3];
+					My_LandmarkD->Mat2[2][0] = M2[2][0];
+					My_LandmarkD->Mat2[2][1] = M2[2][1];
+					My_LandmarkD->Mat2[2][2] = M2[2][2];
+					My_LandmarkD->Mat2[2][3] = M2[2][3];
+					My_LandmarkD->Mat2[3][0] = M2[3][0];
+					My_LandmarkD->Mat2[3][1] = M2[3][1];
+					My_LandmarkD->Mat2[3][2] = M2[3][2];
+					My_LandmarkD->Mat2[3][3] = M2[3][3];
+
+
+					if (start == 0)
+					{
+						My_LandmarkD->color[0] = 1;
+						My_LandmarkD->color[1] = 0;
+						My_LandmarkD->color[2] = 0;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 1)
+					{
+						My_LandmarkD->color[0] = 0;
+						My_LandmarkD->color[1] = 1;
+						My_LandmarkD->color[2] = 0;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 2)
+					{
+						My_LandmarkD->color[0] = 0;
+						My_LandmarkD->color[1] = 0;
+						My_LandmarkD->color[2] = 1;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 3)
+					{
+						My_LandmarkD->color[0] = 0.6;
+						My_LandmarkD->color[1] = 0.2;
+						My_LandmarkD->color[2] = 0.5;
+						My_LandmarkD->color[3] = 1;
+					}
+
+					M2[3][0] = m_veh[0]; M2[3][1] = m_veh[1]; M2[3][2] = m_veh[2];
+					My_LandmarkH->Mat1[0][0] = 1.5*M1[0][0];
+					My_LandmarkH->Mat1[1][1] = 1.5*M1[1][1];
+					My_LandmarkH->Mat1[2][2] = 1.5*M1[2][2];
+
+					My_LandmarkH->Mat2[0][0] = M2[0][0];
+					My_LandmarkH->Mat2[0][1] = M2[0][1];
+					My_LandmarkH->Mat2[0][2] = M2[0][2];
+					My_LandmarkH->Mat2[0][3] = M2[0][3];
+					My_LandmarkH->Mat2[1][0] = M2[1][0];
+					My_LandmarkH->Mat2[1][1] = M2[1][1];
+					My_LandmarkH->Mat2[1][2] = M2[1][2];
+					My_LandmarkH->Mat2[1][3] = M2[1][3];
+					My_LandmarkH->Mat2[2][0] = M2[2][0];
+					My_LandmarkH->Mat2[2][1] = M2[2][1];
+					My_LandmarkH->Mat2[2][2] = M2[2][2];
+					My_LandmarkH->Mat2[2][3] = M2[2][3];
+					My_LandmarkH->Mat2[3][0] = M2[3][0];
+					My_LandmarkH->Mat2[3][1] = M2[3][1];
+					My_LandmarkH->Mat2[3][2] = M2[3][2];
+					My_LandmarkH->Mat2[3][3] = M2[3][3];
+
+
+					My_LandmarkH->color[0] = 1.0;
+					My_LandmarkH->color[1] = 0.7;
+					My_LandmarkH->color[2] = 0.2;
+					My_LandmarkH->color[3] = 0.5;
+
+
+					Cont_Mesh.Add_Landmark(My_LandmarkD, 0);
+					Cont_Mesh.Add_Landmark(My_LandmarkH, 1);
+					readstr(filein, oneline); //read next line
+
+				}//While scanff...		
+				fclose(filein);
 			}//if file exists
-			break;
-		}//default	
-	}//switch	
-	this->redraw();	
-	
+				
+
 }
+
+
 void MeshTools::Open_CUR_File()
 {
 	
-	float  param2, param3, param4, param5, param6, param7;
-	int param8;
-	float m_ved[3], m_veh[3],m_ven[3], leng; //ved is first landmarks // veh is handles
-	char param1[10];
-	FILE	*filein;									// Filename To Open
-	OBJECT_LANDMARK * My_LandmarkD;
-	OBJECT_LANDMARK * My_LandmarkH;
-	char	oneline[255];
-	int start;
+	
 
 	//char *szFile = fl_file_chooser("Load CUR file", "*.CUR*", "");
 	Fl_Native_File_Chooser fnfc;
@@ -8549,162 +8886,8 @@ void MeshTools::Open_CUR_File()
 		default: 
 		{						
 			std::string filename = this->correct_filename(fnfc.filename());
-		
-			int file_exists=1;
-			ifstream file(filename.c_str());		
-			if (file)
-			{
-				//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
-				file.close();
-			}
-			else
-			{
-				
-				std::cout<<"file:"<<filename.c_str()<<" does not exists."<<std::endl;			
-				file_exists =0;
-			}
+			this->Open_CUR_File(filename);
 			
-			if (file_exists==1)
-			{
-		
-				//filein = fopen(szFile, "rt");
-				filein =fopen(filename.c_str(), "rt");	
-				readstr(filein,oneline);
-				while (!feof(filein)) 
-				{		
-					//sscanf_s(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
-					sscanf(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
-					m_ved[0] = param2;m_ved[1] = param3;m_ved[2] = param4;
-					m_veh[0] = param5;m_veh[1] = param6;m_veh[2] = param7;
-					start=param8;
-					//if (start !=1){start=0;}
-					m_ven[0]=0;m_ven[1]=0;m_ven[2]=1;
-					leng = sqrt(m_ven[0]*m_ven[0] + m_ven[1]*m_ven[1] + m_ven[2]*m_ven[2]);
-					if (leng != 0)
-						{
-						m_ven[0]/=leng;
-						m_ven[1]/=leng;
-						m_ven[2]/=leng;
-						}
-					//m_ven[0] = param5;m_ven[1] = param6;m_ven[2] = param7;
-					My_LandmarkD = new OBJECT_LANDMARK;
-					My_LandmarkH = new OBJECT_LANDMARK;
-					glMatrix M1,M2;
-					glPushMatrix();
-					glLoadIdentity();
-					//getMatrix((GLfloat*) M1);
-					getmatrix(M2);
-					getmatrix(M1);
-					glPopMatrix();
-					M1[0][0]=M1[1][1]=M1[2][2]=g_landmark_size;
-					// transl. components:
-					M2[3][0]=m_ved[0];M2[3][1]=m_ved[1];M2[3][2]=m_ved[2];
-					// rot. components:
-					// assume rot. about x and z axes:
-					// -> values sinx,cosx,sinz,cosz
-					float cosx=m_ven[2];
-					float sinx = sqrt(1.0-(cosx*cosx));
-					float cosz,sinz;
-					if(sinx==0.0)
-					{
-						cosz=1.0;sinz=0.0;	// no rotation around z
-					}
-					else
-					{
-						cosz=-m_ven[1]/sinx;
-						sinz=m_ven[0]/sinx;
-					}
-					M2[0][0]=cosz;M2[0][1]=sinz;M2[0][2]=0;
-					M2[1][0]=-cosx*sinz;M2[1][1]=cosx*cosz;M2[1][2]=sinx;
-					M2[2][0]=m_ven[0];M2[2][1]=m_ven[1];M2[2][2]=m_ven[2];
-					My_LandmarkD->curve_start=start; 
-					My_LandmarkD->Mat1[0][0]=M1[0][0];
-					My_LandmarkD->Mat1[1][1]=M1[1][1];
-					My_LandmarkD->Mat1[2][2]=M1[2][2];
-
-					My_LandmarkD->Mat2[0][0]=M2[0][0];
-					My_LandmarkD->Mat2[0][1]=M2[0][1];
-					My_LandmarkD->Mat2[0][2]=M2[0][2];
-					My_LandmarkD->Mat2[0][3]=M2[0][3];
-					My_LandmarkD->Mat2[1][0]=M2[1][0];
-					My_LandmarkD->Mat2[1][1]=M2[1][1];
-					My_LandmarkD->Mat2[1][2]=M2[1][2];
-					My_LandmarkD->Mat2[1][3]=M2[1][3];
-					My_LandmarkD->Mat2[2][0]=M2[2][0];
-					My_LandmarkD->Mat2[2][1]=M2[2][1];
-					My_LandmarkD->Mat2[2][2]=M2[2][2];
-					My_LandmarkD->Mat2[2][3]=M2[2][3];
-					My_LandmarkD->Mat2[3][0]=M2[3][0];
-					My_LandmarkD->Mat2[3][1]=M2[3][1];
-					My_LandmarkD->Mat2[3][2]=M2[3][2];
-					My_LandmarkD->Mat2[3][3]=M2[3][3];
-					
-					
-					if (start ==0)
-					{
-						My_LandmarkD->color[0] = 1;
-						My_LandmarkD->color[1] = 0;
-						My_LandmarkD->color[2] = 0;
-						My_LandmarkD->color[3] = 1;
-					}
-					else if (start==1)
-					{
-						My_LandmarkD->color[0] = 0;
-						My_LandmarkD->color[1] = 1;
-						My_LandmarkD->color[2] = 0;
-						My_LandmarkD->color[3] = 1;
-					}
-					else if (start ==2)
-					{
-						My_LandmarkD->color[0] = 0;
-						My_LandmarkD->color[1] = 0;
-						My_LandmarkD->color[2] = 1;
-						My_LandmarkD->color[3] = 1;
-					}
-					else if (start ==3)
-					{
-						My_LandmarkD->color[0] = 0.6;
-						My_LandmarkD->color[1] = 0.2;
-						My_LandmarkD->color[2] = 0.5;
-						My_LandmarkD->color[3] = 1;
-					}
-
-					M2[3][0]=m_veh[0];M2[3][1]=m_veh[1];M2[3][2]=m_veh[2];
-					My_LandmarkH->Mat1[0][0]=1.5*M1[0][0];
-					My_LandmarkH->Mat1[1][1]=1.5*M1[1][1];
-					My_LandmarkH->Mat1[2][2]=1.5*M1[2][2];
-
-					My_LandmarkH->Mat2[0][0]=M2[0][0];
-					My_LandmarkH->Mat2[0][1]=M2[0][1];
-					My_LandmarkH->Mat2[0][2]=M2[0][2];
-					My_LandmarkH->Mat2[0][3]=M2[0][3];
-					My_LandmarkH->Mat2[1][0]=M2[1][0];
-					My_LandmarkH->Mat2[1][1]=M2[1][1];
-					My_LandmarkH->Mat2[1][2]=M2[1][2];
-					My_LandmarkH->Mat2[1][3]=M2[1][3];
-					My_LandmarkH->Mat2[2][0]=M2[2][0];
-					My_LandmarkH->Mat2[2][1]=M2[2][1];
-					My_LandmarkH->Mat2[2][2]=M2[2][2];
-					My_LandmarkH->Mat2[2][3]=M2[2][3];
-					My_LandmarkH->Mat2[3][0]=M2[3][0];
-					My_LandmarkH->Mat2[3][1]=M2[3][1];
-					My_LandmarkH->Mat2[3][2]=M2[3][2];
-					My_LandmarkH->Mat2[3][3]=M2[3][3];
-					
-
-					My_LandmarkH->color[0] = 1.0;
-					My_LandmarkH->color[1] = 0.7;
-					My_LandmarkH->color[2] = 0.2;
-					My_LandmarkH->color[3] = 0.5;
-					
-					
-					Cont_Mesh.Add_Landmark(My_LandmarkD, 0);
-					Cont_Mesh.Add_Landmark(My_LandmarkH, 1);
-					readstr(filein,oneline); //read next line
-						
-				}//While scanff...		
-				fclose(filein);		
-			}//if file exists
 			break;
 		}//default	
 	}//switch	
@@ -10010,7 +10193,7 @@ vtkSmartPointer<vtkFloatArray> MeshTools::GetErrors_ICP(){
 }
 
 //On sauvegarde les correspondances des sommets
-void MeshTools::save_SourceTarget_Vertice(){
+void MeshTools::Save_STV_File(){
 	int ok1 = 1,ok2=1;
 	std::string filename;
 
@@ -10195,8 +10378,7 @@ void MeshTools::Write_STV(string filename, int source_landmarks_number, int targ
 	fclose(filein);
 }
 
-//On ouvre les fichier STV (les correspondances Source-Cible)
-void MeshTools::Open_SourceTarget_Vertice(){
+void MeshTools::Open_STV_File(std::string filename) {
 	float  param2, param3, param4, param5, param6, param7;
 	float m_ve[3], m_ven[3], leng;
 	char param1[50];
@@ -10204,17 +10386,7 @@ void MeshTools::Open_SourceTarget_Vertice(){
 	char	oneline[255];
 	int landmark_mode;
 
-	Fl_Native_File_Chooser fnfc;
-	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
-	fnfc.title("Load landmarks");
-	fnfc.filter("Landmarks\t*.{stv,STV}");
-	switch (fnfc.show())
-	{
-	case -1:break;  // ERROR
-	case  1:break;  // CANCEL
-	default:
-	{
-		string filename = this->correct_filename(fnfc.filename());	
+	
 		int file_exists = 1;
 		ifstream file(filename.c_str());
 
@@ -10232,9 +10404,9 @@ void MeshTools::Open_SourceTarget_Vertice(){
 		{
 			std::string STVext(".stv");
 			std::string STVext2(".STV");
-			
+
 			int type = 1; //VER
-			
+
 			filein = fopen(filename.c_str(), "r");
 			readstr(filein, oneline);
 			feof(filein);
@@ -10247,18 +10419,18 @@ void MeshTools::Open_SourceTarget_Vertice(){
 			int cpt_line = 0;
 			while (!feof(filein))
 			{
-				if (cpt_line == 0){
+				if (cpt_line == 0) {
 					sscanf(oneline, "%d %d\n", &landmark_mode, &number);
 				}
-				else{
-					sscanf(oneline, "%s %f %f %f %f %f %f %d\n", param1, &param2, &param3, &param4, &param5, &param6, &param7,&ind);
+				else {
+					sscanf(oneline, "%s %f %f %f %f %f %f %d\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, &ind);
 					param_list->InsertNextTuple1(param2);
 					param_list->InsertNextTuple1(param3);
 					param_list->InsertNextTuple1(param4);
 					param_list->InsertNextTuple1(param5);
 					param_list->InsertNextTuple1(param6);
 					param_list->InsertNextTuple1(param7);
-					
+
 					create_landmarks(landmark_mode, param_list, type);
 
 					param_list = vtkSmartPointer<vtkFloatArray>::New();
@@ -10268,14 +10440,35 @@ void MeshTools::Open_SourceTarget_Vertice(){
 				readstr(filein, oneline); //read next line
 				cpt_line++;
 
-				if (cpt_line == number + 1 && landmark_mode == 0){
-					cpt_line=0;
+				if (cpt_line == number + 1 && landmark_mode == 0) {
+					cpt_line = 0;
 					landmark_mode++;
 				}
 			}//While scanff...
 			fclose(filein);
-			break;
-		}//if file exists
+		}
+
+	
+}
+
+//On ouvre les fichier STV (les correspondances Source-Cible)
+void MeshTools::Open_STV_File(){
+	
+	Fl_Native_File_Chooser fnfc;
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
+	fnfc.title("Load landmarks");
+	fnfc.filter("Landmarks\t*.{stv,STV}");
+	switch (fnfc.show())
+	{
+	case -1:break;  // ERROR
+	case  1:break;  // CANCEL
+	default:
+	{
+		string filename = this->correct_filename(fnfc.filename());	
+		int file_exists = 1;
+		this->Open_STV_File(filename);
+		break;
+		
 	}//default	
 	}//switch		
 

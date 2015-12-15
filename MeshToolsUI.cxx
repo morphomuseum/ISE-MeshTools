@@ -280,14 +280,14 @@ void MeshToolsUI::cb_Save_VER1(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_VER2_i(Fl_Menu_*, void*) {
-  MT->Open_SourceTarget_Vertice();
+  MT->Open_STV_File();
 }
 void MeshToolsUI::cb_Open_VER2(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Open_VER2_i(o,v);
 }
 
 void MeshToolsUI::cb_Save_VER3_i(Fl_Menu_*, void*) {
-  MT->save_SourceTarget_Vertice();
+  MT->Save_STV_File();
 }
 void MeshToolsUI::cb_Save_VER3(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_VER3_i(o,v);
@@ -323,7 +323,7 @@ void MeshToolsUI::cb_Save_Curve_Infos(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_TAG_i(Fl_Menu_*, void*) {
-  MT->Open_Tags();
+  MT->Open_TAG_File();
 tags_update();
 MT->Update_RGB();
 }
@@ -332,21 +332,21 @@ void MeshToolsUI::cb_Open_TAG(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Save_TAG_i(Fl_Menu_*, void*) {
-  MT->Save_Tags();
+  MT->Save_TAG_File();
 }
 void MeshToolsUI::cb_Save_TAG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_TAG_i(o,v);
 }
 
 void MeshToolsUI::cb_Open_FLG_i(Fl_Menu_*, void*) {
-  MT->Open_flags();
+  MT->Open_FLG_File();
 }
 void MeshToolsUI::cb_Open_FLG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Open_FLG_i(o,v);
 }
 
 void MeshToolsUI::cb_Save_FLG_i(Fl_Menu_*, void*) {
-  MT->Save_flags();
+  MT->Save_FLG_File();
 }
 void MeshToolsUI::cb_Save_FLG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_FLG_i(o,v);
@@ -373,7 +373,7 @@ void MeshToolsUI::cb_Save_Infos(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_ORI_i(Fl_Menu_*, void*) {
-  MT->Open_Orientation();
+  MT->Open_ORI_File();
 orientation_update();
 }
 void MeshToolsUI::cb_Open_ORI(Fl_Menu_* o, void* v) {
@@ -381,7 +381,7 @@ void MeshToolsUI::cb_Open_ORI(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Save_ORI_i(Fl_Menu_*, void*) {
-  MT->Save_Orientation();
+  MT->Save_ORI_File();
 }
 void MeshToolsUI::cb_Save_ORI(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_ORI_i(o,v);
@@ -3891,7 +3891,13 @@ void MeshToolsUI::cb_auto_landmark_size(Fl_Check_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Ok_scc_lm_i(Fl_Button*, void*) {
-  MT->Mesh_SetLandmarkSize(
+  MT->Mesh_SetLandmarkType(
+pt_sphere->value()
+);
+
+
+
+MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
 );
 
@@ -3904,9 +3910,6 @@ Flag_g_length->value()
 );
 
 
-MT->Mesh_SetLandmarkType(
-pt_sphere->value()
-);
 
 
 MT->save_ini_param();
@@ -7448,7 +7451,7 @@ void MeshToolsUI::cb_ok_vertice(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_save_vertice_i(Fl_Button*, void*) {
-  MT->save_SourceTarget_Vertice();
+  MT->Save_STV_File();
 }
 void MeshToolsUI::cb_save_vertice(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_save_vertice_i(o,v);
@@ -10844,7 +10847,7 @@ trix\" (old version correction)");
     lmkrangeselectWindow->set_non_modal();
     lmkrangeselectWindow->end();
   } // Fl_Double_Window* lmkrangeselectWindow
-  { Registration_Window = new Fl_Double_Window(1053, 581, "Registration");
+  { Registration_Window = new Fl_Double_Window(1075, 590, "Registration");
     Registration_Window->color((Fl_Color)215);
     Registration_Window->user_data((void*)(this));
     Registration_Window->hotspot(Registration_Window);
@@ -11180,7 +11183,7 @@ trix\" (old version correction)");
     } // Fl_Group* data_icp
     Registration_Window->end();
   } // Fl_Double_Window* Registration_Window
-  { Errors_curv_Window = new Fl_Double_Window(820, 516, "Result");
+  { Errors_curv_Window = new Fl_Double_Window(840, 526, "Result");
     Errors_curv_Window->color((Fl_Color)214);
     Errors_curv_Window->user_data((void*)(this));
     { save_errors_curve = new Fl_Button(280, 435, 140, 45, "Save errors");

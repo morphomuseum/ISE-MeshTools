@@ -32,7 +32,7 @@ if (test ==1)
             tooltip Delete image {./pixmap/delete2.gif} xywh {0 25 25 23} color 55
           }
           Fl_Menu_Button File {
-            label File
+            label File open
             xywh {0 0 55 25} color 55 labelcolor 32
           } {
             MenuItem Generic_Open_Surface {
@@ -243,12 +243,12 @@ if (ok==1)
               }
               MenuItem Open_VER2 {
                 label {Load source and target landmarks}
-                callback {MT->Open_SourceTarget_Vertice();}
+                callback {MT->Open_STV_File();}
                 xywh {50 50 100 20} labelcolor 32
               }
               MenuItem Save_VER3 {
                 label {Save source and target landmarks}
-                callback {MT->save_SourceTarget_Vertice();}
+                callback {MT->Save_STV_File();}
                 xywh {90 90 100 20} labelcolor 32
               }
             }
@@ -279,29 +279,29 @@ if (ok==1)
               }
             }
             Submenu Tags_submenu {
-              label {Tags and Flags}
+              label {Tags and Flags} open
               xywh {45 45 100 20}
             } {
               MenuItem Open_TAG {
                 label {Load tag colors and labels}
-                callback {MT->Open_Tags();
+                callback {MT->Open_TAG_File();
 tags_update();
 MT->Update_RGB();}
                 xywh {35 35 100 20} labelcolor 32
               }
               MenuItem Save_TAG {
                 label {Save tag colors and labels}
-                callback {MT->Save_Tags();}
+                callback {MT->Save_TAG_File();}
                 xywh {80 80 100 20} labelcolor 32
               }
               MenuItem Open_FLG {
                 label {Load flags}
-                callback {MT->Open_flags();}
+                callback {MT->Open_FLG_File();}
                 xywh {35 35 100 20} labelcolor 32
               }
               MenuItem Save_FLG {
                 label {Save flags}
-                callback {MT->Save_flags();}
+                callback {MT->Save_FLG_File();}
                 xywh {80 80 100 20} labelcolor 32
               }
             }
@@ -324,24 +324,24 @@ if (ok==1)
               xywh {80 80 100 20} labelcolor 32
             }
             Submenu Orientation_submenu {
-              label {Orientation labels}
+              label {Orientation labels} open
               xywh {55 55 100 20}
             } {
               MenuItem Open_ORI {
                 label {Load orientation labels}
-                callback {MT->Open_Orientation();
+                callback {MT->Open_ORI_File();
 orientation_update();}
                 xywh {45 45 100 20} labelcolor 32
               }
               MenuItem Save_ORI {
                 label {Save orientation labels}
-                callback {MT->Save_Orientation();}
+                callback {MT->Save_ORI_File();} selected
                 xywh {90 90 100 20} labelcolor 32
               }
             }
           }
           Fl_Menu_Button Viewing_options {
-            label {Viewing opt.} open
+            label {Viewing opt.}
             xywh {55 0 100 25} color 55
           } {
             MenuItem SET_GENERAL_COLOUR_LIGHTNING {
@@ -355,7 +355,7 @@ orientation_update();}
               xywh {90 90 100 20}
             }
             Submenu Camera_submenu {
-              label Camera open
+              label Camera
               xywh {0 0 62 20}
             } {
               MenuItem SET_CAMERA_OPT {
@@ -1005,7 +1005,7 @@ MT->redraw();}
               xywh {70 70 100 20}
             }
           }
-          Fl_Group Buttons {open
+          Fl_Group Buttons {
             xywh {25 25 105 23}
           } {
             Fl_Button Move_mode {
@@ -1450,7 +1450,7 @@ MT->redraw();}
       }
     }
     Fl_Window camWindow {
-      label {Camera options} open
+      label {Camera options}
       image {pixmap/s_back_13.gif} xywh {16 38 200 325} type Double color 174 hide resizable non_modal
     } {
       Fl_Value_Input Cam_near {
@@ -1560,7 +1560,7 @@ Cam_tx->value(),
 Cam_ty->value(),
 Cam_tz->value()
 );
-MT->redraw();} selected
+MT->redraw();}
         tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {117 252 25 23} color 84 selection_color 92 align 128
       }
     }
@@ -1779,7 +1779,13 @@ else
       }
       Fl_Button Ok_scc_lm {
         label Ok
-        callback {MT->Mesh_SetLandmarkSize(
+        callback {MT->Mesh_SetLandmarkType(
+pt_sphere->value()
+);
+
+
+
+MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
 );
 
@@ -1792,9 +1798,6 @@ Flag_g_length->value()
 );
 
 
-MT->Mesh_SetLandmarkType(
-pt_sphere->value()
-);
 
 
 MT->save_ini_param();
@@ -4617,7 +4620,7 @@ MT->redraw();}
     }
     Fl_Window Registration_Window {
       label Registration
-      image {pixmap/s_back_13.gif} xywh {38 67 1053 581} type Double color 215 hide hotspot
+      image {pixmap/s_back_13.gif} xywh {42 71 1075 590} type Double color 215 hide hotspot
     } {
       Fl_Group once_icp_ok {open
         xywh {740 5 315 580} box EMBOSSED_BOX color 166
@@ -4678,7 +4681,7 @@ MT->redraw();}
 }}
             xywh {760 65 64 15} down_box DOWN_BOX
           }
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {775 80 260 265} box FLAT_BOX color 174
           } {
             Fl_Button vertice_color {
@@ -4798,7 +4801,7 @@ MT->SetDisplayMatching(tabDisplay);}
             }
             Fl_Button save_vertice {
               label {Save vertice}
-              callback {MT->save_SourceTarget_Vertice();}
+              callback {MT->Save_STV_File();}
               xywh {785 295 100 40} color 117 deactivate
             }
             Fl_Value_Input line_width {
@@ -5436,7 +5439,7 @@ color_data->activate();
     }
     Fl_Window Errors_curv_Window {
       label Result
-      xywh {44 69 820 516} type Double color 214 hide resizable modal
+      xywh {48 73 840 526} type Double color 214 hide resizable modal
     } {
       Fl_Button save_errors_curve {
         label {Save errors}
