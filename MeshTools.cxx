@@ -5440,6 +5440,92 @@ return 1;
 }
 
 
+void MeshTools::Save_FLG_File(std::string filename, int ask_before_overwrite)
+{
+
+			
+			std::string FLGext = ".flg";
+			std::string FLGext2 = ".FLG";
+			std::size_t found = filename.find(FLGext);
+			std::size_t found2 = filename.find(FLGext2);
+			if (found == std::string::npos && found2 == std::string::npos)
+			{
+				filename.append(".flg");
+			}
+
+			FILE *filein;
+			int overwrite = 1;
+			if (ask_before_overwrite == 1)
+			{
+				ifstream file(filename.c_str());
+				if (file)
+				{
+					overwrite = fl_ask("Overwrite?");
+					file.close();
+
+				}
+			}
+			if (overwrite == 1)
+			{
+
+				filein = fopen(filename.c_str(), "w");
+
+				int cpt;
+				glMatrix wc_mat;
+				float vv[3], vv1[3], vvn[3], vvn1[3], norm[3];
+				cpt = 0;
+				OBJECT_LANDMARK *k = NULL;
+				int ind = 0;
+
+
+				k = Cont_Mesh.landmarkafter(ind, 2);
+				while (k != NULL)
+				{
+
+					k->get_world_coordinates_matrix(wc_mat);
+					vv[0] = 0;
+					vv[1] = 0;
+					vv[2] = 0;
+					vvn[0] = 1.0;
+					vvn[1] = 0;
+					vvn[2] = 0;
+					ApplyTransformation(vv, vv1, wc_mat);
+					ApplyTransformation(vvn, vvn1, wc_mat);
+					cpt++;
+					ind = k->landmark_index;
+					//normalize landmark length;
+					double dist = sqrt((vv1[0] - vvn1[0])*(vv1[0] - vvn1[0]) +
+						(vv1[1] - vvn1[1])*(vv1[1] - vvn1[1]) +
+						(vv1[2] - vvn1[2])*(vv1[2] - vvn1[2]));
+					if (dist>0)
+					{
+						norm[0] = vv1[0] + (-vv1[0] + vvn1[0]) / (float)dist;
+						norm[1] = vv1[1] + (-vv1[1] + vvn1[1]) / (float)dist;
+						norm[2] = vv1[2] + (-vv1[2] + vvn1[2]) / (float)dist;
+					}
+					else
+					{
+						norm[0] = 0;
+						norm[1] = 0;
+						norm[2] = 1;
+					}
+					fprintf(filein, "%s\n", k->flag_label.c_str());
+					fprintf(filein, "%f %f %f %f %f %f %f %f %f %f\n",
+						//vv1[0], vv1[1], vv1[2], vvn1[0], vvn1[1], vvn1[2],
+						vv1[0], vv1[1], vv1[2], norm[0], norm[1], norm[2],
+						k->flag_length,
+						k->color[0],
+						k->color[1],
+						k->color[2]
+						);
+
+					k = Cont_Mesh.landmarkafter(ind, 2);
+				}
+				fclose(filein);
+			}//ok overwrite
+			
+}
+
 int MeshTools::Save_FLG_File()
 {
 	
@@ -5477,82 +5563,7 @@ int MeshTools::Save_FLG_File()
 				{
 							//std::cout<<"PICKED: "<<fnfc.filename()<<"\n";   // FILE CHOSEN										
 						filename = this->correct_filename(fnfc.filename());
-						std::string FLGext = ".flg";
-						std::string FLGext2 = ".FLG";
-						std::size_t found = filename.find(FLGext);
-						std::size_t found2 = filename.find(FLGext2);
-						if (found == std::string::npos && found2 == std::string::npos)
-						{
-							filename.append(".flg");
-						}
-					
-						FILE *filein;									
-						
-						ifstream file(filename.c_str());
-						if (file)
-						{
-							ok = fl_ask("Overwrite?");
-							file.close();
-
-						}
-						if (ok==1)
-						{
-														
-							filein = fopen(filename.c_str(),"w");					
-								
-							int cpt;
-							glMatrix wc_mat;
-							float vv[3], vv1[3], vvn[3], vvn1[3], norm[3];
-							cpt=0;
-							OBJECT_LANDMARK *k = NULL;
-							int ind = 0;
-							
-							
-							k = Cont_Mesh.landmarkafter (ind, 2);
-							while ( k != NULL)
-							{
-							
-									k->get_world_coordinates_matrix(wc_mat);								
-									vv[0] =0;
-									vv[1] =0;
-									vv[2] =0;
-									vvn[0] =1.0;
-									vvn[1] =0;
-									vvn[2] =0;
-									ApplyTransformation(vv,vv1,wc_mat);
-									ApplyTransformation(vvn,vvn1,wc_mat);
-									cpt++;
-									ind = k->landmark_index;
-									//normalize landmark length;
-									double dist = sqrt((vv1[0]-vvn1[0])*(vv1[0]-vvn1[0]) +
-										(vv1[1]-vvn1[1])*(vv1[1]-vvn1[1]) +
-										(vv1[2]-vvn1[2])*(vv1[2]-vvn1[2]) );
-									if (dist>0)
-									{
-										norm[0] = vv1[0]+(-vv1[0] + vvn1[0]) / (float)dist;
-										norm[1] = vv1[1]+(-vv1[1] + vvn1[1]) / (float)dist;
-										norm[2] = vv1[2]+(-vv1[2] + vvn1[2]) / (float)dist;
-									}
-									else
-									{
-										norm[0]=0;
-										norm[1]=0;
-										norm[2]=1;
-									}
-									fprintf (filein, "%s\n", k->flag_label.c_str());		
-									fprintf (filein, "%f %f %f %f %f %f %f %f %f %f\n", 
-										//vv1[0], vv1[1], vv1[2], vvn1[0], vvn1[1], vvn1[2],
-										vv1[0], vv1[1], vv1[2], norm[0], norm[1], norm[2],
-										k->flag_length,
-										k->color[0],
-										k->color[1],
-										k->color[2]										
-										);						
-
-									k = Cont_Mesh.landmarkafter (ind, 2);
-							}			
-							fclose(filein);	
-						}//ok overwrite
+						this->Save_FLG_File(filename, 1);
 						break;
 			}//default
 		}//switch
@@ -5562,6 +5573,44 @@ int MeshTools::Save_FLG_File()
 	
 }
 
+void MeshTools::Save_ORI_File(std::string filename, int ask_before_overwrite )
+{
+
+	
+
+		std::string ORIext = ".ori";
+		std::string ORIext2 = ".ORI";
+		std::size_t found = filename.find(ORIext);
+		std::size_t found2 = filename.find(ORIext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			filename.append(".ori");
+		}
+
+		int overwrite = 1;
+		if (ask_before_overwrite == 1)
+		{
+			ifstream file(filename.c_str());
+			if (file)
+			{
+				overwrite = fl_ask("Overwrite ORI file ?");
+				file.close();
+
+			}
+		}
+		if (overwrite == 1)
+		{
+
+			FILE*filein = fopen(filename.c_str(), "w");
+			for (int i = 0; i<6; i++)
+			{
+				fprintf(filein, "%s\n", g_orientation_labels[i].c_str());
+
+			}
+			fclose(filein);
+		}//overwrite?
+		
+}
 int MeshTools::Save_ORI_File()
 {
 	
@@ -5587,39 +5636,48 @@ int MeshTools::Save_ORI_File()
 			{
 				
 				filename = this->correct_filename(fnfc.filename());
-				std::string ORIext = ".ori";
-				std::string ORIext2 = ".ORI";
-				std::size_t found = filename.find(ORIext);
-				std::size_t found2 = filename.find(ORIext2);
-				if (found == std::string::npos && found2 == std::string::npos)
-				{
-					filename.append(".ori");
-				}
-			
-				ifstream file(filename.c_str());
-				int overwrite=1;
-				if (file)
-				{
-					overwrite = fl_ask("Overwrite?");
-					file.close();
-
-				}
-				if (overwrite==1)
-				{	
-							
-					FILE*filein =fopen(filename.c_str(), "w");						
-					for (int i =0; i<6; i++)
-					{				
-						fprintf (filein, "%s\n", g_orientation_labels[i].c_str());				
-				
-					}			
-					fclose(filein);		
-				}//overwrite?
+				this->Save_ORI_File(filename, 1);
 				break;
 			}
 		
 	}	
 	return 1;			
+}
+
+
+void MeshTools::Save_TAG_File(std::string filename, int ask_before_overwrite)
+{
+		std::string TAGext = ".tag";
+		std::string TAGext2 = ".TAG";
+		std::size_t found = filename.find(TAGext);
+		std::size_t found2 = filename.find(TAGext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			filename.append(".tag");
+		}
+		ifstream file(filename.c_str());
+		int overwrite = 1;
+		if (ask_before_overwrite == 1)
+		{
+			ifstream file(filename.c_str());
+			if (file)
+			{
+				overwrite = fl_ask("Overwrite TAG file ?");
+				file.close();
+			}
+		}
+		if (overwrite == 1)
+		{
+
+			FILE*filein = fopen(filename.c_str(), "w");
+			for (int i = 0; i<25; i++)
+			{
+				fprintf(filein, "%s\n", g_tag_labels[i].c_str());
+				fprintf(filein, "%f %f %f  %f\n", g_tag_colors[i][0],
+					g_tag_colors[i][1], g_tag_colors[i][2], g_tag_colors[i][3]);
+			}
+			fclose(filein);
+		}//overwrite?	
 }
 
 int MeshTools::Save_TAG_File()
@@ -5646,35 +5704,7 @@ int MeshTools::Save_TAG_File()
 			default: 
 			{
 				filename = this->correct_filename(fnfc.filename());
-				std::string TAGext = ".tag";
-				std::string TAGext2 = ".TAG";
-				std::size_t found = filename.find(TAGext);
-				std::size_t found2 = filename.find(TAGext2);
-				if (found == std::string::npos && found2 == std::string::npos)
-				{
-					filename.append(".tag");
-				}
-			
-				ifstream file(filename.c_str());
-				int overwrite=1;
-				if (file)
-				{
-					overwrite = fl_ask("Overwrite?");
-					file.close();
-
-				}
-				if (overwrite==1)
-				{	
-							
-					FILE*filein =fopen(filename.c_str(), "w");						
-					for (int i =0; i<25; i++)
-					{				
-						fprintf (filein, "%s\n", g_tag_labels[i].c_str());				
-						fprintf (filein, "%f %f %f  %f\n", g_tag_colors[i][0],
-							g_tag_colors[i][1], g_tag_colors[i][2], g_tag_colors[i][3]);
-					}			
-					fclose(filein);		
-				}//overwrite?
+				this->Save_TAG_File(filename, 1);
 				break;
 			}
 		
@@ -7431,8 +7461,32 @@ void MeshTools::Stick_Selected_Landmarks_On_Surfaces()
 	Cont_Mesh.Stick_Selected_Landmarks_On_Surfaces();
 }
 
+int MeshTools::context_file_exists(std::string path, std::string ext, std::string postfix)
+{
+	// used by the save NTW function : 
+	//looks whether a non-mesh related file = context file (.ori, .flg, .tag, .ver, .cur, .stv) constructed with only a postfix + extension (project name) already exists 
+	std::string filename;
+	int exists = 0;
+
+		filename = path.c_str();
+		if (postfix.length()>0)
+		{
+			filename.append(postfix.c_str());
+		}
+		filename.append(ext.c_str());
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			file.close();
+			exists = 1;			
+		}	
+	return exists;
+}
+
 int MeshTools::selected_file_exists(std::string path, std::string ext, std::string postfix)
 {
+	// used by the save NTW function : 
+	//looks whether mesh related files (vtk, stl, ply, pos) constructed with a prefix (object name) and a postfix (project name) already exist 
 	std::string filename;
 	int exists =0;
 	for (int i=0; i<g_distinct_selected_names.size();i++)
@@ -7456,18 +7510,269 @@ int MeshTools::selected_file_exists(std::string path, std::string ext, std::stri
 	return exists;
 
 }
-void MeshTools::Save_NTW_File()
+void MeshTools::Save_NTW_File(std::string filename, int ori_mode, int tag_mode, int cur_mode)
 {
-	
+	FILE	*filein;
+	OBJECT_MESH *My_Obj;
+	OBJECT_LOG *My_Log;
+	std::string NTWext = ".ntw";
+	std::string NTWext2 = ".NTW";
+	std::size_t found = filename.find(NTWext);
+	std::size_t found2 = filename.find(NTWext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		filename.append(".ntw");
+	}
+	ifstream file(filename.c_str());
+	int overwrite = 1;
+	if (file)
+	{
+		overwrite = fl_ask("Overwrite project file?");
+		file.close();
+
+	}
+	if (overwrite == 1)
+	{
+		filein = fopen(filename.c_str(), "w");
+		std::string only_filename = fl_filename_name(filename.c_str());
+		std::string project_name = only_filename.c_str();
+		int nPos = project_name.find_first_of(".");
+		if (nPos > -1)
+		{
+			project_name = project_name.substr(0, nPos);
+		}
+		std::string path = filename.substr(0, (filename.length() - only_filename.length()));
+		std::string posExt = ".pos";
+		std::string vtkExt = ".vtk";
+		std::string tagExt = ".tag";
+		std::string oriExt = ".ori";
+		std::string flgExt = ".flg";
+		std::string verExt = ".ver";
+		std::string stvExt = ".stv";
+		std::string curExt = ".cur";
+		int overwrite_pos = 1;
+		int overwrite_vtk = 1;
+		int overwrite_ori = 1;
+		int overwrite_tag = 1;
+		int overwrite_flg = 1;
+		int overwrite_ver = 1;
+		int overwrite_cur = 1;
+		int overwrite_stv = 1;
+
+		this->Compute_Name_Lists();
+		std::string postfix = "_";
+		postfix.append(project_name.c_str());
+		std::string no_postfix = "";
+		int pos_exists = this->selected_file_exists(path, posExt, postfix);
+
+		int vtk_exists = this->selected_file_exists(path, vtkExt, no_postfix);
+
+
+		if (vtk_exists == 1)
+		{
+			overwrite_vtk = fl_ask("At least one vtk mesh file already exists: update existing mesh files?");
+		}
+		if (pos_exists == 1)
+		{
+			overwrite_pos = fl_ask("At least one position file already exists: update existing position files?");
+		}
+
+		//ori file
+		if (ori_mode == 1)
+		{
+			std::string _ori_fullpath;
+			std::string _ori_file;
+			int ori_exists = this->context_file_exists(path, oriExt, project_name);
+			if (ori_exists == 1)
+			{
+				overwrite_ori = fl_ask("Ori file already exists: overwrite existing orientation file ?");
+			}
+			
+			_ori_file = project_name.c_str();
+			_ori_file.append(".ori");
+			_ori_fullpath = path.c_str();
+			_ori_fullpath.append(_ori_file.c_str());
+			int write = 1;
+			if (overwrite_ori == 0)
+			{
+				// in that case, check if file exists...								
+				ifstream file2(_ori_fullpath.c_str());
+				if (file2)
+				{
+					write = 0;
+					file.close();
+				}
+			}
+			if (write == 1)
+			{
+				//write or overwrite ORI file without further question (0)
+				this->Save_ORI_File( _ori_fullpath, 0);
+			}
+			fprintf(filein, "%s\n", _ori_file.c_str());
+
+		}
+
+		//tag file
+		if (tag_mode == 1)
+		{
+			std::string _tag_fullpath;
+			std::string _tag_file;
+			int tag_exists = this->context_file_exists(path, tagExt, project_name);
+			if (tag_exists == 1)
+			{
+				overwrite_tag = fl_ask("Tag file already exists: overwrite existing tag colours and labels file ?");
+			}
+
+			_tag_file = project_name.c_str();
+			_tag_file.append(".tag");
+			_tag_fullpath = path.c_str();
+			_tag_fullpath.append(_tag_file.c_str());
+			int write = 1;
+			if (overwrite_tag == 0)
+			{
+				// in that case, check if file exists...								
+				ifstream file2(_tag_fullpath.c_str());
+				if (file2)
+				{
+					write = 0;
+					file.close();
+				}
+			}
+			if (write == 1)
+			{
+				//write or overwrite TAG file without further question (0)
+				this->Save_TAG_File(_tag_fullpath, 0);
+			}
+			fprintf(filein, "%s\n", _tag_file.c_str());
+
+		}
+		//flags 
+		int flag_number = Cont_Mesh.Get_Landmark_Number(2);
+		if (flag_number>0)
+		{
+			std::string _flg_fullpath;
+			std::string _flg_file;
+			int flg_exists = this->context_file_exists(path, flgExt, project_name);
+			if (flg_exists == 1)
+			{
+				overwrite_flg = fl_ask("Flag file already exists: overwrite existing flags ?");
+			}
+
+			_flg_file = project_name.c_str();
+			_flg_file.append(".flg");
+			_flg_fullpath = path.c_str();
+			_flg_fullpath.append(_flg_file.c_str());
+			int write = 1;
+			if (overwrite_flg == 0)
+			{
+				// in that case, check if file exists...								
+				ifstream file2(_flg_fullpath.c_str());
+				if (file2)
+				{
+					write = 0;
+					file.close();
+				}
+			}
+			if (write == 1)
+			{
+				//write or overwrite TAG file without further question (0)
+				this->Save_FLG_File(_flg_fullpath, 0);
+			}
+			fprintf(filein, "%s\n", _flg_file.c_str());
+
+		}
+
+
+		std::string _vtk_fullpath;
+		std::string _pos_fullpath;
+		std::string _vtk_file;
+		std::string _pos_file;
+
+		My_Obj = NULL;
+		
+		My_Log = Cont_Mesh.OBJECTS_ROOT;
+		if (My_Log != NULL)
+		{
+			My_Obj = My_Log->OBJECTS;
+		}
+		int i = 0;
+		while (My_Obj != NULL)
+		{
+			if (My_Obj->selected == 1)
+			{
+				i++;
+				//itoa( camera.tw, tw, 10);													
+				_vtk_file = My_Obj->name.c_str();
+				_pos_file = My_Obj->name.c_str();
+				_vtk_file.append(".vtk");
+				_pos_file.append(postfix.c_str());
+				_pos_file.append(".pos");
+
+				_vtk_fullpath = path.c_str();
+				_vtk_fullpath.append(_vtk_file.c_str());
+
+				_pos_fullpath = path.c_str();
+				_pos_fullpath.append(_pos_file.c_str());
+
+				int write = 1;
+				if (overwrite_vtk == 0)
+				{
+					// in that case, check if file exists...
+					ifstream file2(_vtk_fullpath.c_str());
+					int overwrite = 1;
+					if (file2)
+					{
+						write = 0;
+						file2.close();
+					}
+				}
+				if (write == 1)
+				{
+					Save_Mesh_File(My_Obj, _vtk_fullpath, 1, 0);
+				}
+
+				write = 1;
+				if (overwrite_pos == 0)
+				{
+					// in that case, check if file exists...								
+					ifstream file2(_pos_fullpath.c_str());
+					int overwrite = 1;
+					if (file2)
+					{
+						write = 0;
+						file.close();
+					}
+
+				}
+				if (write == 1)
+				{
+					Save_POS_File(My_Obj, _pos_fullpath);
+				}
+				fprintf(filein, "%s\n", _vtk_file.c_str());
+				fprintf(filein, "%s\n", _pos_file.c_str());
+
+				fprintf(filein, "%f %f %f %f\n", My_Obj->color[0], My_Obj->color[1], My_Obj->color[2], My_Obj->color[3]);
+			}
+			My_Obj = My_Obj->nextobj;
+		}//while
+		fclose(filein);
+	}//overwrite?
+}
+
+void MeshTools::Save_NTW_File(int ori_mode, int tag_mode, int cur_mode)
+{
+	//ori mode : if 1 save orientation file
+	//tag mode : if 1 save tag file
+	//cur mode : if 1, in the case n_normal_landmarks = n_target_landmarks, program decides whether to save source + target landmarks as .CUR or .STV (depending on whether 
+	// curve information are found
+	// cur_mode : if 0, if n_normal_landmarks = n_target_landmarks, normal and target landmarks are saved as a .CUR file
 	// Save network : we keep current object names	
 	//New : all files are saved as binary poly data (*.VTK)
 	//(the possibility remains to read .ntw files with .STL files)
 	//New : now all positions are saved as ASCII .POS files 
 	//(the possibility remains to read .ntw files with .MAT positions files)
 
-	FILE	*filein;
-	OBJECT_MESH *My_Obj;	
-	OBJECT_LOG *My_Log;
+	
 	std::string filename;
 	Fl_Native_File_Chooser fnfc;
 	fnfc.type(Fl_Native_File_Chooser::BROWSE_SAVE_FILE);				
@@ -7506,125 +7811,8 @@ void MeshTools::Save_NTW_File()
 				
 				//Cont_Mesh.Mesh_STLwrite(szFile, Save_Obj);
 				filename = this->correct_filename(fnfc.filename());
+				this->Save_NTW_File(filename, ori_mode, tag_mode, cur_mode);
 				
-				std::string NTWext = ".ntw";
-				std::string NTWext2 = ".NTW";
-				std::size_t found = filename.find(NTWext);
-				std::size_t found2 = filename.find(NTWext2);
-				if (found == std::string::npos && found2 == std::string::npos)
-				{
-					filename.append(".ntw");
-				}
-				ifstream file(filename.c_str());
-				int overwrite=1;
-				if (file)
-				{
-					overwrite = fl_ask("Overwrite project file?");
-					file.close();
-
-				}
-				if (overwrite==1)
-				{	
-
-					std::string only_filename = fl_filename_name(filename.c_str());
-					std::string project_name = only_filename.c_str();
-					int nPos = project_name.find_first_of(".");			
-					if ( nPos > -1 )
-					{
-						project_name = project_name.substr(0, nPos);
-					}	
-					std::string path = filename.substr(0, (filename.length()-only_filename.length()));
-					std::string posExt=".pos";
-					std::string vtkExt=".vtk";
-					int overwrite_pos=1;
-					int overwrite_vtk=1;
-
-					this->Compute_Name_Lists();
-					std::string postfix="_";
-					postfix.append(project_name.c_str());
-					std::string no_postfix="";
-					int pos_exists= this->selected_file_exists(path, posExt, postfix);
-
-					int vtk_exists= this->selected_file_exists(path, vtkExt,no_postfix);
-					if (vtk_exists==1)
-					{
-						overwrite_vtk = fl_ask("At least one vtk mesh file already exists: update existing mesh files?");
-					}
-					if (pos_exists==1)
-					{
-						overwrite_pos = fl_ask("At least one position file already exists: update existing position files?");
-					}
-														
-										
-					
-					std::string _vtk_fullpath;
-					std::string _pos_fullpath;
-					std::string _vtk_file;
-					std::string _pos_file;			
-				
-					My_Obj = NULL;					
-					filein =fopen(filename.c_str(), "w");	
-					My_Log = Cont_Mesh.OBJECTS_ROOT;
-					if (My_Log !=NULL)
-					{My_Obj = My_Log->OBJECTS;}
-					int i = 0;
-					while (My_Obj !=NULL) 
-					{	
-						if (My_Obj->selected ==1)
-						{
-							i++;
-							//itoa( camera.tw, tw, 10);													
-							_vtk_file = My_Obj->name.c_str();
-							_pos_file = My_Obj->name.c_str();
-							_vtk_file.append(".vtk");
-							_pos_file.append(postfix.c_str());
-							_pos_file.append(".pos");					
-																				
-							_vtk_fullpath= path.c_str();
-							_vtk_fullpath.append(_vtk_file.c_str());
-
-							_pos_fullpath=path.c_str();
-							_pos_fullpath.append(_pos_file.c_str());
-
-							int write =1;
-							if (overwrite_vtk==0)
-							{
-								// in that case, check if file exists...
-								ifstream file2(_vtk_fullpath.c_str());
-								int overwrite=1;
-								if (file2)
-								{
-									write=0;
-									file2.close();
-								}							
-							}
-							if (write==1)
-							{Save_Mesh_File (My_Obj, _vtk_fullpath, 1, 0);}
-
-							write =1;
-							if (overwrite_pos==0)
-							{
-								// in that case, check if file exists...								
-								ifstream file2(_pos_fullpath.c_str());
-								int overwrite=1;
-								if (file2)
-								{
-									write=0;
-									file.close();
-								}		
-							
-							}
-							if (write ==1)
-							{Save_POS_File(My_Obj, _pos_fullpath);}
-							fprintf (filein, "%s\n", _vtk_file.c_str());			
-							fprintf (filein, "%s\n", _pos_file.c_str());	
-							
-							fprintf (filein, "%f %f %f %f\n", My_Obj->color[0], My_Obj->color[1],My_Obj->color[2], My_Obj->color[3]);						
-						}
-						My_Obj = My_Obj->nextobj;				
-					}//while
-					fclose (filein);
-				}//overwrite?
 				break;
 			}//default
 		}//switch	
