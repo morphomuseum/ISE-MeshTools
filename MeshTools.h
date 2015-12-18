@@ -255,7 +255,7 @@ void SC_calc_thickness_between_objects(float thickness_max_distance,
 	void SaveErrors();
 	void Save_Errors_ICP(vtkFloatArray* errors);
 	void Save_STV_File();
-	void Write_STV(string filename, int source_landmarks_number, int target_landmarks_number);
+	void Save_STV_File(string filename, int source_landmarks_number, int target_landmarks_number);
 	void Open_STV_File();
 	void Open_STV_File(std::string filename);
 	void Save_original_source_verticeICP();
@@ -463,6 +463,8 @@ void Save_Mesh_File(OBJECT_MESH *My_Obj, std::string filename, int file_type, in
 int Save_CUR_LMK_File(int file_type,int decimation);
 int Save_CUR_Infos();
 int Save_Landmarks(int file_type, int landmark_mode, int only_selected);
+void Save_VER_File(std::string filename, int landmark_mode, int only_selected, int ask_before_overwrite);
+void Save_LMK_File(std::string filename, int landmark_mode, int only_selected, int ask_before_overwrite);
 void Select_Landmark(int landmark_mode, int lmk_ind);
 void Select_Landmark_Range(int landmark_mode, int lmk_ind_start, int lmk_ind_end);
 void Save_FLG_File(std::string filename, int ask_before_overwrite);
@@ -472,6 +474,7 @@ void Save_TAG_File(std::string filename, int ask_before_overwrite);
 int Save_ORI_File();
 void Save_ORI_File(std::string filename, int ask_before_overwrite);
 int Save_CUR_File();
+void Save_CUR_File(std::string filename, int ask_before_overwrite);
 void Mesh_Set_Select_Mode(int Mode);
 void Landmark_Mode(int mode);
 void SetPosition(int pos);

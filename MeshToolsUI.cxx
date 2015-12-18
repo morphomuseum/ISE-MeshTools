@@ -8035,12 +8035,13 @@ void MeshToolsUI::cb_OkNTWSave_i(Fl_Button*, void*) {
   int ori_mode;
 int tag_mode;
 int cur_mode;
+
 ori_mode=0;
 tag_mode=0;
 cur_mode=0;
 if (NTW_O_1->value() == 1){ori_mode = 1;}
 if (NTW_T_1->value() == 1){tag_mode = 1;}
-if (NTW_C_1->value() == 1){cur_mode = 1;}
+if (NTW_C_0->value() == 1){cur_mode = 1;}
 MT->Save_NTW_File(ori_mode, tag_mode, cur_mode);
 ntw_hide();
 }
@@ -11310,7 +11311,7 @@ trix\" (old version correction)");
     Errors_curv_Window->end();
     Errors_curv_Window->resizable(Errors_curv_Window);
   } // Fl_Double_Window* Errors_curv_Window
-  { NTWSaveWindow = new Fl_Double_Window(761, 132, "NTW save options");
+  { NTWSaveWindow = new Fl_Double_Window(748, 131, "NTW save options");
     NTWSaveWindow->color((Fl_Color)215);
     NTWSaveWindow->user_data((void*)(this));
     { NTW_O_RB = new Fl_Group(12, 25, 113, 71, "Orientation labels");
@@ -11361,6 +11362,7 @@ trix\" (old version correction)");
     } // Fl_Button* CancelSaveNTW
     NTWSaveWindow->set_non_modal();
     NTWSaveWindow->end();
+    NTWSaveWindow->resizable(NTWSaveWindow);
   } // Fl_Double_Window* NTWSaveWindow
 }
 

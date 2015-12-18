@@ -5528,7 +5528,7 @@ color_data->activate();
     }
     Fl_Window NTWSaveWindow {
       label {NTW save options} open
-      xywh {762 163 761 132} type Double color 215 hide non_modal
+      xywh {458 188 748 131} type Double color 215 hide resizable non_modal
     } {
       Fl_Group NTW_O_RB {
         label {Orientation labels} open
@@ -5574,12 +5574,13 @@ color_data->activate();
         callback {int ori_mode;
 int tag_mode;
 int cur_mode;
+
 ori_mode=0;
 tag_mode=0;
 cur_mode=0;
 if (NTW_O_1->value() == 1){ori_mode = 1;}
 if (NTW_T_1->value() == 1){tag_mode = 1;}
-if (NTW_C_1->value() == 1){cur_mode = 1;}
+if (NTW_C_0->value() == 1){cur_mode = 1;}
 MT->Save_NTW_File(ori_mode, tag_mode, cur_mode);
 ntw_hide();} selected
         xywh {235 90 90 25} color 175 selection_color 214

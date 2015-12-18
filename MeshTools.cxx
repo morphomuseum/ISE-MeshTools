@@ -5296,9 +5296,146 @@ void MeshTools::Select_Landmark_Range(int landmark_mode, int lmk_ind_start, int 
 
 }
 
+void MeshTools::Save_LMK_File(std::string filename, int landmark_mode, int only_selected, int ask_before_overwrite)
+{
+	
+		std::string LMKext = ".lmk";
+		std::string LMKext2 = ".LMK";
+		std::size_t found = filename.find(LMKext);
+		std::size_t found2 = filename.find(LMKext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			filename.append(".lmk");
+		}
+		int overwrite = 1;
+		if (ask_before_overwrite == 1)
+		{
+
+			ifstream file(filename.c_str());
+			if (file)
+			{
+				overwrite = fl_ask("Overwrite LMK file?");
+				file.close();
+
+			}
+		}
+	if (overwrite== 1)
+	{
+
+		FILE *filein = fopen(filename.c_str(), "w");
+		int cpt;
+		glMatrix wc_mat;
+		float vv[3], vv1[3], vvn[3], vvn1[3];
+		cpt = 0;
+		OBJECT_LANDMARK *k = NULL;
+		int ind = 0;
 
 
+		k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+		while (k != NULL)
+		{
 
+
+			k->get_world_coordinates_matrix(wc_mat);
+
+
+			vv[0] = 0;
+			vv[1] = 0;
+			vv[2] = 0;
+			vvn[0] = 1.0;
+			vvn[1] = 0;
+			vvn[2] = 0;
+			ApplyTransformation(vv, vv1, wc_mat);
+			ApplyTransformation(vvn, vvn1, wc_mat);
+			cpt++;
+			ind = k->landmark_index;
+			int print_it = 1;
+			if (only_selected == 1 && k->selected == 0) { print_it = 0; }
+			if (print_it == 1)
+			{
+				
+				
+					fprintf(filein, "%s%d: %f %f %f\n", "landmark", ind, vv1[0], vv1[1], vv1[2]);
+				
+			}
+
+			k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+		}
+
+		fclose(filein);
+	}//overwrite?
+
+}
+void MeshTools::Save_VER_File(std::string filename, int landmark_mode, int only_selected, int ask_before_overwrite)
+{
+
+	std::string VERext = ".ver";
+	std::string VERext2 = ".VER";
+	std::size_t found = filename.find(VERext);
+	std::size_t found2 = filename.find(VERext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		filename.append(".ver");
+	}
+
+	int overwrite = 1;
+	if (ask_before_overwrite == 1)
+	{
+		
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			overwrite = fl_ask("Overwrite VER file ?");
+			file.close();
+
+		}
+	}
+	if (overwrite == 1)
+	{
+
+		FILE *filein = fopen(filename.c_str(), "w");
+		int cpt;
+		glMatrix wc_mat;
+		float vv[3], vv1[3], vvn[3], vvn1[3];
+		cpt = 0;
+		OBJECT_LANDMARK *k = NULL;
+		int ind = 0;
+
+
+		k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+		while (k != NULL)
+		{
+
+
+			k->get_world_coordinates_matrix(wc_mat);
+
+
+			vv[0] = 0;
+			vv[1] = 0;
+			vv[2] = 0;
+			vvn[0] = 1.0;
+			vvn[1] = 0;
+			vvn[2] = 0;
+			ApplyTransformation(vv, vv1, wc_mat);
+			ApplyTransformation(vvn, vvn1, wc_mat);
+			cpt++;
+			ind = k->landmark_index;
+			int print_it = 1;
+			if (only_selected == 1 && k->selected == 0) { print_it = 0; }
+			if (print_it == 1)
+			{
+				
+					fprintf(filein, "%s%d: %f %f %f %f %f %f\n", "landmark", ind, vv1[0], vv1[1], vv1[2], vvn1[0], vvn1[1], vvn1[2]);
+				
+			}
+
+			k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+		}
+
+		fclose(filein);
+	}//overwrite?
+
+}
 int MeshTools::Save_Landmarks(int file_type,int landmark_mode, int only_selected)
 {
 	
@@ -5349,84 +5486,14 @@ int MeshTools::Save_Landmarks(int file_type,int landmark_mode, int only_selected
 					{
 							//std::cout<<"PICKED: "<<fnfc.filename()<<"\n";   // FILE CHOSEN										
 						filename = this->correct_filename(fnfc.filename());
-						if (file_type ==1)
+						if (file_type == 1)
 						{
-							std::string VERext = ".ver";
-							std::string VERext2 = ".VER";
-							std::size_t found = filename.find(VERext);
-							std::size_t found2 = filename.find(VERext2);
-							if (found == std::string::npos && found2 == std::string::npos)
-							{
-								filename.append(".ver");
-							}
+							this->Save_VER_File(filename, landmark_mode, only_selected, 1);
 						}
 						else
 						{
-							std::string LMKext = ".lmk";
-							std::string LMKext2 = ".LMK";
-							std::size_t found = filename.find(LMKext);
-							std::size_t found2 = filename.find(LMKext2);
-							if (found == std::string::npos && found2 == std::string::npos)
-							{
-								filename.append(".lmk");
-							}
+							this->Save_LMK_File(filename, landmark_mode, only_selected, 1);
 						}
-
-						ifstream file(filename.c_str());
-						if (file)
-						{
-							ok = fl_ask("Overwrite?");
-							file.close();
-
-						}
-						if (ok==1)
-						{
-							
-						    FILE *filein=fopen(filename.c_str(), "w");	
-							int cpt;
-							glMatrix wc_mat;
-							float vv[3], vv1[3], vvn[3], vvn1[3];
-							cpt=0;
-							OBJECT_LANDMARK *k = NULL;
-							int ind = 0;
-							
-							
-							k = Cont_Mesh.landmarkafter (ind, landmark_mode);
-							while ( k != NULL)
-							{
-							
-
-									k->get_world_coordinates_matrix(wc_mat);
-									
-							
-									vv[0] =0;
-									vv[1] =0;
-									vv[2] =0;
-									vvn[0] =1.0;
-									vvn[1] =0;
-									vvn[2] =0;
-									ApplyTransformation(vv,vv1,wc_mat);
-									ApplyTransformation(vvn,vvn1,wc_mat);
-									cpt++;
-									ind = k->landmark_index;
-									int print_it=1;
-									if (only_selected ==1 && k->selected==0){print_it=0;}
-									if (print_it ==1)
-									{
-										if (file_type ==1)
-										{
-											fprintf (filein, "%s%d: %f %f %f %f %f %f\n", "landmark", ind, vv1[0], vv1[1], vv1[2], vvn1[0], vvn1[1], vvn1[2]);
-										}
-										else
-										{	fprintf (filein, "%s%d: %f %f %f\n", "landmark", ind, vv1[0], vv1[1], vv1[2]);
-										}
-									}
-
-									k = Cont_Mesh.landmarkafter (ind, landmark_mode);
-							}
-							
-							fclose(filein);	
-						}//overwrite?
 						break;
 
 					}
@@ -6289,6 +6356,84 @@ int MeshTools::Save_CUR_LMK_File(int file_type, int decimation)
 
 }
 
+void MeshTools::Save_CUR_File(std::string filename, int ask_before_overwrite)
+{
+
+	
+			std::string CURext = ".cur";
+			std::string CURext2 = ".CUR";
+			std::size_t found = filename.find(CURext);
+			std::size_t found2 = filename.find(CURext2);
+			if (found == std::string::npos && found2 == std::string::npos)
+			{
+				filename.append(".cur");
+			}
+			int overwrite = 1;
+			if (ask_before_overwrite == 1)
+			{
+				ifstream file(filename.c_str());
+				if (file)
+				{
+					overwrite = fl_ask("Overwrite CUR File?");
+					file.close();
+
+				}
+			}
+			if (overwrite == 1)
+			{
+				int num_landmark_D = Cont_Mesh.Get_Landmark_Number(0); //landmarks
+				int num_landmark_H = Cont_Mesh.Get_Landmark_Number(1);	//handles
+				int start = 0;
+				if (num_landmark_D == num_landmark_H)
+				{
+					FILE	*filein;
+					//filein = fopen(this->VER_Sp_File, "w");	
+					//fopen(&filein, filename.c_str(), "w");	
+					//ifstream file(filename.c_str());
+					filein = fopen(filename.c_str(), "w");
+
+					int cpt;
+					glMatrix wc_mat;
+					glMatrix wc_mat2;
+					float vv[3], vv1[3], vv2[3];
+					cpt = 0;
+					OBJECT_LANDMARK *k = NULL;
+					OBJECT_LANDMARK *l = NULL;
+					int ind = 0;
+					int ind2 = 0;
+
+					k = Cont_Mesh.landmarkafter(ind, 0);
+					l = Cont_Mesh.landmarkafter(ind2, 1);
+					while (k != NULL)
+					{
+
+						k->get_world_coordinates_matrix(wc_mat);
+						vv[0] = 0;
+						vv[1] = 0;
+						vv[2] = 0;
+						ApplyTransformation(vv, vv1, wc_mat);
+						start = k->curve_start;
+						if (ind == 0) { start = 1; }
+						//if (start!=1){start=0;}
+						l->get_world_coordinates_matrix(wc_mat2);
+						vv[0] = 0;
+						vv[1] = 0;
+						vv[2] = 0;
+						ApplyTransformation(vv, vv2, wc_mat2);
+
+						cpt++;
+						ind = k->landmark_index;
+						ind2 = l->landmark_index;
+						fprintf(filein, "%s%d: %f %f %f %f %f %f %d\n", "landmark", ind, vv1[0], vv1[1], vv1[2], vv2[0], vv2[1], vv2[2], start);
+						k = Cont_Mesh.landmarkafter(ind, 0);
+						l = Cont_Mesh.landmarkafter(ind2, 1);
+					}
+					fclose(filein);
+				}//if
+			}//overwrite?
+			
+}
+
 int MeshTools::Save_CUR_File()
 {
 	
@@ -6332,73 +6477,7 @@ int MeshTools::Save_CUR_File()
 				//Cont_Mesh.Mesh_STLwrite(szFile, Save_Obj);
 				//filename = fnfc.filename();		
 				filename = this->correct_filename(fnfc.filename());
-				std::string CURext = ".cur";
-				std::string CURext2 = ".CUR";
-				std::size_t found = filename.find(CURext);
-				std::size_t found2 = filename.find(CURext2);
-				if (found == std::string::npos && found2 == std::string::npos)
-				{
-					filename.append(".cur");
-				}
-				ifstream file(filename.c_str());
-				if (file)
-				{
-					ok = fl_ask("Overwrite?");
-					file.close();
-
-				}
-				if (ok==1)
-				{
-					int num_landmark_D = Cont_Mesh.Get_Landmark_Number (0); //landmarks
-					int num_landmark_H = Cont_Mesh.Get_Landmark_Number (1);	//handles
-					int start=0;
-					if (num_landmark_D == num_landmark_H)
-					{						
-						FILE	*filein;							
-						//filein = fopen(this->VER_Sp_File, "w");	
-						//fopen(&filein, filename.c_str(), "w");	
-						//ifstream file(filename.c_str());
-						filein=fopen(filename.c_str(), "w");	
-					
-						int cpt;
-						glMatrix wc_mat;
-						glMatrix wc_mat2;
-						float vv[3], vv1[3], vv2[3];
-						cpt=0;
-						OBJECT_LANDMARK *k = NULL;
-						OBJECT_LANDMARK *l = NULL;
-						int ind = 0;
-						int ind2 = 0;
-						
-						k = Cont_Mesh.landmarkafter (ind, 0);
-						l = Cont_Mesh.landmarkafter (ind2, 1);
-						while ( k != NULL)
-						{
-						
-								k->get_world_coordinates_matrix(wc_mat);
-								vv[0] =0;
-								vv[1] =0;
-								vv[2] =0;
-								ApplyTransformation(vv,vv1,wc_mat);
-								start = k->curve_start;
-								if (ind==0){start=1;}
-								//if (start!=1){start=0;}
-								l->get_world_coordinates_matrix(wc_mat2);
-								vv[0] =0;
-								vv[1] =0;
-								vv[2] =0;
-								ApplyTransformation(vv,vv2,wc_mat2);
-								
-								cpt++;
-								ind = k->landmark_index;
-								ind2 = l->landmark_index;
-								fprintf (filein, "%s%d: %f %f %f %f %f %f %d\n", "landmark", ind, vv1[0], vv1[1], vv1[2], vv2[0], vv2[1], vv2[2], start);
-								k = Cont_Mesh.landmarkafter (ind, 0);
-								l = Cont_Mesh.landmarkafter (ind2, 1);
-						}				
-						fclose(filein);								
-					}//if
-				}//overwrite?
+				this->Save_CUR_File(filename, 1);
 				break;
 			}//default	
 		}//switch
@@ -7675,18 +7754,170 @@ void MeshTools::Save_NTW_File(std::string filename, int ori_mode, int tag_mode, 
 			}
 			if (write == 1)
 			{
-				//write or overwrite TAG file without further question (0)
+				//write or overwrite FLG file without further question (0)
 				this->Save_FLG_File(_flg_fullpath, 0);
 			}
 			fprintf(filein, "%s\n", _flg_file.c_str());
 
 		}
+		//landmarks , curves and stv 
+		int nlmk_norm = Cont_Mesh.Get_Landmark_Number(0);
+		int nlmk_target = Cont_Mesh.Get_Landmark_Number(1);
+		// write ver file
+		if ((nlmk_norm>0 && nlmk_target==0))
+		{
+			std::string _ver_fullpath;
+			std::string _ver_file;
+			int ver_exists = this->context_file_exists(path, verExt, project_name);
+			if (ver_exists == 1)
+			{
+				overwrite_ver = fl_ask(" Landmark file already exists: overwrite existing VER file ?");
+			}
 
+			_ver_file = project_name.c_str();
+			_ver_file.append(".ver");
+			_ver_fullpath = path.c_str();
+			_ver_fullpath.append(_ver_file.c_str());
+			int write = 1;
+			if (overwrite_ver == 0)
+			{
+				// in that case, check if file exists...								
+				ifstream file2(_ver_fullpath.c_str());
+				if (file2)
+				{
+					write = 0;
+					file.close();
+				}
+			}
+			if (write == 1)
+			{
+				//write or overwrite VER file without further question (0)
+				this->Save_VER_File(_ver_fullpath, 0, 0, 0);
+			}
+			fprintf(filein, "%s\n", _ver_file.c_str());
 
-		std::string _vtk_fullpath;
-		std::string _pos_fullpath;
-		std::string _vtk_file;
-		std::string _pos_file;
+		}
+		//STV
+		else if ((nlmk_norm >= 0 && nlmk_target > 0) && (nlmk_norm != nlmk_target ))
+		{
+			std::string _stv_fullpath;
+			std::string _stv_file;
+			int stv_exists = this->context_file_exists(path, stvExt, project_name);
+			if (stv_exists == 1)
+			{
+				overwrite_stv = fl_ask(" Landmark file already exists: overwrite existing stv file ?");
+			}
+
+			_stv_file = project_name.c_str();
+			_stv_file.append(".stv");
+			_stv_fullpath = path.c_str();
+			_stv_fullpath.append(_stv_file.c_str());
+			int write = 1;
+			if (overwrite_stv == 0)
+			{
+				// in that case, check if file exists...								
+				ifstream file2(_stv_fullpath.c_str());
+				if (file2)
+				{
+					write = 0;
+					file.close();
+				}
+			}
+			if (write == 1)
+			{
+				//write or overwrite stv file without further question (0)
+				this->Save_STV_File(_stv_fullpath, nlmk_norm, nlmk_target);
+			}
+			fprintf(filein, "%s\n", _stv_file.c_str());
+		}
+		//CUR or STV
+		else if ((nlmk_norm > 0) && (nlmk_norm == nlmk_target))
+		{
+			//first check whether there is "curv" related infos inside normal landmark (like curv start... etc...)
+			OBJECT_LANDMARK *k = NULL;
+			int ind = 0;
+			int cur_info_exists=0;
+			k = Cont_Mesh.landmarkafter(ind, 0);
+			while (k != NULL)
+			{
+
+				if (k->curve_start > 0) { cur_info_exists = 1; }
+				ind = k->landmark_index;
+				k = Cont_Mesh.landmarkafter(ind, 0);
+			}
+
+			if (cur_mode == 1 || cur_info_exists == 1)
+			{
+				// write CUR file
+				std::string _cur_fullpath;
+				std::string _cur_file;
+				int cur_exists = this->context_file_exists(path, curExt, project_name);
+				if (cur_exists == 1)
+				{
+					overwrite_stv = fl_ask(" CUR file already exists: overwrite existing cur file ?");
+				}
+
+				_cur_file = project_name.c_str();
+				_cur_file.append(".cur");
+				_cur_fullpath = path.c_str();
+				_cur_fullpath.append(_cur_file.c_str());
+				int write = 1;
+				if (overwrite_cur == 0)
+				{
+					// in that case, check if file exists...								
+					ifstream file2(_cur_fullpath.c_str());
+					if (file2)
+					{
+						write = 0;
+						file.close();
+					}
+				}
+				if (write == 1)
+				{
+					//write or overwrite stv file without further question (0)
+					this->Save_CUR_File(_cur_fullpath, 0);
+				}
+				fprintf(filein, "%s\n", _cur_file.c_str());
+			}
+			else
+			{
+				// STV file
+				std::string _stv_fullpath;
+				std::string _stv_file;
+				int stv_exists = this->context_file_exists(path, stvExt, project_name);
+				if (stv_exists == 1)
+				{
+					overwrite_stv = fl_ask(" Landmark file already exists: overwrite existing stv file ?");
+				}
+
+				_stv_file = project_name.c_str();
+				_stv_file.append(".stv");
+				_stv_fullpath = path.c_str();
+				_stv_fullpath.append(_stv_file.c_str());
+				int write = 1;
+				if (overwrite_stv == 0)
+				{
+					// in that case, check if file exists...								
+					ifstream file2(_stv_fullpath.c_str());
+					if (file2)
+					{
+						write = 0;
+						file.close();
+					}
+				}
+				if (write == 1)
+				{
+					//write or overwrite stv file without further question (0)
+					this->Save_STV_File(_stv_fullpath, nlmk_norm, nlmk_target);
+				}
+				fprintf(filein, "%s\n", _stv_file.c_str());
+			}
+
+		}
+		//
+		
+		
+	
 
 		My_Obj = NULL;
 		
@@ -7698,6 +7929,10 @@ void MeshTools::Save_NTW_File(std::string filename, int ori_mode, int tag_mode, 
 		int i = 0;
 		while (My_Obj != NULL)
 		{
+			std::string _vtk_fullpath;
+			std::string _pos_fullpath;
+			std::string _vtk_file;
+			std::string _pos_file;
 			if (My_Obj->selected == 1)
 			{
 				i++;
@@ -10441,7 +10676,7 @@ void MeshTools::Save_STV_File(){
 				}
 				if (ok1 == 1)
 				{
-					Write_STV(filename,source_landmarks_number,target_landmarks_number);
+					Save_STV_File(filename,source_landmarks_number,target_landmarks_number);
 				
 				}//overwrite?
 				break;
@@ -10451,7 +10686,7 @@ void MeshTools::Save_STV_File(){
 }
 
 //On écrit dans le fichier STV les correspondances
-void MeshTools::Write_STV(string filename, int source_landmarks_number, int target_landmarks_number){
+void MeshTools::Save_STV_File(string filename, int source_landmarks_number, int target_landmarks_number){
 	FILE *filein = fopen(filename.c_str(), "w");
 	int landmark_mode;
 	
