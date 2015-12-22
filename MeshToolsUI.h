@@ -2732,6 +2732,26 @@ public:
   Fl_Text_Display *time_total;
   Fl_Browser *table_time;
   Fl_Browser *table_error;
+  Fl_Double_Window *NTWSaveWindow;
+  Fl_Group *NTW_O_RB;
+  Fl_Round_Button *NTW_O_0;
+  Fl_Round_Button *NTW_O_1;
+  Fl_Group *NTW_T_RB;
+  Fl_Round_Button *NTW_T_0;
+  Fl_Round_Button *NTW_T_1;
+  Fl_Group *NTW_C_RB;
+  Fl_Round_Button *NTW_C_0;
+  Fl_Round_Button *NTW_C_1;
+  Fl_Button *OkNTWSave;
+private:
+  inline void cb_OkNTWSave_i(Fl_Button*, void*);
+  static void cb_OkNTWSave(Fl_Button*, void*);
+public:
+  Fl_Button *CancelSaveNTW;
+private:
+  inline void cb_CancelSaveNTW_i(Fl_Button*, void*);
+  static void cb_CancelSaveNTW(Fl_Button*, void*);
+public:
   void show(int argc, char **argv);
   void cam_show();
   void cam_hide();
@@ -2842,5 +2862,7 @@ public:
   void Initialize_error_Table(Fl_Browser *table);
   char * select_mode_text(vtkSmartPointer<vtkFloatArray> tab,int i);
   int Update_Chart_scale(vtkSmartPointer<vtkFloatArray> tab,float chart_height);
+  void ntw_show();
+  void ntw_hide();
 };
 #endif

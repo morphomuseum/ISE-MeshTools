@@ -243,7 +243,8 @@ void MeshToolsUI::cb_Open_NTW(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Save_NTW_i(Fl_Menu_*, void*) {
-  MT->Save_NTW_File();
+  //MT->Save_NTW_File();
+ntw_show();
 }
 void MeshToolsUI::cb_Save_NTW(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_NTW_i(o,v);
@@ -280,14 +281,14 @@ void MeshToolsUI::cb_Save_VER1(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_VER2_i(Fl_Menu_*, void*) {
-  MT->Open_SourceTarget_Vertice();
+  MT->Open_STV_File();
 }
 void MeshToolsUI::cb_Open_VER2(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Open_VER2_i(o,v);
 }
 
 void MeshToolsUI::cb_Save_VER3_i(Fl_Menu_*, void*) {
-  MT->save_SourceTarget_Vertice();
+  MT->Save_STV_File();
 }
 void MeshToolsUI::cb_Save_VER3(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_VER3_i(o,v);
@@ -323,7 +324,7 @@ void MeshToolsUI::cb_Save_Curve_Infos(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_TAG_i(Fl_Menu_*, void*) {
-  MT->Open_Tags();
+  MT->Open_TAG_File();
 tags_update();
 MT->Update_RGB();
 }
@@ -332,21 +333,21 @@ void MeshToolsUI::cb_Open_TAG(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Save_TAG_i(Fl_Menu_*, void*) {
-  MT->Save_Tags();
+  MT->Save_TAG_File();
 }
 void MeshToolsUI::cb_Save_TAG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_TAG_i(o,v);
 }
 
 void MeshToolsUI::cb_Open_FLG_i(Fl_Menu_*, void*) {
-  MT->Open_flags();
+  MT->Open_FLG_File();
 }
 void MeshToolsUI::cb_Open_FLG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Open_FLG_i(o,v);
 }
 
 void MeshToolsUI::cb_Save_FLG_i(Fl_Menu_*, void*) {
-  MT->Save_flags();
+  MT->Save_FLG_File();
 }
 void MeshToolsUI::cb_Save_FLG(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_FLG_i(o,v);
@@ -373,7 +374,7 @@ void MeshToolsUI::cb_Save_Infos(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Open_ORI_i(Fl_Menu_*, void*) {
-  MT->Open_Orientation();
+  MT->Open_ORI_File();
 orientation_update();
 }
 void MeshToolsUI::cb_Open_ORI(Fl_Menu_* o, void* v) {
@@ -381,7 +382,7 @@ void MeshToolsUI::cb_Open_ORI(Fl_Menu_* o, void* v) {
 }
 
 void MeshToolsUI::cb_Save_ORI_i(Fl_Menu_*, void*) {
-  MT->Save_Orientation();
+  MT->Save_ORI_File();
 }
 void MeshToolsUI::cb_Save_ORI(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_ORI_i(o,v);
@@ -3891,7 +3892,13 @@ void MeshToolsUI::cb_auto_landmark_size(Fl_Check_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Ok_scc_lm_i(Fl_Button*, void*) {
-  MT->Mesh_SetLandmarkSize(
+  MT->Mesh_SetLandmarkType(
+pt_sphere->value()
+);
+
+
+
+MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
 );
 
@@ -3904,9 +3911,6 @@ Flag_g_length->value()
 );
 
 
-MT->Mesh_SetLandmarkType(
-pt_sphere->value()
-);
 
 
 MT->save_ini_param();
@@ -7448,7 +7452,7 @@ void MeshToolsUI::cb_ok_vertice(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_save_vertice_i(Fl_Button*, void*) {
-  MT->save_SourceTarget_Vertice();
+  MT->Save_STV_File();
 }
 void MeshToolsUI::cb_save_vertice(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->parent()->user_data()))->cb_save_vertice_i(o,v);
@@ -8025,6 +8029,31 @@ void MeshToolsUI::cb_save_errors_curve_i(Fl_Button*, void*) {
 }
 void MeshToolsUI::cb_save_errors_curve(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_save_errors_curve_i(o,v);
+}
+
+void MeshToolsUI::cb_OkNTWSave_i(Fl_Button*, void*) {
+  int ori_mode;
+int tag_mode;
+int cur_mode;
+
+ori_mode=0;
+tag_mode=0;
+cur_mode=0;
+if (NTW_O_1->value() == 1){ori_mode = 1;}
+if (NTW_T_1->value() == 1){tag_mode = 1;}
+if (NTW_C_0->value() == 1){cur_mode = 1;}
+MT->Save_NTW_File(ori_mode, tag_mode, cur_mode);
+ntw_hide();
+}
+void MeshToolsUI::cb_OkNTWSave(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_OkNTWSave_i(o,v);
+}
+
+void MeshToolsUI::cb_CancelSaveNTW_i(Fl_Button*, void*) {
+  ntw_hide();
+}
+void MeshToolsUI::cb_CancelSaveNTW(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_CancelSaveNTW_i(o,v);
 }
 
 MeshToolsUI::MeshToolsUI() {
@@ -9297,7 +9326,7 @@ trix\" (old version correction)");
     STLSaveWindow->set_non_modal();
     STLSaveWindow->end();
   } // Fl_Double_Window* STLSaveWindow
-  { VTKSaveWindow = new Fl_Double_Window(252, 126, "VTK save options");
+  { VTKSaveWindow = new Fl_Double_Window(291, 123, "VTK save options");
     VTKSaveWindow->color((Fl_Color)215);
     VTKSaveWindow->user_data((void*)(this));
     { VTK_T_RB = new Fl_Group(35, 25, 75, 61, "File type");
@@ -9365,7 +9394,7 @@ trix\" (old version correction)");
     OBJSaveWindow->set_non_modal();
     OBJSaveWindow->end();
   } // Fl_Double_Window* OBJSaveWindow
-  { PLYSaveWindow = new Fl_Double_Window(448, 140, "PLY save options");
+  { PLYSaveWindow = new Fl_Double_Window(447, 138, "PLY save options");
     PLYSaveWindow->color((Fl_Color)215);
     PLYSaveWindow->user_data((void*)(this));
     { PLY_T_RB = new Fl_Group(8, 25, 75, 71, "File type");
@@ -10844,7 +10873,7 @@ trix\" (old version correction)");
     lmkrangeselectWindow->set_non_modal();
     lmkrangeselectWindow->end();
   } // Fl_Double_Window* lmkrangeselectWindow
-  { Registration_Window = new Fl_Double_Window(1053, 581, "Registration");
+  { Registration_Window = new Fl_Double_Window(1075, 590, "Registration");
     Registration_Window->color((Fl_Color)215);
     Registration_Window->user_data((void*)(this));
     Registration_Window->hotspot(Registration_Window);
@@ -11180,7 +11209,7 @@ trix\" (old version correction)");
     } // Fl_Group* data_icp
     Registration_Window->end();
   } // Fl_Double_Window* Registration_Window
-  { Errors_curv_Window = new Fl_Double_Window(820, 516, "Result");
+  { Errors_curv_Window = new Fl_Double_Window(840, 526, "Result");
     Errors_curv_Window->color((Fl_Color)214);
     Errors_curv_Window->user_data((void*)(this));
     { save_errors_curve = new Fl_Button(280, 435, 140, 45, "Save errors");
@@ -11282,6 +11311,59 @@ trix\" (old version correction)");
     Errors_curv_Window->end();
     Errors_curv_Window->resizable(Errors_curv_Window);
   } // Fl_Double_Window* Errors_curv_Window
+  { NTWSaveWindow = new Fl_Double_Window(748, 131, "NTW save options");
+    NTWSaveWindow->color((Fl_Color)215);
+    NTWSaveWindow->user_data((void*)(this));
+    { NTW_O_RB = new Fl_Group(12, 25, 113, 71, "Orientation labels");
+      { NTW_O_0 = new Fl_Round_Button(12, 30, 64, 23, "Do not save orientations");
+        NTW_O_0->type(102);
+        NTW_O_0->down_box(FL_ROUND_DOWN_BOX);
+        NTW_O_0->value(1);
+      } // Fl_Round_Button* NTW_O_0
+      { NTW_O_1 = new Fl_Round_Button(12, 48, 65, 22, "Save orientations");
+        NTW_O_1->type(102);
+        NTW_O_1->down_box(FL_ROUND_DOWN_BOX);
+      } // Fl_Round_Button* NTW_O_1
+      NTW_O_RB->end();
+    } // Fl_Group* NTW_O_RB
+    { NTW_T_RB = new Fl_Group(196, 25, 155, 58, "Tag colours and legends");
+      { NTW_T_0 = new Fl_Round_Button(199, 30, 102, 23, "Do not save tags");
+        NTW_T_0->type(102);
+        NTW_T_0->down_box(FL_ROUND_DOWN_BOX);
+        NTW_T_0->value(1);
+      } // Fl_Round_Button* NTW_T_0
+      { NTW_T_1 = new Fl_Round_Button(199, 50, 102, 22, "Save tags");
+        NTW_T_1->type(102);
+        NTW_T_1->down_box(FL_ROUND_DOWN_BOX);
+      } // Fl_Round_Button* NTW_T_1
+      NTW_T_RB->end();
+    } // Fl_Group* NTW_T_RB
+    { NTW_C_RB = new Fl_Group(366, 25, 193, 58, "Source and Target landmarks");
+      { NTW_C_0 = new Fl_Round_Button(368, 30, 102, 24, "Always prefer .CUR over .STV format when applicable");
+        NTW_C_0->type(102);
+        NTW_C_0->down_box(FL_ROUND_DOWN_BOX);
+      } // Fl_Round_Button* NTW_C_0
+      { NTW_C_1 = new Fl_Round_Button(368, 50, 102, 22, "Let ISE-MeshTools decide");
+        NTW_C_1->type(102);
+        NTW_C_1->down_box(FL_ROUND_DOWN_BOX);
+        NTW_C_1->value(1);
+      } // Fl_Round_Button* NTW_C_1
+      NTW_C_RB->end();
+    } // Fl_Group* NTW_C_RB
+    { OkNTWSave = new Fl_Button(235, 90, 90, 25, "Save NTW");
+      OkNTWSave->color((Fl_Color)175);
+      OkNTWSave->selection_color((Fl_Color)214);
+      OkNTWSave->callback((Fl_Callback*)cb_OkNTWSave);
+    } // Fl_Button* OkNTWSave
+    { CancelSaveNTW = new Fl_Button(341, 90, 60, 25, "Cancel");
+      CancelSaveNTW->color((Fl_Color)174);
+      CancelSaveNTW->selection_color((Fl_Color)133);
+      CancelSaveNTW->callback((Fl_Callback*)cb_CancelSaveNTW);
+    } // Fl_Button* CancelSaveNTW
+    NTWSaveWindow->set_non_modal();
+    NTWSaveWindow->end();
+    NTWSaveWindow->resizable(NTWSaveWindow);
+  } // Fl_Double_Window* NTWSaveWindow
 }
 
 void MeshToolsUI::show(int argc, char **argv) {
@@ -12682,4 +12764,12 @@ int MeshToolsUI::Update_Chart_scale(vtkSmartPointer<vtkFloatArray> tab,float cha
   }
   
   return chart_height/max;
+}
+
+void MeshToolsUI::ntw_show() {
+  NTWSaveWindow->show();
+}
+
+void MeshToolsUI::ntw_hide() {
+  NTWSaveWindow->hide();
 }

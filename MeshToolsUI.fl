@@ -11,7 +11,7 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);} open
+exit(0);}
       private image {pixmap/s_face.gif} xywh {-32000 -32000 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {open
@@ -32,7 +32,7 @@ if (test ==1)
             tooltip Delete image {./pixmap/delete2.gif} xywh {0 25 25 23} color 55
           }
           Fl_Menu_Button File {
-            label File
+            label File open
             xywh {0 0 55 25} color 55 labelcolor 32
           } {
             MenuItem Generic_Open_Surface {
@@ -201,7 +201,7 @@ if (ok==1)
               }
             }
             Submenu Project_submenu {
-              label Project
+              label Project open
               xywh {25 25 100 20}
             } {
               MenuItem Open_NTW {
@@ -211,12 +211,13 @@ if (ok==1)
               }
               MenuItem Save_NTW {
                 label {Save project}
-                callback {MT->Save_NTW_File();}
+                callback {//MT->Save_NTW_File();
+ntw_show();}
                 xywh {55 55 100 20} labelcolor 56
               }
             }
             Submenu Landmarks_submenu {
-              label Landmarks open
+              label Landmarks
               xywh {35 35 100 20}
             } {
               MenuItem Open_VER {
@@ -243,12 +244,12 @@ if (ok==1)
               }
               MenuItem Open_VER2 {
                 label {Load source and target landmarks}
-                callback {MT->Open_SourceTarget_Vertice();}
+                callback {MT->Open_STV_File();}
                 xywh {50 50 100 20} labelcolor 32
               }
               MenuItem Save_VER3 {
                 label {Save source and target landmarks}
-                callback {MT->save_SourceTarget_Vertice();}
+                callback {MT->Save_STV_File();}
                 xywh {90 90 100 20} labelcolor 32
               }
             }
@@ -284,24 +285,24 @@ if (ok==1)
             } {
               MenuItem Open_TAG {
                 label {Load tag colors and labels}
-                callback {MT->Open_Tags();
+                callback {MT->Open_TAG_File();
 tags_update();
 MT->Update_RGB();}
                 xywh {35 35 100 20} labelcolor 32
               }
               MenuItem Save_TAG {
                 label {Save tag colors and labels}
-                callback {MT->Save_Tags();}
+                callback {MT->Save_TAG_File();}
                 xywh {80 80 100 20} labelcolor 32
               }
               MenuItem Open_FLG {
                 label {Load flags}
-                callback {MT->Open_flags();}
+                callback {MT->Open_FLG_File();}
                 xywh {35 35 100 20} labelcolor 32
               }
               MenuItem Save_FLG {
                 label {Save flags}
-                callback {MT->Save_flags();}
+                callback {MT->Save_FLG_File();}
                 xywh {80 80 100 20} labelcolor 32
               }
             }
@@ -324,24 +325,24 @@ if (ok==1)
               xywh {80 80 100 20} labelcolor 32
             }
             Submenu Orientation_submenu {
-              label {Orientation labels}
+              label {Orientation labels} open
               xywh {55 55 100 20}
             } {
               MenuItem Open_ORI {
                 label {Load orientation labels}
-                callback {MT->Open_Orientation();
+                callback {MT->Open_ORI_File();
 orientation_update();}
                 xywh {45 45 100 20} labelcolor 32
               }
               MenuItem Save_ORI {
                 label {Save orientation labels}
-                callback {MT->Save_Orientation();}
+                callback {MT->Save_ORI_File();}
                 xywh {90 90 100 20} labelcolor 32
               }
             }
           }
           Fl_Menu_Button Viewing_options {
-            label {Viewing opt.} open
+            label {Viewing opt.}
             xywh {55 0 100 25} color 55
           } {
             MenuItem SET_GENERAL_COLOUR_LIGHTNING {
@@ -355,7 +356,7 @@ orientation_update();}
               xywh {90 90 100 20}
             }
             Submenu Camera_submenu {
-              label Camera open
+              label Camera
               xywh {0 0 62 20}
             } {
               MenuItem SET_CAMERA_OPT {
@@ -1005,7 +1006,7 @@ MT->redraw();}
               xywh {70 70 100 20}
             }
           }
-          Fl_Group Buttons {open
+          Fl_Group Buttons {
             xywh {25 25 105 23}
           } {
             Fl_Button Move_mode {
@@ -1450,7 +1451,7 @@ MT->redraw();}
       }
     }
     Fl_Window camWindow {
-      label {Camera options} open
+      label {Camera options}
       image {pixmap/s_back_13.gif} xywh {16 38 200 325} type Double color 174 hide resizable non_modal
     } {
       Fl_Value_Input Cam_near {
@@ -1560,7 +1561,7 @@ Cam_tx->value(),
 Cam_ty->value(),
 Cam_tz->value()
 );
-MT->redraw();} selected
+MT->redraw();}
         tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {117 252 25 23} color 84 selection_color 92 align 128
       }
     }
@@ -1779,7 +1780,13 @@ else
       }
       Fl_Button Ok_scc_lm {
         label Ok
-        callback {MT->Mesh_SetLandmarkSize(
+        callback {MT->Mesh_SetLandmarkType(
+pt_sphere->value()
+);
+
+
+
+MT->Mesh_SetLandmarkSize(
 Landmark_Size2->value()
 );
 
@@ -1792,9 +1799,6 @@ Flag_g_length->value()
 );
 
 
-MT->Mesh_SetLandmarkType(
-pt_sphere->value()
-);
 
 
 MT->save_ini_param();
@@ -2536,7 +2540,7 @@ stl_hide();}
     }
     Fl_Window VTKSaveWindow {
       label {VTK save options}
-      xywh {12 34 252 126} type Double color 215 hide non_modal
+      xywh {16 38 291 123} type Double color 215 hide non_modal
     } {
       Fl_Group VTK_T_RB {
         label {File type} open
@@ -2618,7 +2622,7 @@ obj_hide();}
     }
     Fl_Window PLYSaveWindow {
       label {PLY save options}
-      xywh {636 209 448 140} type Double color 215 hide non_modal
+      xywh {640 213 447 138} type Double color 215 hide non_modal
     } {
       Fl_Group PLY_T_RB {
         label {File type}
@@ -4617,7 +4621,7 @@ MT->redraw();}
     }
     Fl_Window Registration_Window {
       label Registration
-      image {pixmap/s_back_13.gif} xywh {38 67 1053 581} type Double color 215 hide hotspot
+      image {pixmap/s_back_13.gif} xywh {42 71 1075 590} type Double color 215 hide hotspot
     } {
       Fl_Group once_icp_ok {open
         xywh {740 5 315 580} box EMBOSSED_BOX color 166
@@ -4678,7 +4682,7 @@ MT->redraw();}
 }}
             xywh {760 65 64 15} down_box DOWN_BOX
           }
-          Fl_Group {} {
+          Fl_Group {} {open
             xywh {775 80 260 265} box FLAT_BOX color 174
           } {
             Fl_Button vertice_color {
@@ -4798,7 +4802,7 @@ MT->SetDisplayMatching(tabDisplay);}
             }
             Fl_Button save_vertice {
               label {Save vertice}
-              callback {MT->save_SourceTarget_Vertice();}
+              callback {MT->Save_STV_File();}
               xywh {785 295 100 40} color 117 deactivate
             }
             Fl_Value_Input line_width {
@@ -5436,7 +5440,7 @@ color_data->activate();
     }
     Fl_Window Errors_curv_Window {
       label Result
-      xywh {44 69 820 516} type Double color 214 hide resizable modal
+      xywh {48 73 840 526} type Double color 214 hide resizable modal
     } {
       Fl_Button save_errors_curve {
         label {Save errors}
@@ -5522,6 +5526,71 @@ color_data->activate();
         }
       }
     }
+    Fl_Window NTWSaveWindow {
+      label {NTW save options} open
+      xywh {458 188 748 131} type Double color 215 hide resizable non_modal
+    } {
+      Fl_Group NTW_O_RB {
+        label {Orientation labels} open
+        xywh {12 25 113 71}
+      } {
+        Fl_Round_Button NTW_O_0 {
+          label {Do not save orientations}
+          xywh {12 30 64 23} type Radio down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Round_Button NTW_O_1 {
+          label {Save orientations}
+          xywh {12 48 65 22} type Radio down_box ROUND_DOWN_BOX
+        }
+      }
+      Fl_Group NTW_T_RB {
+        label {Tag colours and legends} open
+        xywh {196 25 155 58}
+      } {
+        Fl_Round_Button NTW_T_0 {
+          label {Do not save tags}
+          xywh {199 30 102 23} type Radio down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Round_Button NTW_T_1 {
+          label {Save tags}
+          xywh {199 50 102 22} type Radio down_box ROUND_DOWN_BOX
+        }
+      }
+      Fl_Group NTW_C_RB {
+        label {Source and Target landmarks} open
+        xywh {366 25 193 58}
+      } {
+        Fl_Round_Button NTW_C_0 {
+          label {Always prefer .CUR over .STV format when applicable}
+          xywh {368 30 102 24} type Radio down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button NTW_C_1 {
+          label {Let ISE-MeshTools decide}
+          xywh {368 50 102 22} type Radio down_box ROUND_DOWN_BOX value 1
+        }
+      }
+      Fl_Button OkNTWSave {
+        label {Save NTW}
+        callback {int ori_mode;
+int tag_mode;
+int cur_mode;
+
+ori_mode=0;
+tag_mode=0;
+cur_mode=0;
+if (NTW_O_1->value() == 1){ori_mode = 1;}
+if (NTW_T_1->value() == 1){tag_mode = 1;}
+if (NTW_C_0->value() == 1){cur_mode = 1;}
+MT->Save_NTW_File(ori_mode, tag_mode, cur_mode);
+ntw_hide();} selected
+        xywh {235 90 90 25} color 175 selection_color 214
+      }
+      Fl_Button CancelSaveNTW {
+        label Cancel
+        callback {ntw_hide();}
+        xywh {341 90 60 25} color 174 selection_color 133
+      }
+    }
   }
   Function {show(int argc, char **argv)} {} {
     code {\#ifdef WIN32
@@ -5578,8 +5647,7 @@ opt_lc_Window->show();} {}
   Function {options_lc_hide()} {} {
     code {opt_lc_Window->hide();} {}
   }
-  Function {options_lm_show()} {open
-  } {
+  Function {options_lm_show()} {} {
     code {int landmark_type;
 int landmark_type2;
 int auto_rendering_size;
@@ -6823,5 +6891,13 @@ for(int i=0;i<size;i++){
 }
 
 return chart_height/max;} {}
+  }
+  Function {ntw_show()} {open
+  } {
+    code {NTWSaveWindow->show();} {}
+  }
+  Function {ntw_hide()} {open
+  } {
+    code {NTWSaveWindow->hide();} {}
   }
 } 
