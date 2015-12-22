@@ -3774,9 +3774,13 @@ void MeshToolsUI::cb_Ok_scc(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Back_Color_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
+r=255;
+g=0;
+b=0;
 Fl::get_color(c,r,g,b);
+std::cout<<r<<g<<b<<std::endl;
 if(!fl_color_chooser("New color:",r,g,b)) return;
 c = fl_rgb_color(r,g,b);
 o->color(c);
@@ -3789,7 +3793,7 @@ void MeshToolsUI::cb_Back_Color(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Grid_Color_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3804,7 +3808,7 @@ void MeshToolsUI::cb_Grid_Color(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Obj_Color_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3923,7 +3927,7 @@ void MeshToolsUI::cb_Ok_scc_lm(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Flag_g_colour_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6112,7 +6116,7 @@ void MeshToolsUI::cb_Alpha_24(Fl_Value_Input* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_00_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6127,7 +6131,7 @@ void MeshToolsUI::cb_Tag_00(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_01_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6142,7 +6146,7 @@ void MeshToolsUI::cb_Tag_01(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_02_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6157,7 +6161,7 @@ void MeshToolsUI::cb_Tag_02(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_03_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6172,7 +6176,7 @@ void MeshToolsUI::cb_Tag_03(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_04_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6187,7 +6191,7 @@ void MeshToolsUI::cb_Tag_04(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_05_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6202,7 +6206,7 @@ void MeshToolsUI::cb_Tag_05(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_06_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6217,7 +6221,7 @@ void MeshToolsUI::cb_Tag_06(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_07_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6232,7 +6236,7 @@ void MeshToolsUI::cb_Tag_07(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_08_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6247,7 +6251,7 @@ void MeshToolsUI::cb_Tag_08(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_09_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6262,7 +6266,7 @@ void MeshToolsUI::cb_Tag_09(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_10_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6277,7 +6281,7 @@ void MeshToolsUI::cb_Tag_10(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_11_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6292,7 +6296,7 @@ void MeshToolsUI::cb_Tag_11(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_12_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6307,7 +6311,7 @@ void MeshToolsUI::cb_Tag_12(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_13_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6322,7 +6326,7 @@ void MeshToolsUI::cb_Tag_13(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_14_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6337,7 +6341,7 @@ void MeshToolsUI::cb_Tag_14(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_15_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6352,7 +6356,7 @@ void MeshToolsUI::cb_Tag_15(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_16_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6367,7 +6371,7 @@ void MeshToolsUI::cb_Tag_16(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_17_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6382,7 +6386,7 @@ void MeshToolsUI::cb_Tag_17(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_18_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6397,7 +6401,7 @@ void MeshToolsUI::cb_Tag_18(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_19_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6412,7 +6416,7 @@ void MeshToolsUI::cb_Tag_19(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_20_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6427,7 +6431,7 @@ void MeshToolsUI::cb_Tag_20(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_21_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6442,7 +6446,7 @@ void MeshToolsUI::cb_Tag_21(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_22_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6457,7 +6461,7 @@ void MeshToolsUI::cb_Tag_22(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_23_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6472,7 +6476,7 @@ void MeshToolsUI::cb_Tag_23(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Tag_24_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -6989,7 +6993,7 @@ void MeshToolsUI::cb_Cancel_flag(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_Flag_Colour_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -7153,7 +7157,7 @@ void MeshToolsUI::cb_Cancel_all_flag(Fl_Button* o, void* v) {
 }
 
 void MeshToolsUI::cb_All_Flag_Colour_i(Fl_Button* o, void*) {
-  Fl_Color c = FL_GRAY;
+  Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -8614,7 +8618,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Group* Bottom
     mainWindow->end();
   } // Fl_Double_Window* mainWindow
-  { camWindow = new Fl_Double_Window(200, 325, "Camera options");
+  { camWindow = new Fl_Double_Window(195, 323, "Camera options");
     camWindow->color((Fl_Color)174);
     camWindow->user_data((void*)(this));
     { Cam_near = new Fl_Value_Input(99, 15, 52, 25, "Camera near :");
@@ -8658,7 +8662,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     camWindow->end();
     camWindow->resizable(camWindow);
   } // Fl_Double_Window* camWindow
-  { optWindow = new Fl_Double_Window(366, 319, "General options");
+  { optWindow = new Fl_Double_Window(375, 320, "General options");
     optWindow->color((Fl_Color)94);
     optWindow->user_data((void*)(this));
     { open_surface_option = new Fl_Group(10, 25, 350, 160, "Behaviour when opening surfaces : ");
@@ -8717,14 +8721,15 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Button* Ok_scc
     optWindow->set_non_modal();
     optWindow->end();
+    optWindow->resizable(optWindow);
   } // Fl_Double_Window* optWindow
-  { opt_lc_Window = new Fl_Double_Window(378, 337, "Lightning and colour options");
+  { opt_lc_Window = new Fl_Double_Window(369, 313, "Lightning and colour options");
     opt_lc_Window->color((Fl_Color)94);
     opt_lc_Window->user_data((void*)(this));
     { Window_group = new Fl_Group(15, 25, 335, 23, "Windows");
       Window_group->box(FL_BORDER_BOX);
       { Back_Color = new Fl_Button(239, 25, 111, 23, "Background colour");
-        Back_Color->color(FL_GRAY0);
+        Back_Color->color((Fl_Color)36);
         Back_Color->labelcolor(FL_GRAY0);
         Back_Color->callback((Fl_Callback*)cb_Back_Color);
       } // Fl_Button* Back_Color
@@ -8734,7 +8739,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
         Grid_Color->callback((Fl_Callback*)cb_Grid_Color);
       } // Fl_Button* Grid_Color
       { Obj_Color = new Fl_Button(15, 25, 110, 23, "Object colour");
-        Obj_Color->color((Fl_Color)64);
+        Obj_Color->color((Fl_Color)35);
         Obj_Color->labelcolor(FL_GRAY0);
         Obj_Color->callback((Fl_Callback*)cb_Obj_Color);
       } // Fl_Button* Obj_Color
@@ -8795,8 +8800,9 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Button* Ok_scc_lightning_colour
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
+    opt_lc_Window->resizable(opt_lc_Window);
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(374, 371, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(374, 375, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(10, 28, 350, 160, "Landmarks rendering");
@@ -8848,7 +8854,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_lm_Window->end();
     opt_lm_Window->resizable(opt_lm_Window);
   } // Fl_Double_Window* opt_lm_Window
-  { opt_rd_Window = new Fl_Double_Window(353, 271, "Rendering options");
+  { opt_rd_Window = new Fl_Double_Window(371, 270, "Rendering options");
     opt_rd_Window->color((Fl_Color)94);
     opt_rd_Window->user_data((void*)(this));
     { fast_display_option = new Fl_Group(7, 25, 350, 60, "Object rendering when moving object/camera :");
@@ -8894,8 +8900,9 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Button* Ok_scc_rd
     opt_rd_Window->set_non_modal();
     opt_rd_Window->end();
+    opt_rd_Window->resizable(opt_rd_Window);
   } // Fl_Double_Window* opt_rd_Window
-  { matWindow = new Fl_Double_Window(238, 329, "Object Matrix");
+  { matWindow = new Fl_Double_Window(252, 350, "Object Matrix");
     matWindow->color((Fl_Color)215);
     matWindow->user_data((void*)(this));
     { Ok_mat = new Fl_Button(10, 270, 65, 25, "Ok");
@@ -9037,8 +9044,9 @@ trix\" (old version correction)");
     } // Fl_Button* Refresh_mat
     matWindow->set_non_modal();
     matWindow->end();
+    matWindow->resizable(matWindow);
   } // Fl_Double_Window* matWindow
-  { versionWindow = new Fl_Double_Window(597, 151, "About");
+  { versionWindow = new Fl_Double_Window(792, 181, "About");
     versionWindow->user_data((void*)(this));
     { Ok_Version = new Fl_Button(265, 120, 65, 25, "Ok");
       Ok_Version->callback((Fl_Callback*)cb_Ok_Version);
@@ -9046,8 +9054,8 @@ trix\" (old version correction)");
     { Version = new Fl_Input(168, 6, 70, 25, "Version :");
       Version->box(FL_NO_BOX);
     } // Fl_Input* Version
-    { Copyright = new Fl_Input(580, 26, 15, 25, "Copyright : Renaud Lebrun, Stefan Schlager and C\303\251""cile Peladan 2013-2\
-015");
+    { Copyright = new Fl_Input(685, 26, 15, 25, "Copyright : Renaud Lebrun, Stefan Schlager, Jean Dumoncel and C\303\251""cile\
+ Peladan 2013-2015");
       Copyright->box(FL_NO_BOX);
     } // Fl_Input* Copyright
     { Contact = new Fl_Input(328, 46, 15, 25, "Contact : renaud.lebrun<at>um2.fr");
@@ -9064,8 +9072,9 @@ trix\" (old version correction)");
     } // Fl_Input* Git
     versionWindow->set_modal();
     versionWindow->end();
+    versionWindow->resizable(versionWindow);
   } // Fl_Double_Window* versionWindow
-  { smoothWindow = new Fl_Double_Window(247, 130, "Smooth");
+  { smoothWindow = new Fl_Double_Window(239, 122, "Smooth");
     smoothWindow->color((Fl_Color)134);
     smoothWindow->user_data((void*)(this));
     { S_Iteration_number = new Fl_Value_Input(165, 5, 52, 25, "Iteration Number :");
@@ -9088,8 +9097,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_smooth
     smoothWindow->set_modal();
     smoothWindow->end();
+    smoothWindow->resizable(smoothWindow);
   } // Fl_Double_Window* smoothWindow
-  { blendWindow = new Fl_Double_Window(177, 82, "Alpha value (0-100)");
+  { blendWindow = new Fl_Double_Window(201, 94, "Alpha value (0-100)");
     blendWindow->color((Fl_Color)246);
     blendWindow->user_data((void*)(this));
     { Alpha_value = new Fl_Value_Input(115, 10, 52, 25, "Alpha:");
@@ -9101,8 +9111,9 @@ trix\" (old version correction)");
     } // Fl_Button* Ok_blend
     blendWindow->set_modal();
     blendWindow->end();
+    blendWindow->resizable(blendWindow);
   } // Fl_Double_Window* blendWindow
-  { gridsizeWindow = new Fl_Double_Window(169, 74, "Grid size");
+  { gridsizeWindow = new Fl_Double_Window(175, 88, "Grid size");
     gridsizeWindow->color((Fl_Color)246);
     gridsizeWindow->user_data((void*)(this));
     { grid_size_value = new Fl_Value_Input(115, 10, 52, 25, "Millimeter/square:");
@@ -9115,8 +9126,9 @@ trix\" (old version correction)");
     } // Fl_Button* Ok_grid_size
     gridsizeWindow->set_modal();
     gridsizeWindow->end();
+    gridsizeWindow->resizable(gridsizeWindow);
   } // Fl_Double_Window* gridsizeWindow
-  { zoomScaleWindow = new Fl_Double_Window(177, 82, "Scale");
+  { zoomScaleWindow = new Fl_Double_Window(203, 92, "Scale");
     zoomScaleWindow->user_data((void*)(this));
     { TF100pixels_in_mm_value = new Fl_Value_Input(115, 10, 52, 25, "100 Pixels in mm:");
       TF100pixels_in_mm_value->align(Fl_Align(36));
@@ -9126,8 +9138,9 @@ trix\" (old version correction)");
     } // Fl_Button* Ok_100pixels_in_mm
     zoomScaleWindow->set_modal();
     zoomScaleWindow->end();
+    zoomScaleWindow->resizable(zoomScaleWindow);
   } // Fl_Double_Window* zoomScaleWindow
-  { curvWindow = new Fl_Double_Window(379, 154, "Curvature");
+  { curvWindow = new Fl_Double_Window(391, 163, "Curvature");
     curvWindow->color((Fl_Color)215);
     curvWindow->user_data((void*)(this));
     { Ok_curv = new Fl_Button(95, 125, 65, 25, "Ok");
@@ -9164,8 +9177,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_curv
     curvWindow->set_modal();
     curvWindow->end();
+    curvWindow->resizable(curvWindow);
   } // Fl_Double_Window* curvWindow
-  { deleteWindow = new Fl_Double_Window(264, 96, "Delete small objects");
+  { deleteWindow = new Fl_Double_Window(256, 88, "Delete small objects");
     deleteWindow->color((Fl_Color)134);
     deleteWindow->user_data((void*)(this));
     { Triangles = new Fl_Value_Input(190, 10, 52, 25, "Min number of triangles");
@@ -9184,8 +9198,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_delete
     deleteWindow->set_modal();
     deleteWindow->end();
+    deleteWindow->resizable(deleteWindow);
   } // Fl_Double_Window* deleteWindow
-  { deleteWindow2 = new Fl_Double_Window(264, 96, "Delete small objects");
+  { deleteWindow2 = new Fl_Double_Window(256, 88, "Delete small objects");
     deleteWindow2->color((Fl_Color)93);
     deleteWindow2->user_data((void*)(this));
     { DeleteVolume = new Fl_Value_Input(190, 10, 52, 25, "Delete smaller than ... mm3");
@@ -9204,8 +9219,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_volume_delete
     deleteWindow2->set_modal();
     deleteWindow2->end();
+    deleteWindow2->resizable(deleteWindow2);
   } // Fl_Double_Window* deleteWindow2
-  { defWindow = new Fl_Double_Window(344, 154, "TPS Window");
+  { defWindow = new Fl_Double_Window(336, 146, "TPS Window");
     defWindow->color((Fl_Color)245);
     defWindow->user_data((void*)(this));
     { Def_percentage = new Fl_Value_Input(293, 37, 35, 25, "Deformation %:");
@@ -9237,8 +9253,9 @@ trix\" (old version correction)");
     } // Fl_Button* Canceldef
     defWindow->set_non_modal();
     defWindow->end();
+    defWindow->resizable(defWindow);
   } // Fl_Double_Window* defWindow
-  { LMcurveWindow = new Fl_Double_Window(315, 143, "Curve decimation");
+  { LMcurveWindow = new Fl_Double_Window(328, 157, "Curve decimation");
     LMcurveWindow->color((Fl_Color)247);
     LMcurveWindow->user_data((void*)(this));
     { CUR_NR = new Fl_Value_Input(172, 5, 95, 30, "Landmark N\260 / Curve :");
@@ -9265,8 +9282,9 @@ trix\" (old version correction)");
     } // Fl_Group* LMK_GROUP_SAVE_OPTIONS3
     LMcurveWindow->set_modal();
     LMcurveWindow->end();
+    LMcurveWindow->resizable(LMcurveWindow);
   } // Fl_Double_Window* LMcurveWindow
-  { movehandlesWindow = new Fl_Double_Window(264, 96, "Move Handles");
+  { movehandlesWindow = new Fl_Double_Window(256, 88, "Move Handles");
     movehandlesWindow->color((Fl_Color)91);
     movehandlesWindow->user_data((void*)(this));
     { MovementIntensity = new Fl_Value_Input(190, 10, 52, 25, "Movement intensity (%)");
@@ -9285,8 +9303,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_move_handles
     movehandlesWindow->set_modal();
     movehandlesWindow->end();
+    movehandlesWindow->resizable(movehandlesWindow);
   } // Fl_Double_Window* movehandlesWindow
-  { STLSaveWindow = new Fl_Double_Window(236, 110, "STL save options");
+  { STLSaveWindow = new Fl_Double_Window(289, 131, "STL save options");
     STLSaveWindow->color((Fl_Color)215);
     STLSaveWindow->user_data((void*)(this));
     { STL_T_RB = new Fl_Group(35, 25, 75, 61, "File type");
@@ -9325,8 +9344,9 @@ trix\" (old version correction)");
     } // Fl_Button* CancelSaveSTL
     STLSaveWindow->set_non_modal();
     STLSaveWindow->end();
+    STLSaveWindow->resizable(STLSaveWindow);
   } // Fl_Double_Window* STLSaveWindow
-  { VTKSaveWindow = new Fl_Double_Window(291, 123, "VTK save options");
+  { VTKSaveWindow = new Fl_Double_Window(298, 132, "VTK save options");
     VTKSaveWindow->color((Fl_Color)215);
     VTKSaveWindow->user_data((void*)(this));
     { VTK_T_RB = new Fl_Group(35, 25, 75, 61, "File type");
@@ -9365,8 +9385,9 @@ trix\" (old version correction)");
     } // Fl_Button* CancelSaveVTK
     VTKSaveWindow->set_non_modal();
     VTKSaveWindow->end();
+    VTKSaveWindow->resizable(VTKSaveWindow);
   } // Fl_Double_Window* VTKSaveWindow
-  { OBJSaveWindow = new Fl_Double_Window(260, 134, "OBJ save options");
+  { OBJSaveWindow = new Fl_Double_Window(252, 126, "OBJ save options");
     OBJSaveWindow->color((Fl_Color)215);
     OBJSaveWindow->user_data((void*)(this));
     { OBJ_M_RB = new Fl_Group(45, 25, 113, 58, "Position");
@@ -9393,8 +9414,9 @@ trix\" (old version correction)");
     } // Fl_Button* CancelSaveOBJ
     OBJSaveWindow->set_non_modal();
     OBJSaveWindow->end();
+    OBJSaveWindow->resizable(OBJSaveWindow);
   } // Fl_Double_Window* OBJSaveWindow
-  { PLYSaveWindow = new Fl_Double_Window(447, 138, "PLY save options");
+  { PLYSaveWindow = new Fl_Double_Window(439, 130, "PLY save options");
     PLYSaveWindow->color((Fl_Color)215);
     PLYSaveWindow->user_data((void*)(this));
     { PLY_T_RB = new Fl_Group(8, 25, 75, 71, "File type");
@@ -9449,8 +9471,9 @@ trix\" (old version correction)");
     } // Fl_Button* CancelSavePLY
     PLYSaveWindow->set_non_modal();
     PLYSaveWindow->end();
+    PLYSaveWindow->resizable(PLYSaveWindow);
   } // Fl_Double_Window* PLYSaveWindow
-  { decimateWindow = new Fl_Double_Window(389, 211, "Decimate");
+  { decimateWindow = new Fl_Double_Window(381, 203, "Decimate");
     decimateWindow->color((Fl_Color)134);
     decimateWindow->user_data((void*)(this));
     { DCM_factor = new Fl_Value_Input(210, 115, 52, 30, "Decimation factor (%) :");
@@ -9484,8 +9507,9 @@ trix\" (old version correction)");
     } // Fl_Group* decimate_options
     decimateWindow->set_modal();
     decimateWindow->end();
+    decimateWindow->resizable(decimateWindow);
   } // Fl_Double_Window* decimateWindow
-  { LMKSaveNormal = new Fl_Double_Window(359, 197, "Save normal landmarks options");
+  { LMKSaveNormal = new Fl_Double_Window(351, 189, "Save normal landmarks options");
     LMKSaveNormal->color((Fl_Color)215);
     LMKSaveNormal->user_data((void*)(this));
     { LMK_GROUP_SAVE_OPTIONS = new Fl_Group(7, 25, 113, 58, "Save as :");
@@ -9517,8 +9541,9 @@ trix\" (old version correction)");
     } // Fl_Button* OkLMKSave2
     LMKSaveNormal->set_non_modal();
     LMKSaveNormal->end();
+    LMKSaveNormal->resizable(LMKSaveNormal);
   } // Fl_Double_Window* LMKSaveNormal
-  { LMKSaveTarget = new Fl_Double_Window(374, 193, "Save target landmarks options");
+  { LMKSaveTarget = new Fl_Double_Window(366, 185, "Save target landmarks options");
     LMKSaveTarget->color((Fl_Color)215);
     LMKSaveTarget->user_data((void*)(this));
     { LMK_GROUP_SAVE_OPTIONS2 = new Fl_Group(7, 25, 113, 58, "Save as :");
@@ -9550,8 +9575,9 @@ trix\" (old version correction)");
     } // Fl_Button* OkLMKSave4
     LMKSaveTarget->set_non_modal();
     LMKSaveTarget->end();
+    LMKSaveTarget->resizable(LMKSaveTarget);
   } // Fl_Double_Window* LMKSaveTarget
-  { scWindow = new Fl_Double_Window(492, 229, "Scalar rendering options");
+  { scWindow = new Fl_Double_Window(505, 239, "Scalar rendering options");
     scWindow->color((Fl_Color)214);
     scWindow->user_data((void*)(this));
     { Ok_sc = new Fl_Button(140, 199, 65, 25, "Ok");
@@ -9629,8 +9655,9 @@ trix\" (old version correction)");
     } // Fl_Check_Button* below_Min
     scWindow->set_non_modal();
     scWindow->end();
+    scWindow->resizable(scWindow);
   } // Fl_Double_Window* scWindow
-  { thicknessWindow = new Fl_Double_Window(245, 121, "Thickness Scalar");
+  { thicknessWindow = new Fl_Double_Window(229, 125, "Thickness Scalar");
     thicknessWindow->color((Fl_Color)134);
     thicknessWindow->user_data((void*)(this));
     { Ok_thickness = new Fl_Button(62, 90, 65, 25, "Ok");
@@ -9649,8 +9676,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_th
     thicknessWindow->set_modal();
     thicknessWindow->end();
+    thicknessWindow->resizable(thicknessWindow);
   } // Fl_Double_Window* thicknessWindow
-  { tagsWindow = new Fl_Double_Window(580, 626, "Tag options");
+  { tagsWindow = new Fl_Double_Window(578, 628, "Tag options");
     tagsWindow->color((Fl_Color)215);
     tagsWindow->user_data((void*)(this));
     { Ok_tags = new Fl_Button(294, 840, 65, 25, "Ok");
@@ -10395,8 +10423,9 @@ trix\" (old version correction)");
     } // Fl_Scroll* Tags_group
     tagsWindow->set_non_modal();
     tagsWindow->end();
+    tagsWindow->resizable(tagsWindow);
   } // Fl_Double_Window* tagsWindow
-  { mergetagsWindow = new Fl_Double_Window(296, 73, "Merge Tags : put Source into Target");
+  { mergetagsWindow = new Fl_Double_Window(306, 84, "Merge Tags : put Source into Target");
     mergetagsWindow->color((Fl_Color)214);
     mergetagsWindow->user_data((void*)(this));
     { merge_source = new Fl_Choice(92, 8, 100, 23, "Source Tag");
@@ -10417,8 +10446,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_merge_tags
     mergetagsWindow->set_non_modal();
     mergetagsWindow->end();
+    mergetagsWindow->resizable(mergetagsWindow);
   } // Fl_Double_Window* mergetagsWindow
-  { extractregionWindow = new Fl_Double_Window(243, 118, "Extract tagged region");
+  { extractregionWindow = new Fl_Double_Window(235, 110, "Extract tagged region");
     extractregionWindow->color((Fl_Color)134);
     extractregionWindow->user_data((void*)(this));
     { Tag_value = new Fl_Value_Input(165, 17, 52, 25, "Tag value to extract :");
@@ -10437,8 +10467,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_extract_region
     extractregionWindow->set_modal();
     extractregionWindow->end();
+    extractregionWindow->resizable(extractregionWindow);
   } // Fl_Double_Window* extractregionWindow
-  { extractrangeWindow = new Fl_Double_Window(358, 197, "Extract tag or scalar range");
+  { extractrangeWindow = new Fl_Double_Window(360, 204, "Extract tag or scalar range");
     extractrangeWindow->color((Fl_Color)247);
     extractrangeWindow->user_data((void*)(this));
     { Extract_what_radio_buttons = new Fl_Group(25, 20, 314, 55, "Extract : ");
@@ -10478,8 +10509,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_extract_scalar_range
     extractrangeWindow->set_modal();
     extractrangeWindow->end();
+    extractrangeWindow->resizable(extractrangeWindow);
   } // Fl_Double_Window* extractrangeWindow
-  { decomposeWindow = new Fl_Double_Window(221, 128, "Connectivity decomposition");
+  { decomposeWindow = new Fl_Double_Window(213, 120, "Connectivity decomposition");
     decomposeWindow->color((Fl_Color)167);
     decomposeWindow->user_data((void*)(this));
     { Decompose_min_region_size = new Fl_Value_Input(150, 17, 52, 25, "Minimal region size :");
@@ -10498,8 +10530,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_connectivity_decompose
     decomposeWindow->set_modal();
     decomposeWindow->end();
+    decomposeWindow->resizable(decomposeWindow);
   } // Fl_Double_Window* decomposeWindow
-  { extractallregionsWindow = new Fl_Double_Window(247, 134, "Extract all tagged regions");
+  { extractallregionsWindow = new Fl_Double_Window(239, 126, "Extract all tagged regions");
     extractallregionsWindow->color((Fl_Color)132);
     extractallregionsWindow->user_data((void*)(this));
     { Tag_decompose_min_region_size = new Fl_Value_Input(150, 17, 52, 25, "Minimal region size :");
@@ -10518,8 +10551,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_extractalltaggedregions
     extractallregionsWindow->set_modal();
     extractallregionsWindow->end();
+    extractallregionsWindow->resizable(extractallregionsWindow);
   } // Fl_Double_Window* extractallregionsWindow
-  { deleteregionWindow = new Fl_Double_Window(250, 125, "Delete tagged region");
+  { deleteregionWindow = new Fl_Double_Window(234, 109, "Delete tagged region");
     deleteregionWindow->color((Fl_Color)80);
     deleteregionWindow->user_data((void*)(this));
     { Tag_value_delete = new Fl_Value_Input(165, 17, 52, 25, "Tag value to delete :");
@@ -10538,8 +10572,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_deleteregion
     deleteregionWindow->set_modal();
     deleteregionWindow->end();
+    deleteregionWindow->resizable(deleteregionWindow);
   } // Fl_Double_Window* deleteregionWindow
-  { flagWindow = new Fl_Double_Window(246, 176, "Edit 1 Selected Flag");
+  { flagWindow = new Fl_Double_Window(240, 170, "Edit 1 Selected Flag");
     flagWindow->color((Fl_Color)215);
     flagWindow->user_data((void*)(this));
     { Refresh_flag = new Fl_Button(87, 140, 65, 25, "Refresh");
@@ -10572,8 +10607,9 @@ trix\" (old version correction)");
     } // Fl_Button* Ok_flag
     flagWindow->set_non_modal();
     flagWindow->end();
+    flagWindow->resizable(flagWindow);
   } // Fl_Double_Window* flagWindow
-  { thicknessWindow2 = new Fl_Double_Window(225, 194, "Thickness between 2 surfaces");
+  { thicknessWindow2 = new Fl_Double_Window(247, 199, "Thickness between 2 surfaces");
     thicknessWindow2->color((Fl_Color)135);
     thicknessWindow2->user_data((void*)(this));
     { Ok_th2 = new Fl_Button(63, 162, 65, 25, "Ok");
@@ -10597,8 +10633,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_th2
     thicknessWindow2->set_modal();
     thicknessWindow2->end();
+    thicknessWindow2->resizable(thicknessWindow2);
   } // Fl_Double_Window* thicknessWindow2
-  { fillholesWindow = new Fl_Double_Window(242, 135, "Fill Holes");
+  { fillholesWindow = new Fl_Double_Window(234, 127, "Fill Holes");
     fillholesWindow->color((Fl_Color)134);
     fillholesWindow->user_data((void*)(this));
     { HOLES_size = new Fl_Value_Input(158, 28, 52, 30, "Maximal size :");
@@ -10618,19 +10655,19 @@ trix\" (old version correction)");
     fillholesWindow->set_modal();
     fillholesWindow->end();
   } // Fl_Double_Window* fillholesWindow
-  { fillholesWindow2 = new Fl_Double_Window(257, 202, "Fill Holes");
+  { fillholesWindow2 = new Fl_Double_Window(239, 137, "Fill Holes");
     fillholesWindow2->color((Fl_Color)134);
     fillholesWindow2->user_data((void*)(this));
     { HOLES2_size = new Fl_Value_Input(165, 40, 52, 30, "Max num vertices : ");
       HOLES2_size->value(50);
       HOLES2_size->align(Fl_Align(36));
     } // Fl_Value_Input* HOLES2_size
-    { Ok_fillholes2 = new Fl_Button(48, 163, 65, 25, "Ok");
+    { Ok_fillholes2 = new Fl_Button(60, 90, 65, 25, "Ok");
       Ok_fillholes2->color((Fl_Color)93);
       Ok_fillholes2->selection_color((Fl_Color)91);
       Ok_fillholes2->callback((Fl_Callback*)cb_Ok_fillholes2);
     } // Fl_Button* Ok_fillholes2
-    { Cancel_fillholes2 = new Fl_Button(146, 163, 65, 25, "Cancel");
+    { Cancel_fillholes2 = new Fl_Button(135, 90, 65, 25, "Cancel");
       Cancel_fillholes2->color((Fl_Color)133);
       Cancel_fillholes2->selection_color((Fl_Color)132);
       Cancel_fillholes2->callback((Fl_Callback*)cb_Cancel_fillholes2);
@@ -10640,8 +10677,9 @@ trix\" (old version correction)");
     } // Fl_Value_Input* HOLES2_tagid
     fillholesWindow2->set_modal();
     fillholesWindow2->end();
+    fillholesWindow2->resizable(fillholesWindow2);
   } // Fl_Double_Window* fillholesWindow2
-  { densifyWindow = new Fl_Double_Window(330, 119, "Densify");
+  { densifyWindow = new Fl_Double_Window(322, 111, "Densify");
     densifyWindow->color((Fl_Color)134);
     densifyWindow->user_data((void*)(this));
     { DENSIFY_factor = new Fl_Value_Input(215, 20, 52, 30, "Number of subdivisions :");
@@ -10660,8 +10698,9 @@ trix\" (old version correction)");
     } // Fl_Button* Cancel_densify
     densifyWindow->set_modal();
     densifyWindow->end();
+    densifyWindow->resizable(densifyWindow);
   } // Fl_Double_Window* densifyWindow
-  { nameWindow = new Fl_Double_Window(261, 147, "Edit  Name");
+  { nameWindow = new Fl_Double_Window(288, 168, "Edit  Name");
     nameWindow->color((Fl_Color)215);
     nameWindow->user_data((void*)(this));
     { Ok_name = new Fl_Button(15, 66, 175, 24, "Ok (first selected object)");
@@ -10692,8 +10731,9 @@ trix\" (old version correction)");
     } // Fl_Button* Refresh_name
     nameWindow->set_non_modal();
     nameWindow->end();
+    nameWindow->resizable(nameWindow);
   } // Fl_Double_Window* nameWindow
-  { allflagWindow = new Fl_Double_Window(252, 115, "Edit All Selected Flags");
+  { allflagWindow = new Fl_Double_Window(244, 107, "Edit All Selected Flags");
     allflagWindow->color((Fl_Color)215);
     allflagWindow->user_data((void*)(this));
     { Ok_all_flag = new Fl_Button(58, 70, 65, 25, "Ok");
@@ -10719,7 +10759,7 @@ trix\" (old version correction)");
     allflagWindow->set_non_modal();
     allflagWindow->end();
   } // Fl_Double_Window* allflagWindow
-  { ViewHideObjectsWindow = new Fl_Double_Window(282, 472, "View Hide objects");
+  { ViewHideObjectsWindow = new Fl_Double_Window(283, 473, "View Hide objects");
     ViewHideObjectsWindow->color((Fl_Color)215);
     ViewHideObjectsWindow->user_data((void*)(this));
     { Check_browser = new Fl_Check_Browser(15, 10, 245, 385);
@@ -10748,8 +10788,9 @@ trix\" (old version correction)");
     } // Fl_Button* Check_all_view_hide
     ViewHideObjectsWindow->set_non_modal();
     ViewHideObjectsWindow->end();
+    ViewHideObjectsWindow->resizable(ViewHideObjectsWindow);
   } // Fl_Double_Window* ViewHideObjectsWindow
-  { tags_convert_Window = new Fl_Double_Window(518, 154, "Convert RGB scalars to TAGs");
+  { tags_convert_Window = new Fl_Double_Window(515, 162, "Convert RGB scalars to TAGs");
     tags_convert_Window->color((Fl_Color)94);
     tags_convert_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(6, 16, 504, 98, "Conversion ");
@@ -10779,8 +10820,9 @@ trix\" (old version correction)");
     } // Fl_Button* Ok_rgb_to_tags
     tags_convert_Window->set_non_modal();
     tags_convert_Window->end();
+    tags_convert_Window->resizable(tags_convert_Window);
   } // Fl_Double_Window* tags_convert_Window
-  { orientationWindow = new Fl_Double_Window(251, 251, "Edit orientation labels");
+  { orientationWindow = new Fl_Double_Window(243, 243, "Edit orientation labels");
     orientationWindow->color((Fl_Color)215);
     orientationWindow->user_data((void*)(this));
     { Ok_orientation = new Fl_Button(55, 200, 65, 25, "Ok");
@@ -10811,7 +10853,7 @@ trix\" (old version correction)");
     orientationWindow->end();
     orientationWindow->resizable(orientationWindow);
   } // Fl_Double_Window* orientationWindow
-  { lmkselectWindow = new Fl_Double_Window(271, 141, "Select landmark");
+  { lmkselectWindow = new Fl_Double_Window(263, 133, "Select landmark");
     lmkselectWindow->color((Fl_Color)215);
     lmkselectWindow->user_data((void*)(this));
     { LandmarkId = new Fl_Value_Input(190, 10, 52, 25, "Landmark Id to select");
@@ -10839,8 +10881,9 @@ trix\" (old version correction)");
     } // Fl_Round_Button* SELECT_LMK2
     lmkselectWindow->set_non_modal();
     lmkselectWindow->end();
+    lmkselectWindow->resizable(lmkselectWindow);
   } // Fl_Double_Window* lmkselectWindow
-  { lmkrangeselectWindow = new Fl_Double_Window(263, 148, "Select landmark range");
+  { lmkrangeselectWindow = new Fl_Double_Window(267, 156, "Select landmark range");
     lmkrangeselectWindow->color((Fl_Color)215);
     lmkrangeselectWindow->user_data((void*)(this));
     { rangestart = new Fl_Value_Input(190, 10, 52, 25, "Select landmark id START");
@@ -10872,8 +10915,9 @@ trix\" (old version correction)");
     } // Fl_Value_Input* rangeend
     lmkrangeselectWindow->set_non_modal();
     lmkrangeselectWindow->end();
+    lmkrangeselectWindow->resizable(lmkrangeselectWindow);
   } // Fl_Double_Window* lmkrangeselectWindow
-  { Registration_Window = new Fl_Double_Window(1075, 590, "Registration");
+  { Registration_Window = new Fl_Double_Window(1080, 600, "Registration");
     Registration_Window->color((Fl_Color)215);
     Registration_Window->user_data((void*)(this));
     Registration_Window->hotspot(Registration_Window);
@@ -11208,8 +11252,9 @@ trix\" (old version correction)");
       data_icp->end();
     } // Fl_Group* data_icp
     Registration_Window->end();
+    Registration_Window->resizable(Registration_Window);
   } // Fl_Double_Window* Registration_Window
-  { Errors_curv_Window = new Fl_Double_Window(840, 526, "Result");
+  { Errors_curv_Window = new Fl_Double_Window(832, 518, "Result");
     Errors_curv_Window->color((Fl_Color)214);
     Errors_curv_Window->user_data((void*)(this));
     { save_errors_curve = new Fl_Button(280, 435, 140, 45, "Save errors");
@@ -11311,7 +11356,7 @@ trix\" (old version correction)");
     Errors_curv_Window->end();
     Errors_curv_Window->resizable(Errors_curv_Window);
   } // Fl_Double_Window* Errors_curv_Window
-  { NTWSaveWindow = new Fl_Double_Window(748, 131, "NTW save options");
+  { NTWSaveWindow = new Fl_Double_Window(740, 123, "NTW save options");
     NTWSaveWindow->color((Fl_Color)215);
     NTWSaveWindow->user_data((void*)(this));
     { NTW_O_RB = new Fl_Group(12, 25, 113, 71, "Orientation labels");

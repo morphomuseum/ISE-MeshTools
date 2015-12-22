@@ -1452,7 +1452,7 @@ MT->redraw();}
     }
     Fl_Window camWindow {
       label {Camera options}
-      image {pixmap/s_back_13.gif} xywh {16 38 200 325} type Double color 174 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {20 42 195 323} type Double color 174 hide resizable non_modal
     } {
       Fl_Value_Input Cam_near {
         label {Camera near :}
@@ -1567,7 +1567,7 @@ MT->redraw();}
     }
     Fl_Window optWindow {
       label {General options}
-      xywh {780 432 366 319} type Double color 94 hide non_modal
+      xywh {788 440 375 320} type Double color 94 hide resizable non_modal
     } {
       Fl_Group open_surface_option {
         label {Behaviour when opening surfaces : }
@@ -1639,7 +1639,7 @@ options_hide();}
     }
     Fl_Window opt_lc_Window {
       label {Lightning and colour options}
-      xywh {72 94 378 337} type Double color 94 hide non_modal
+      xywh {84 106 369 313} type Double color 94 hide resizable non_modal
     } {
       Fl_Group Window_group {
         label Windows open
@@ -1647,20 +1647,24 @@ options_hide();}
       } {
         Fl_Button Back_Color {
           label {Background colour}
-          callback {Fl_Color c = FL_GRAY;
+          callback {Fl_Color c = o->color();
 uchar r,g,b;
+r=255;
+g=0;
+b=0;
 Fl::get_color(c,r,g,b);
+std::cout<<r<<g<<b<<std::endl;
 if(!fl_color_chooser("New color:",r,g,b)) return;
 c = fl_rgb_color(r,g,b);
 o->color(c);
 o->redraw();
 MT->color_setbackcolor(r,g,b);
 MT->redraw();}
-          xywh {239 25 111 23} color 32 labelcolor 32
+          xywh {239 25 111 23} color 36 labelcolor 32
         }
         Fl_Button Grid_Color {
           label {Grid colour}
-          callback {Fl_Color c = FL_GRAY;
+          callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -1673,7 +1677,7 @@ MT->redraw();}
         }
         Fl_Button Obj_Color {
           label {Object colour}
-          callback {Fl_Color c = FL_GRAY;
+          callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -1682,7 +1686,7 @@ o->color(c);
 o->redraw();
 MT->color_setobjcolor(r,g,b);
 MT->redraw();}
-          xywh {15 25 110 23} color 64 labelcolor 32
+          xywh {15 25 110 23} color 35 labelcolor 32
         }
       }
       Fl_Group Light_group {
@@ -1740,7 +1744,7 @@ options_lc_hide();}
     }
     Fl_Window opt_lm_Window {
       label {Landmark and flag options}
-      xywh {449 191 374 371} type Double color 94 hide resizable non_modal
+      xywh {465 207 374 375} type Double color 94 hide resizable non_modal
     } {
       Fl_Group {} {
         label {Landmarks rendering} open
@@ -1817,7 +1821,7 @@ options_lm_hide();}
         }
         Fl_Button Flag_g_colour {
           label {Flag colour}
-          callback {Fl_Color c = FL_GRAY;
+          callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -1832,7 +1836,7 @@ MT->redraw();}
     }
     Fl_Window opt_rd_Window {
       label {Rendering options}
-      xywh {12 35 353 271} type Double color 94 hide non_modal
+      xywh {20 43 371 270} type Double color 94 hide resizable non_modal
     } {
       Fl_Group fast_display_option {
         label {Object rendering when moving object/camera :}
@@ -1885,7 +1889,7 @@ options_lm_hide();}
     }
     Fl_Window matWindow {
       label {Object Matrix}
-      image {pixmap/s_back_13.gif} xywh {12 35 238 329} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {16 39 252 350} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_mat {
         label Ok
@@ -2200,7 +2204,7 @@ MyName->value(Name.c_str());}
     }
     Fl_Window versionWindow {
       label About
-      xywh {1469 375 597 151} type Double hide modal
+      xywh {185 328 792 181} type Double hide resizable modal
     } {
       Fl_Button Ok_Version {
         label Ok
@@ -2212,8 +2216,8 @@ MyName->value(Name.c_str());}
         xywh {168 6 70 25} box NO_BOX
       }
       Fl_Input Copyright {
-        label {Copyright : Renaud Lebrun, Stefan Schlager and Cécile Peladan 2013-2015}
-        xywh {580 26 15 25} box NO_BOX
+        label {Copyright : Renaud Lebrun, Stefan Schlager, Jean Dumoncel and Cécile Peladan 2013-2015}
+        xywh {685 26 15 25} box NO_BOX
       }
       Fl_Input Contact {
         label {Contact : renaud.lebrun<at>um2.fr}
@@ -2233,7 +2237,7 @@ MyName->value(Name.c_str());}
     }
     Fl_Window smoothWindow {
       label Smooth
-      image {pixmap/s_back_13.gif} xywh {1175 444 247 130} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {1179 448 239 122} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input S_Iteration_number {
         label {Iteration Number :}
@@ -2258,7 +2262,7 @@ MT->redraw();}
     }
     Fl_Window blendWindow {
       label {Alpha value (0-100)}
-      image {pixmap/s_back_13.gif} xywh {66 52 177 82} type Double color 246 hide modal
+      image {pixmap/s_back_13.gif} xywh {70 56 201 94} type Double color 246 hide resizable modal
     } {
       Fl_Value_Input Alpha_value {
         label {Alpha:}
@@ -2276,7 +2280,7 @@ MT->redraw();}
     }
     Fl_Window gridsizeWindow {
       label {Grid size}
-      image {pixmap/s_back_13.gif} xywh {1189 107 169 74} type Double color 246 hide modal
+      image {pixmap/s_back_13.gif} xywh {1179 111 175 88} type Double color 246 hide resizable modal
     } {
       Fl_Value_Input grid_size_value {
         label {Millimeter/square:}
@@ -2294,7 +2298,7 @@ MT->redraw();}
     }
     Fl_Window zoomScaleWindow {
       label Scale
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 177 82} type Double hide modal
+      image {pixmap/s_back_13.gif} xywh {8 31 203 92} type Double hide resizable modal
     } {
       Fl_Value_Input TF100pixels_in_mm_value {
         label {100 Pixels in mm:}
@@ -2311,7 +2315,7 @@ zoomScaleWindow_hide();}
     }
     Fl_Window curvWindow {
       label Curvature
-      image {pixmap/s_back_13.gif} xywh {330 322 379 154} type Double color 215 hide modal
+      image {pixmap/s_back_13.gif} xywh {334 326 391 163} type Double color 215 hide resizable modal
     } {
       Fl_Button Ok_curv {
         label Ok
@@ -2356,7 +2360,7 @@ MT->redraw();}
     }
     Fl_Window deleteWindow {
       label {Delete small objects}
-      image {pixmap/s_back_13.gif} xywh {9 38 264 96} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {13 42 256 88} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input Triangles {
         label {Min number of triangles}
@@ -2377,7 +2381,7 @@ MT->redraw();}
     }
     Fl_Window deleteWindow2 {
       label {Delete small objects}
-      image {pixmap/s_back_13.gif} xywh {427 172 264 96} type Double color 93 hide modal
+      image {pixmap/s_back_13.gif} xywh {431 176 256 88} type Double color 93 hide resizable modal
     } {
       Fl_Value_Input DeleteVolume {
         label {Delete smaller than ... mm3}
@@ -2398,7 +2402,7 @@ MT->redraw();}
     }
     Fl_Window defWindow {
       label {TPS Window}
-      xywh {1535 374 344 154} type Double color 245 hide non_modal
+      xywh {372 186 336 146} type Double color 245 hide resizable non_modal
     } {
       Fl_Value_Input Def_percentage {
         label {Deformation %:}
@@ -2439,7 +2443,7 @@ def_hide();}
     }
     Fl_Window LMcurveWindow {
       label {Curve decimation}
-      image {pixmap/s_back_13.gif} xywh {9 38 315 143} type Double color 247 hide modal
+      image {pixmap/s_back_13.gif} xywh {13 42 328 157} type Double color 247 hide resizable modal
     } {
       Fl_Value_Input CUR_NR {
         label {Landmark N� / Curve :}
@@ -2471,7 +2475,7 @@ lmcur_hide();}
     }
     Fl_Window movehandlesWindow {
       label {Move Handles}
-      image {pixmap/s_back_13.gif} xywh {1755 401 264 96} type Double color 91 hide modal
+      image {pixmap/s_back_13.gif} xywh {334 261 256 88} type Double color 91 hide resizable modal
     } {
       Fl_Value_Input MovementIntensity {
         label {Movement intensity (%)}
@@ -2492,7 +2496,7 @@ movehandles_hide();}
     }
     Fl_Window STLSaveWindow {
       label {STL save options}
-      xywh {351 392 236 110} type Double color 215 hide non_modal
+      xywh {355 396 289 131} type Double color 215 hide resizable non_modal
     } {
       Fl_Group STL_T_RB {
         label {File type} open
@@ -2540,7 +2544,7 @@ stl_hide();}
     }
     Fl_Window VTKSaveWindow {
       label {VTK save options}
-      xywh {16 38 291 123} type Double color 215 hide non_modal
+      xywh {20 42 298 132} type Double color 215 hide resizable non_modal
     } {
       Fl_Group VTK_T_RB {
         label {File type} open
@@ -2588,7 +2592,7 @@ vtk_hide();}
     }
     Fl_Window OBJSaveWindow {
       label {OBJ save options}
-      xywh {8 30 260 134} type Double color 215 hide non_modal
+      xywh {12 34 252 126} type Double color 215 hide resizable non_modal
     } {
       Fl_Group OBJ_M_RB {
         label Position open
@@ -2622,7 +2626,7 @@ obj_hide();}
     }
     Fl_Window PLYSaveWindow {
       label {PLY save options}
-      xywh {640 213 447 138} type Double color 215 hide non_modal
+      xywh {644 217 439 130} type Double color 215 hide resizable non_modal
     } {
       Fl_Group PLY_T_RB {
         label {File type}
@@ -2691,7 +2695,7 @@ ply_hide();}
     }
     Fl_Window decimateWindow {
       label Decimate
-      image {pixmap/s_back_13.gif} xywh {648 292 389 211} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {652 296 381 203} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input DCM_factor {
         label {Decimation factor (%) :}
@@ -2726,7 +2730,7 @@ MT->redraw();}
     }
     Fl_Window LMKSaveNormal {
       label {Save normal landmarks options}
-      xywh {170 220 359 197} type Double color 215 hide non_modal
+      xywh {174 224 351 189} type Double color 215 hide resizable non_modal
     } {
       Fl_Group LMK_GROUP_SAVE_OPTIONS {
         label {Save as :} open
@@ -2769,7 +2773,7 @@ lmk_hide();}
     }
     Fl_Window LMKSaveTarget {
       label {Save target landmarks options}
-      xywh {1487 173 374 193} type Double color 215 hide non_modal
+      xywh {1226 177 366 185} type Double color 215 hide resizable non_modal
     } {
       Fl_Group LMK_GROUP_SAVE_OPTIONS2 {
         label {Save as :} open
@@ -2813,7 +2817,7 @@ lmk_hide();}
     }
     Fl_Window scWindow {
       label {Scalar rendering options}
-      image {pixmap/s_back_13.gif} xywh {210 195 492 229} type Double color 214 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {218 203 505 239} type Double color 214 hide resizable non_modal
     } {
       Fl_Button Ok_sc {
         label Ok
@@ -2947,7 +2951,7 @@ MT->redraw();}
     }
     Fl_Window thicknessWindow {
       label {Thickness Scalar}
-      image {pixmap/s_back_13.gif} xywh {1421 275 245 121} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {1359 283 229 125} type Double color 134 hide resizable modal
     } {
       Fl_Button Ok_thickness {
         label Ok
@@ -2970,7 +2974,7 @@ MT->redraw();}
     }
     Fl_Window tagsWindow {
       label {Tag options}
-      xywh {77 61 580 626} type Double color 215 hide non_modal
+      xywh {159 42 578 628} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_tags {
         label Ok
@@ -3416,12 +3420,12 @@ MT->redraw();}
           }
         }
         Fl_Group Tag_color_group {
-          label {          Colour} open
+          label {          Colour}
           xywh {274 66 111 589} color 94 align 5 resizable
         } {
           Fl_Button Tag_00 {
             label {Tag 00}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3434,7 +3438,7 @@ MT->redraw();}
           }
           Fl_Button Tag_01 {
             label {Tag 01}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3447,7 +3451,7 @@ MT->redraw();}
           }
           Fl_Button Tag_02 {
             label {Tag 02}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3460,7 +3464,7 @@ MT->redraw();}
           }
           Fl_Button Tag_03 {
             label {Tag 03}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3473,7 +3477,7 @@ MT->redraw();}
           }
           Fl_Button Tag_04 {
             label {Tag 04}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3486,7 +3490,7 @@ MT->redraw();}
           }
           Fl_Button Tag_05 {
             label {Tag 05}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3499,7 +3503,7 @@ MT->redraw();}
           }
           Fl_Button Tag_06 {
             label {Tag 06}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3512,7 +3516,7 @@ MT->redraw();}
           }
           Fl_Button Tag_07 {
             label {Tag 07}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3525,7 +3529,7 @@ MT->redraw();}
           }
           Fl_Button Tag_08 {
             label {Tag 08}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3538,7 +3542,7 @@ MT->redraw();}
           }
           Fl_Button Tag_09 {
             label {Tag 09}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3551,7 +3555,7 @@ MT->redraw();}
           }
           Fl_Button Tag_10 {
             label {Tag 10}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3564,7 +3568,7 @@ MT->redraw();}
           }
           Fl_Button Tag_11 {
             label {Tag 11}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3577,7 +3581,7 @@ MT->redraw();}
           }
           Fl_Button Tag_12 {
             label {Tag 12}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3590,7 +3594,7 @@ MT->redraw();}
           }
           Fl_Button Tag_13 {
             label {Tag 13}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3603,7 +3607,7 @@ MT->redraw();}
           }
           Fl_Button Tag_14 {
             label {Tag 14}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3616,7 +3620,7 @@ MT->redraw();}
           }
           Fl_Button Tag_15 {
             label {Tag 15}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3629,7 +3633,7 @@ MT->redraw();}
           }
           Fl_Button Tag_16 {
             label {Tag 16}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3642,7 +3646,7 @@ MT->redraw();}
           }
           Fl_Button Tag_17 {
             label {Tag 17}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3655,7 +3659,7 @@ MT->redraw();}
           }
           Fl_Button Tag_18 {
             label {Tag 18}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3668,7 +3672,7 @@ MT->redraw();}
           }
           Fl_Button Tag_19 {
             label {Tag 19}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3681,7 +3685,7 @@ MT->redraw();}
           }
           Fl_Button Tag_20 {
             label {Tag 20}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3694,7 +3698,7 @@ MT->redraw();}
           }
           Fl_Button Tag_21 {
             label {Tag 21}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3707,7 +3711,7 @@ MT->redraw();}
           }
           Fl_Button Tag_22 {
             label {Tag 22}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3720,7 +3724,7 @@ MT->redraw();}
           }
           Fl_Button Tag_23 {
             label {Tag 23}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3733,7 +3737,7 @@ MT->redraw();}
           }
           Fl_Button Tag_24 {
             label {Tag 24}
-            callback {Fl_Color c = FL_GRAY;
+            callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -3746,7 +3750,7 @@ MT->redraw();}
             xywh {274 618 111 25} color 46 labelcolor 32
           }
         }
-        Fl_Group Clear_group {open
+        Fl_Group Clear_group {
           xywh {420 43 60 612} color 94 align 5
         } {
           Fl_Button Clear_01 {
@@ -3900,7 +3904,7 @@ MT->redraw();}
             xywh {421 67 54 23} color 94 labelcolor 32
           }
         }
-        Fl_Group Fill_holes_group {open
+        Fl_Group Fill_holes_group {
           xywh {470 43 69 612} color 92 align 5
         } {
           Fl_Button FH_01 {
@@ -4037,7 +4041,7 @@ fillholes2_show(0);
     }
     Fl_Window mergetagsWindow {
       label {Merge Tags : put Source into Target}
-      image {pixmap/s_back_13.gif} xywh {16 39 296 73} type Double color 214 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {20 43 306 84} type Double color 214 hide resizable non_modal
     } {
       Fl_Choice merge_source {
         label {Source Tag} open
@@ -4063,7 +4067,7 @@ MT->redraw();
     }
     Fl_Window extractregionWindow {
       label {Extract tagged region}
-      image {pixmap/s_back_13.gif} xywh {1115 102 243 118} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {1119 106 235 110} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input Tag_value {
         label {Tag value to extract :}
@@ -4084,7 +4088,7 @@ extractregion_hide();}
     }
     Fl_Window extractrangeWindow {
       label {Extract tag or scalar range}
-      image {pixmap/s_back_13.gif} xywh {8 31 358 197} type Double color 247 hide modal
+      image {pixmap/s_back_13.gif} xywh {12 35 360 204} type Double color 247 hide resizable modal
     } {
       Fl_Group Extract_what_radio_buttons {
         label {Extract : } open
@@ -4136,7 +4140,7 @@ extractrange_hide();}
     }
     Fl_Window decomposeWindow {
       label {Connectivity decomposition}
-      image {pixmap/s_back_13.gif} xywh {1137 440 221 128} type Double color 167 hide modal
+      image {pixmap/s_back_13.gif} xywh {1141 444 213 120} type Double color 167 hide resizable modal
     } {
       Fl_Value_Input Decompose_min_region_size {
         label {Minimal region size :}
@@ -4157,7 +4161,7 @@ decompose_hide();}
     }
     Fl_Window extractallregionsWindow {
       label {Extract all tagged regions}
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 247 134} type Double color 132 hide modal
+      image {pixmap/s_back_13.gif} xywh {8 31 239 126} type Double color 132 hide resizable modal
     } {
       Fl_Value_Input Tag_decompose_min_region_size {
         label {Minimal region size :}
@@ -4179,7 +4183,7 @@ extractallregions_hide();}
     }
     Fl_Window deleteregionWindow {
       label {Delete tagged region}
-      image {pixmap/s_back_13.gif} xywh {1565 256 250 125} type Double color 80 hide modal
+      image {pixmap/s_back_13.gif} xywh {1354 264 234 109} type Double color 80 hide resizable modal
     } {
       Fl_Value_Input Tag_value_delete {
         label {Tag value to delete :}
@@ -4200,7 +4204,7 @@ deleteregion_hide();}
     }
     Fl_Window flagWindow {
       label {Edit 1 Selected Flag}
-      image {pixmap/s_back_13.gif} xywh {1112 172 246 176} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {1124 184 240 170} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_flag {
         label Refresh
@@ -4222,7 +4226,7 @@ deleteregion_hide();}
       }
       Fl_Button Flag_Colour {
         label {Flag colour}
-        callback {Fl_Color c = FL_GRAY;
+        callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -4247,7 +4251,7 @@ MT->redraw();}
     }
     Fl_Window thicknessWindow2 {
       label {Thickness between 2 surfaces}
-      image {pixmap/s_back_13.gif} xywh {495 210 225 194} type Double color 135 hide modal
+      image {pixmap/s_back_13.gif} xywh {503 218 247 199} type Double color 135 hide resizable modal
     } {
       Fl_Button Ok_th2 {
         label Ok
@@ -4282,7 +4286,7 @@ MT->redraw();}
     }
     Fl_Window fillholesWindow {
       label {Fill Holes}
-      image {pixmap/s_back_13.gif} xywh {1581 368 242 135} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {1358 372 234 127} type Double color 134 hide modal
     } {
       Fl_Value_Input HOLES_size {
         label {Maximal size :}
@@ -4303,7 +4307,7 @@ MT->redraw();}
     }
     Fl_Window fillholesWindow2 {
       label {Fill Holes}
-      image {pixmap/s_back_13.gif} xywh {1526 269 257 202} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {1346 277 239 137} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input HOLES2_size {
         label {Max num vertices : }
@@ -4316,12 +4320,12 @@ fillholesWindow2
 );
 fillholes2_hide();
 MT->redraw();}
-        xywh {48 163 65 25} color 93 selection_color 91
+        xywh {60 90 65 25} color 93 selection_color 91
       }
       Fl_Button Cancel_fillholes2 {
         label Cancel
         callback {fillholes2_hide();}
-        xywh {146 163 65 25} color 133 selection_color 132
+        xywh {135 90 65 25} color 133 selection_color 132
       }
       Fl_Value_Input HOLES2_tagid {
         label {Tag id :}
@@ -4330,7 +4334,7 @@ MT->redraw();}
     }
     Fl_Window densifyWindow {
       label Densify
-      image {pixmap/s_back_13.gif} xywh {658 302 330 119} type Double color 134 hide modal
+      image {pixmap/s_back_13.gif} xywh {662 306 322 111} type Double color 134 hide resizable modal
     } {
       Fl_Value_Input DENSIFY_factor {
         label {Number of subdivisions :}
@@ -4351,7 +4355,7 @@ MT->redraw();}
     }
     Fl_Window nameWindow {
       label {Edit  Name}
-      image {pixmap/s_back_13.gif} xywh {925 308 261 147} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {929 312 288 168} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_name {
         label {Ok (first selected object)}
@@ -4397,7 +4401,7 @@ Name_Label->value(label.c_str());//name_hide();}
     }
     Fl_Window allflagWindow {
       label {Edit All Selected Flags}
-      image {pixmap/s_back_13.gif} xywh {1575 206 252 115} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {1348 210 244 107} type Double color 215 hide non_modal
     } {
       Fl_Button Ok_all_flag {
         label Ok
@@ -4420,7 +4424,7 @@ MT->redraw();}
       }
       Fl_Button All_Flag_Colour {
         label {Flag colour}
-        callback {Fl_Color c = FL_GRAY;
+        callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
 if(!fl_color_chooser("New color:",r,g,b)) return;
@@ -4434,7 +4438,7 @@ o->redraw();
     }
     Fl_Window ViewHideObjectsWindow {
       label {View Hide objects}
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 282 472} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {8 31 283 473} type Double color 215 hide resizable non_modal
     } {
       Fl_Check_Browser Check_browser {
         callback {view_hide_ok();}
@@ -4467,7 +4471,7 @@ view_hide_ok();}
     }
     Fl_Window tags_convert_Window {
       label {Convert RGB scalars to TAGs}
-      xywh {1867 206 518 154} type Double color 94 hide non_modal
+      xywh {1077 210 515 162} type Double color 94 hide resizable non_modal
     } {
       Fl_Group {} {
         label {Conversion } open
@@ -4500,7 +4504,7 @@ tags_convert_hide();}
     }
     Fl_Window orientationWindow {
       label {Edit orientation labels}
-      image {pixmap/s_back_13.gif} xywh {66 150 251 251} type Double color 215 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {70 154 243 243} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_orientation {
         label Ok
@@ -4551,7 +4555,7 @@ MT->redraw();
     }
     Fl_Window lmkselectWindow {
       label {Select landmark}
-      image {pixmap/s_back_13.gif} xywh {707 372 271 141} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {711 376 263 133} type Double color 215 hide resizable non_modal
     } {
       Fl_Value_Input LandmarkId {
         label {Landmark Id to select}
@@ -4584,7 +4588,7 @@ MT->redraw();}
     }
     Fl_Window lmkrangeselectWindow {
       label {Select landmark range}
-      image {pixmap/s_back_13.gif} xywh {540 185 263 148} type Double color 215 hide non_modal
+      image {pixmap/s_back_13.gif} xywh {544 189 267 156} type Double color 215 hide resizable non_modal
     } {
       Fl_Value_Input rangestart {
         label {Select landmark id START}
@@ -4621,7 +4625,7 @@ MT->redraw();}
     }
     Fl_Window Registration_Window {
       label Registration
-      image {pixmap/s_back_13.gif} xywh {42 71 1075 590} type Double color 215 hide hotspot
+      image {pixmap/s_back_13.gif} xywh {46 75 1080 600} type Double color 215 hide resizable hotspot
     } {
       Fl_Group once_icp_ok {open
         xywh {740 5 315 580} box EMBOSSED_BOX color 166
@@ -5440,7 +5444,7 @@ color_data->activate();
     }
     Fl_Window Errors_curv_Window {
       label Result
-      xywh {48 73 840 526} type Double color 214 hide resizable modal
+      xywh {52 77 832 518} type Double color 214 hide resizable modal
     } {
       Fl_Button save_errors_curve {
         label {Save errors}
@@ -5527,8 +5531,8 @@ color_data->activate();
       }
     }
     Fl_Window NTWSaveWindow {
-      label {NTW save options} open
-      xywh {458 188 748 131} type Double color 215 hide resizable non_modal
+      label {NTW save options} selected
+      xywh {462 192 740 123} type Double color 215 hide resizable non_modal
     } {
       Fl_Group NTW_O_RB {
         label {Orientation labels} open
@@ -5582,7 +5586,7 @@ if (NTW_O_1->value() == 1){ori_mode = 1;}
 if (NTW_T_1->value() == 1){tag_mode = 1;}
 if (NTW_C_0->value() == 1){cur_mode = 1;}
 MT->Save_NTW_File(ori_mode, tag_mode, cur_mode);
-ntw_hide();} selected
+ntw_hide();}
         xywh {235 90 90 25} color 175 selection_color 214
       }
       Fl_Button CancelSaveNTW {
