@@ -1031,6 +1031,243 @@ void MeshTools::Set_far(float farv)
  }
 }
 
+void MeshTools::Ini_to_global_variables()
+{
+	CDataFile ExistingDF(inipath, 1);
+	g_landmark_size = ExistingDF.GetFloat("size", "landmarks");
+	g_landmark_auto_rendering_size = ExistingDF.GetFloat("auto_rendering_size", "landmarks");
+	g_landmark_type = ExistingDF.GetInt("type", "landmarks");
+	g_display_all = ExistingDF.GetInt("all", "display");
+	g_fov_adapt = ExistingDF.GetInt("adapt", "fov");
+	g_move_cm = ExistingDF.GetInt("move_at_cm", "surfaces");
+	g_mode_cam_centre_of_mass = ExistingDF.GetInt("move_at_cm", "camera");
+	g_auto_zoom = ExistingDF.GetInt("auto_zoom", "surfaces");
+	g_color_scale_id = ExistingDF.GetInt("id", "color_scale");
+	g_auto_delete = ExistingDF.GetInt("auto_delete", "structure");
+	g_enable_2sides = ExistingDF.GetInt("2_sides", "lightning");
+	lightpos1 = ExistingDF.GetFloat("lightpos1", "lightposition");
+	lightpos2 = ExistingDF.GetFloat("lightpos2", "lightposition");
+	ambiant = ExistingDF.GetFloat("ambiant", "lightposition");
+	diffuse = ExistingDF.GetFloat("diffuse", "lightposition");
+	specular = ExistingDF.GetFloat("specular", "lightposition");
+	color_arrow[1] = ExistingDF.GetFloat("g", "color_arrow");
+	color_arrow[2] = ExistingDF.GetFloat("b", "color_arrow");
+	color_grid[0] = ExistingDF.GetFloat("r", "color_grid");
+	color_grid[1] = ExistingDF.GetFloat("g", "color_grid");
+	color_grid[2] = ExistingDF.GetFloat("b", "color_grid");
+	color_back[0] = ExistingDF.GetFloat("r", "color_back");
+	color_back[1] = ExistingDF.GetFloat("g", "color_back");
+	color_back[2] = ExistingDF.GetFloat("b", "color_back");
+	color_obj[0] = ExistingDF.GetFloat("r", "color_obj");
+	color_obj[1] = ExistingDF.GetFloat("g", "color_obj");
+	color_obj[2] = ExistingDF.GetFloat("b", "color_obj");
+
+	g_flag_color[0] = ExistingDF.GetFloat("r", "g_flag_color");
+	g_flag_color[1] = ExistingDF.GetFloat("g", "g_flag_color");
+	g_flag_color[2] = ExistingDF.GetFloat("b", "g_flag_color");
+	g_flag_length = ExistingDF.GetFloat("length", "g_flag_length");
+
+	color_max[0] = ExistingDF.GetFloat("r", "color_surf_max");
+	color_max[1] = ExistingDF.GetFloat("g", "color_surf_max");
+	color_max[2] = ExistingDF.GetFloat("b", "color_surf_max");
+	color_min[0] = ExistingDF.GetFloat("r", "color_surf_min");
+	color_min[1] = ExistingDF.GetFloat("g", "color_surf_min");
+	color_min[2] = ExistingDF.GetFloat("b", "color_surf_min");
+	color_max2[0] = ExistingDF.GetFloat("r", "color_distnorm_max");
+	color_max2[1] = ExistingDF.GetFloat("g", "color_distnorm_max");
+	color_max2[2] = ExistingDF.GetFloat("b", "color_distnorm_max");
+	color_min2[0] = ExistingDF.GetFloat("r", "color_distnorm_min");
+	color_min2[1] = ExistingDF.GetFloat("g", "color_distnorm_min");
+	color_min2[2] = ExistingDF.GetFloat("b", "color_distnorm_min");
+	g_orientation_labels[0] = ExistingDF.GetString("z_plus", "orientation");
+	g_orientation_labels[1] = ExistingDF.GetString("z_minus", "orientation");
+	g_orientation_labels[2] = ExistingDF.GetString("y_plus", "orientation");
+	g_orientation_labels[3] = ExistingDF.GetString("y_minus", "orientation");
+	g_orientation_labels[4] = ExistingDF.GetString("x_plus", "orientation");
+	g_orientation_labels[5] = ExistingDF.GetString("x_minus", "orientation");
+	g_active_tag = ExistingDF.GetInt("id", "active_tag");
+
+	g_active_tag = ExistingDF.GetInt("id", "active_tag");
+	g_tag_colors[0][0] = ExistingDF.GetFloat("r", "tag_00");
+	g_tag_colors[0][1] = ExistingDF.GetFloat("g", "tag_00");
+	g_tag_colors[0][2] = ExistingDF.GetFloat("b", "tag_00");
+	g_tag_colors[0][3] = ExistingDF.GetFloat("a", "tag_00");
+	g_tag_labels[0] = ExistingDF.GetString("label", "tag_00");
+	//g_tag_labels[0]= "Test \E9\E9\E9 \E0\E0 eu i";
+	//std::cout<<"g_tag_labels[0]="<<g_tag_labels[0]<<std::endl;
+
+	g_tag_colors[1][0] = ExistingDF.GetFloat("r", "tag_01");
+	g_tag_colors[1][1] = ExistingDF.GetFloat("g", "tag_01");
+	g_tag_colors[1][2] = ExistingDF.GetFloat("b", "tag_01");
+	g_tag_colors[1][3] = ExistingDF.GetFloat("a", "tag_01");
+	g_tag_labels[1] = ExistingDF.GetString("label", "tag_01");
+	//std::cout<<"g_tag_labels[1]="<<g_tag_labels[1]<<std::endl;
+
+	g_tag_colors[2][0] = ExistingDF.GetFloat("r", "tag_02");
+	g_tag_colors[2][1] = ExistingDF.GetFloat("g", "tag_02");
+	g_tag_colors[2][2] = ExistingDF.GetFloat("b", "tag_02");
+	g_tag_colors[2][3] = ExistingDF.GetFloat("a", "tag_02");
+	g_tag_labels[2] = ExistingDF.GetString("label", "tag_02");
+	//std::cout<<"g_tag_labels[2]="<<g_tag_labels[2]<<std::endl;
+
+	g_tag_colors[3][0] = ExistingDF.GetFloat("r", "tag_03");
+	g_tag_colors[3][1] = ExistingDF.GetFloat("g", "tag_03");
+	g_tag_colors[3][2] = ExistingDF.GetFloat("b", "tag_03");
+	g_tag_colors[3][3] = ExistingDF.GetFloat("a", "tag_03");
+	g_tag_labels[3] = ExistingDF.GetString("label", "tag_03");
+	//std::cout<<"g_tag_labels[3]="<<g_tag_labels[3]<<std::endl;
+
+	g_tag_colors[4][0] = ExistingDF.GetFloat("r", "tag_04");
+	g_tag_colors[4][1] = ExistingDF.GetFloat("g", "tag_04");
+	g_tag_colors[4][2] = ExistingDF.GetFloat("b", "tag_04");
+	g_tag_colors[4][3] = ExistingDF.GetFloat("a", "tag_04");
+	g_tag_labels[4] = ExistingDF.GetString("label", "tag_04");
+	//std::cout<<"g_tag_labels[4]="<<g_tag_labels[4]<<std::endl;
+
+	g_tag_colors[5][0] = ExistingDF.GetFloat("r", "tag_05");
+	g_tag_colors[5][1] = ExistingDF.GetFloat("g", "tag_05");
+	g_tag_colors[5][2] = ExistingDF.GetFloat("b", "tag_05");
+	g_tag_colors[5][3] = ExistingDF.GetFloat("a", "tag_05");
+	g_tag_labels[5] = ExistingDF.GetString("label", "tag_05");
+	//std::cout<<"g_tag_labels[5]="<<g_tag_labels[5]<<std::endl;
+
+	g_tag_colors[6][0] = ExistingDF.GetFloat("r", "tag_06");
+	g_tag_colors[6][1] = ExistingDF.GetFloat("g", "tag_06");
+	g_tag_colors[6][2] = ExistingDF.GetFloat("b", "tag_06");
+	g_tag_colors[6][3] = ExistingDF.GetFloat("a", "tag_06");
+	g_tag_labels[6] = ExistingDF.GetString("label", "tag_06");
+	//std::cout<<"g_tag_labels[6]="<<g_tag_labels[6]<<std::endl;
+
+	g_tag_colors[7][0] = ExistingDF.GetFloat("r", "tag_07");
+	g_tag_colors[7][1] = ExistingDF.GetFloat("g", "tag_07");
+	g_tag_colors[7][2] = ExistingDF.GetFloat("b", "tag_07");
+	g_tag_colors[7][3] = ExistingDF.GetFloat("a", "tag_07");
+	g_tag_labels[7] = ExistingDF.GetString("label", "tag_07");
+	//std::cout<<"g_tag_labels[7]="<<g_tag_labels[7]<<std::endl;
+
+	g_tag_colors[8][0] = ExistingDF.GetFloat("r", "tag_08");
+	g_tag_colors[8][1] = ExistingDF.GetFloat("g", "tag_08");
+	g_tag_colors[8][2] = ExistingDF.GetFloat("b", "tag_08");
+	g_tag_colors[8][3] = ExistingDF.GetFloat("a", "tag_08");
+	g_tag_labels[8] = ExistingDF.GetString("label", "tag_08");
+	//std::cout<<"g_tag_labels[8]="<<g_tag_labels[8]<<std::endl;
+
+	g_tag_colors[9][0] = ExistingDF.GetFloat("r", "tag_09");
+	g_tag_colors[9][1] = ExistingDF.GetFloat("g", "tag_09");
+	g_tag_colors[9][2] = ExistingDF.GetFloat("b", "tag_09");
+	g_tag_colors[9][3] = ExistingDF.GetFloat("a", "tag_09");
+	g_tag_labels[9] = ExistingDF.GetString("label", "tag_09");
+	//std::cout<<"g_tag_labels[9]="<<g_tag_labels[9]<<std::endl;
+
+	g_tag_colors[10][0] = ExistingDF.GetFloat("r", "tag_10");
+	g_tag_colors[10][1] = ExistingDF.GetFloat("g", "tag_10");
+	g_tag_colors[10][2] = ExistingDF.GetFloat("b", "tag_10");
+	g_tag_colors[10][3] = ExistingDF.GetFloat("a", "tag_10");
+	g_tag_labels[10] = ExistingDF.GetString("label", "tag_10");
+	//std::cout<<"g_tag_labels[10]="<<g_tag_labels[10]<<std::endl;
+
+	g_tag_colors[11][0] = ExistingDF.GetFloat("r", "tag_11");
+	g_tag_colors[11][1] = ExistingDF.GetFloat("g", "tag_11");
+	g_tag_colors[11][2] = ExistingDF.GetFloat("b", "tag_11");
+	g_tag_colors[11][3] = ExistingDF.GetFloat("a", "tag_11");
+	g_tag_labels[11] = ExistingDF.GetString("label", "tag_11");
+	//std::cout<<"g_tag_labels[11]="<<g_tag_labels[11]<<std::endl;
+
+	g_tag_colors[12][0] = ExistingDF.GetFloat("r", "tag_12");
+	g_tag_colors[12][1] = ExistingDF.GetFloat("g", "tag_12");
+	g_tag_colors[12][2] = ExistingDF.GetFloat("b", "tag_12");
+	g_tag_colors[12][3] = ExistingDF.GetFloat("a", "tag_12");
+	g_tag_labels[12] = ExistingDF.GetString("label", "tag_12");
+	//std::cout<<"g_tag_labels[12]="<<g_tag_labels[12]<<std::endl;
+
+	g_tag_colors[13][0] = ExistingDF.GetFloat("r", "tag_13");
+	g_tag_colors[13][1] = ExistingDF.GetFloat("g", "tag_13");
+	g_tag_colors[13][2] = ExistingDF.GetFloat("b", "tag_13");
+	g_tag_colors[13][3] = ExistingDF.GetFloat("a", "tag_13");
+	g_tag_labels[13] = ExistingDF.GetString("label", "tag_13");
+	//std::cout<<"g_tag_labels[13]="<<g_tag_labels[13]<<std::endl;
+
+	g_tag_colors[14][0] = ExistingDF.GetFloat("r", "tag_14");
+	g_tag_colors[14][1] = ExistingDF.GetFloat("g", "tag_14");
+	g_tag_colors[14][2] = ExistingDF.GetFloat("b", "tag_14");
+	g_tag_colors[14][3] = ExistingDF.GetFloat("a", "tag_14");
+	g_tag_labels[14] = ExistingDF.GetString("label", "tag_14");
+	//std::cout<<"g_tag_labels[14]="<<g_tag_labels[14]<<std::endl;
+
+	g_tag_colors[15][0] = ExistingDF.GetFloat("r", "tag_15");
+	g_tag_colors[15][1] = ExistingDF.GetFloat("g", "tag_15");
+	g_tag_colors[15][2] = ExistingDF.GetFloat("b", "tag_15");
+	g_tag_colors[15][3] = ExistingDF.GetFloat("a", "tag_15");
+	g_tag_labels[15] = ExistingDF.GetString("label", "tag_15");
+	//std::cout<<"g_tag_labels[15]="<<g_tag_labels[15]<<std::endl;
+
+	g_tag_colors[16][0] = ExistingDF.GetFloat("r", "tag_16");
+	g_tag_colors[16][1] = ExistingDF.GetFloat("g", "tag_16");
+	g_tag_colors[16][2] = ExistingDF.GetFloat("b", "tag_16");
+	g_tag_colors[16][3] = ExistingDF.GetFloat("a", "tag_16");
+	g_tag_labels[16] = ExistingDF.GetString("label", "tag_16");
+	//std::cout<<"g_tag_labels[16]="<<g_tag_labels[16]<<std::endl;
+
+	g_tag_colors[17][0] = ExistingDF.GetFloat("r", "tag_17");
+	g_tag_colors[17][1] = ExistingDF.GetFloat("g", "tag_17");
+	g_tag_colors[17][2] = ExistingDF.GetFloat("b", "tag_17");
+	g_tag_colors[17][3] = ExistingDF.GetFloat("a", "tag_17");
+	g_tag_labels[17] = ExistingDF.GetString("label", "tag_17");
+	//std::cout<<"g_tag_labels[17]="<<g_tag_labels[17]<<std::endl;
+
+	g_tag_colors[18][0] = ExistingDF.GetFloat("r", "tag_18");
+	g_tag_colors[18][1] = ExistingDF.GetFloat("g", "tag_18");
+	g_tag_colors[18][2] = ExistingDF.GetFloat("b", "tag_18");
+	g_tag_colors[18][3] = ExistingDF.GetFloat("a", "tag_18");
+	g_tag_labels[18] = ExistingDF.GetString("label", "tag_18");
+	//std::cout<<"g_tag_labels[18]="<<g_tag_labels[18]<<std::endl;
+
+	g_tag_colors[19][0] = ExistingDF.GetFloat("r", "tag_19");
+	g_tag_colors[19][1] = ExistingDF.GetFloat("g", "tag_19");
+	g_tag_colors[19][2] = ExistingDF.GetFloat("b", "tag_19");
+	g_tag_colors[19][3] = ExistingDF.GetFloat("a", "tag_19");
+	g_tag_labels[19] = ExistingDF.GetString("label", "tag_19");
+	//std::cout<<"g_tag_labels[19]="<<g_tag_labels[19]<<std::endl;
+
+	g_tag_colors[20][0] = ExistingDF.GetFloat("r", "tag_20");
+	g_tag_colors[20][1] = ExistingDF.GetFloat("g", "tag_20");
+	g_tag_colors[20][2] = ExistingDF.GetFloat("b", "tag_20");
+	g_tag_colors[20][3] = ExistingDF.GetFloat("a", "tag_20");
+	g_tag_labels[20] = ExistingDF.GetString("label", "tag_20");
+	//std::cout<<"g_tag_labels[20]="<<g_tag_labels[20]<<std::endl;
+
+	g_tag_colors[21][0] = ExistingDF.GetFloat("r", "tag_21");
+	g_tag_colors[21][1] = ExistingDF.GetFloat("g", "tag_21");
+	g_tag_colors[21][2] = ExistingDF.GetFloat("b", "tag_21");
+	g_tag_colors[21][3] = ExistingDF.GetFloat("a", "tag_21");
+	g_tag_labels[21] = ExistingDF.GetString("label", "tag_21");
+	//std::cout<<"g_tag_labels[21]="<<g_tag_labels[21]<<std::endl;
+
+	g_tag_colors[22][0] = ExistingDF.GetFloat("r", "tag_22");
+	g_tag_colors[22][1] = ExistingDF.GetFloat("g", "tag_22");
+	g_tag_colors[22][2] = ExistingDF.GetFloat("b", "tag_22");
+	g_tag_colors[22][3] = ExistingDF.GetFloat("a", "tag_22");
+	g_tag_labels[22] = ExistingDF.GetString("label", "tag_22");
+	//std::cout<<"g_tag_labels[22]="<<g_tag_labels[22]<<std::endl;
+
+	g_tag_colors[23][0] = ExistingDF.GetFloat("r", "tag_23");
+	g_tag_colors[23][1] = ExistingDF.GetFloat("g", "tag_23");
+	g_tag_colors[23][2] = ExistingDF.GetFloat("b", "tag_23");
+	g_tag_colors[23][3] = ExistingDF.GetFloat("a", "tag_23");
+	g_tag_labels[23] = ExistingDF.GetString("label", "tag_23");
+	//std::cout<<"g_tag_labels[23]="<<g_tag_labels[23]<<std::endl;
+
+	g_tag_colors[24][0] = ExistingDF.GetFloat("r", "tag_24");
+	g_tag_colors[24][1] = ExistingDF.GetFloat("g", "tag_24");
+	g_tag_colors[24][2] = ExistingDF.GetFloat("b", "tag_24");
+	g_tag_colors[24][3] = ExistingDF.GetFloat("a", "tag_24");
+	g_tag_labels[24] = ExistingDF.GetString("label", "tag_24");
+
+	color_surf_range_min = ExistingDF.GetFloat("color_surf_range_min", "color_surf_range");
+	color_surf_range_max = ExistingDF.GetFloat("color_surf_range_max", "color_surf_range");
+	color_arrow[0] = ExistingDF.GetFloat("r", "color_arrow");
+}
+
 MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
             : Fl_Gl_Window(x,y,w,h,l)
 {
@@ -1118,8 +1355,10 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 		this->initialize_ini_file();
 		
 	}
-
+	
 	CDataFile ExistingDF(inipath, 1);
+
+	this->Ini_to_global_variables();
 
 	select_mode = kpressed = 0;
 	this->disp_cull_face = 0;
@@ -1156,24 +1395,7 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_scalar_list_selected.clear();
 	g_landmark_size = 10; // 10 mm landmarks
 
-	g_landmark_size =  ExistingDF.GetFloat("size", "landmarks");
-	g_landmark_auto_rendering_size = ExistingDF.GetFloat("auto_rendering_size", "landmarks");
 	
-
-	
-    g_landmark_type =  ExistingDF.GetInt("type", "landmarks");
-
-	g_display_all=  ExistingDF.GetInt("all", "display");
-	g_fov_adapt =  ExistingDF.GetInt("adapt", "fov");
-	
-	g_move_cm =  ExistingDF.GetInt("move_at_cm", "surfaces");
-	g_mode_cam_centre_of_mass = ExistingDF.GetInt("move_at_cm", "camera");
-	
-	g_auto_zoom =  ExistingDF.GetInt("auto_zoom", "surfaces");
-	g_color_scale_id=ExistingDF.GetInt("id","color_scale");
-	//std::cout<<"Constructor: g_color_scale_id"<<g_color_scale_id<<std::endl;
-	g_auto_delete =  ExistingDF.GetInt("auto_delete", "structure");
-	g_enable_2sides =  ExistingDF.GetInt("2_sides", "lightning");
 	g_lambda = 1;
 	affiche_rect=0;
 	Cont_Mesh.vect_list_status = 0;
@@ -1184,237 +1406,21 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	rect_y2 = 0;
 	color_arrow_size = 1;
 	//fValue  = ExistingDF.GetFloat("main_key_float", "Main");
-	color_arrow [0] = ExistingDF.GetFloat("r", "color_arrow");
-	//lightpos1=0;
-	lightpos1=ExistingDF.GetFloat("lightpos1", "lightposition");
-	lightpos2=ExistingDF.GetFloat("lightpos2", "lightposition");
-	ambiant=ExistingDF.GetFloat("ambiant", "lightposition");
-	diffuse=ExistingDF.GetFloat("diffuse", "lightposition");
-	specular=ExistingDF.GetFloat("specular", "lightposition");
-	color_arrow [1] = ExistingDF.GetFloat("g", "color_arrow");
-	color_arrow [2] = ExistingDF.GetFloat("b", "color_arrow");
-	color_grid [0] = ExistingDF.GetFloat("r", "color_grid");
-	color_grid [1] = ExistingDF.GetFloat("g", "color_grid");
-	color_grid [2] = ExistingDF.GetFloat("b", "color_grid");
-	color_back [0] = ExistingDF.GetFloat("r", "color_back");
-	color_back [1] = ExistingDF.GetFloat("g", "color_back");
-	color_back [2] = ExistingDF.GetFloat("b", "color_back");
-	color_obj [0] = ExistingDF.GetFloat("r", "color_obj");
-	color_obj [1] = ExistingDF.GetFloat("g", "color_obj");
-	color_obj [2] = ExistingDF.GetFloat("b", "color_obj");
 	
-	g_flag_color [0] = ExistingDF.GetFloat("r", "g_flag_color");
-	g_flag_color [1] = ExistingDF.GetFloat("g", "g_flag_color");
-	g_flag_color [2] = ExistingDF.GetFloat("b", "g_flag_color");
-	g_flag_length =  ExistingDF.GetFloat("length", "g_flag_length");
-
-	color_max [0] = ExistingDF.GetFloat("r", "color_surf_max");
-	color_max [1] = ExistingDF.GetFloat("g", "color_surf_max");
-	color_max [2] = ExistingDF.GetFloat("b", "color_surf_max");
-	color_min [0] = ExistingDF.GetFloat("r", "color_surf_min");
-	color_min [1] = ExistingDF.GetFloat("g", "color_surf_min");
-	color_min [2] = ExistingDF.GetFloat("b", "color_surf_min");
-	color_max2 [0] = ExistingDF.GetFloat("r", "color_distnorm_max");
-	color_max2 [1] = ExistingDF.GetFloat("g", "color_distnorm_max");
-	color_max2 [2] = ExistingDF.GetFloat("b", "color_distnorm_max");
-	color_min2 [0] = ExistingDF.GetFloat("r", "color_distnorm_min");
-	color_min2 [1] = ExistingDF.GetFloat("g", "color_distnorm_min");
-	color_min2 [2] = ExistingDF.GetFloat("b", "color_distnorm_min");
+	//lightpos1=0;
+	
 	g_pencil_extension = 3;
 	g_magic_wand_extension=45;
 	g_magic_wand_over = 1;
 
     g_magic_wand_extension_min_cos=0.70710678;
 
-	g_orientation_labels[0] = ExistingDF.GetString("z_plus","orientation");
-	g_orientation_labels[1] = ExistingDF.GetString("z_minus","orientation");
-	g_orientation_labels[2] = ExistingDF.GetString("y_plus","orientation");
-	g_orientation_labels[3] = ExistingDF.GetString("y_minus","orientation");
-	g_orientation_labels[4] = ExistingDF.GetString("x_plus","orientation");
-	g_orientation_labels[5] = ExistingDF.GetString("x_minus","orientation");
+	
 
 
 	g_tag_tool = 0; // pencil
 	g_tag_extraction_criterion_all = 1; // all cell must satisfy threshold criterion...
-	g_active_tag = ExistingDF.GetInt("id","active_tag");
-	g_tag_colors[0][0] = ExistingDF.GetFloat("r","tag_00");
-	g_tag_colors[0][1] = ExistingDF.GetFloat("g","tag_00");
-	g_tag_colors[0][2] = ExistingDF.GetFloat("b","tag_00");
-	g_tag_colors[0][3] = ExistingDF.GetFloat("a","tag_00");
-	g_tag_labels[0] = ExistingDF.GetString("label","tag_00");
-	//g_tag_labels[0]= "Test \E9\E9\E9 \E0\E0 eu i";
-	//std::cout<<"g_tag_labels[0]="<<g_tag_labels[0]<<std::endl;
-
-	g_tag_colors[1][0] = ExistingDF.GetFloat("r","tag_01");
-	g_tag_colors[1][1] = ExistingDF.GetFloat("g","tag_01");
-	g_tag_colors[1][2] = ExistingDF.GetFloat("b","tag_01");
-	g_tag_colors[1][3] = ExistingDF.GetFloat("a","tag_01");
-	g_tag_labels[1] = ExistingDF.GetString("label","tag_01");
-	//std::cout<<"g_tag_labels[1]="<<g_tag_labels[1]<<std::endl;
-
-	g_tag_colors[2][0] = ExistingDF.GetFloat("r","tag_02");
-	g_tag_colors[2][1] = ExistingDF.GetFloat("g","tag_02");
-	g_tag_colors[2][2] = ExistingDF.GetFloat("b","tag_02");
-	g_tag_colors[2][3] = ExistingDF.GetFloat("a","tag_02");
-	g_tag_labels[2] = ExistingDF.GetString("label","tag_02");
-	//std::cout<<"g_tag_labels[2]="<<g_tag_labels[2]<<std::endl;
-
-	g_tag_colors[3][0] = ExistingDF.GetFloat("r","tag_03");
-	g_tag_colors[3][1] = ExistingDF.GetFloat("g","tag_03");
-	g_tag_colors[3][2] = ExistingDF.GetFloat("b","tag_03");
-	g_tag_colors[3][3] = ExistingDF.GetFloat("a","tag_03");
-	g_tag_labels[3] = ExistingDF.GetString("label","tag_03");
-	//std::cout<<"g_tag_labels[3]="<<g_tag_labels[3]<<std::endl;
-
-	g_tag_colors[4][0] = ExistingDF.GetFloat("r","tag_04");
-	g_tag_colors[4][1] = ExistingDF.GetFloat("g","tag_04");
-	g_tag_colors[4][2] = ExistingDF.GetFloat("b","tag_04");
-	g_tag_colors[4][3] = ExistingDF.GetFloat("a","tag_04");
-	g_tag_labels[4] = ExistingDF.GetString("label","tag_04");
-	//std::cout<<"g_tag_labels[4]="<<g_tag_labels[4]<<std::endl;
-
-	g_tag_colors[5][0] = ExistingDF.GetFloat("r","tag_05");
-	g_tag_colors[5][1] = ExistingDF.GetFloat("g","tag_05");
-	g_tag_colors[5][2] = ExistingDF.GetFloat("b","tag_05");
-	g_tag_colors[5][3] = ExistingDF.GetFloat("a","tag_05");
-	g_tag_labels[5] = ExistingDF.GetString("label","tag_05");
-	//std::cout<<"g_tag_labels[5]="<<g_tag_labels[5]<<std::endl;
 	
-	g_tag_colors[6][0] = ExistingDF.GetFloat("r","tag_06");
-	g_tag_colors[6][1] = ExistingDF.GetFloat("g","tag_06");
-	g_tag_colors[6][2] = ExistingDF.GetFloat("b","tag_06");
-	g_tag_colors[6][3] = ExistingDF.GetFloat("a","tag_06");
-	g_tag_labels[6] = ExistingDF.GetString("label","tag_06");
-	//std::cout<<"g_tag_labels[6]="<<g_tag_labels[6]<<std::endl;
-	
-	g_tag_colors[7][0] = ExistingDF.GetFloat("r","tag_07");
-	g_tag_colors[7][1] = ExistingDF.GetFloat("g","tag_07");
-	g_tag_colors[7][2] = ExistingDF.GetFloat("b","tag_07");
-	g_tag_colors[7][3] = ExistingDF.GetFloat("a","tag_07");
-	g_tag_labels[7] = ExistingDF.GetString("label","tag_07");
-	//std::cout<<"g_tag_labels[7]="<<g_tag_labels[7]<<std::endl;
-	
-	g_tag_colors[8][0] = ExistingDF.GetFloat("r","tag_08");
-	g_tag_colors[8][1] = ExistingDF.GetFloat("g","tag_08");
-	g_tag_colors[8][2] = ExistingDF.GetFloat("b","tag_08");
-	g_tag_colors[8][3] = ExistingDF.GetFloat("a","tag_08");
-	g_tag_labels[8] = ExistingDF.GetString("label","tag_08");
-	//std::cout<<"g_tag_labels[8]="<<g_tag_labels[8]<<std::endl;
-	
-	g_tag_colors[9][0] = ExistingDF.GetFloat("r","tag_09");
-	g_tag_colors[9][1] = ExistingDF.GetFloat("g","tag_09");
-	g_tag_colors[9][2] = ExistingDF.GetFloat("b","tag_09");
-	g_tag_colors[9][3] = ExistingDF.GetFloat("a","tag_09");
-	g_tag_labels[9] = ExistingDF.GetString("label","tag_09");
-	//std::cout<<"g_tag_labels[9]="<<g_tag_labels[9]<<std::endl;
-	
-	g_tag_colors[10][0] = ExistingDF.GetFloat("r","tag_10");
-	g_tag_colors[10][1] = ExistingDF.GetFloat("g","tag_10");
-	g_tag_colors[10][2] = ExistingDF.GetFloat("b","tag_10");
-	g_tag_colors[10][3] = ExistingDF.GetFloat("a","tag_10");
-	g_tag_labels[10] = ExistingDF.GetString("label","tag_10");
-	//std::cout<<"g_tag_labels[10]="<<g_tag_labels[10]<<std::endl;
-	
-	g_tag_colors[11][0] = ExistingDF.GetFloat("r","tag_11");
-	g_tag_colors[11][1] = ExistingDF.GetFloat("g","tag_11");
-	g_tag_colors[11][2] = ExistingDF.GetFloat("b","tag_11");
-	g_tag_colors[11][3] = ExistingDF.GetFloat("a","tag_11");
-	g_tag_labels[11] = ExistingDF.GetString("label","tag_11");
-	//std::cout<<"g_tag_labels[11]="<<g_tag_labels[11]<<std::endl;
-	
-	g_tag_colors[12][0] = ExistingDF.GetFloat("r","tag_12");
-	g_tag_colors[12][1] = ExistingDF.GetFloat("g","tag_12");
-	g_tag_colors[12][2] = ExistingDF.GetFloat("b","tag_12");
-	g_tag_colors[12][3] = ExistingDF.GetFloat("a","tag_12");
-	g_tag_labels[12] = ExistingDF.GetString("label","tag_12");
-	//std::cout<<"g_tag_labels[12]="<<g_tag_labels[12]<<std::endl;
-	
-	g_tag_colors[13][0] = ExistingDF.GetFloat("r","tag_13");
-	g_tag_colors[13][1] = ExistingDF.GetFloat("g","tag_13");
-	g_tag_colors[13][2] = ExistingDF.GetFloat("b","tag_13");
-	g_tag_colors[13][3] = ExistingDF.GetFloat("a","tag_13");
-	g_tag_labels[13] = ExistingDF.GetString("label","tag_13");
-	//std::cout<<"g_tag_labels[13]="<<g_tag_labels[13]<<std::endl;
-	
-	g_tag_colors[14][0] = ExistingDF.GetFloat("r","tag_14");
-	g_tag_colors[14][1] = ExistingDF.GetFloat("g","tag_14");
-	g_tag_colors[14][2] = ExistingDF.GetFloat("b","tag_14");
-	g_tag_colors[14][3] = ExistingDF.GetFloat("a","tag_14");
-	g_tag_labels[14] = ExistingDF.GetString("label","tag_14");
-	//std::cout<<"g_tag_labels[14]="<<g_tag_labels[14]<<std::endl;
-	
-	g_tag_colors[15][0] = ExistingDF.GetFloat("r","tag_15");
-	g_tag_colors[15][1] = ExistingDF.GetFloat("g","tag_15");
-	g_tag_colors[15][2] = ExistingDF.GetFloat("b","tag_15");
-	g_tag_colors[15][3] = ExistingDF.GetFloat("a","tag_15");
-	g_tag_labels[15] = ExistingDF.GetString("label","tag_15");
-	//std::cout<<"g_tag_labels[15]="<<g_tag_labels[15]<<std::endl;
-	
-	g_tag_colors[16][0] = ExistingDF.GetFloat("r","tag_16");
-	g_tag_colors[16][1] = ExistingDF.GetFloat("g","tag_16");
-	g_tag_colors[16][2] = ExistingDF.GetFloat("b","tag_16");
-	g_tag_colors[16][3] = ExistingDF.GetFloat("a","tag_16");
-	g_tag_labels[16] = ExistingDF.GetString("label","tag_16");
-	//std::cout<<"g_tag_labels[16]="<<g_tag_labels[16]<<std::endl;
-	
-	g_tag_colors[17][0] = ExistingDF.GetFloat("r","tag_17");
-	g_tag_colors[17][1] = ExistingDF.GetFloat("g","tag_17");
-	g_tag_colors[17][2] = ExistingDF.GetFloat("b","tag_17");
-	g_tag_colors[17][3] = ExistingDF.GetFloat("a","tag_17");
-	g_tag_labels[17] = ExistingDF.GetString("label","tag_17");
-	//std::cout<<"g_tag_labels[17]="<<g_tag_labels[17]<<std::endl;
-	
-	g_tag_colors[18][0] = ExistingDF.GetFloat("r","tag_18");
-	g_tag_colors[18][1] = ExistingDF.GetFloat("g","tag_18");
-	g_tag_colors[18][2] = ExistingDF.GetFloat("b","tag_18");
-	g_tag_colors[18][3] = ExistingDF.GetFloat("a","tag_18");
-	g_tag_labels[18] = ExistingDF.GetString("label","tag_18");
-	//std::cout<<"g_tag_labels[18]="<<g_tag_labels[18]<<std::endl;
-	
-	g_tag_colors[19][0] = ExistingDF.GetFloat("r","tag_19");
-	g_tag_colors[19][1] = ExistingDF.GetFloat("g","tag_19");
-	g_tag_colors[19][2] = ExistingDF.GetFloat("b","tag_19");
-	g_tag_colors[19][3] = ExistingDF.GetFloat("a","tag_19");
-	g_tag_labels[19] = ExistingDF.GetString("label","tag_19");
-	//std::cout<<"g_tag_labels[19]="<<g_tag_labels[19]<<std::endl;
-	
-	g_tag_colors[20][0] = ExistingDF.GetFloat("r","tag_20");
-	g_tag_colors[20][1] = ExistingDF.GetFloat("g","tag_20");
-	g_tag_colors[20][2] = ExistingDF.GetFloat("b","tag_20");
-	g_tag_colors[20][3] = ExistingDF.GetFloat("a","tag_20");
-	g_tag_labels[20] = ExistingDF.GetString("label","tag_20");
-	//std::cout<<"g_tag_labels[20]="<<g_tag_labels[20]<<std::endl;
-	
-	g_tag_colors[21][0] = ExistingDF.GetFloat("r","tag_21");
-	g_tag_colors[21][1] = ExistingDF.GetFloat("g","tag_21");
-	g_tag_colors[21][2] = ExistingDF.GetFloat("b","tag_21");
-	g_tag_colors[21][3] = ExistingDF.GetFloat("a","tag_21");
-	g_tag_labels[21] = ExistingDF.GetString("label","tag_21");
-	//std::cout<<"g_tag_labels[21]="<<g_tag_labels[21]<<std::endl;
-	
-	g_tag_colors[22][0] = ExistingDF.GetFloat("r","tag_22");
-	g_tag_colors[22][1] = ExistingDF.GetFloat("g","tag_22");
-	g_tag_colors[22][2] = ExistingDF.GetFloat("b","tag_22");
-	g_tag_colors[22][3] = ExistingDF.GetFloat("a","tag_22");
-	g_tag_labels[22] = ExistingDF.GetString("label","tag_22");
-	//std::cout<<"g_tag_labels[22]="<<g_tag_labels[22]<<std::endl;
-	
-	g_tag_colors[23][0] = ExistingDF.GetFloat("r","tag_23");
-	g_tag_colors[23][1] = ExistingDF.GetFloat("g","tag_23");
-	g_tag_colors[23][2] = ExistingDF.GetFloat("b","tag_23");
-	g_tag_colors[23][3] = ExistingDF.GetFloat("a","tag_23");
-	g_tag_labels[23] = ExistingDF.GetString("label","tag_23");
-	//std::cout<<"g_tag_labels[23]="<<g_tag_labels[23]<<std::endl;
-	
-	g_tag_colors[24][0] = ExistingDF.GetFloat("r","tag_24");
-	g_tag_colors[24][1] = ExistingDF.GetFloat("g","tag_24");
-	g_tag_colors[24][2] = ExistingDF.GetFloat("b","tag_24");
-	g_tag_colors[24][3] = ExistingDF.GetFloat("a","tag_24");
-	g_tag_labels[24] = ExistingDF.GetString("label","tag_24");
-	//std::cout<<"g_tag_labels[24]="<<g_tag_labels[24]<<std::endl;
-	
-	color_surf_range_min = ExistingDF.GetFloat("color_surf_range_min", "color_surf_range");
-	color_surf_range_max = ExistingDF.GetFloat("color_surf_range_max", "color_surf_range");
 	//color_distnorm_range_min = ExistingDF.GetFloat("color_distnorm_range_min", "color_distnorm_range");
 	//color_distnorm_range_max = ExistingDF.GetFloat("color_distnorm_range_max", "color_distnorm_range");
     vAng = 0.0;
@@ -4719,6 +4725,166 @@ void MeshTools::ShowOrientation()
 	else
 	{ showorientation =0;}
 }
+void MeshTools::Init_Tags()
+{
+	CDataFile ExistingDF(inipath, 1);
+
+	
+
+	ExistingDF.SetFloat("r", 0.63, "", "tag_00");
+	ExistingDF.SetFloat("g", 0.57, "", "tag_00");
+	ExistingDF.SetFloat("b", 0.37, "", "tag_00");
+	ExistingDF.SetFloat("a", 1, "", "tag_00");
+	ExistingDF.SetValue("label", "exterior", "", "tag_00");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_01");
+	ExistingDF.SetFloat("g", 1, "", "tag_01");
+	ExistingDF.SetFloat("b", 0, "", "tag_01");
+	ExistingDF.SetFloat("a", 1, "", "tag_01");
+	ExistingDF.SetValue("label", "tag 01", "", "tag_01");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_02");
+	ExistingDF.SetFloat("g", 0, "", "tag_02");
+	ExistingDF.SetFloat("b", 1, "", "tag_02");
+	ExistingDF.SetFloat("a", 1, "", "tag_02");
+	ExistingDF.SetValue("label", "tag 02", "", "tag_02");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_03");
+	ExistingDF.SetFloat("g", 1, "", "tag_03");
+	ExistingDF.SetFloat("b", 0, "", "tag_03");
+	ExistingDF.SetFloat("a", 1, "", "tag_03");
+	ExistingDF.SetValue("label", "tag 03", "", "tag_03");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_04");
+	ExistingDF.SetFloat("g", 0, "", "tag_04");
+	ExistingDF.SetFloat("b", 1, "", "tag_04");
+	ExistingDF.SetFloat("a", 1, "", "tag_04");
+	ExistingDF.SetValue("label", "tag 04", "", "tag_04");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_05");
+	ExistingDF.SetFloat("g", 1, "", "tag_05");
+	ExistingDF.SetFloat("b", 1, "", "tag_05");
+	ExistingDF.SetFloat("a", 1, "", "tag_05");
+	ExistingDF.SetValue("label", "tag 05", "", "tag_05");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_06");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_06");
+	ExistingDF.SetFloat("b", 0, "", "tag_06");
+	ExistingDF.SetFloat("a", 1, "", "tag_06");
+	ExistingDF.SetValue("label", "tag 06", "", "tag_06");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_07");
+	ExistingDF.SetFloat("g", 0, "", "tag_07");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_07");
+	ExistingDF.SetFloat("a", 1, "", "tag_07");
+	ExistingDF.SetValue("label", "tag 07", "", "tag_07");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_08");
+	ExistingDF.SetFloat("g", 1, "", "tag_08");
+	ExistingDF.SetFloat("b", 0, "", "tag_08");
+	ExistingDF.SetFloat("a", 1, "", "tag_08");
+	ExistingDF.SetValue("label", "tag 08", "", "tag_08");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_09");
+	ExistingDF.SetFloat("g", 1, "", "tag_09");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_09");
+	ExistingDF.SetFloat("a", 1, "", "tag_09");
+	ExistingDF.SetValue("label", "tag 09", "", "tag_09");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_10");
+	ExistingDF.SetFloat("g", 0, "", "tag_10");
+	ExistingDF.SetFloat("b", 1, "", "tag_10");
+	ExistingDF.SetFloat("a", 1, "", "tag_10");
+	ExistingDF.SetValue("label", "tag 10", "", "tag_10");
+
+
+	ExistingDF.SetFloat("r", 0, "", "tag_11");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_11");
+	ExistingDF.SetFloat("b", 1, "", "tag_11");
+	ExistingDF.SetFloat("a", 1, "", "tag_11");
+	ExistingDF.SetValue("label", "tag 11", "", "tag_11");
+
+	ExistingDF.SetFloat("r", 1, "", "tag_12");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_12");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_12");
+	ExistingDF.SetFloat("a", 1, "", "tag_12");
+	ExistingDF.SetValue("label", "tag 12", "", "tag_12");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_13");
+	ExistingDF.SetFloat("g", 1, "", "tag_13");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_13");
+	ExistingDF.SetFloat("a", 1, "", "tag_13");
+	ExistingDF.SetValue("label", "tag 13", "", "tag_13");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_14");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_14");
+	ExistingDF.SetFloat("b", 1, "", "tag_14");
+	ExistingDF.SetFloat("a", 1, "", "tag_14");
+	ExistingDF.SetValue("label", "tag 14", "", "tag_14");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_15");
+	ExistingDF.SetFloat("g", 0, "", "tag_15");
+	ExistingDF.SetFloat("b", 0, "", "tag_15");
+	ExistingDF.SetFloat("a", 1, "", "tag_15");
+	ExistingDF.SetValue("label", "tag 15", "", "tag_15");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_16");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_16");
+	ExistingDF.SetFloat("b", 0, "", "tag_16");
+	ExistingDF.SetFloat("a", 1, "", "tag_16");
+	ExistingDF.SetValue("label", "tag 16", "", "tag_16");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_17");
+	ExistingDF.SetFloat("g", 0, "", "tag_17");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_17");
+	ExistingDF.SetFloat("a", 1, "", "tag_17");
+	ExistingDF.SetValue("label", "tag 17", "", "tag_17");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_18");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_18");
+	ExistingDF.SetFloat("b", 0, "", "tag_18");
+	ExistingDF.SetFloat("a", 1, "", "tag_18");
+	ExistingDF.SetValue("label", "tag 18", "", "tag_18");
+
+	ExistingDF.SetFloat("r", 0.5, "", "tag_19");
+	ExistingDF.SetFloat("g", 0, "", "tag_19");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_19");
+	ExistingDF.SetFloat("a", 1, "", "tag_19");
+	ExistingDF.SetValue("label", "tag 19", "", "tag_19");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_20");
+	ExistingDF.SetFloat("g", 0.5, "", "tag_20");
+	ExistingDF.SetFloat("b", 0.5, "", "tag_20");
+	ExistingDF.SetFloat("a", 1, "", "tag_20");
+	ExistingDF.SetValue("label", "tag 20", "", "tag_20");
+
+
+	ExistingDF.SetFloat("r", 1, "", "tag_21");
+	ExistingDF.SetFloat("g", 0, "", "tag_21");
+	ExistingDF.SetFloat("b", 0, "", "tag_21");
+	ExistingDF.SetFloat("a", 1, "", "tag_21");
+	ExistingDF.SetValue("label", "tag 21", "", "tag_21");
+
+	ExistingDF.SetFloat("r", 0.7, "", "tag_22");
+	ExistingDF.SetFloat("g", 0.3, "", "tag_22");
+	ExistingDF.SetFloat("b", 0, "", "tag_22");
+	ExistingDF.SetFloat("a", 1, "", "tag_22");
+	ExistingDF.SetValue("label", "tag 22", "", "tag_22");
+
+	ExistingDF.SetFloat("r", 0.3, "", "tag_23");
+	ExistingDF.SetFloat("g", 0.7, "", "tag_23");
+	ExistingDF.SetFloat("b", 0, "", "tag_23");
+	ExistingDF.SetFloat("a", 1, "", "tag_23");
+	ExistingDF.SetValue("label", "tag 23", "", "tag_23");
+
+	ExistingDF.SetFloat("r", 0, "", "tag_24");
+	ExistingDF.SetFloat("g", 0.3, "", "tag_24");
+	ExistingDF.SetFloat("b", 0.7, "", "tag_24");
+	ExistingDF.SetFloat("a", 1, "", "tag_24");
+	ExistingDF.SetValue("label", "tag 24", "", "tag_24");
+	ExistingDF.Save();
+	this->Ini_to_global_variables();
+}
 void MeshTools::initialize_ini_file()
 {
 	CDataFile ExistingDF(inipath, 1);
@@ -4803,161 +4969,10 @@ void MeshTools::initialize_ini_file()
 	ExistingDF.SetValue("x_minus", "distal", "", "orientation");
 
 
-	ExistingDF.SetFloat("r",1, "", "tag_00");
-	ExistingDF.SetFloat("g", 0, "", "tag_00");
-	ExistingDF.SetFloat("b", 0, "", "tag_00");
-	ExistingDF.SetFloat("a", 1, "", "tag_00");
-	ExistingDF.SetValue("label", "exterior", "", "tag_00");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_01");
-	ExistingDF.SetFloat("g", 1, "", "tag_01");
-	ExistingDF.SetFloat("b", 0, "", "tag_01");
-	ExistingDF.SetFloat("a", 1, "", "tag_01");
-	ExistingDF.SetValue("label", "tag 01", "", "tag_01");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_02");
-	ExistingDF.SetFloat("g", 0, "", "tag_02");
-	ExistingDF.SetFloat("b", 1, "", "tag_02");
-	ExistingDF.SetFloat("a", 1, "", "tag_02");
-	ExistingDF.SetValue("label", "tag 02", "", "tag_02");
-
-	ExistingDF.SetFloat("r", 1, "", "tag_03");
-	ExistingDF.SetFloat("g", 1, "", "tag_03");
-	ExistingDF.SetFloat("b", 0, "", "tag_03");
-	ExistingDF.SetFloat("a", 1, "", "tag_03");
-	ExistingDF.SetValue("label", "tag 03", "", "tag_03");
-
-	ExistingDF.SetFloat("r", 1, "", "tag_04");
-	ExistingDF.SetFloat("g", 0, "", "tag_04");
-	ExistingDF.SetFloat("b", 1, "", "tag_04");
-	ExistingDF.SetFloat("a", 1, "", "tag_04");
-	ExistingDF.SetValue("label", "tag 04", "", "tag_04");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_05");
-	ExistingDF.SetFloat("g", 1, "", "tag_05");
-	ExistingDF.SetFloat("b", 1, "", "tag_05");
-	ExistingDF.SetFloat("a", 1, "", "tag_05");
-	ExistingDF.SetValue("label", "tag 05", "", "tag_05");
-
-	ExistingDF.SetFloat("r", 1, "", "tag_06");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_06");
-	ExistingDF.SetFloat("b", 0, "", "tag_06");
-	ExistingDF.SetFloat("a", 1, "", "tag_06");
-	ExistingDF.SetValue("label", "tag 06", "", "tag_06");
-
-	ExistingDF.SetFloat("r", 1, "", "tag_07");
-	ExistingDF.SetFloat("g", 0, "", "tag_07");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_07");
-	ExistingDF.SetFloat("a", 1, "", "tag_03");
-	ExistingDF.SetValue("label", "tag 07", "", "tag_07");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_08");
-	ExistingDF.SetFloat("g", 1, "", "tag_08");
-	ExistingDF.SetFloat("b", 0, "", "tag_08");
-	ExistingDF.SetFloat("a", 1, "", "tag_08");
-	ExistingDF.SetValue("label", "tag 08", "", "tag_08");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_09");
-	ExistingDF.SetFloat("g", 1, "", "tag_09");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_09");
-	ExistingDF.SetFloat("a", 1, "", "tag_09");
-	ExistingDF.SetValue("label", "tag 09", "", "tag_09");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_10");
-	ExistingDF.SetFloat("g", 0, "", "tag_10");
-	ExistingDF.SetFloat("b", 1, "", "tag_10");
-	ExistingDF.SetFloat("a", 1, "", "tag_10");
-	ExistingDF.SetValue("label", "tag 10", "", "tag_10");
-
-
-	ExistingDF.SetFloat("r", 0, "", "tag_11");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_11");
-	ExistingDF.SetFloat("b", 1, "", "tag_11");
-	ExistingDF.SetFloat("a", 1, "", "tag_11");
-	ExistingDF.SetValue("label", "tag 11", "", "tag_11");
-
-	ExistingDF.SetFloat("r", 1, "", "tag_12");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_12");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_12");
-	ExistingDF.SetFloat("a", 1, "", "tag_12");
-	ExistingDF.SetValue("label", "tag 12", "", "tag_12");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_13");
-	ExistingDF.SetFloat("g", 1, "", "tag_13");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_13");
-	ExistingDF.SetFloat("a", 1, "", "tag_13");
-	ExistingDF.SetValue("label", "tag 13", "", "tag_13");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_14");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_14");
-	ExistingDF.SetFloat("b", 1, "", "tag_14");
-	ExistingDF.SetFloat("a", 1, "", "tag_14");
-	ExistingDF.SetValue("label", "tag 14", "", "tag_14");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_15");
-	ExistingDF.SetFloat("g", 0, "", "tag_15");
-	ExistingDF.SetFloat("b", 0, "", "tag_15");
-	ExistingDF.SetFloat("a", 1, "", "tag_15");
-	ExistingDF.SetValue("label", "tag 15", "", "tag_15");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_16");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_16");
-	ExistingDF.SetFloat("b", 0, "", "tag_16");
-	ExistingDF.SetFloat("a", 1, "", "tag_16");
-	ExistingDF.SetValue("label", "tag 16", "", "tag_16");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_17");
-	ExistingDF.SetFloat("g", 0, "", "tag_17");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_17");
-	ExistingDF.SetFloat("a", 1, "", "tag_17");
-	ExistingDF.SetValue("label", "tag 17", "", "tag_17");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_18");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_18");
-	ExistingDF.SetFloat("b", 0, "", "tag_18");
-	ExistingDF.SetFloat("a", 1, "", "tag_18");
-	ExistingDF.SetValue("label", "tag 18", "", "tag_18");
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_19");
-	ExistingDF.SetFloat("g", 0, "", "tag_19");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_19");
-	ExistingDF.SetFloat("a", 1, "", "tag_19");
-	ExistingDF.SetValue("label", "tag 19", "", "tag_19");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_20");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_20");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_20");
-	ExistingDF.SetFloat("a", 1, "", "tag_20");
-	ExistingDF.SetValue("label", "tag 20", "", "tag_20");
-
-
-	ExistingDF.SetFloat("r", 0.5, "", "tag_21");
-	ExistingDF.SetFloat("g", 0.5, "", "tag_21");
-	ExistingDF.SetFloat("b", 0.5, "", "tag_21");
-	ExistingDF.SetFloat("a", 1, "", "tag_21");
-	ExistingDF.SetValue("label", "tag 21", "", "tag_21");
-
-	ExistingDF.SetFloat("r", 0.7, "", "tag_22");
-	ExistingDF.SetFloat("g", 0.3, "", "tag_22");
-	ExistingDF.SetFloat("b", 0, "", "tag_22");
-	ExistingDF.SetFloat("a", 1, "", "tag_22");
-	ExistingDF.SetValue("label", "tag 22", "", "tag_22");
-
-	ExistingDF.SetFloat("r", 0.3, "", "tag_23");
-	ExistingDF.SetFloat("g",0.7, "", "tag_23");
-	ExistingDF.SetFloat("b", 0, "", "tag_23");
-	ExistingDF.SetFloat("a", 1, "", "tag_23");
-	ExistingDF.SetValue("label", "tag 23", "", "tag_23");
-
-	ExistingDF.SetFloat("r", 0, "", "tag_24");
-	ExistingDF.SetFloat("g", 0.3, "", "tag_24");
-	ExistingDF.SetFloat("b", 0.7, "", "tag_24");
-	ExistingDF.SetFloat("a", 1, "", "tag_24");
-	ExistingDF.SetValue("label", "tag 24", "", "tag_24");
-
 	//std::cout<<"ir"<<g_tag_colors[24][0]<<"ig"<<g_tag_colors[24][1]<<"ib"<<g_tag_colors[24][1]<<std::endl;
-
+	
 	ExistingDF.Save();
+	this->Init_Tags();
 
 }
 void MeshTools::save_ini_param()
