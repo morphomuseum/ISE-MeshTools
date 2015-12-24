@@ -68,7 +68,7 @@ int OBJECT_MESH::mround(float mnum)
 }
 void OBJECT_MESH::Update_RGB()
 {
-	//std::cout<<"Update RGB of "<<this->name<<std::endl;
+				//std::cout<<"Update RGB of "<<this->name<<std::endl;
 				vtkSmartPointer<vtkUnsignedCharArray> newcolors =
 				vtkSmartPointer<vtkUnsignedCharArray>::New();
 				newcolors->SetNumberOfComponents(4);				
@@ -131,6 +131,7 @@ void OBJECT_MESH::Update_RGB()
 				
 				this->GetPointData()->RemoveArray("RGB");		
 			   	this->GetPointData()->AddArray(newcolors);
+				this->bool_changed_rgb_color = 1;
 
 }
 
@@ -3563,7 +3564,7 @@ void OBJECT_MESH::Mesh_DrawObj_VBO(bool bool_change_pos_obj)
 		else{
 			
 			changement =
-				(modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_tag_mode || !IsEqual(color, prevColor, 4) || bool_changed_tags_color)
+				(modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_tag_mode || !IsEqual(color, prevColor, 4) || bool_changed_rgb_color)
 				|| ((dispmode == 4 && (cpt_dispmode4and5 == 1 || modifTab->GetComponent(2, 0) != dispmode)))
 				|| ((dispmode == 5 && (cpt_dispmode4and5 == 1 || modifTab->GetComponent(2, 0) != dispmode)))
 				|| ((dispmode == 1 && modifTab->GetComponent(2, 0) != dispmode))
@@ -3602,7 +3603,7 @@ void OBJECT_MESH::Mesh_DrawObj_modified_data(vtkSmartPointer<vtkUnsignedCharArra
 
 	///-------------------------- COULEUR
 	if (modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_tag_mode 
-		|| !IsEqual(color, prevColor, 4) || bool_changed_tags_color){
+		|| !IsEqual(color, prevColor, 4) || bool_changed_rgb_color){
 		
 		modifTab->SetTuple2(0, selected,1);
 		modifTab->SetTuple2(1, g_tag_mode,1);
@@ -3617,9 +3618,9 @@ void OBJECT_MESH::Mesh_DrawObj_modified_data(vtkSmartPointer<vtkUnsignedCharArra
 				colorT->SetTuple(i, new_color);
 			}
 		}
-		else if ((g_tag_mode == 1 && this->selected == 1)  || bool_changed_tags_color || bool_changed_init_color || (g_tag_mode == 0 && this->selected == 0 && Disp_Scalars_Mode)){
+		else if ((g_tag_mode == 1 && this->selected == 1)  || bool_changed_rgb_color || bool_changed_init_color || (g_tag_mode == 0 && this->selected == 0 && Disp_Scalars_Mode)){
 			// la couleur de normal(deselection) ou tags selon le mode(selection)
-			bool_changed_tags_color = 0;
+			bool_changed_rgb_color = 0;
 			bool_changed_init_color = 0;
 			colors->Reset();
 			colors->SetNumberOfComponents(4);
@@ -4091,7 +4092,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 				double *vn;
 				double vn2[3];
 
-				
+				//std::cout << "draw_sc=" << draw_sc << std::endl;
 				glBegin(GL_TRIANGLES);
 				//std::cout << "\n Draw: current number of norms :"<<norms->GetNumberOfTuples()
 				//<<"\n Draw current object number of points:"<<this->GetNumberOfPoints();
@@ -4100,7 +4101,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 
 
 				//currentScalars = (vtkFloatArray*)this->GetPointData()->GetScalars("RGB");
-
+				
 				for ( i=0;i<this->numtri;i++) {
 					// for every triangle 
 					if (this->tr_sort==NULL)

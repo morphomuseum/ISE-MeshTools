@@ -1938,7 +1938,7 @@ void ICP::Draw_looking_like(float val){
 		Source->GetPointData()->RemoveArray("RGB");
 		Source->GetPointData()->AddArray(colors);
 		Source->selected = 0;
-		Source->bool_changed_tags_color = 1;
+		Source->bool_changed_rgb_color = 1;
 	}
 }
 

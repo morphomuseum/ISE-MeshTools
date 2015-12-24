@@ -12,7 +12,7 @@ class MeshToolsUI {open
 cam_hide();
 
 exit(0);}
-      private image {pixmap/s_face.gif} xywh {-32000 -32000 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
+      private image {pixmap/s_face.gif} xywh {8 31 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -1256,8 +1256,9 @@ else
 {((Fl_Button *)o)->value(0);}
 
 MT->Set_Active_Scalar(-1);//may call update_rgb
-MT->Change_Tags_Display_Mode();
+
 MT->SetColorScaleId(-1);//may call update_rgb
+MT->Change_Tags_Display_Mode();
 MT->Update_RGB();
 MT->redraw();}
             tooltip {Display tags} image {./pixmap/Show_Tag_Window.gif} xywh {691 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
@@ -1638,7 +1639,7 @@ options_hide();}
       }
     }
     Fl_Window opt_lc_Window {
-      label {Lightning and colour options} open
+      label {Lightning and colour options}
       xywh {88 110 372 317} type Double color 94 hide resizable non_modal
     } {
       Fl_Group Window_group {
@@ -2823,7 +2824,7 @@ lmk_hide();}
     }
     Fl_Window scWindow {
       label {Scalar rendering options}
-      image {pixmap/s_back_13.gif} xywh {218 203 505 239} type Double color 214 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {-32000 -32000 497 231} type Double color 214 hide resizable non_modal
     } {
       Fl_Button Ok_sc {
         label Ok
@@ -2980,7 +2981,7 @@ MT->redraw();}
     }
     Fl_Window tagsWindow {
       label {Tag options} open
-      xywh {46 66 578 645} type Double color 215 hide resizable non_modal
+      xywh {50 70 579 655} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_tags {
         label Ok
@@ -2997,8 +2998,9 @@ MT->redraw();
         callback {MT->Init_Tags();
 MT->save_ini_param();
 tags_update();
+MT->Update_RGB();
 MT->redraw();
-//tags_hide();}
+//tags_hide();} selected
         xywh {262 600 130 25} color 95 selection_color 94
       }
       Fl_Group TAG_TOOLS_OPTIONS {
@@ -5638,8 +5640,7 @@ Cam_tw->value(MT->cam_gettw());} {}
   } {
     code {options_lc_update();
 
-opt_lc_Window->show();} {selected
-    }
+opt_lc_Window->show();} {}
   }
   Function {options_lc_hide()} {} {
     code {opt_lc_Window->hide();} {}

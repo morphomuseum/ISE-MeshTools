@@ -4217,7 +4217,7 @@ void CONTAINER_MESH::Mesh_Tag(float x, float y, int mode)
 			My_Obj->GetPointData()->SetActiveScalars("Tags");
 			My_Obj->Update_RGB();
 			
-			My_Obj->bool_changed_tags_color = 1;
+			//My_Obj->bool_changed_tags_color = 1;
 	  }
 		
 }
