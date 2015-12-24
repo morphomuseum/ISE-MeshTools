@@ -1567,7 +1567,7 @@ MT->redraw();}
     }
     Fl_Window optWindow {
       label {General options}
-      xywh {788 440 375 320} type Double color 94 hide resizable non_modal
+      xywh {780 370 367 312} type Double color 94 hide resizable non_modal
     } {
       Fl_Group open_surface_option {
         label {Behaviour when opening surfaces : }
@@ -1638,12 +1638,12 @@ options_hide();}
       }
     }
     Fl_Window opt_lc_Window {
-      label {Lightning and colour options}
-      xywh {84 106 369 313} type Double color 94 hide resizable non_modal
+      label {Lightning and colour options} open
+      xywh {88 110 372 317} type Double color 94 hide resizable non_modal
     } {
       Fl_Group Window_group {
         label Windows open
-        xywh {15 25 335 23} box BORDER_BOX
+        xywh {15 25 345 23} box BORDER_BOX
       } {
         Fl_Button Back_Color {
           label {Background colour}
@@ -1660,7 +1660,7 @@ o->color(c);
 o->redraw();
 MT->color_setbackcolor(r,g,b);
 MT->redraw();}
-          xywh {239 25 111 23} color 36 labelcolor 32
+          xywh {239 25 121 23} color 36 labelcolor 32
         }
         Fl_Button Grid_Color {
           label {Grid colour}
@@ -1739,12 +1739,18 @@ MT->save_ini_param();
 
 MT->redraw();
 options_lc_hide();}
-        xywh {152 260 65 25} color 133 selection_color 92
+        xywh {90 260 65 25} color 133 selection_color 92
+      }
+      Fl_Button Reinit_general_options {
+        label {Default values}
+        callback {MT->Init_Colour_Lightning_Options();
+this->options_lc_update();}
+        xywh {172 260 95 25} color 133 selection_color 92
       }
     }
     Fl_Window opt_lm_Window {
       label {Landmark and flag options}
-      xywh {465 207 374 375} type Double color 94 hide resizable non_modal
+      xywh {469 211 366 367} type Double color 94 hide resizable non_modal
     } {
       Fl_Group {} {
         label {Landmarks rendering} open
@@ -2992,7 +2998,7 @@ MT->redraw();
 MT->save_ini_param();
 tags_update();
 MT->redraw();
-//tags_hide();} selected
+//tags_hide();}
         xywh {262 600 130 25} color 95 selection_color 94
       }
       Fl_Group TAG_TOOLS_OPTIONS {
@@ -5628,7 +5634,18 @@ Cam_tw->value(MT->cam_gettw());} {}
   Function {cam_hide()} {} {
     code {camWindow->hide();} {}
   }
-  Function {options_lc_show()} {} {
+  Function {options_lc_show()} {open
+  } {
+    code {options_lc_update();
+
+opt_lc_Window->show();} {selected
+    }
+  }
+  Function {options_lc_hide()} {} {
+    code {opt_lc_Window->hide();} {}
+  }
+  Function {options_lc_update()} {open
+  } {
     code {Fl_Color c;
 uchar r,g,b;
 
@@ -5653,12 +5670,7 @@ Obj_Color->redraw();
 
 
 sides = MT->Mesh_Get2SidesLightning();
-cb_enable_2sides->value(sides);
-
-opt_lc_Window->show();} {}
-  }
-  Function {options_lc_hide()} {} {
-    code {opt_lc_Window->hide();} {}
+cb_enable_2sides->value(sides);} {}
   }
   Function {options_lm_show()} {} {
     code {int landmark_type;

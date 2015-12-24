@@ -4725,6 +4725,38 @@ void MeshTools::ShowOrientation()
 	else
 	{ showorientation =0;}
 }
+
+void MeshTools::Init_Colour_Lightning_Options()
+{
+	CDataFile ExistingDF(inipath, 1);
+	ExistingDF.SetFloat("lightpos1", 0, "", "lightposition");
+	ExistingDF.SetFloat("lightpos2", 40, "", "lightposition");
+	ExistingDF.SetFloat("ambiant", 0.25, "", "lightposition");
+	ExistingDF.SetFloat("diffuse", 1.0, "", "lightposition");
+	ExistingDF.SetFloat("specular", 0.2, "", "lightposition");
+
+
+
+	ExistingDF.SetFloat("r", 1.0, "", "color_arrow");
+	ExistingDF.SetFloat("g", 0.0, "", "color_arrow");
+	ExistingDF.SetFloat("b", 0.0, "", "color_arrow");
+
+	ExistingDF.SetFloat("r", 0.65, "", "color_grid");
+	ExistingDF.SetFloat("g", 0.65, "", "color_grid");
+	ExistingDF.SetFloat("b", 0.65, "", "color_grid");
+
+	ExistingDF.SetFloat("r", 0.3, "", "color_back");
+	ExistingDF.SetFloat("g", 0.3, "", "color_back");
+	ExistingDF.SetFloat("b", 0.3, "", "color_back");
+
+	ExistingDF.SetFloat("r", 0.63, "", "color_obj");
+	ExistingDF.SetFloat("g", 0.57, "", "color_obj");
+	ExistingDF.SetFloat("b", 0.37, "", "color_obj");
+	ExistingDF.SetInt("2_sides", 0, "", "lightning");
+	ExistingDF.Save();
+	this->Ini_to_global_variables();
+
+}
 void MeshTools::Init_Tags()
 {
 	CDataFile ExistingDF(inipath, 1);
@@ -4891,29 +4923,7 @@ void MeshTools::initialize_ini_file()
 
 	ExistingDF.SetInt("exists", 1, "", "ini_file");
 	ExistingDF.SetInt("id", 0,"", "color_scale");
-	ExistingDF.SetFloat("lightpos1", 90, "", "lightposition");
-	ExistingDF.SetFloat("lightpos2", 0, "", "lightposition");
-	ExistingDF.SetFloat("ambiant", 0.25, "", "lightposition");
-	ExistingDF.SetFloat("diffuse", 1.0, "", "lightposition");
-	ExistingDF.SetFloat("specular", 0.2, "", "lightposition");
-
-
-
-	ExistingDF.SetFloat("r", 1.0, "", "color_arrow");
-	ExistingDF.SetFloat("g", 0.0, "", "color_arrow");
-	ExistingDF.SetFloat("b", 0.0, "", "color_arrow");
-
-	ExistingDF.SetFloat("r", 0.65, "", "color_grid");
-	ExistingDF.SetFloat("g", 0.65, "", "color_grid");
-	ExistingDF.SetFloat("b", 0.65, "", "color_grid");
-
-	ExistingDF.SetFloat("r", 0.3, "", "color_back");
-	ExistingDF.SetFloat("g", 0.3, "", "color_back");
-	ExistingDF.SetFloat("b", 0.3, "", "color_back");
-
-	ExistingDF.SetFloat("r", 0.63, "", "color_obj");
-	ExistingDF.SetFloat("g", 0.57, "", "color_obj");
-	ExistingDF.SetFloat("b", 0.37, "", "color_obj");
+	
 
 	ExistingDF.SetFloat("r", 1, "", "g_flag_color");
 	ExistingDF.SetFloat("g", 0, "", "g_flag_color");
@@ -4957,7 +4967,7 @@ void MeshTools::initialize_ini_file()
 
 	ExistingDF.SetInt("auto_zoom", 0, "", "surfaces");
 	ExistingDF.SetInt("auto_delete", 0, "", "structure");
-	ExistingDF.SetInt("2_sides", 0, "", "lightning");
+	
 
 	ExistingDF.SetValue("z_plus", "dorsal", "", "orientation");
 	ExistingDF.SetValue("z_minus", "ventral", "", "orientation");
@@ -4973,6 +4983,7 @@ void MeshTools::initialize_ini_file()
 	
 	ExistingDF.Save();
 	this->Init_Tags();
+	this->Init_Colour_Lightning_Options();
 
 }
 void MeshTools::save_ini_param()

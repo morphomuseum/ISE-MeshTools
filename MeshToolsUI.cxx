@@ -3879,6 +3879,14 @@ void MeshToolsUI::cb_Ok_scc_lightning_colour(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_scc_lightning_colour_i(o,v);
 }
 
+void MeshToolsUI::cb_Reinit_general_options_i(Fl_Button*, void*) {
+  MT->Init_Colour_Lightning_Options();
+this->options_lc_update();
+}
+void MeshToolsUI::cb_Reinit_general_options(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Reinit_general_options_i(o,v);
+}
+
 void MeshToolsUI::cb_auto_landmark_size_i(Fl_Check_Button* o, void*) {
   if (((Fl_Button *)o)->value()==1)
 {
@@ -8673,7 +8681,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     camWindow->end();
     camWindow->resizable(camWindow);
   } // Fl_Double_Window* camWindow
-  { optWindow = new Fl_Double_Window(375, 320, "General options");
+  { optWindow = new Fl_Double_Window(367, 312, "General options");
     optWindow->color((Fl_Color)94);
     optWindow->user_data((void*)(this));
     { open_surface_option = new Fl_Group(10, 25, 350, 160, "Behaviour when opening surfaces : ");
@@ -8734,12 +8742,12 @@ click. Then either middle click, or press \"t\"+ left or right click");
     optWindow->end();
     optWindow->resizable(optWindow);
   } // Fl_Double_Window* optWindow
-  { opt_lc_Window = new Fl_Double_Window(369, 313, "Lightning and colour options");
+  { opt_lc_Window = new Fl_Double_Window(372, 317, "Lightning and colour options");
     opt_lc_Window->color((Fl_Color)94);
     opt_lc_Window->user_data((void*)(this));
-    { Window_group = new Fl_Group(15, 25, 335, 23, "Windows");
+    { Window_group = new Fl_Group(15, 25, 345, 23, "Windows");
       Window_group->box(FL_BORDER_BOX);
-      { Back_Color = new Fl_Button(239, 25, 111, 23, "Background colour");
+      { Back_Color = new Fl_Button(239, 25, 121, 23, "Background colour");
         Back_Color->color((Fl_Color)36);
         Back_Color->labelcolor(FL_GRAY0);
         Back_Color->callback((Fl_Callback*)cb_Back_Color);
@@ -8804,16 +8812,21 @@ click. Then either middle click, or press \"t\"+ left or right click");
       } // Fl_Check_Button* cb_enable_2sides
       Light_group->end();
     } // Fl_Group* Light_group
-    { Ok_scc_lightning_colour = new Fl_Button(152, 260, 65, 25, "Ok");
+    { Ok_scc_lightning_colour = new Fl_Button(90, 260, 65, 25, "Ok");
       Ok_scc_lightning_colour->color((Fl_Color)133);
       Ok_scc_lightning_colour->selection_color((Fl_Color)92);
       Ok_scc_lightning_colour->callback((Fl_Callback*)cb_Ok_scc_lightning_colour);
     } // Fl_Button* Ok_scc_lightning_colour
+    { Reinit_general_options = new Fl_Button(172, 260, 95, 25, "Default values");
+      Reinit_general_options->color((Fl_Color)133);
+      Reinit_general_options->selection_color((Fl_Color)92);
+      Reinit_general_options->callback((Fl_Callback*)cb_Reinit_general_options);
+    } // Fl_Button* Reinit_general_options
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
     opt_lc_Window->resizable(opt_lc_Window);
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(374, 375, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(366, 367, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(10, 28, 350, 160, "Landmarks rendering");
@@ -11454,6 +11467,16 @@ void MeshToolsUI::cam_hide() {
 }
 
 void MeshToolsUI::options_lc_show() {
+  options_lc_update();
+  
+  opt_lc_Window->show();
+}
+
+void MeshToolsUI::options_lc_hide() {
+  opt_lc_Window->hide();
+}
+
+void MeshToolsUI::options_lc_update() {
   Fl_Color c;
   uchar r,g,b;
   
@@ -11479,12 +11502,6 @@ void MeshToolsUI::options_lc_show() {
   
   sides = MT->Mesh_Get2SidesLightning();
   cb_enable_2sides->value(sides);
-  
-  opt_lc_Window->show();
-}
-
-void MeshToolsUI::options_lc_hide() {
-  opt_lc_Window->hide();
 }
 
 void MeshToolsUI::options_lm_show() {

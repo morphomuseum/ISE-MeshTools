@@ -1051,6 +1051,11 @@ private:
   inline void cb_Ok_scc_lightning_colour_i(Fl_Button*, void*);
   static void cb_Ok_scc_lightning_colour(Fl_Button*, void*);
 public:
+  Fl_Button *Reinit_general_options;
+private:
+  inline void cb_Reinit_general_options_i(Fl_Button*, void*);
+  static void cb_Reinit_general_options(Fl_Button*, void*);
+public:
   Fl_Double_Window *opt_lm_Window;
   Fl_Group *landmark_type_radio_buttons;
   Fl_Round_Button *pt_sphere;
@@ -2762,6 +2767,7 @@ public:
   void cam_hide();
   void options_lc_show();
   void options_lc_hide();
+  void options_lc_update();
   void options_lm_show();
   void options_lm_hide();
   void options_rd_show();
