@@ -201,7 +201,7 @@ if (ok==1)
               }
             }
             Submenu Project_submenu {
-              label Project open
+              label Project
               xywh {25 25 100 20}
             } {
               MenuItem Open_NTW {
@@ -280,7 +280,7 @@ ntw_show();}
               }
             }
             Submenu Tags_submenu {
-              label {Tags and Flags}
+              label {Tags and Flags} open
               xywh {45 45 100 20}
             } {
               MenuItem Open_TAG {
@@ -325,7 +325,7 @@ if (ok==1)
               xywh {80 80 100 20} labelcolor 32
             }
             Submenu Orientation_submenu {
-              label {Orientation labels} open
+              label {Orientation labels}
               xywh {55 55 100 20}
             } {
               MenuItem Open_ORI {
@@ -1567,7 +1567,7 @@ MT->redraw();}
     }
     Fl_Window optWindow {
       label {General options}
-      xywh {788 440 375 320} type Double color 94 hide resizable non_modal
+      xywh {780 370 367 312} type Double color 94 hide resizable non_modal
     } {
       Fl_Group open_surface_option {
         label {Behaviour when opening surfaces : }
@@ -1638,12 +1638,12 @@ options_hide();}
       }
     }
     Fl_Window opt_lc_Window {
-      label {Lightning and colour options}
-      xywh {84 106 369 313} type Double color 94 hide resizable non_modal
+      label {Lightning and colour options} open
+      xywh {88 110 372 317} type Double color 94 hide resizable non_modal
     } {
       Fl_Group Window_group {
         label Windows open
-        xywh {15 25 335 23} box BORDER_BOX
+        xywh {15 25 345 23} box BORDER_BOX
       } {
         Fl_Button Back_Color {
           label {Background colour}
@@ -1660,7 +1660,7 @@ o->color(c);
 o->redraw();
 MT->color_setbackcolor(r,g,b);
 MT->redraw();}
-          xywh {239 25 111 23} color 36 labelcolor 32
+          xywh {239 25 121 23} color 36 labelcolor 32
         }
         Fl_Button Grid_Color {
           label {Grid colour}
@@ -1739,12 +1739,18 @@ MT->save_ini_param();
 
 MT->redraw();
 options_lc_hide();}
-        xywh {152 260 65 25} color 133 selection_color 92
+        xywh {90 260 65 25} color 133 selection_color 92
+      }
+      Fl_Button Reinit_general_options {
+        label {Default values}
+        callback {MT->Init_Colour_Lightning_Options();
+this->options_lc_update();}
+        xywh {172 260 95 25} color 133 selection_color 92
       }
     }
     Fl_Window opt_lm_Window {
       label {Landmark and flag options}
-      xywh {465 207 374 375} type Double color 94 hide resizable non_modal
+      xywh {469 211 366 367} type Double color 94 hide resizable non_modal
     } {
       Fl_Group {} {
         label {Landmarks rendering} open
@@ -2973,8 +2979,8 @@ MT->redraw();}
       }
     }
     Fl_Window tagsWindow {
-      label {Tag options}
-      xywh {159 42 578 628} type Double color 215 hide resizable non_modal
+      label {Tag options} open
+      xywh {46 66 578 645} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_tags {
         label Ok
@@ -2984,50 +2990,59 @@ MT->save_ini_param();
 
 MT->redraw();
 //tags_hide();}
-        xywh {294 840 65 25} color 95 selection_color 94
+        xywh {187 600 65 25} color 95 selection_color 94
+      }
+      Fl_Button init_tags {
+        label {Reinit tags}
+        callback {MT->Init_Tags();
+MT->save_ini_param();
+tags_update();
+MT->redraw();
+//tags_hide();}
+        xywh {262 600 130 25} color 95 selection_color 94
       }
       Fl_Group TAG_TOOLS_OPTIONS {
         label {Tag tools}
-        xywh {25 533 525 62} box BORDER_BOX color 175
+        xywh {25 435 525 62} box BORDER_BOX color 175
       } {
         Fl_Value_Input Pencil_Tag_level {
           label {Pencil tag size}
           callback {MT->Set_Pencil_Extension_Level(Pencil_Tag_level->value());}
-          tooltip Chose xywh {82 544 52 21} align 34 value 3
+          tooltip Chose xywh {82 446 52 21} align 34 value 3
         }
         Fl_Value_Slider Magic_Wand_Limit {
           label {Magic wand limit angle}
           callback {MT->Set_Magic_Wand_Extension_Level(Magic_Wand_Limit->value());}
-          tooltip {Chose magic wand maximal angle} xywh {215 546 155 20} type Horizontal color 94 selection_color 88 maximum 180 step 1 value 45 textsize 14
+          tooltip {Chose magic wand maximal angle} xywh {215 448 155 20} type Horizontal color 94 selection_color 88 maximum 180 step 1 value 45 textsize 14
         }
         Fl_Check_Button Magic_Wand_Override {
           label {Allow colour override}
           callback {MT->Set_Magic_Wand_Override(Magic_Wand_Override->value());}
-          xywh {466 545 20 15} down_box DOWN_BOX value 1 align 2
+          xywh {466 447 20 15} down_box DOWN_BOX value 1 align 2
         }
       }
       Fl_Group Extract_Delete_Group {
-        label {Tag extraction / deletion}
-        xywh {21 755 524 72} box BORDER_BOX color 175
+        label {Tag extraction / deletion} open
+        xywh {30 526 524 65} box BORDER_BOX color 175
       } {
+        Fl_Input Extraction_text {
+          label {For a given triangle:}
+          xywh {177 535 15 10} box NO_BOX
+        }
         Fl_Round_Button rb_extract00 {
           label {All points must satisfy condition(s)}
           callback {MT->Set_Tag_Extraction_Criterion(1);}
-          xywh {31 777 20 16} type Radio down_box ROUND_DOWN_BOX value 1
+          xywh {40 550 20 16} type Radio down_box ROUND_DOWN_BOX value 1
         }
         Fl_Round_Button rb_extract01 {
           label {One point must satisfy condition(s)}
           callback {MT->Set_Tag_Extraction_Criterion(0);}
-          xywh {31 797 20 16} type Radio down_box ROUND_DOWN_BOX
-        }
-        Fl_Input Extraction_text {
-          label {For a given triangle:}
-          xywh {188 759 15 14} box NO_BOX
+          xywh {40 570 20 16} type Radio down_box ROUND_DOWN_BOX
         }
       }
       Fl_Scroll Tags_group {
-        label {Define tag labels, colours and transparency} open
-        xywh {20 20 540 480} type VERTICAL_ALWAYS box BORDER_BOX color 174
+        label {Define tag labels, colours and transparency}
+        xywh {20 20 540 400} type VERTICAL_ALWAYS box BORDER_BOX color 174
       } {
         Fl_Group Label_tag_group {
           label {                     Labels}
@@ -4204,7 +4219,7 @@ deleteregion_hide();}
     }
     Fl_Window flagWindow {
       label {Edit 1 Selected Flag}
-      image {pixmap/s_back_13.gif} xywh {1124 184 240 170} type Double color 215 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {1128 188 237 179} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_flag {
         label Refresh
@@ -5531,7 +5546,7 @@ color_data->activate();
       }
     }
     Fl_Window NTWSaveWindow {
-      label {NTW save options} selected
+      label {NTW save options}
       xywh {462 192 740 123} type Double color 215 hide resizable non_modal
     } {
       Fl_Group NTW_O_RB {
@@ -5619,7 +5634,18 @@ Cam_tw->value(MT->cam_gettw());} {}
   Function {cam_hide()} {} {
     code {camWindow->hide();} {}
   }
-  Function {options_lc_show()} {} {
+  Function {options_lc_show()} {open
+  } {
+    code {options_lc_update();
+
+opt_lc_Window->show();} {selected
+    }
+  }
+  Function {options_lc_hide()} {} {
+    code {opt_lc_Window->hide();} {}
+  }
+  Function {options_lc_update()} {open
+  } {
     code {Fl_Color c;
 uchar r,g,b;
 
@@ -5644,12 +5670,7 @@ Obj_Color->redraw();
 
 
 sides = MT->Mesh_Get2SidesLightning();
-cb_enable_2sides->value(sides);
-
-opt_lc_Window->show();} {}
-  }
-  Function {options_lc_hide()} {} {
-    code {opt_lc_Window->hide();} {}
+cb_enable_2sides->value(sides);} {}
   }
   Function {options_lm_show()} {} {
     code {int landmark_type;

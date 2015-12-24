@@ -453,6 +453,10 @@ void Save_NTW_File(int ori_mode, int tag_mode, int cur_mode);
 void Save_NTW_File(std::string filename,int  ori_mode, int tag_mode, int cur_mode);
 void save_ini_param();
 void initialize_ini_file();
+void Init_Tags();
+void Ini_to_global_variables();
+void Init_Colour_Lightning_Options();
+
 int Save_POS_File();
 void Save_Infos();
 int Save_POS_File(OBJECT_MESH *My_Obj, std::string filename);

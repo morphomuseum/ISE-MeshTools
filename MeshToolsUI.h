@@ -1051,6 +1051,11 @@ private:
   inline void cb_Ok_scc_lightning_colour_i(Fl_Button*, void*);
   static void cb_Ok_scc_lightning_colour(Fl_Button*, void*);
 public:
+  Fl_Button *Reinit_general_options;
+private:
+  inline void cb_Reinit_general_options_i(Fl_Button*, void*);
+  static void cb_Reinit_general_options(Fl_Button*, void*);
+public:
   Fl_Double_Window *opt_lm_Window;
   Fl_Group *landmark_type_radio_buttons;
   Fl_Round_Button *pt_sphere;
@@ -1480,6 +1485,11 @@ private:
   inline void cb_Ok_tags_i(Fl_Button*, void*);
   static void cb_Ok_tags(Fl_Button*, void*);
 public:
+  Fl_Button *init_tags;
+private:
+  inline void cb_init_tags_i(Fl_Button*, void*);
+  static void cb_init_tags(Fl_Button*, void*);
+public:
   Fl_Group *TAG_TOOLS_OPTIONS;
   Fl_Value_Input *Pencil_Tag_level;
 private:
@@ -1497,6 +1507,7 @@ private:
   static void cb_Magic_Wand_Override(Fl_Check_Button*, void*);
 public:
   Fl_Group *Extract_Delete_Group;
+  Fl_Input *Extraction_text;
   Fl_Round_Button *rb_extract00;
 private:
   inline void cb_rb_extract00_i(Fl_Round_Button*, void*);
@@ -1507,7 +1518,6 @@ private:
   inline void cb_rb_extract01_i(Fl_Round_Button*, void*);
   static void cb_rb_extract01(Fl_Round_Button*, void*);
 public:
-  Fl_Input *Extraction_text;
   Fl_Scroll *Tags_group;
   Fl_Group *Label_tag_group;
   Fl_Input *Tag_text_00;
@@ -2757,6 +2767,7 @@ public:
   void cam_hide();
   void options_lc_show();
   void options_lc_hide();
+  void options_lc_update();
   void options_lm_show();
   void options_lm_hide();
   void options_rd_show();

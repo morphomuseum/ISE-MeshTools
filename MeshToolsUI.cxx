@@ -3879,6 +3879,14 @@ void MeshToolsUI::cb_Ok_scc_lightning_colour(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_scc_lightning_colour_i(o,v);
 }
 
+void MeshToolsUI::cb_Reinit_general_options_i(Fl_Button*, void*) {
+  MT->Init_Colour_Lightning_Options();
+this->options_lc_update();
+}
+void MeshToolsUI::cb_Reinit_general_options(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Reinit_general_options_i(o,v);
+}
+
 void MeshToolsUI::cb_auto_landmark_size_i(Fl_Check_Button* o, void*) {
   if (((Fl_Button *)o)->value()==1)
 {
@@ -5478,6 +5486,17 @@ MT->redraw();
 }
 void MeshToolsUI::cb_Ok_tags(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_tags_i(o,v);
+}
+
+void MeshToolsUI::cb_init_tags_i(Fl_Button*, void*) {
+  MT->Init_Tags();
+MT->save_ini_param();
+tags_update();
+MT->redraw();
+//tags_hide();
+}
+void MeshToolsUI::cb_init_tags(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_init_tags_i(o,v);
 }
 
 void MeshToolsUI::cb_Pencil_Tag_level_i(Fl_Value_Input*, void*) {
@@ -8662,7 +8681,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     camWindow->end();
     camWindow->resizable(camWindow);
   } // Fl_Double_Window* camWindow
-  { optWindow = new Fl_Double_Window(375, 320, "General options");
+  { optWindow = new Fl_Double_Window(367, 312, "General options");
     optWindow->color((Fl_Color)94);
     optWindow->user_data((void*)(this));
     { open_surface_option = new Fl_Group(10, 25, 350, 160, "Behaviour when opening surfaces : ");
@@ -8723,12 +8742,12 @@ click. Then either middle click, or press \"t\"+ left or right click");
     optWindow->end();
     optWindow->resizable(optWindow);
   } // Fl_Double_Window* optWindow
-  { opt_lc_Window = new Fl_Double_Window(369, 313, "Lightning and colour options");
+  { opt_lc_Window = new Fl_Double_Window(372, 317, "Lightning and colour options");
     opt_lc_Window->color((Fl_Color)94);
     opt_lc_Window->user_data((void*)(this));
-    { Window_group = new Fl_Group(15, 25, 335, 23, "Windows");
+    { Window_group = new Fl_Group(15, 25, 345, 23, "Windows");
       Window_group->box(FL_BORDER_BOX);
-      { Back_Color = new Fl_Button(239, 25, 111, 23, "Background colour");
+      { Back_Color = new Fl_Button(239, 25, 121, 23, "Background colour");
         Back_Color->color((Fl_Color)36);
         Back_Color->labelcolor(FL_GRAY0);
         Back_Color->callback((Fl_Callback*)cb_Back_Color);
@@ -8793,16 +8812,21 @@ click. Then either middle click, or press \"t\"+ left or right click");
       } // Fl_Check_Button* cb_enable_2sides
       Light_group->end();
     } // Fl_Group* Light_group
-    { Ok_scc_lightning_colour = new Fl_Button(152, 260, 65, 25, "Ok");
+    { Ok_scc_lightning_colour = new Fl_Button(90, 260, 65, 25, "Ok");
       Ok_scc_lightning_colour->color((Fl_Color)133);
       Ok_scc_lightning_colour->selection_color((Fl_Color)92);
       Ok_scc_lightning_colour->callback((Fl_Callback*)cb_Ok_scc_lightning_colour);
     } // Fl_Button* Ok_scc_lightning_colour
+    { Reinit_general_options = new Fl_Button(172, 260, 95, 25, "Default values");
+      Reinit_general_options->color((Fl_Color)133);
+      Reinit_general_options->selection_color((Fl_Color)92);
+      Reinit_general_options->callback((Fl_Callback*)cb_Reinit_general_options);
+    } // Fl_Button* Reinit_general_options
     opt_lc_Window->set_non_modal();
     opt_lc_Window->end();
     opt_lc_Window->resizable(opt_lc_Window);
   } // Fl_Double_Window* opt_lc_Window
-  { opt_lm_Window = new Fl_Double_Window(374, 375, "Landmark and flag options");
+  { opt_lm_Window = new Fl_Double_Window(366, 367, "Landmark and flag options");
     opt_lm_Window->color((Fl_Color)94);
     opt_lm_Window->user_data((void*)(this));
     { Fl_Group* o = new Fl_Group(10, 28, 350, 160, "Landmarks rendering");
@@ -9678,24 +9702,29 @@ trix\" (old version correction)");
     thicknessWindow->end();
     thicknessWindow->resizable(thicknessWindow);
   } // Fl_Double_Window* thicknessWindow
-  { tagsWindow = new Fl_Double_Window(578, 628, "Tag options");
+  { tagsWindow = new Fl_Double_Window(578, 645, "Tag options");
     tagsWindow->color((Fl_Color)215);
     tagsWindow->user_data((void*)(this));
-    { Ok_tags = new Fl_Button(294, 840, 65, 25, "Ok");
+    { Ok_tags = new Fl_Button(187, 600, 65, 25, "Ok");
       Ok_tags->color(FL_YELLOW);
       Ok_tags->selection_color((Fl_Color)94);
       Ok_tags->callback((Fl_Callback*)cb_Ok_tags);
     } // Fl_Button* Ok_tags
-    { TAG_TOOLS_OPTIONS = new Fl_Group(25, 533, 525, 62, "Tag tools");
+    { init_tags = new Fl_Button(262, 600, 130, 25, "Reinit tags");
+      init_tags->color(FL_YELLOW);
+      init_tags->selection_color((Fl_Color)94);
+      init_tags->callback((Fl_Callback*)cb_init_tags);
+    } // Fl_Button* init_tags
+    { TAG_TOOLS_OPTIONS = new Fl_Group(25, 435, 525, 62, "Tag tools");
       TAG_TOOLS_OPTIONS->box(FL_BORDER_BOX);
       TAG_TOOLS_OPTIONS->color((Fl_Color)175);
-      { Pencil_Tag_level = new Fl_Value_Input(82, 544, 52, 21, "Pencil tag size");
+      { Pencil_Tag_level = new Fl_Value_Input(82, 446, 52, 21, "Pencil tag size");
         Pencil_Tag_level->tooltip("Chose");
         Pencil_Tag_level->value(3);
         Pencil_Tag_level->callback((Fl_Callback*)cb_Pencil_Tag_level);
         Pencil_Tag_level->align(Fl_Align(34));
       } // Fl_Value_Input* Pencil_Tag_level
-      { Magic_Wand_Limit = new Fl_Value_Slider(215, 546, 155, 20, "Magic wand limit angle");
+      { Magic_Wand_Limit = new Fl_Value_Slider(215, 448, 155, 20, "Magic wand limit angle");
         Magic_Wand_Limit->tooltip("Chose magic wand maximal angle");
         Magic_Wand_Limit->type(1);
         Magic_Wand_Limit->color((Fl_Color)94);
@@ -9706,7 +9735,7 @@ trix\" (old version correction)");
         Magic_Wand_Limit->textsize(14);
         Magic_Wand_Limit->callback((Fl_Callback*)cb_Magic_Wand_Limit);
       } // Fl_Value_Slider* Magic_Wand_Limit
-      { Magic_Wand_Override = new Fl_Check_Button(466, 545, 20, 15, "Allow colour override");
+      { Magic_Wand_Override = new Fl_Check_Button(466, 447, 20, 15, "Allow colour override");
         Magic_Wand_Override->down_box(FL_DOWN_BOX);
         Magic_Wand_Override->value(1);
         Magic_Wand_Override->callback((Fl_Callback*)cb_Magic_Wand_Override);
@@ -9714,26 +9743,26 @@ trix\" (old version correction)");
       } // Fl_Check_Button* Magic_Wand_Override
       TAG_TOOLS_OPTIONS->end();
     } // Fl_Group* TAG_TOOLS_OPTIONS
-    { Extract_Delete_Group = new Fl_Group(21, 755, 524, 72, "Tag extraction / deletion");
+    { Extract_Delete_Group = new Fl_Group(30, 526, 524, 65, "Tag extraction / deletion");
       Extract_Delete_Group->box(FL_BORDER_BOX);
       Extract_Delete_Group->color((Fl_Color)175);
-      { rb_extract00 = new Fl_Round_Button(31, 777, 20, 16, "All points must satisfy condition(s)");
+      { Extraction_text = new Fl_Input(177, 535, 15, 10, "For a given triangle:");
+        Extraction_text->box(FL_NO_BOX);
+      } // Fl_Input* Extraction_text
+      { rb_extract00 = new Fl_Round_Button(40, 550, 20, 16, "All points must satisfy condition(s)");
         rb_extract00->type(102);
         rb_extract00->down_box(FL_ROUND_DOWN_BOX);
         rb_extract00->value(1);
         rb_extract00->callback((Fl_Callback*)cb_rb_extract00);
       } // Fl_Round_Button* rb_extract00
-      { rb_extract01 = new Fl_Round_Button(31, 797, 20, 16, "One point must satisfy condition(s)");
+      { rb_extract01 = new Fl_Round_Button(40, 570, 20, 16, "One point must satisfy condition(s)");
         rb_extract01->type(102);
         rb_extract01->down_box(FL_ROUND_DOWN_BOX);
         rb_extract01->callback((Fl_Callback*)cb_rb_extract01);
       } // Fl_Round_Button* rb_extract01
-      { Extraction_text = new Fl_Input(188, 759, 15, 14, "For a given triangle:");
-        Extraction_text->box(FL_NO_BOX);
-      } // Fl_Input* Extraction_text
       Extract_Delete_Group->end();
     } // Fl_Group* Extract_Delete_Group
-    { Tags_group = new Fl_Scroll(20, 20, 540, 480, "Define tag labels, colours and transparency");
+    { Tags_group = new Fl_Scroll(20, 20, 540, 400, "Define tag labels, colours and transparency");
       Tags_group->type(6);
       Tags_group->box(FL_BORDER_BOX);
       Tags_group->color((Fl_Color)174);
@@ -10574,7 +10603,7 @@ trix\" (old version correction)");
     deleteregionWindow->end();
     deleteregionWindow->resizable(deleteregionWindow);
   } // Fl_Double_Window* deleteregionWindow
-  { flagWindow = new Fl_Double_Window(240, 170, "Edit 1 Selected Flag");
+  { flagWindow = new Fl_Double_Window(237, 179, "Edit 1 Selected Flag");
     flagWindow->color((Fl_Color)215);
     flagWindow->user_data((void*)(this));
     { Refresh_flag = new Fl_Button(87, 140, 65, 25, "Refresh");
@@ -11438,6 +11467,16 @@ void MeshToolsUI::cam_hide() {
 }
 
 void MeshToolsUI::options_lc_show() {
+  options_lc_update();
+  
+  opt_lc_Window->show();
+}
+
+void MeshToolsUI::options_lc_hide() {
+  opt_lc_Window->hide();
+}
+
+void MeshToolsUI::options_lc_update() {
   Fl_Color c;
   uchar r,g,b;
   
@@ -11463,12 +11502,6 @@ void MeshToolsUI::options_lc_show() {
   
   sides = MT->Mesh_Get2SidesLightning();
   cb_enable_2sides->value(sides);
-  
-  opt_lc_Window->show();
-}
-
-void MeshToolsUI::options_lc_hide() {
-  opt_lc_Window->hide();
 }
 
 void MeshToolsUI::options_lm_show() {
