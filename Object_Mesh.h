@@ -58,7 +58,7 @@ public:
 	set<int>* set_neighborbhood;// attribut
 
 	vtkSmartPointer<vtkFloatArray> modifTab;// tableau indiquant les modifications apparues qur l'objet pour l'affichage
-	bool bool_changed_tags_color = 0;
+	bool bool_changed_rgb_color = 0;
 	bool bool_changed_init_color = 0;
 	bool bool_changed_matrix = 0;
 	bool changement=0;//pour le VBO

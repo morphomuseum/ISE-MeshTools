@@ -2828,7 +2828,7 @@ static Fl_Pixmap image_Show_Tag_Window2(idata_Show_Tag_Window2);
 void MeshToolsUI::cb_Tag_mode_off_i(Fl_Button* o, void*) {
   ((Fl_Button *)o)->value(1);
 Tag_mode_on->value(0);
-MT->Set_Tag_Mode(0);
+MT->Set_Selection_Mode(0);
 MT->Desactivate_Tags_Display_Mode();
 //MT->SetColorScaleId(1);
 MT->SetModeTool(0);
@@ -2883,7 +2883,7 @@ static Fl_Pixmap image_Normal_select_mode(idata_Normal_select_mode);
 void MeshToolsUI::cb_Tag_mode_on_i(Fl_Button* o, void*) {
   ((Fl_Button *)o)->value(1);
 Tag_mode_off->value(0);
-MT->Set_Tag_Mode(1);
+MT->Set_Selection_Mode(1);
 MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Set_Active_Scalar(-1);
@@ -3187,8 +3187,9 @@ else
 {((Fl_Button *)o)->value(0);}
 
 MT->Set_Active_Scalar(-1);//may call update_rgb
-MT->Change_Tags_Display_Mode();
+
 MT->SetColorScaleId(-1);//may call update_rgb
+MT->Change_Tags_Display_Mode();
 MT->Update_RGB();
 MT->redraw();
 }
@@ -5492,6 +5493,7 @@ void MeshToolsUI::cb_init_tags_i(Fl_Button*, void*) {
   MT->Init_Tags();
 MT->save_ini_param();
 tags_update();
+MT->Update_RGB();
 MT->redraw();
 //tags_hide();
 }
@@ -9601,7 +9603,7 @@ trix\" (old version correction)");
     LMKSaveTarget->end();
     LMKSaveTarget->resizable(LMKSaveTarget);
   } // Fl_Double_Window* LMKSaveTarget
-  { scWindow = new Fl_Double_Window(505, 239, "Scalar rendering options");
+  { scWindow = new Fl_Double_Window(497, 231, "Scalar rendering options");
     scWindow->color((Fl_Color)214);
     scWindow->user_data((void*)(this));
     { Ok_sc = new Fl_Button(140, 199, 65, 25, "Ok");
@@ -9702,7 +9704,7 @@ trix\" (old version correction)");
     thicknessWindow->end();
     thicknessWindow->resizable(thicknessWindow);
   } // Fl_Double_Window* thicknessWindow
-  { tagsWindow = new Fl_Double_Window(578, 645, "Tag options");
+  { tagsWindow = new Fl_Double_Window(579, 655, "Tag options");
     tagsWindow->color((Fl_Color)215);
     tagsWindow->user_data((void*)(this));
     { Ok_tags = new Fl_Button(187, 600, 65, 25, "Ok");
