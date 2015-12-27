@@ -160,7 +160,7 @@ public:
 	void Change_Tags_Display_Mode();
 	void Desactivate_Tags_Display_Mode();
 	void Desactivate_Scalars_Display_Mode();
-	void Set_Tag_Mode (int tag_mode);
+	void Set_Selection_Mode (int selection_mode);
 	void Mesh_Tag(int x, int y, int mode);
 	void Merge_Tags(int source, int target);
 	void Mesh_Tag_Connected_Regions();

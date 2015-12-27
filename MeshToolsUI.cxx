@@ -2828,7 +2828,7 @@ static Fl_Pixmap image_Show_Tag_Window2(idata_Show_Tag_Window2);
 void MeshToolsUI::cb_Tag_mode_off_i(Fl_Button* o, void*) {
   ((Fl_Button *)o)->value(1);
 Tag_mode_on->value(0);
-MT->Set_Tag_Mode(0);
+MT->Set_Selection_Mode(0);
 MT->Desactivate_Tags_Display_Mode();
 //MT->SetColorScaleId(1);
 MT->SetModeTool(0);
@@ -2883,7 +2883,7 @@ static Fl_Pixmap image_Normal_select_mode(idata_Normal_select_mode);
 void MeshToolsUI::cb_Tag_mode_on_i(Fl_Button* o, void*) {
   ((Fl_Button *)o)->value(1);
 Tag_mode_off->value(0);
-MT->Set_Tag_Mode(1);
+MT->Set_Selection_Mode(1);
 MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Set_Active_Scalar(-1);

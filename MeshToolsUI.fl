@@ -11,8 +11,8 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);}
-      private image {pixmap/s_face.gif} xywh {8 31 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);} open
+      private image {pixmap/s_face.gif} xywh {12 51 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -1171,7 +1171,7 @@ else
 MT->Change_Scalars_Display_Mode();
 MT->SetColorScaleId(0);// calls update_rgb
 MT->Update_RGB();
-MT->redraw();}
+MT->redraw();} selected
             tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {640 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_Show {
@@ -1185,7 +1185,7 @@ MT->redraw();}
           Fl_Button Tag_mode_off {
             callback {((Fl_Button *)o)->value(1);
 Tag_mode_on->value(0);
-MT->Set_Tag_Mode(0);
+MT->Set_Selection_Mode(0);
 MT->Desactivate_Tags_Display_Mode();
 //MT->SetColorScaleId(1);
 MT->SetModeTool(0);
@@ -1195,7 +1195,7 @@ MT->redraw();}
           Fl_Button Tag_mode_on {
             callback {((Fl_Button *)o)->value(1);
 Tag_mode_off->value(0);
-MT->Set_Tag_Mode(1);
+MT->Set_Selection_Mode(1);
 MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Set_Active_Scalar(-1);
@@ -3000,7 +3000,7 @@ MT->save_ini_param();
 tags_update();
 MT->Update_RGB();
 MT->redraw();
-//tags_hide();} selected
+//tags_hide();}
         xywh {262 600 130 25} color 95 selection_color 94
       }
       Fl_Group TAG_TOOLS_OPTIONS {

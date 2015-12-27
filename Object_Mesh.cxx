@@ -77,9 +77,9 @@ void OBJECT_MESH::Update_RGB()
 				currentScalars =(vtkFloatArray*)this->GetPointData()->GetScalars();  // couleur des courbure
 				GLfloat cv[4];
 				// now we create and populate RGB and Tags
-				//std::cout<<"Disp_Scalars_Mode= "<<Disp_Scalars_Mode<<std::endl;
-				//std::cout<<"Disp_Tags_Mode= "<<Disp_Tags_Mode<<std::endl;
-				if (currentScalars!=NULL && (Disp_Scalars_Mode==1 ||Disp_Tags_Mode==1))
+				//std::cout<<"g_scalar_display_mode= "<<g_scalar_display_mode<<std::endl;
+				//std::cout<<"g_tag_display_mode= "<<g_tag_display_mode<<std::endl;
+				if (currentScalars!=NULL && (g_scalar_display_mode ==1 || g_tag_display_mode ==1))
 				{
 				//	std::cout<<"currentScalars not null "<<std::endl;
 				}
@@ -92,7 +92,7 @@ void OBJECT_MESH::Update_RGB()
 					//@@@@@
 					int nr,ng,nb,na;
 					
-					if (currentScalars!=NULL && (Disp_Scalars_Mode==1 ||Disp_Tags_Mode==1))
+					if (currentScalars!=NULL && (g_scalar_display_mode ==1 || g_tag_display_mode ==1))
 					{
 						//std::cout<<"currentScalars not null "<<std::endl;
 						double cur_t = currentScalars->GetTuple(i)[0];
@@ -2703,14 +2703,17 @@ OBJECT_MESH::OBJECT_MESH() : OBJECT() // Constructor
 
 	modifTab = vtkSmartPointer<vtkFloatArray>::New();
 	modifTab->SetNumberOfComponents(2);
-	modifTab->SetNumberOfTuples(4);
+	modifTab->SetNumberOfTuples(6);
 	//la premier colonne du tableau indique le mode actuel de l'objet
 	// la deuxieme colonne du tableau indique si un changement a eu lieu
 	modifTab->SetTuple2(0, selected, 0);
-	modifTab->SetTuple2(1, g_tag_mode, 0);
+	modifTab->SetTuple2(1, g_selection_mode, 0);
+	
 	modifTab->SetTuple2(2, dispmode, 0);
 	modifTab->SetTuple2(3, bool_changed_matrix, 0);
-	
+	//Renaud hack
+	modifTab->SetTuple2(4, g_tag_display_mode, 0);
+	modifTab->SetTuple2(5, g_scalar_display_mode, 0);
 }
 
 void OBJECT_MESH::Initialize_Scalar(int scalar)
@@ -3333,9 +3336,11 @@ void OBJECT_MESH::Mesh_DrawObj_Building_list(){
 	colors->SetNumberOfComponents(4);				
 	colors = (vtkUnsignedCharArray*)this->GetPointData()->GetScalars("RGB");
 
-	bool bool_tags_activated = selected && g_tag_mode;
+	//Renaud hack
+	//bool bool_tags_activated = selected && g_selection_mode;
+	bool bool_tags_activated = (g_tag_display_mode==0 && selected==0)|| (g_tag_display_mode == 1 && selected == 1);
 
-	bool bool_selected = (selected && (g_tag_mode == 0)) || (selected==0 && g_tag_mode);
+	bool bool_selected = (selected && g_selection_mode == 0) || (selected==0 && g_selection_mode==1); // Grey!
 
 	// recupération des matrices dans deux tableaux
 	double M1[16]; double M2[16];//tableaux pour les points
@@ -3564,11 +3569,14 @@ void OBJECT_MESH::Mesh_DrawObj_VBO(bool bool_change_pos_obj)
 		else{
 			
 			changement =
-				(modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_tag_mode || !IsEqual(color, prevColor, 4) || bool_changed_rgb_color)
+				(modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_selection_mode || !IsEqual(color, prevColor, 4) || bool_changed_rgb_color)
 				|| ((dispmode == 4 && (cpt_dispmode4and5 == 1 || modifTab->GetComponent(2, 0) != dispmode)))
 				|| ((dispmode == 5 && (cpt_dispmode4and5 == 1 || modifTab->GetComponent(2, 0) != dispmode)))
 				|| ((dispmode == 1 && modifTab->GetComponent(2, 0) != dispmode))
 				|| (modifTab->GetComponent(3, 1)==1)
+				//renaud hack
+				|| (modifTab->GetComponent(4, 0) != g_tag_display_mode)
+				|| (modifTab->GetComponent(5, 0) != g_scalar_display_mode)
 				|| (bool_changed_matrix);
 			
 			// on fait une mise à jour de l'objet seulement si on a un changement
@@ -3602,14 +3610,14 @@ void OBJECT_MESH::Mesh_DrawObj_VBO(bool bool_change_pos_obj)
 void OBJECT_MESH::Mesh_DrawObj_modified_data(vtkSmartPointer<vtkUnsignedCharArray> colorT){
 
 	///-------------------------- COULEUR
-	if (modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_tag_mode 
+	if (modifTab->GetComponent(0, 0) != selected || modifTab->GetComponent(1, 0) != g_selection_mode
 		|| !IsEqual(color, prevColor, 4) || bool_changed_rgb_color){
 		
 		modifTab->SetTuple2(0, selected,1);
-		modifTab->SetTuple2(1, g_tag_mode,1);
+		modifTab->SetTuple2(1, g_selection_mode,1);
 		
 		//selection ou deselection selon le mode
-		if ((g_tag_mode == 0 && this->selected == 1) || (g_tag_mode == 1 && this->selected == 0) ){
+		if ((g_selection_mode == 0 && this->selected == 1) || (g_selection_mode == 1 && this->selected == 0) ){
 			// on donne une couleur grise au "ColorT"à chaque point
 			new_color[0] = bone_ambuse[0] * 255;
 			new_color[1] = bone_ambuse[1] * 255;
@@ -3618,7 +3626,9 @@ void OBJECT_MESH::Mesh_DrawObj_modified_data(vtkSmartPointer<vtkUnsignedCharArra
 				colorT->SetTuple(i, new_color);
 			}
 		}
-		else if ((g_tag_mode == 1 && this->selected == 1)  || bool_changed_rgb_color || bool_changed_init_color || (g_tag_mode == 0 && this->selected == 0 && Disp_Scalars_Mode)){
+		//hack Renaud
+		//else if ((g_selection_mode == 1 && this->selected == 1)  || bool_changed_rgb_color || bool_changed_init_color || (g_selection_mode == 0 && this->selected == 0 && g_scalar_display_mode)){
+		else if ((g_selection_mode == 1 && this->selected == 1 && (g_scalar_display_mode|| g_tag_display_mode)) || bool_changed_rgb_color || bool_changed_init_color || (g_selection_mode == 0 && this->selected == 0 && (g_tag_display_mode|| g_scalar_display_mode))) {
 			// la couleur de normal(deselection) ou tags selon le mode(selection)
 			bool_changed_rgb_color = 0;
 			bool_changed_init_color = 0;
@@ -3631,7 +3641,9 @@ void OBJECT_MESH::Mesh_DrawObj_modified_data(vtkSmartPointer<vtkUnsignedCharArra
 				colorT->SetTuple(i, colors->GetTuple(i));
 			}
 		}
-		else if ((g_tag_mode == 0 && this->selected == 0 && Disp_Scalars_Mode==0) || (!IsEqual(color, prevColor, 4) && !IsEqual(color, bone_ambuse, 4) && !IsEqual(prevColor, bone_ambuse, 4))){
+		//hack Renaud
+		//else if ((g_selection_mode == 0 && this->selected == 0 && g_scalar_display_mode ==0) || (!IsEqual(color, prevColor, 4) && !IsEqual(color, bone_ambuse, 4) && !IsEqual(prevColor, bone_ambuse, 4))){
+		else if ((g_selection_mode == 0 && this->selected == 0 && g_scalar_display_mode == 0 && g_tag_display_mode == 0) || (!IsEqual(color, prevColor, 4) && !IsEqual(color, bone_ambuse, 4) && !IsEqual(prevColor, bone_ambuse, 4))) {
 			// on verifie si on a changé la couleur de l'objet
 			if (color[0] < 1 || color[2] < 1 || color[1] < 1){
 				for (int u = 0; u < 4; u++){
@@ -3790,9 +3802,12 @@ void OBJECT_MESH::Mesh_DrawObj(int level, bool bool_change_pos_obj,bool bool_vbo
 		}
 
 		modifTab->SetTuple2(0, selected, 0);
-		modifTab->SetTuple2(1, g_tag_mode, 0);
+		modifTab->SetTuple2(1, g_selection_mode, 0);
 		modifTab->SetTuple2(2, dispmode, 0);
 		modifTab->SetTuple2(3, bool_changed_matrix, 0);
+		//Renaud hack
+		modifTab->SetTuple2(4, g_tag_display_mode, 0);
+		modifTab->SetTuple2(5, g_scalar_display_mode, 0);
 
 		Mesh_DrawObj_imediateFunct(level);
 	}
@@ -4010,7 +4025,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 		{
 			
 			//if (this->selected ==1)//Ungrouped object
-			if ((g_tag_mode == 0 && this->selected == 1) || (g_tag_mode == 1 && this->selected == 0))//Ungrouped object
+			if ((g_selection_mode == 0 && this->selected == 1) || (g_selection_mode == 1 && this->selected == 0))//Ungrouped object
 			{
 				bone_ambuse[3] = this->blend;
 
@@ -4118,7 +4133,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 					ve2=(int)points->GetId(1);
 					ve3=(int)points->GetId(2);
 					
-					if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) && /*(currentScalars != NULL) && */draw_sc == 1) || bool_changed_init_color == 1)
+					if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) && /*(currentScalars != NULL) && */draw_sc == 1) || bool_changed_init_color == 1)
 					{
 						/*curr_scalar1=currentScalars->GetTuple(ve1)[0];
 						curr_scalar2=currentScalars->GetTuple(ve2)[0];
@@ -4167,7 +4182,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 				
 						
 					//Point 3
-					if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) && /*(currentScalars != NULL) && */draw_sc == 1) || bool_changed_init_color == 1)
+					if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) && /*(currentScalars != NULL) && */draw_sc == 1) || bool_changed_init_color == 1)
 					{
 						//glColor4fv((GLfloat*)cv[2]);				
 						glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[2]);
@@ -4189,7 +4204,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 					(GLdouble*)&v
 					);
 					//Point 2
-					if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
+					if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
 					{
 						//glColor4fv((GLfloat*)cv[1]);
 						glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[1]);
@@ -4213,7 +4228,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 					); 
 				
 					//Point 1
-					if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1 ) || bool_changed_init_color == 1)
+					if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1 ) || bool_changed_init_color == 1)
 					{
 						//glColor4fv((GLfloat*)cv[0]);				
 						glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[0]);
@@ -4281,7 +4296,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 			ve2=(int)points->GetId(1);
 			ve3=(int)points->GetId(2);		
 
-			if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) && /*(currentScalars != NULL) &&*/ draw_sc == 1) || bool_changed_init_color == 1)
+			if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) && /*(currentScalars != NULL) &&*/ draw_sc == 1) || bool_changed_init_color == 1)
 			{
 				//ConvertScalarToColor((float)currentScalars->GetTuple(ve1)[0], cv[0], this->blend);
 				//ConvertScalarToColor((float)currentScalars->GetTuple(ve2)[0], cv[1], this->blend);
@@ -4333,7 +4348,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 			vn2[2] = vn[2];
 			glNormal3dv(
 				(GLdouble*)&vn2);
-			if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
+			if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
 			{
 				glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[2]);
 				glMaterialfv(GL_FRONT,GL_DIFFUSE,(GLfloat*)cv[2]);
@@ -4343,7 +4358,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 			}
 		
 			glVertex3dv((GLdouble*)&v3); // point				
-			if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
+			if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
 			{				
 				glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[1]);
 				glMaterialfv(GL_FRONT,GL_DIFFUSE,(GLfloat*)cv[1]);
@@ -4353,7 +4368,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 			}
 		
 			glVertex3dv((GLdouble*)&v2); // point				
-			if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL) */&& draw_sc == 1) || bool_changed_init_color == 1)
+			if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL) */&& draw_sc == 1) || bool_changed_init_color == 1)
 			{
 				glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[0]);
 				glMaterialfv(GL_FRONT,GL_DIFFUSE,(GLfloat*)cv[0]);
@@ -4490,7 +4505,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 			 if (ve%dec ==0)
 			
 			{
-				if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
+				if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
 					{
 						/*curr_scalar1=currentScalars->GetTuple(ve)[0];	*/										
 						//ConvertScalarToColor((float)curr_scalar1, cv[0], this->blend);
@@ -4514,7 +4529,7 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 							}
 					}				
 											
-				if (((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
+				if (((g_scalar_display_mode == 1 || g_tag_display_mode == 1) /*&& (currentScalars != NULL)*/ && draw_sc == 1) || bool_changed_init_color == 1)
 					{
 						glColor4fv((GLfloat*)cv[0]);				
 						glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[0]);
@@ -4545,13 +4560,13 @@ if (level == 0) //Only if basal objects... otherwise they are grouped.
 				{
 
 
-					if ((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1)&&(currentScalars!=NULL) && draw_sc==1)
+					if ((g_scalar_display_mode == 1 || g_tag_display_mode == 1)&&(currentScalars!=NULL) && draw_sc==1)
 					{
 						curr_scalar1=currentScalars->GetTuple(ve)[0];											
 						ConvertScalarToColor((float)curr_scalar1, cv[0], this->blend);															
 					}				
 											
-					if ((Disp_Scalars_Mode == 1 || Disp_Tags_Mode == 1)&&(currentScalars!=NULL) && draw_sc == 1 )
+					if ((g_scalar_display_mode == 1 || g_tag_display_mode == 1)&&(currentScalars!=NULL) && draw_sc == 1 )
 					{
 						glColor4fv((GLfloat*)cv[0]);				
 						glMaterialfv(GL_FRONT,GL_AMBIENT,(GLfloat*)cv[0]);

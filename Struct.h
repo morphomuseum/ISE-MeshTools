@@ -137,7 +137,9 @@ extern int g_landmark_auto_rendering_size;
 extern int g_display_all;
 extern int g_grid_plane;
 extern int g_landmark_type;
-extern int g_tag_mode;
+extern int g_selection_mode; // 0 : normal selection mode grey for selected; 1 : inverted mode, e.g. unselected objects are grey  
+extern int g_tag_display_mode; //0 : no tag displayed. //1 : tag displayed
+extern int g_scalar_display_mode; //0 : no scalars displayed. //1 : scalars displayed
 extern int g_tag_tool;
 extern int g_magic_wand_extension;
 //extern double PI;/// a   enle
@@ -186,8 +188,8 @@ extern char Version[50];
 
 extern int Disp_Vertices_Ids;
 extern int Disp_Triangle_Ids;
-extern int Disp_Scalars_Mode;
-extern int Disp_Tags_Mode;
+
+
 extern float Min_Color;
 extern float Max_Color;
 

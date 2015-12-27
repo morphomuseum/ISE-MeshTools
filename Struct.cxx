@@ -23,8 +23,7 @@
  int g_mode_cam_centre_of_mass; // camera is set at center of mass => if 1, we draw the grid "blue!"
 int Disp_Vertices_Ids;
 int Disp_Triangle_Ids;
-int Disp_Scalars_Mode;
-int Disp_Tags_Mode;
+
 
 float Min_Color;
 float Max_Color;
@@ -41,7 +40,9 @@ int g_move_cm;
 int g_sc_show_below_min;
 int g_sc_show_above_max;
 int g_enable_2sides;
-int g_tag_mode;
+int g_selection_mode;
+int g_tag_display_mode;
+int g_scalar_display_mode;
 int g_pencil_extension;
 int g_tag_tool;
 int g_magic_wand_extension;

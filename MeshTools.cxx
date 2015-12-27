@@ -1336,8 +1336,8 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	
 	Disp_Vertices_Ids = 0;
 	Disp_Triangle_Ids = 0;
-	Disp_Scalars_Mode = 0;
-	Disp_Tags_Mode=0;
+	g_scalar_display_mode = 0;
+	g_tag_display_mode=0;
 	Min_Color = -1;
 	Max_Color = 1;
 	g_lambda = 100;
@@ -3047,7 +3047,7 @@ void MeshTools::draw() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 if (this->showorientation ==1){DrawOrientations(70,70,40);}
-	if(Disp_Scalars_Mode ==1)
+	if(g_scalar_display_mode ==1)
 	{
 		
 		
@@ -3057,7 +3057,7 @@ if (this->showorientation ==1){DrawOrientations(70,70,40);}
 		
 	}
 
-	if(Disp_Tags_Mode ==1)
+	if(g_tag_display_mode ==1)
 	{
 		
 				this->DrawColorScale(w()-700,h()-40,650,25);
@@ -3125,7 +3125,7 @@ if (this->showorientation ==1){DrawOrientations(70,70,40);}
 		Mesh_draw_landmark_infos(5,12);
 
 	}
-	if (g_tag_mode>0)
+	if (g_selection_mode>0)
 	{
 		Draw_Warning_Invertion (w()-300, 12);
 	}
@@ -3577,52 +3577,56 @@ void MeshTools::Update_RGB()
 }
 void MeshTools::Change_Scalars_Display_Mode()
 {
-	if (Disp_Scalars_Mode ==0)
-	{Disp_Scalars_Mode = 1;}
+	if (g_scalar_display_mode ==0)
+	{
+		g_scalar_display_mode = 1;}
 	else
-	{Disp_Scalars_Mode = 0;}
-	Disp_Tags_Mode = 0;
+	{
+		g_scalar_display_mode = 0;}
+	g_tag_display_mode = 0;
 }
 void MeshTools::Change_Tags_Display_Mode()
 {
-	if (Disp_Tags_Mode ==0)
-	{Disp_Tags_Mode = 1;}
+	if (g_tag_display_mode ==0)
+	{
+		g_tag_display_mode = 1;}
 	else
-	{Disp_Tags_Mode = 0;}
+	{
+		g_tag_display_mode = 0;}
 
-	Disp_Scalars_Mode = 0;
+	g_scalar_display_mode = 0;
 
 }
 
 void MeshTools::Desactivate_Scalars_Display_Mode()
 {
-	Disp_Scalars_Mode = 0;
-	Disp_Tags_Mode = 0;
+	g_scalar_display_mode = 0;
+	g_tag_display_mode = 0;
 
 }
 void MeshTools::Activate_Scalars_Display_Mode()
 {
 	
-	Disp_Scalars_Mode = 1;
-	Disp_Tags_Mode = 0;
+	g_scalar_display_mode = 1;
+	g_tag_display_mode = 0;
 	
 }
 
 void MeshTools::Desactivate_Tags_Display_Mode()
 {
-	Disp_Tags_Mode = 0;
-	Disp_Scalars_Mode = 0;
-
+	
+	g_scalar_display_mode = 0;
+	g_tag_display_mode = 1;
 }
 void MeshTools::Activate_Tags_Display_Mode()
 {
-	Disp_Tags_Mode = 1;
-	Disp_Scalars_Mode = 0;
-
+	
+	g_scalar_display_mode = 0;
+	g_tag_display_mode = 1;
 }
-void MeshTools::Set_Tag_Mode(int tag_mode)
+void MeshTools::Set_Selection_Mode(int selection_mode)
 {
-	g_tag_mode = tag_mode;
+	g_selection_mode = selection_mode;
 }
 
 

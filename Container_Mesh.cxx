@@ -4642,7 +4642,7 @@ void CONTAINER_MESH::Mesh_Lasso_Vertices(int h_screen, int w_screen, float mouse
 			else
 			{
 				// do nothing and unselect to avoid object deletion!
-				if (g_tag_mode==0)
+				if (g_selection_mode==0)
 				{
 					My_Obj->selected =0;
 				}
@@ -5823,13 +5823,16 @@ OBJECT_MESH * CONTAINER_MESH::Mesh_PDcontainerload(vtkSmartPointer<vtkPolyData> 
 
   My_Obj->modifTab = vtkSmartPointer<vtkFloatArray>::New();   
   My_Obj->modifTab->SetNumberOfComponents(2);
-  My_Obj->modifTab->SetNumberOfTuples(4);
+  My_Obj->modifTab->SetNumberOfTuples(6);
   //la premier colonne du tableau indique le mode actuel de l'objet
   // la deuxieme colonne du tableau indique si un changement a eu lieu
   My_Obj->modifTab->SetTuple2(0, My_Obj->selected, 0);
-  My_Obj->modifTab->SetTuple2(1, g_tag_mode, 0);
+  My_Obj->modifTab->SetTuple2(1, g_selection_mode, 0);
   My_Obj->modifTab->SetTuple2(2, dispmode, 0);
   My_Obj->modifTab->SetTuple2(3, My_Obj->bool_changed_matrix, 0);
+  //hack Renaud
+  My_Obj->modifTab->SetTuple2(4, g_tag_display_mode, 0);
+  My_Obj->modifTab->SetTuple2(5, g_scalar_display_mode, 0);
 
 return My_Obj;
 
