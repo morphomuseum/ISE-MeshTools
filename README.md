@@ -52,7 +52,7 @@ Windows binaries are downloadable at the following address : http://morphomuseum
 3.  download, build and install CMAKE (>=3.3.x) (http://cmake.org).
 4.  download, build and install FLTK (1.3.x) (http://fltk.org) using CMAKE. 
 5.  download, build and install VTK (>=6.1) (http://vtk.org) using CMAKE.
-6.  get ISE-MeshTools (https://github.com/morphomuseum/ISE-MeshTools/tree/mac_compilation_issues).
+6.  get ISE-MeshTools (https://github.com/morphomuseum/ISE-MeshTools).
 7.  build it:
 
   ```
