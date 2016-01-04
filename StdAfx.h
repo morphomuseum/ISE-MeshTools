@@ -24,15 +24,25 @@
 // C RunTime Header Files
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+
 #include <memory.h>
 //#include <tchar.h>
 
 // Local Header Files
 
 // OpenGL support
+// Jean Dumoncel's corrections for compilation under Mac OS
+
 //#include <gl/gl.h>
-#include <GL/glu.h>
+#ifdef __APPLE__
+ #include <malloc/malloc.h>
+ #include <OpenGL/glu.h>
+#else
+	#include <GL/glu.h>
+	#include <malloc.h>
+
+#endif
+
 //#include <Fl/glut.H>
 // TODO: reference additional headers your program requires here
 
