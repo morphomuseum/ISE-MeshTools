@@ -45,6 +45,20 @@ Windows binaries are downloadable at the following address : http://morphomuseum
 5.  download and build VTK (>=6.1) (http://vtk.org) using CMAKE. Then add the directory where your .dll files have been created in your path.
 6.  get ISE-MeshTools and build it (http://github.com/morphomuseum/ISE-MeshTools). In CMAKE, in order to build the visual studio related files, you will probably have to fill manually the paths towards GLEW include dir and the .lib files, and the paths towards different FLTK .lib files.
 
-    
+##Build MeshTools on OS X
+
+1.  install xcode
+2.  download, build  and install glew (http://glew.sourceforge.net/). 
+3.  download, build and install CMAKE (>=3.3.x) (http://cmake.org).
+4.  download, build and install FLTK (1.3.x) (http://fltk.org) using CMAKE. 
+5.  download, build and install VTK (>=6.1) (http://vtk.org) using CMAKE.
+6.  get ISE-MeshTools (https://github.com/morphomuseum/ISE-MeshTools).
+7.  build it:
+
+  ```
+  mkdir MeshTools-build && cd MeshTools-build
+  cmake [Path_To_MeshTools_source] -DCMAKE_INSTALL_PREFIX=/usr/local
+  make 
+  make install    
     
     
