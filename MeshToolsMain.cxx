@@ -93,7 +93,13 @@ int main(int argc, char **argv) {
 	//      => .flg formats : normal direction normalized.
 	// 1.0.5 => does not crash when selecting thousands of objets
 	// 1.2.1 => version which should compile under linux, thanks to Stephan
-	strcpy (Version,"1.2.1");	
+	// 1.3 => crossplatform version (windows, linux, mac), VBO colours corrections, 
+	// MeshTools.ini is now located at a user's specific location + when non existing default values are created
+	// possibility to reinitialize a tag colours and labels, and object/grid/background colours
+	// camera now can center around objects center of mass (and not only around 0,0,0), 
+	// project files now include tags/landmarks/flags/curves/orientation labels/ 
+	
+	strcpy (Version,"1.3");	
  
 	printf("Version : %s\n",Version);
 	
