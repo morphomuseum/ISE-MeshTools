@@ -96,7 +96,8 @@ int main(int argc, char **argv) {
 	// 1.3 => crossplatform version (windows, linux, mac), VBO colours corrections, 
 	// MeshTools.ini is now located at a user's specific location + when non existing default values are created
 	// possibility to reinitialize a tag colours and labels, and object/grid/background colours
-	// camera now can center around objects center of mass (and not only around 0,0,0), 
+	// camera now can rotate around objects center of mass (and not only around 0,0,0), 
+	// automatically adjustable landmark display size
 	// project files now include tags/landmarks/flags/curves/orientation labels/ 
 	
 	strcpy (Version,"1.3");	
