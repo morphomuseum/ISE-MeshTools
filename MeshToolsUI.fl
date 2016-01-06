@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0302 
+version 1.0303 
 header_name {MeshToolsUI.h} 
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
@@ -11,8 +11,8 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);} open
-      private image {pixmap/s_face.gif} xywh {12 51 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);}
+      private image {pixmap/s_face.gif} xywh {843 139 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -1171,7 +1171,7 @@ else
 MT->Change_Scalars_Display_Mode();
 MT->SetColorScaleId(0);// calls update_rgb
 MT->Update_RGB();
-MT->redraw();} selected
+MT->redraw();}
             tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {640 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_Show {
@@ -2210,8 +2210,8 @@ MyName->value(Name.c_str());}
       }
     }
     Fl_Window versionWindow {
-      label About
-      xywh {185 328 792 181} type Double hide resizable modal
+      label About open
+      xywh {1209 341 784 173} type Double hide resizable modal
     } {
       Fl_Button Ok_Version {
         label Ok
@@ -2223,12 +2223,12 @@ MyName->value(Name.c_str());}
         xywh {168 6 70 25} box NO_BOX
       }
       Fl_Input Copyright {
-        label {Copyright : Renaud Lebrun, Stefan Schlager, Jean Dumoncel and Cécile Peladan 2013-2015}
+        label {Copyright : Renaud Lebrun, Stefan Schlager, Jean Dumoncel and Cécile Peladan 2013-2016}
         xywh {685 26 15 25} box NO_BOX
       }
       Fl_Input Contact {
-        label {Contact : renaud.lebrun<at>um2.fr}
-        xywh {328 46 15 25} box NO_BOX
+        label {Contact : renaud.lebrun<at>umontpellier.fr} selected
+        xywh {379 46 15 25} box NO_BOX
       }
       Fl_Input Website {
         label {Website : http://morphomuseum.com/meshtools}
@@ -2980,7 +2980,7 @@ MT->redraw();}
       }
     }
     Fl_Window tagsWindow {
-      label {Tag options} open
+      label {Tag options}
       xywh {50 70 579 655} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_tags {
