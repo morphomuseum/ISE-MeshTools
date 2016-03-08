@@ -9867,8 +9867,17 @@ void MeshTools::Open_Mesh_File()
 								newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
 
 								for (int i = 0; i < numpoints; i++)
-									newcolors->SetComponent(i, 3, 255.);
+								{
+									if (i < 100)
+									{
+										cout << newcolors->GetComponent(i, 0) << "," << newcolors->GetComponent(i, 1)
+											<< "," << newcolors->GetComponent(i, 2) << std::endl;
+									}
+									//newcolors->SetComponent(i, 3, 255.);
+									
+								}
 
+								cout << "found RGB colours: ";
 								newcolors->SetName("Init_RGB");
 								My_Obj->GetPointData()->AddArray(newcolors);
 							}
