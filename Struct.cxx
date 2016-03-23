@@ -12,6 +12,7 @@
  int cpt_dispmode4and5;
  float g_mean[3];//mean of all selected objects
  float g_mean_all[3];// mean of all objects
+ float g_dmean_all; // mean radius of all opened objects
  float g_minx;
  float g_miny;
  float g_minz;

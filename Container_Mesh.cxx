@@ -5797,7 +5797,7 @@ OBJECT_MESH * CONTAINER_MESH::Mesh_PDcontainerload(vtkSmartPointer<vtkPolyData> 
  
   if (g_auto_zoom ==1)
   {
-	  dmean = 0;
+	  /*dmean = 0;
 	  for (i=0;i<numvert;i++)
 		{
 		 My_Obj->GetPoint(i, ve);
@@ -5809,7 +5809,7 @@ OBJECT_MESH * CONTAINER_MESH::Mesh_PDcontainerload(vtkSmartPointer<vtkPolyData> 
 	      
 		}
 
-	  dmean/=numvert;
+	  dmean/=numvert;*/
 	  dmean_ok = 0;
   }
  
@@ -5848,6 +5848,7 @@ void CONTAINER_MESH::Compute_Global_Mean(int only_selected)
 { 
 	
 	// Compute center of mass of all selected objects
+
 	this->OBJECTS_ROOT->Compute_Global_Mean(only_selected);
 }
 

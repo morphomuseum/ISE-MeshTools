@@ -489,7 +489,7 @@ void SetLightPosition(int pos);
 void SetLightPosition2();
 void lightroll1(float pos);
 void lightroll2(float pos);
-void SetZoom(float zoom);
+void SetZoom(float mzoom);
 float GetZoom();
 void Mesh_SetLandmarkSize(float landmark_size2);
 float Mesh_GetLandmarkSize();

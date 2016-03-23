@@ -888,12 +888,20 @@ void OBJECT_LOG::Compute_Global_Mean(int only_selected)
 	float meanx=0;
 	float meany=0;
 	float meanz =0;
-	
+	float minx = 0;
+	float miny = 0;
+	float minz = 0;
+	float maxx = 0;
+	float maxy = 0;
+	float maxz = 0;
+
 	int nmean=0;
 	glPushMatrix();
 	glLoadIdentity();		
 	this->Calculate_GlobalMean(&meanx, &meany,&meanz, &nmean, 1); // computes only for selected things
-	
+	this->Compute_Global_MinMax();
+	//this->Calculate_Global_MinMax(&minx, &maxx, &miny, &maxy, &minz, &maxz);
+
 	if (nmean >0)
 	{
 		g_mean[0]=meanx/nmean;
@@ -917,14 +925,15 @@ void OBJECT_LOG::Compute_Global_Mean(int only_selected)
 			g_mean_all[0] = meanx / nmean;
 			g_mean_all[1] = meany / nmean;
 			g_mean_all[2] = meanz / nmean;
+			g_dmean_all = (g_maxx - g_minx + g_maxy - g_miny + g_maxz - g_minz) / 3;
 			g_nmean_all = nmean;
 		}
 		else
 		{
 			g_mean_all[1] = 0;
 			g_mean_all[2] = 0;
-			g_mean_all[0] = 0;
-			g_nmean_all = 0;
+			g_mean_all[0] = 0;			
+			g_dmean_all = 0;
 		}
 	}
 	glPopMatrix();
@@ -935,7 +944,7 @@ void OBJECT_LOG::Compute_Global_Mean(int only_selected)
 
 
 }
-void OBJECT_LOG::Calculate_GlobalMean(float *x, float *y, float *z, int *nb, int only_selected)
+void OBJECT_LOG::Calculate_GlobalMean(float *x, float *y, float *z,  int *nb, int only_selected)
 {
 	// selected = 0 : computes for all objects inside this log object
 	// selected = 1 : computes only for selected objects.

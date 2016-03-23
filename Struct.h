@@ -175,7 +175,9 @@ extern float g_lambda; // mean of selected objects
 
 extern float g_mean[3];
 extern int g_nmean;
+
 extern float g_mean_all[3];
+extern float g_dmean_all;
 extern float g_minx;
 extern float g_miny;
 extern float g_minz;

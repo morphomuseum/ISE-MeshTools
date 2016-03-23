@@ -82,7 +82,7 @@ void MeshTools::set_object_view_values( std::vector<int>&object_new_view_values)
 	Cont_Mesh.set_object_view_values(object_new_view_values);
 }
 
-float MeshTools::Get_Optimal_FOV_Depth()
+float MeshTools::Get_Optimal_FOV_Depth() // computes the "optimal" depth corresponding to current height and width of the FOV
 {
 	float tf = getTranslationFactor();
 	//Returns the number of pixels 1 mm represents on the screen;
@@ -1290,7 +1290,7 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	g_mean_all[0] = 0;
 	g_mean_all[1] = 0;
 	g_mean_all[2] = 0;
-
+	g_dmean_all = 0;
 	g_nmean=0;
 	g_nmean_all = 0;
 
@@ -2770,9 +2770,9 @@ void MeshTools::color_setobjcolor (uchar r, uchar g, uchar b)
 	color_obj[0] = r;
 	color_obj[1] = g;
 	color_obj[2] = b;
-	color_obj[0] = color_obj[0];
-	color_obj[1] = color_obj[1];
-	color_obj[2] = color_obj[2];
+	color_obj[0] = color_obj[0]/255;
+	color_obj[1] = color_obj[1]/255;
+	color_obj[2] = color_obj[2]/255;
 
 	int Ok = 1;
 	if (Cont_Mesh.OBJECTS_ROOT->OBJECTS !=NULL)
@@ -2838,14 +2838,28 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 		this->Cont_Mesh.Get_Landmark_Coordinates(landmark_number, &camera.atx, &camera.aty, &camera.atz, this->landmark_mode);
 		g_mode_cam_centre_of_mass = 0;
 	}
-	else if  (landmark_number==-1)
+	else if (landmark_number == -1)
 	{
 		camera.atx = 0;
 		camera.aty = 0;
 		camera.atz = 0;
 		camera.tx = 0;
 		camera.ty = 0;
-		camera.tz = -100;
+		//camera.tz = -100;
+		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+		if (g_fov_adapt == 1)
+		{
+				camera.far1 = opt_fov_depth;
+				camera.tz = -opt_fov_depth / 2;
+			
+		}
+		else
+		{
+				
+				camera.tz = -100;
+				camera.far1 = 200;
+		}
+		
 		g_mode_cam_centre_of_mass = 0;
 	}
 	else
@@ -2855,7 +2869,40 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 		camera.atz = g_mean_all[2];
 		camera.tx = -g_mean_all[0];
 		camera.ty = -g_mean_all[1];
-		camera.tz = camera.tz-g_mean_all[2];
+		//camera.tz = camera.tz-g_mean_all[2];
+		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+
+		if (g_fov_adapt == 1)
+		{
+			if (g_dmean_all > 0)
+			{
+				
+
+				camera.far1 = g_mean_all[2] + opt_fov_depth;
+				camera.tz = g_mean_all[2] - opt_fov_depth / 2;
+			}
+			else
+			{
+				camera.far1 = opt_fov_depth;
+				camera.tz = -opt_fov_depth / 2;
+			}
+		}
+		else
+		{
+			if (g_dmean_all > 0)
+			{
+
+				camera.far1 = g_mean_all[2] + 200;
+				camera.tz = g_mean_all[2] -100;
+			}
+			else
+			{
+				camera.tz = -100;
+				camera.far1 = 200;
+				
+			}
+
+		}
 		g_mode_cam_centre_of_mass = 1;
 	}
 
@@ -2965,28 +3012,49 @@ void MeshTools::draw() {
 	glClearColor(color_back[0], color_back[1], color_back[2], color_back[3]);
 	//cout << color_back[0] << "," << color_back[1] << "," << color_back[2] << "," << color_back[3];
 	//Reset interface values when dmean_ok has changed
-	if (Cont_Mesh.dmean_ok ==0)
+	if (Cont_Mesh.dmean_ok ==0) // this "dmean_ok" has to be renamed... this is called only when loading an object and g_auto_zoom = 1
 	{
+			
 
-		if (Cont_Mesh.dmean!=0)
-		{
-		
-			if (g_fov_adapt==0)
+			/*camera.tz = -100;
+			camera.far1 = 200;*/
+
+			/*if (g_mode_cam_centre_of_mass==0)
 			{
-				//to change!!!!
-				camera.tz = -100;
-				camera.far1 = 200;
+				if (g_dmean_all > 0)
+				{
+					camera.tz = -g_dmean_all;
+					camera.far1 = 2 * g_dmean_all;
+				}
+				else // no object open : adjust depth to current zoom factor
+				{
+					
+					float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+					camera.far1 = opt_fov_depth;
+					camera.tz = -opt_fov_depth / 2;
+				}
 			}
 			else
 			{
 				// to change according to object size!!!
-				float opt_fov_depth = this->Get_Optimal_FOV_Depth();
-				camera.far1 = opt_fov_depth;
-				camera.tz = -opt_fov_depth/2;	
+				
+				if (g_dmean_all > 0)
+				{
+					camera.tz = g_mean_all[2] - g_dmean_all;
+					camera.far1 = g_mean_all[2] + 2 * g_dmean_all;
+				}
+				else
+				{
+				
+					float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+					camera.far1 = opt_fov_depth;
+					camera.tz = -opt_fov_depth / 2;
+				}
+
 
 				
-			}
-		}
+			}*/
+		
 		//Output 
 		Fl_Group* Pointeur00 = (Fl_Group*)(this->parent());//Bottom group
 		Fl_Group* Pointeur01 = (Fl_Group*)(Pointeur00->parent());//Main Window group
@@ -3002,18 +3070,24 @@ void MeshTools::draw() {
 		//Xpan1 slider
 		Pointeur02 = (Fl_Group*)(Pointeur01->child(0)); // SS_unresizable
 		SpecialSlider2* Pointeur3 = (SpecialSlider2*)(Pointeur02->child(0));//Xpan1 widget
-		Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
-		Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
-		Pointeur3->step(Cont_Mesh.dmean/1000);	
+		//Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
+		//Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
+		//Pointeur3->step(Cont_Mesh.dmean/1000);	
+		Pointeur3->maximum(Pointeur3->value() + g_dmean_all);
+		Pointeur3->minimum(Pointeur3->value() - g_dmean_all);
+		Pointeur3->step(g_dmean_all /1000);
 
 		//EE group
 		//Zpan slider
 		Pointeur01 = (Fl_Group*)(Pointeur00->child(2));//EE group
 		Pointeur02 = (Fl_Group*)(Pointeur01->child(0)); // EE_unresizable
 		SpecialSlider2* Pointeur2 = (SpecialSlider2*)(Pointeur02->child(0));//Zpan widget
-		Pointeur2->maximum(Pointeur2->value() + 5*Cont_Mesh.dmean);
-		Pointeur2->minimum(Pointeur2->value() - 5*Cont_Mesh.dmean);
-		Pointeur2->step(Cont_Mesh.dmean/100);
+		//Pointeur2->maximum(Pointeur2->value() + 5*Cont_Mesh.dmean);
+		//Pointeur2->minimum(Pointeur2->value() - 5*Cont_Mesh.dmean);
+		//Pointeur2->step(Cont_Mesh.dmean/100);
+		Pointeur2->maximum(Pointeur2->value() + 5* g_dmean_all);
+		Pointeur2->minimum(Pointeur2->value() - 5* g_dmean_all);
+		Pointeur2->step(g_dmean_all/100);
 		//Ypan slider
 		
 		/*SpecialSlider3* Pointeur4 = (SpecialSlider3*)(Pointeur02->child(2));//Zoom widget
@@ -3027,18 +3101,60 @@ void MeshTools::draw() {
 		Pointeur01 = (Fl_Group*)(Pointeur00->child(1));//WW group
 		Pointeur02 = (Fl_Group*)(Pointeur01->child(0)); // WW_unresizable
 		Pointeur3 = (SpecialSlider2*)(Pointeur02->child(0));//Zpan1 widget
-		Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
-		Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
+		//Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
+		//Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
+		Pointeur3->maximum(Pointeur3->value() + g_dmean_all);
+		Pointeur3->minimum(Pointeur3->value() - g_dmean_all);
 		Pointeur3->step(Cont_Mesh.dmean/1000);
 
 		//Ypan1 slider
 		Pointeur3 = (SpecialSlider2*)(Pointeur02->child(2));//Ypan1 widget
-		Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
-		Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
+		//Pointeur3->maximum(Pointeur3->value() + Cont_Mesh.dmean);
+		//Pointeur3->minimum(Pointeur3->value() - Cont_Mesh.dmean);
+		Pointeur3->maximum(Pointeur3->value() + g_dmean_all);
+		Pointeur3->minimum(Pointeur3->value() - g_dmean_all);
 		Pointeur3->step(Cont_Mesh.dmean/1000);
 	
 
-		this->zoom = 10*Cont_Mesh.dmean;
+		//this->zoom = 10*Cont_Mesh.dmean;
+		//only change zoom when some objects are opened... 
+		if (g_dmean_all > 0)
+		{
+			//this->zoom = 1 * g_dmean_all;
+			this->SetZoom(g_dmean_all);
+		}
+
+		// set camera far1 and tz according to zoom!
+
+		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+		if (g_mode_cam_centre_of_mass == 0)
+		{
+			if (g_fov_adapt == 1)
+			{
+				camera.far1 = opt_fov_depth;
+				camera.tz = -opt_fov_depth / 2;
+			}
+			else {
+				camera.tz = -100;
+				camera.far1 = 200;
+			}
+		}
+		else
+		{
+			if (g_fov_adapt == 1)
+			{
+				camera.far1 = g_mean_all[2] + opt_fov_depth;
+				camera.tz = g_mean_all[2] - opt_fov_depth / 2;
+				cout << "opt_fov_depth in draw:" << opt_fov_depth << endl;
+				cout << "g_mean_all[2] in draw:" << g_mean_all[2] << endl;
+				cout << "camera.tz set in draw:"<<camera.tz<<endl;
+			}
+			else {
+				camera.tz = g_mean_all[2] - 100;
+				camera.far1 = g_mean_all[2] + 200;
+			}
+		}
+
 		Cont_Mesh.dmean_ok =1;
 		this->redraw();
 	}
@@ -4567,18 +4683,30 @@ float MeshTools::GetZoom()
 	return this->zoom;
 
 }
-void MeshTools::SetZoom(float zoom)
+void MeshTools::SetZoom(float mzoom)
 {
 	/*if (zoom<0)
 	{zoom = -zoom;}*/
 //std::cout<<"zoom="<<zoom<<std::endl;
-	g_zoom = zoom;
+	g_zoom = mzoom;
 	//std::cout<<"g_fov_adapt="<<g_fov_adapt<<std::endl;
 	if (g_fov_adapt==1)
 	{
 		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
-		camera.far1 = opt_fov_depth;
-		camera.tz = -opt_fov_depth/2;
+		if (g_mode_cam_centre_of_mass==0)
+		{
+			camera.far1 = opt_fov_depth;
+			camera.tz = -opt_fov_depth / 2;
+		}
+		else
+		{
+			camera.far1 = g_mean_all[2] + opt_fov_depth;
+			camera.tz = g_mean_all[2]  -opt_fov_depth / 2;
+			cout << "opt_fov_depth in SetZoom:" << opt_fov_depth << endl;
+			cout << "g_mean_all[2] in SetZoom:" << g_mean_all[2] << endl;
+			cout << "camera.tz set in SetZoom:" << camera.tz << endl;
+		}
+		
 		//std::cout<<"opt_fov_depth="<<opt_fov_depth<<std::endl;
 	}
 

@@ -187,7 +187,11 @@ public:
 };
 
 public:
-float dmean; // Mean distance towards centroid (used both in Morpho and Mesh)
+float dmean; // Mean distance towards centroid of "something", which can be :
+				// 1) the last opened object if "g_auto_zoom" is on
+				// 2) value which will set 100 px in mm
+			    // 3) if "draw" is called and dmean_ok = 0, this will be set according to field of view width 
+				
 int	  dmean_ok; // Mean distance towards centroid computed ?(used both in Morpho and Mesh)
 //float
 
