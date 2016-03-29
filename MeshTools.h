@@ -300,6 +300,8 @@ void Delete_volume_smaller_than(float volume);
 	void Hierachy();
 	void get_object_names_and_view_values(std::vector<std::string>& object_names, std::vector<int>& object_view_values);
 	void set_object_view_values( std::vector<int>&object_new_view_values);
+	void Mesh_draw_camera_infos(int x, int y);
+	void Set_Camera_Display(int disp);
 	
 	void Mesh_draw_landmark_infos(int x, int y);
 	void Draw_Warning_Invertion(int x, int y);
@@ -489,6 +491,8 @@ void SetLightPosition(int pos);
 void SetLightPosition2();
 void lightroll1(float pos);
 void lightroll2(float pos);
+void Adapt_FOV_depth();
+void Adapt_FOV_depth_before_draw();
 void SetZoom(float mzoom);
 float GetZoom();
 void Mesh_SetLandmarkSize(float landmark_size2);

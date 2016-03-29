@@ -1280,6 +1280,7 @@ MeshTools::MeshTools(int x,int y,int w,int h,const char *l)
 	modelandmark=1; // by default show landmarks
 	this->landmark_mode=0; // by default: red landmarks
 	g_grid_plane =0; // 0 show z y // 1: show z x // 2: show xy
+	g_display_camera_infos = 0; // do not display camera infos
 	
 	 g_sc_show_below_min=1;
 	 g_sc_show_above_max=1;
@@ -1667,6 +1668,123 @@ void MeshTools::Draw_Warning_Invertion(int x, int y)
 	
 
 }
+void MeshTools::Set_Camera_Display(int disp)
+{
+	if (disp == 0)
+	{
+		g_display_camera_infos = 0;
+	}
+	else
+	{
+		g_display_camera_infos = 1;
+	}
+}
+void MeshTools::Mesh_draw_camera_infos(int x, int y)
+{
+	
+	int sigfigs = 2;
+	char *near_a;
+	char *far_a;
+	char *az_a;
+	char *el_a;
+	char *tw_a;
+	char *tx_a;
+	char *ty_a;
+	char *tz_a;
+	char *atx_a;
+	char *aty_a;
+	char *atz_a;
+	char *zoom_a;
+	char *zoom2_a;
+	char *zoom3_a;
+	near_a = ftoa(camera.near1, sigfigs);
+	far_a = ftoa(camera.far1, sigfigs);
+	az_a = ftoa(camera.az, sigfigs);
+	el_a = ftoa(camera.el, sigfigs);
+	tw_a = ftoa(camera.tw, sigfigs);
+	tx_a = ftoa(camera.tx, sigfigs);
+	ty_a = ftoa(camera.ty, sigfigs);
+	tz_a = ftoa(camera.tz, sigfigs);
+	atx_a = ftoa(camera.atx, sigfigs);
+	aty_a = ftoa(camera.aty, sigfigs);
+	atz_a = ftoa(camera.atz, sigfigs);
+	zoom_a = ftoa(camera.zoom, sigfigs);
+	zoom2_a = ftoa(g_zoom, sigfigs);
+	zoom3_a = ftoa(zoom, sigfigs);
+	//std::cout<<"Min_Value_a="<<Min_Value_a<<std::endl;
+	char info1[50], info2[50], info3[50];
+	char info4[50], info5[50], info6[50];
+	char info7[50], info8[50], info9[50];
+	char info10[50], info11[50], info12[50];
+	char info13[50], info14[50], info15[50];
+
+
+	
+	////std::cout<<"Try to cat Min to info"<<sd::endl;
+
+
+	strcpy(info1, "Near:");
+	strcpy(info2, "Far:");
+	strcpy(info3, "Azim:");
+	strcpy(info4, "Elev:");
+	strcpy(info5, "Twist:");
+	strcpy(info6, "Tx:");
+	strcpy(info7, "Ty:");
+	strcpy(info8, "Tz:");
+	strcpy(info9, "atx:");
+	strcpy(info10, "aty:");
+	strcpy(info11, "atz:");
+	strcpy(info12, "camera.zoom:");
+	strcpy(info13, "g_zoom:");
+	strcpy(info14, "zoom:");
+	
+
+	
+	strcat(info1, near_a);
+	strcat(info2, far_a);
+	strcat(info3, az_a);
+	strcat(info4, el_a);
+	strcat(info5, tw_a);
+	strcat(info6, tx_a);
+	strcat(info7, ty_a);
+	strcat(info8, tz_a);
+	strcat(info9, atx_a);
+	strcat(info10, aty_a);
+	strcat(info11, atz_a);
+	strcat(info12, zoom_a);
+	strcat(info13, zoom2_a);
+	strcat(info14, zoom3_a);
+	int cpt = 0;
+	AfficheTexte(x, h() - y-15*cpt, info1, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info2, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info3, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info4, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info5, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info6, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info7, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info8, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info9, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info10, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info11, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info12, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info13, blanc);
+	cpt++;
+	AfficheTexte(x, h() - y - 15 * cpt, info14, blanc);
+	
+}
+
 void MeshTools::Mesh_draw_landmark_infos(int x, int y)
 {
 
@@ -2846,7 +2964,7 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 		camera.tx = 0;
 		camera.ty = 0;
 		//camera.tz = -100;
-		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+		/*float opt_fov_depth = this->Get_Optimal_FOV_Depth();
 		if (g_fov_adapt == 1)
 		{
 				camera.far1 = opt_fov_depth;
@@ -2858,19 +2976,33 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 				
 				camera.tz = -100;
 				camera.far1 = 200;
+		}*/
+		if (g_fov_adapt == 1)
+		{
+			camera.far1 = 10*zoom;
+			camera.tz = -5*zoom;
+
+		}
+		else
+		{
+
+			camera.tz = -100;
+			camera.far1 = 200;
 		}
 		
 		g_mode_cam_centre_of_mass = 0;
 	}
 	else
 	{
+		
+		
 		camera.atx = g_mean_all[0];
 		camera.aty = g_mean_all[1];
 		camera.atz = g_mean_all[2];
 		camera.tx = -g_mean_all[0];
 		camera.ty = -g_mean_all[1];
 		//camera.tz = camera.tz-g_mean_all[2];
-		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+		/*float opt_fov_depth = this->Get_Optimal_FOV_Depth();
 
 		if (g_fov_adapt == 1)
 		{
@@ -2900,6 +3032,37 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 				camera.tz = -100;
 				camera.far1 = 200;
 				
+			}
+
+		}*/
+		if (g_fov_adapt == 1)
+		{
+			if (g_dmean_all > 0)
+			{
+
+
+				camera.far1 = g_mean_all[2] + 10*zoom;
+				camera.tz = g_mean_all[2] - 5*zoom;
+			}
+			else
+			{
+				camera.far1 = 10*zoom;
+				camera.tz = -5*zoom;
+			}
+		}
+		else
+		{
+			if (g_dmean_all > 0)
+			{
+
+				camera.far1 = g_mean_all[2] + 200;
+				camera.tz = g_mean_all[2] - 100;
+			}
+			else
+			{
+				camera.tz = -100;
+				camera.far1 = 200;
+
 			}
 
 		}
@@ -3120,13 +3283,22 @@ void MeshTools::draw() {
 		//only change zoom when some objects are opened... 
 		if (g_dmean_all > 0)
 		{
-			//this->zoom = 1 * g_dmean_all;
-			this->SetZoom(g_dmean_all);
+			//DO NOT CALL SET_ZOOM HERE!!!! Should only be called when using the wheel button..
+			this->zoom = 1 * g_dmean_all;
+			if (g_fov_adapt == 1)
+			{
+				//this->draw(); // this call is needed to get a "good" depth of field of view
+				this->Adapt_FOV_depth_before_draw();
+			}
+
+			//this->rollinit_camera();
+
+			//this->SetZoom(g_dmean_all);
 		}
 
 		// set camera far1 and tz according to zoom!
 
-		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+		/*float opt_fov_depth = this->Get_Optimal_FOV_Depth();
 		if (g_mode_cam_centre_of_mass == 0)
 		{
 			if (g_fov_adapt == 1)
@@ -3153,7 +3325,7 @@ void MeshTools::draw() {
 				camera.tz = g_mean_all[2] - 100;
 				camera.far1 = g_mean_all[2] + 200;
 			}
-		}
+		}*/
 
 		Cont_Mesh.dmean_ok =1;
 		this->redraw();
@@ -3241,9 +3413,16 @@ if (this->showorientation ==1){DrawOrientations(70,70,40);}
 		Mesh_draw_landmark_infos(5,12);
 
 	}
+	int warn = 0;
 	if (g_selection_mode>0)
 	{
 		Draw_Warning_Invertion (w()-300, 12);
+		warn = 45;
+	}
+	if (g_display_camera_infos)
+	{
+		Mesh_draw_camera_infos(w() - 200, 12+warn);
+
 	}
 
 	if (g_mode_tool == 1 || g_mode_tool==2 || g_mode_tool==3)
@@ -3281,6 +3460,7 @@ if (g_mode_tool == 0)
 	  case FL_MOUSEWHEEL:
 		  this->SetZoom(3*Fl::event_dy());
 		  rollinit_camera();
+		  if (g_fov_adapt) { this->Adapt_FOV_depth_before_draw();}
 	 
 	 break;
 	 case FL_MOVE:
@@ -4683,6 +4863,39 @@ float MeshTools::GetZoom()
 	return this->zoom;
 
 }
+void MeshTools::Adapt_FOV_depth_before_draw()
+{
+	if (g_mode_cam_centre_of_mass == 0)
+	{
+		camera.far1 = 10*zoom;
+		camera.tz = -5*zoom;
+	}
+	else
+	{
+		camera.far1 = g_mean_all[2] + 10*zoom;
+		camera.tz = g_mean_all[2] - 5*zoom;
+
+	}
+}
+void MeshTools::Adapt_FOV_depth()
+{
+	//deprecated...
+	//problem : Get_Optimal_FOV_Depth only works after some "reinitialization" we are not aware of...
+	//so this is not to be called in all cases!
+	float opt_fov_depth = this->Get_Optimal_FOV_Depth();
+	if (g_mode_cam_centre_of_mass == 0)
+	{
+		camera.far1 = opt_fov_depth;
+		camera.tz = -opt_fov_depth / 2;
+	}
+	else
+	{
+		camera.far1 = g_mean_all[2] + opt_fov_depth;
+		camera.tz = g_mean_all[2] - opt_fov_depth / 2;
+	
+	}
+
+}
 void MeshTools::SetZoom(float mzoom)
 {
 	/*if (zoom<0)
@@ -4690,25 +4903,14 @@ void MeshTools::SetZoom(float mzoom)
 //std::cout<<"zoom="<<zoom<<std::endl;
 	g_zoom = mzoom;
 	//std::cout<<"g_fov_adapt="<<g_fov_adapt<<std::endl;
-	if (g_fov_adapt==1)
+	
+	// Not called anymore : problem : need for an optimal FOV depth which is not always the best thing we could get
+	/*if (g_fov_adapt==1)
 	{
-		float opt_fov_depth = this->Get_Optimal_FOV_Depth();
-		if (g_mode_cam_centre_of_mass==0)
-		{
-			camera.far1 = opt_fov_depth;
-			camera.tz = -opt_fov_depth / 2;
-		}
-		else
-		{
-			camera.far1 = g_mean_all[2] + opt_fov_depth;
-			camera.tz = g_mean_all[2]  -opt_fov_depth / 2;
-			cout << "opt_fov_depth in SetZoom:" << opt_fov_depth << endl;
-			cout << "g_mean_all[2] in SetZoom:" << g_mean_all[2] << endl;
-			cout << "camera.tz set in SetZoom:" << camera.tz << endl;
-		}
+		this->Adapt_FOV_depth();
 		
 		//std::cout<<"opt_fov_depth="<<opt_fov_depth<<std::endl;
-	}
+	}*/
 
 }
 
@@ -10045,7 +10247,11 @@ void MeshTools::Open_Mesh_File()
 							this->Compute_Global_Scalar_List();
 							
 						}
+						cout << "Reinitialize camera" << endl;
+						rollinit_camera();
+						cout << "G_zoom after initialization:" <<g_zoom << endl;
 						this->redraw();
+						cout << "G_zoom after redraw:" << g_zoom << endl;
 					}//if file exists
 					
 					break;

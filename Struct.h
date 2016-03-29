@@ -135,6 +135,7 @@ extern int cpt_dispmode4and5;
 extern float g_landmark_size;
 extern int g_landmark_auto_rendering_size;
 extern int g_display_all;
+extern int g_display_camera_infos;
 extern int g_grid_plane;
 extern int g_landmark_type;
 extern int g_selection_mode; // 0 : normal selection mode grey for selected; 1 : inverted mode, e.g. unselected objects are grey  

@@ -599,6 +599,23 @@ void MeshToolsUI::cb_RESET_CAMERA(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_RESET_CAMERA_i(o,v);
 }
 
+void MeshToolsUI::cb_CAMERA_PARAMS_i(Fl_Menu_*, void*) {
+  int bool_cam=0;
+if(CAMERA_PARAMS->value() != 0){
+	cout<<"CAMERA PARAMS DISPLAYED"<<endl;
+	bool_cam=1;
+}
+else{
+	cout<<"CAMERA_PARAMS NOT DISPLAYED"<<endl;
+	bool_cam=0;
+}
+MT->Set_Camera_Display(bool_cam);
+MT->redraw();
+}
+void MeshToolsUI::cb_CAMERA_PARAMS(Fl_Menu_* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_CAMERA_PARAMS_i(o,v);
+}
+
 void MeshToolsUI::cb_DISP_SURFACE_i(Fl_Menu_*, void*) {
   Displaymode(1);
 }
@@ -724,6 +741,7 @@ Fl_Menu_Item MeshToolsUI::menu_Viewing_options[] = {
  {0,0,0,0,0,0,0,0,0},
  {"Set 100 pixels in mm", 0,  (Fl_Callback*)MeshToolsUI::cb_DISP_100PX_IN_MM, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Reset Camera", 0,  (Fl_Callback*)MeshToolsUI::cb_RESET_CAMERA, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Display camera params", 0,  (Fl_Callback*)MeshToolsUI::cb_CAMERA_PARAMS, 0, 2, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"Object rendering options", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Gouraud shading (smooth renreding) ", 0,  (Fl_Callback*)MeshToolsUI::cb_DISP_SURFACE, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -761,20 +779,21 @@ Fl_Menu_Item* MeshToolsUI::CAP9 = MeshToolsUI::menu_Viewing_options + 15;
 Fl_Menu_Item* MeshToolsUI::CAP10 = MeshToolsUI::menu_Viewing_options + 16;
 Fl_Menu_Item* MeshToolsUI::DISP_100PX_IN_MM = MeshToolsUI::menu_Viewing_options + 18;
 Fl_Menu_Item* MeshToolsUI::RESET_CAMERA = MeshToolsUI::menu_Viewing_options + 19;
-Fl_Menu_Item* MeshToolsUI::Display_Options = MeshToolsUI::menu_Viewing_options + 21;
-Fl_Menu_Item* MeshToolsUI::DISP_SURFACE = MeshToolsUI::menu_Viewing_options + 22;
-Fl_Menu_Item* MeshToolsUI::DISP_WIREFRAME = MeshToolsUI::menu_Viewing_options + 23;
-Fl_Menu_Item* MeshToolsUI::DISP_SORT = MeshToolsUI::menu_Viewing_options + 24;
-Fl_Menu_Item* MeshToolsUI::DISP_SORT2 = MeshToolsUI::menu_Viewing_options + 25;
-Fl_Menu_Item* MeshToolsUI::DISP_FLAT = MeshToolsUI::menu_Viewing_options + 26;
-Fl_Menu_Item* MeshToolsUI::DISP_TRI_GOU = MeshToolsUI::menu_Viewing_options + 27;
-Fl_Menu_Item* MeshToolsUI::DISP_CULLFACE = MeshToolsUI::menu_Viewing_options + 28;
-Fl_Menu_Item* MeshToolsUI::DISP_GRID_SIZE = MeshToolsUI::menu_Viewing_options + 30;
-Fl_Menu_Item* MeshToolsUI::SET_GENERAL_LANDMARK_RENDERING = MeshToolsUI::menu_Viewing_options + 31;
-Fl_Menu_Item* MeshToolsUI::DISP_LANDMARKNUM = MeshToolsUI::menu_Viewing_options + 32;
-Fl_Menu_Item* MeshToolsUI::DISP_CURVE = MeshToolsUI::menu_Viewing_options + 33;
-Fl_Menu_Item* MeshToolsUI::DISP_ORIENTATION = MeshToolsUI::menu_Viewing_options + 34;
-Fl_Menu_Item* MeshToolsUI::VBO_ACTIVATED = MeshToolsUI::menu_Viewing_options + 35;
+Fl_Menu_Item* MeshToolsUI::CAMERA_PARAMS = MeshToolsUI::menu_Viewing_options + 20;
+Fl_Menu_Item* MeshToolsUI::Display_Options = MeshToolsUI::menu_Viewing_options + 22;
+Fl_Menu_Item* MeshToolsUI::DISP_SURFACE = MeshToolsUI::menu_Viewing_options + 23;
+Fl_Menu_Item* MeshToolsUI::DISP_WIREFRAME = MeshToolsUI::menu_Viewing_options + 24;
+Fl_Menu_Item* MeshToolsUI::DISP_SORT = MeshToolsUI::menu_Viewing_options + 25;
+Fl_Menu_Item* MeshToolsUI::DISP_SORT2 = MeshToolsUI::menu_Viewing_options + 26;
+Fl_Menu_Item* MeshToolsUI::DISP_FLAT = MeshToolsUI::menu_Viewing_options + 27;
+Fl_Menu_Item* MeshToolsUI::DISP_TRI_GOU = MeshToolsUI::menu_Viewing_options + 28;
+Fl_Menu_Item* MeshToolsUI::DISP_CULLFACE = MeshToolsUI::menu_Viewing_options + 29;
+Fl_Menu_Item* MeshToolsUI::DISP_GRID_SIZE = MeshToolsUI::menu_Viewing_options + 31;
+Fl_Menu_Item* MeshToolsUI::SET_GENERAL_LANDMARK_RENDERING = MeshToolsUI::menu_Viewing_options + 32;
+Fl_Menu_Item* MeshToolsUI::DISP_LANDMARKNUM = MeshToolsUI::menu_Viewing_options + 33;
+Fl_Menu_Item* MeshToolsUI::DISP_CURVE = MeshToolsUI::menu_Viewing_options + 34;
+Fl_Menu_Item* MeshToolsUI::DISP_ORIENTATION = MeshToolsUI::menu_Viewing_options + 35;
+Fl_Menu_Item* MeshToolsUI::VBO_ACTIVATED = MeshToolsUI::menu_Viewing_options + 36;
 
 void MeshToolsUI::cb_INVERT_i(Fl_Menu_*, void*) {
   MT->Mesh_invert();
@@ -3360,6 +3379,9 @@ void MeshToolsUI::cb_Move_cam_centre_of_mass_i(Fl_Button* o, void*) {
   if (((Fl_Button *)o)->value()==0)
 {
 ((Fl_Button *)o)->value(1);
+
+//MT->Cam_Centre_At_Landmark(-2);
+MT->Compute_Global_Mean(0);
 MT->Cam_Centre_At_Landmark(-2);
 
 }

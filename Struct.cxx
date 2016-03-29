@@ -31,6 +31,7 @@ float Max_Color;
 float g_landmark_size;
 int g_landmark_auto_rendering_size;
 int g_display_all;
+int g_display_camera_infos;
 int g_grid_plane;
 int g_landmark_type;
 float g_flag_length;

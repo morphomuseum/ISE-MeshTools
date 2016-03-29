@@ -277,6 +277,11 @@ private:
   inline void cb_RESET_CAMERA_i(Fl_Menu_*, void*);
   static void cb_RESET_CAMERA(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *CAMERA_PARAMS;
+private:
+  inline void cb_CAMERA_PARAMS_i(Fl_Menu_*, void*);
+  static void cb_CAMERA_PARAMS(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *Display_Options;
   static Fl_Menu_Item *DISP_SURFACE;
 private:

@@ -11,8 +11,8 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);}
-      private image {pixmap/s_face.gif} xywh {843 139 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
+exit(0);} open
+      private image {pixmap/s_face.gif} xywh {1288 143 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -32,7 +32,7 @@ if (test ==1)
             tooltip Delete image {./pixmap/delete2.gif} xywh {0 25 25 23} color 55
           }
           Fl_Menu_Button File {
-            label File open
+            label File
             xywh {0 0 55 25} color 55 labelcolor 32
           } {
             MenuItem Generic_Open_Surface {
@@ -451,6 +451,21 @@ MT->redraw();}
                 callback {MT->Reset_Camera();
 MT->redraw();}
                 xywh {65 65 100 20}
+              }
+              MenuItem CAMERA_PARAMS {
+                label {Display camera params}
+                callback {int bool_cam=0;
+if(CAMERA_PARAMS->value() != 0){
+	cout<<"CAMERA PARAMS DISPLAYED"<<endl;
+	bool_cam=1;
+}
+else{
+	cout<<"CAMERA_PARAMS NOT DISPLAYED"<<endl;
+	bool_cam=0;
+}
+MT->Set_Camera_Display(bool_cam);
+MT->redraw();}
+                tooltip {Draw connection between red landmarks} xywh {120 120 100 20} type Toggle
               }
             }
             Submenu Display_Options {
@@ -1276,6 +1291,9 @@ MT->redraw();}
             callback {if (((Fl_Button *)o)->value()==0)
 {
 ((Fl_Button *)o)->value(1);
+
+//MT->Cam_Centre_At_Landmark(-2);
+MT->Compute_Global_Mean(0);
 MT->Cam_Centre_At_Landmark(-2);
 
 }
@@ -1285,7 +1303,7 @@ else
 MT->Cam_Centre_At_Landmark(-1);
 }
 MT->save_ini_param();
-MT->redraw();}
+MT->redraw();} selected
             tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {250 25 25 23} color 55 selection_color 23
           }
         }
@@ -2210,7 +2228,7 @@ MyName->value(Name.c_str());}
       }
     }
     Fl_Window versionWindow {
-      label About open
+      label About
       xywh {1209 341 784 173} type Double hide resizable modal
     } {
       Fl_Button Ok_Version {
@@ -2227,7 +2245,7 @@ MyName->value(Name.c_str());}
         xywh {685 26 15 25} box NO_BOX
       }
       Fl_Input Contact {
-        label {Contact : renaud.lebrun<at>umontpellier.fr} selected
+        label {Contact : renaud.lebrun<at>umontpellier.fr}
         xywh {379 46 15 25} box NO_BOX
       }
       Fl_Input Website {
