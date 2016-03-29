@@ -12,7 +12,7 @@ class MeshToolsUI {open
 cam_hide();
 
 exit(0);} open
-      private image {pixmap/s_face.gif} xywh {1288 143 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
+      private image {pixmap/s_face.gif} xywh {1292 147 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
       Fl_Group Top {open
         xywh {0 0 1002 50}
@@ -1303,7 +1303,7 @@ else
 MT->Cam_Centre_At_Landmark(-1);
 }
 MT->save_ini_param();
-MT->redraw();} selected
+MT->redraw();}
             tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {250 25 25 23} color 55 selection_color 23
           }
         }
@@ -1433,7 +1433,7 @@ MT->cam_validate(
         tz
        );
 
-MT->redraw();}
+MT->redraw();} selected
               tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {980 484 20 20}
             }
           }
