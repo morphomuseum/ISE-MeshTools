@@ -3041,8 +3041,8 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 			{
 
 
-				camera.far1 = g_mean_all[2] + 10*zoom;
-				camera.tz = g_mean_all[2] - 5*zoom;
+				camera.far1 =  10*zoom;
+				camera.tz = -g_mean_all[2] - 5*zoom;
 			}
 			else
 			{
@@ -3055,8 +3055,8 @@ void MeshTools::Cam_Centre_At_Landmark(int landmark_number)
 			if (g_dmean_all > 0)
 			{
 
-				camera.far1 = g_mean_all[2] + 200;
-				camera.tz = g_mean_all[2] - 100;
+				camera.far1 = 200;
+				camera.tz = -g_mean_all[2] - 100;
 			}
 			else
 			{
@@ -4621,6 +4621,11 @@ double MeshTools::cam_gettw()
 {return camera.tw;}
 double MeshTools::cam_getaz()
 {return camera.az;}
+
+double MeshTools::cam_getzoom()
+{
+	return this->zoom;
+}
 void MeshTools::Set_sc_min (float value)
 {
 	if (g_color_scale_id!=-1)
@@ -4872,8 +4877,11 @@ void MeshTools::Adapt_FOV_depth_before_draw()
 	}
 	else
 	{
-		camera.far1 = g_mean_all[2] + 10*zoom;
-		camera.tz = g_mean_all[2] - 5*zoom;
+		camera.far1 =  10*zoom; // camera.far is a distance rather than a position... no g_mean_all[2]
+		camera.tz =  -g_mean_all[2] - 5*zoom;
+		cout << "camera.tz=" << camera.tz<<endl;
+		cout << "g_meanall[2]=" << g_mean_all[2] << endl;
+		cout << "zoom=" << zoom << endl;
 
 	}
 }

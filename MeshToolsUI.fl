@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0303 
+version 1.0302 
 header_name {MeshToolsUI.h} 
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
@@ -11,10 +11,10 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);} open
-      private image {pixmap/s_face.gif} xywh {1292 147 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+exit(0);}
+      private image {pixmap/s_face.gif} xywh {409 121 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
     } {
-      Fl_Group Top {open
+      Fl_Group Top {
         xywh {0 0 1002 50}
       } {
         Fl_Group Unresizable {open
@@ -1414,7 +1414,7 @@ MT->redraw();}
               tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {980 464 20 20}
             }
             Fl_Button CP_normal_cp2 {
-              callback {float tz = -0.5*MT->cam_getfar();
+              callback {float tz = -5*MT->cam_getzoom();
 int dispmode = MT->Get_mode_cam_centre_of_mass();
 if (dispmode ==1)
 {
@@ -1433,7 +1433,7 @@ MT->cam_validate(
         tz
        );
 
-MT->redraw();} selected
+MT->redraw();}
               tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {980 484 20 20}
             }
           }
@@ -1470,8 +1470,8 @@ MT->redraw();}
       }
     }
     Fl_Window camWindow {
-      label {Camera options}
-      image {pixmap/s_back_13.gif} xywh {20 42 195 323} type Double color 174 hide resizable non_modal
+      label {Camera options} open
+      image {pixmap/s_back_13.gif} xywh {24 46 187 315} type Double color 174 resizable non_modal visible
     } {
       Fl_Value_Input Cam_near {
         label {Camera near :}
@@ -1563,7 +1563,7 @@ Cam_az->value(MT->cam_getaz());
 Cam_el->value(MT->cam_getel());
 Cam_tw->value(MT->cam_gettw());
 //MT->panz(-0.5*Cam_far->value());
-float tz = -0.5*MT->cam_getfar();
+float tz = -0.5*MT->cam_getzoom();
 int dispmode = MT->Get_mode_cam_centre_of_mass();
 if (dispmode ==1)
 {
@@ -1580,7 +1580,7 @@ Cam_tx->value(),
 Cam_ty->value(),
 Cam_tz->value()
 );
-MT->redraw();}
+MT->redraw();} selected
         tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {117 252 25 23} color 84 selection_color 92 align 128
       }
     }

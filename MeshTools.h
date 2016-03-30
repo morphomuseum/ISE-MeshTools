@@ -364,8 +364,7 @@ void writeFloat4b(float value, FILE *filein)
 	double cam_getaz();
 	double cam_getel();
 	double cam_gettw();
-
-	;
+	double cam_getzoom();
 	void Mesh_Select(int x1, int x2, int y1, int y2, int select_mode);
 	void Mesh_Select(int x, int y);
 	void Mesh_MoveLandmarkAtMouse(int x, int y);
