@@ -98,6 +98,37 @@ float MeshTools::Get_Optimal_FOV_Depth() // computes the "optimal" depth corresp
 	//std::cout<<"Opt depth = "<<opt_depth<<"mm"<<std::endl;
 	return opt_depth;
 }
+// gets first selected flag xyz
+void MeshTools::get_flag_xyz(float m[3])
+{
+	OBJECT_LANDMARK * My_Flag = NULL;
+	My_Flag = Cont_Mesh.Get_Selected_Landmark(2);
+	if (My_Flag != NULL)
+	{
+		m[0] = My_Flag->Mat2[3][0];
+		m[1] = My_Flag->Mat2[3][1];
+		m[2] = My_Flag->Mat2[3][2];
+	}
+
+	
+}
+int MeshTools::get_landmark_xyz(float m[3])
+{
+	OBJECT_LANDMARK * My_LMK = NULL;
+	My_LMK = Cont_Mesh.Get_Selected_Landmark(0);
+	if (My_LMK == NULL) { My_LMK = Cont_Mesh.Get_Selected_Landmark(1); }
+	if (My_LMK != NULL)
+	{
+		m[0] = My_LMK->Mat2[3][0];
+		m[1] = My_LMK->Mat2[3][1];
+		m[2] = My_LMK->Mat2[3][2];
+		return My_LMK->landmark_index;
+	}
+
+	return 0;
+
+
+}
 std::string MeshTools::get_matrix(float m1[16], float m2[16])
 {
 	std::string Name="";
@@ -1731,9 +1762,9 @@ void MeshTools::Mesh_draw_camera_infos(int x, int y)
 	strcpy(info6, "Tx:");
 	strcpy(info7, "Ty:");
 	strcpy(info8, "Tz:");
-	strcpy(info9, "atx:");
+	/*strcpy(info9, "atx:");
 	strcpy(info10, "aty:");
-	strcpy(info11, "atz:");
+	strcpy(info11, "atz:");*/
 	strcpy(info12, "camera.zoom:");
 	strcpy(info13, "g_zoom:");
 	strcpy(info14, "zoom:");
@@ -2681,7 +2712,33 @@ void MeshTools::get_g_flag_color (uchar *r, uchar *g, uchar *b)
 
 
 }	
+void MeshTools::set_flag_xyz(float m[3])
+{
+	OBJECT_LANDMARK * My_Flag = NULL;
+	My_Flag = Cont_Mesh.Get_Selected_Landmark(2);
+	if (My_Flag != NULL)
+	{
+		My_Flag->Mat2[3][0]= m[0];
+		My_Flag->Mat2[3][1]= m[1];
+		My_Flag->Mat2[3][2]= m[2];
+	}
 
+
+}
+void MeshTools::set_landmark_xyz(float m[3])
+{
+	OBJECT_LANDMARK * My_LMK = NULL;
+	My_LMK = Cont_Mesh.Get_Selected_Landmark(0);
+	if (My_LMK == NULL){ My_LMK = Cont_Mesh.Get_Selected_Landmark(1); }
+	if (My_LMK != NULL)
+	{
+		My_LMK->Mat2[3][0] = m[0];
+		My_LMK->Mat2[3][1] = m[1];
+		My_LMK->Mat2[3][2] = m[2];
+	}
+
+
+}
 
 	void MeshTools::set_flag ( std::string label, float length)
 	{
@@ -3979,7 +4036,77 @@ void MeshTools::Object_Move_Up()
 	 Cont_Mesh.Object_Move_Up();
 }
 
+void MeshTools::LMK_next() 
+{
+	//k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+	OBJECT_LANDMARK *My_LMK = NULL;
+	OBJECT_LANDMARK *k = NULL;
 
+	int lmk_type = 0;
+	My_LMK = Cont_Mesh.Get_Selected_Landmark(0);
+	if (My_LMK == NULL) {
+		My_LMK = Cont_Mesh.Get_Selected_Landmark(1); 
+		lmk_type = 1;
+	}
+	if (My_LMK != NULL)
+	{
+		int ind = My_LMK->landmark_index;
+
+
+		k = Cont_Mesh.landmarkafter(ind, lmk_type);
+		if (k != NULL) 
+		{ My_LMK->selected = 0; k->selected = 1; }
+		else
+		{
+			if (lmk_type == 1) { lmk_type = 0; }
+			else {lmk_type = 1;}
+			ind = 0;
+			k = Cont_Mesh.landmarkafter(ind, lmk_type);
+			if (k != NULL)
+			{
+				My_LMK->selected = 0; k->selected = 1;
+			}
+		}
+
+	}
+	
+
+}
+void MeshTools::LMK_preceding() { 
+	//k = Cont_Mesh.landmarkafter(ind, landmark_mode);
+	OBJECT_LANDMARK *My_LMK = NULL;
+	OBJECT_LANDMARK *k = NULL;
+
+	int lmk_type = 0;
+	My_LMK = Cont_Mesh.Get_Selected_Landmark(0);
+	if (My_LMK == NULL) {
+		My_LMK = Cont_Mesh.Get_Selected_Landmark(1);
+		lmk_type = 1;
+	}
+	if (My_LMK != NULL)
+	{
+		int ind = My_LMK->landmark_index;
+
+
+		k = Cont_Mesh.landmarkbefore(ind, lmk_type);
+		if (k != NULL)
+		{
+			My_LMK->selected = 0; k->selected = 1;
+		}
+		else
+		{
+			if (lmk_type == 1) { lmk_type = 0; }
+			else { lmk_type = 1; }
+			ind = Cont_Mesh.Get_Landmark_Number(lmk_type)+1;
+			k = Cont_Mesh.landmarkbefore(ind, lmk_type);
+			if (k != NULL)
+			{
+				My_LMK->selected = 0; k->selected = 1;
+			}
+		}
+
+	}
+}
 void MeshTools::Landmark_Move_Down()
 {
 	 Cont_Mesh.Landmark_Move_Down();

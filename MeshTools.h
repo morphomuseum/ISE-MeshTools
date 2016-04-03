@@ -189,6 +189,12 @@ public:
 	void get_tag_color (int tag_id, uchar *r, uchar *g, uchar *b);
 	std::string get_tag_label (int tag_id);
 	std::string get_flag ();
+	int get_landmark_xyz(float m[3]);
+	void set_landmark_xyz(float m[3]);
+	void LMK_next();
+	void LMK_preceding();
+	void get_flag_xyz(float m[3]);
+	void set_flag_xyz(float m[3]);
 	float get_flag_length ();
 	float get_g_flag_length ();
 	void set_all_flag (uchar r, uchar g, uchar b, float length);

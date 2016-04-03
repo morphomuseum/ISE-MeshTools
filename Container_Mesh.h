@@ -68,6 +68,7 @@ public:
 
 	void Landmark_Move_Down();
 	void Landmark_Move_Up();
+
 	int Is_Segment_Selected (int seg);
 	std::string Get_Active_Scalar_Name();
 	std::string Get_Scalar_Name(int scalar);

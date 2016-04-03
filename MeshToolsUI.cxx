@@ -3161,42 +3161,42 @@ static unsigned char idata_Flag02[] =
 0,0,0,0,0,0,255,0,0,231,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,
-0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,255,0,0,189,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,
 0,255,0,0,231,255,0,0,231,255,0,0,231,0,0,0,0,255,0,0,231,255,0,0,231,255,0,0,
 231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,
-0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,255,255,255,255,255,0,0,231,0,0,0,0,
-255,0,0,231,255,255,255,255,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,
-255,0,0,231,255,0,0,231,0,0,0,0,255,0,0,231,255,0,0,231,255,0,0,231,0,0,0,0,0,0,
+0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,
+231,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+255,0,0,231,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,255,0,0,231,255,0,0,
+231,0,0,0,0,255,0,0,231,255,0,0,231,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,255,0,0,231,255,0,0,231,0,0,
+0,255,0,0,231,0,0,0,0,0,0,0,0,255,0,0,231,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,158,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,
-0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,255,158,0,231,255,158,0,
-231,255,158,0,231,240,161,29,14,223,149,27,32,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,
-0,0,0,255,0,0,0,0,255,104,0,255,0,0,0,255,0,0,0,255,0,0,0,255,249,22,4,234,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,254,107,2,255,0,0,0,
-255,0,0,0,255,255,158,0,231,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,
-0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,
-0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,255,158,0,231,0,0,0,255,0,0,0,0,0,0,0,
-255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,255,15,0,255,255,104,0,255,255,104,0,255,
-255,158,0,231,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,
-0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,252,21,3,255,0,0,0,255,0,
-0,0,255,0,0,0,255,0,0,0,255,255,104,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,
-255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,
-0,0,248,17,5,255,254,15,0,255,254,15,0,255,255,15,0,255,255,104,0,255,255,104,
-0,255,255,158,0,255,255,158,0,255,255,158,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,
+0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,255,158,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,
+231,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,
+0,255,0,0,0,0,0,0,0,0,0,0,0,0,255,158,0,231,255,158,0,231,255,158,0,231,240,
+161,29,14,223,149,27,32,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,
+0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,
+104,0,255,0,0,0,255,0,0,0,255,0,0,0,255,249,22,4,234,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,254,107,2,255,0,0,0,255,0,0,0,255,255,158,0,
+231,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,
+0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,
+0,255,0,0,0,255,255,158,0,231,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,
+0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+255,0,0,0,255,255,15,0,255,255,104,0,255,255,104,0,255,255,158,0,231,0,0,0,255,
+0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,
+0,255,0,0,0,0,0,0,0,0,0,0,0,0,252,21,3,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,
+0,255,255,104,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,
+0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,248,17,5,255,
+254,15,0,255,254,15,0,255,255,15,0,255,255,104,0,255,255,104,0,255,255,158,0,
+255,255,158,0,255,255,158,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 static Fl_RGB_Image image_Flag02(idata_Flag02, 19, 19, 4, 0);
 
 void MeshToolsUI::cb_Show_Tag_Window_i(Fl_Button* o, void*) {
@@ -3416,6 +3416,59 @@ static const char *idata_Move_cam[] = {
 "   $   $ $     "
 };
 static Fl_Pixmap image_Move_cam(idata_Move_cam);
+
+void MeshToolsUI::cb_Edit_lmk_i(Fl_Button*, void*) {
+  lmk_edit_show();
+}
+void MeshToolsUI::cb_Edit_lmk(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Edit_lmk_i(o,v);
+}
+
+static unsigned char idata_Lmk_edit[] =
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,255,0,0,231,255,0,
+0,231,255,0,0,231,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,
+255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,255,0,0,
+231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,
+0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,
+255,0,0,231,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,158,0,
+231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,231,0,0,0,0,0,0,0,0,0,0,0,
+255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,
+0,0,255,158,0,231,255,158,0,231,255,158,0,231,240,161,29,14,223,149,27,32,255,
+0,0,231,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,
+0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,104,0,255,0,0,0,255,0,0,0,
+255,0,0,0,255,249,22,4,234,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,
+0,0,255,254,107,2,255,0,0,0,255,0,0,0,255,255,158,0,231,0,0,0,255,0,0,0,255,0,
+0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,255,158,
+0,231,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,
+0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,0,255,255,15,0,
+255,255,104,0,255,255,104,0,255,255,158,0,231,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,
+255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,0,0,0,
+0,0,252,21,3,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,255,104,0,255,0,0,0,
+255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,
+0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,248,17,5,255,254,15,0,255,254,15,0,255,255,
+15,0,255,255,104,0,255,255,104,0,255,255,158,0,255,255,158,0,255,255,158,0,231,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0};
+static Fl_RGB_Image image_Lmk_edit(idata_Lmk_edit, 19, 19, 4, 0);
 
 void MeshToolsUI::cb_zpan1_i(SpecialSlider2* o, void*) {
   MT->panz2(((Fl_Slider *)o)->value());
@@ -7055,8 +7108,13 @@ void MeshToolsUI::cb_Ok_flag_i(Fl_Button*, void*) {
 
 std::string label;
 label = Flag_Label->value();
-
+float m[3];
+m[0] = FL_x->value();
+m[1] = FL_y->value();
+m[2] = FL_z->value();
+MT->set_flag_xyz(m);
 MT->set_flag(label, Flag_Length->value());
+
 MT->redraw();
 }
 void MeshToolsUI::cb_Ok_flag(Fl_Button* o, void* v) {
@@ -8103,16 +8161,106 @@ void MeshToolsUI::cb_CancelSaveNTW(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_CancelSaveNTW_i(o,v);
 }
 
+void MeshToolsUI::cb_Refresh_lmk_i(Fl_Button*, void*) {
+  lmk_update();
+}
+void MeshToolsUI::cb_Refresh_lmk(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Refresh_lmk_i(o,v);
+}
+
+void MeshToolsUI::cb_Cancel_lmk_i(Fl_Button*, void*) {
+  lmk_edit_hide();
+}
+void MeshToolsUI::cb_Cancel_lmk(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Cancel_lmk_i(o,v);
+}
+
+void MeshToolsUI::cb_Ok_lmk_i(Fl_Button*, void*) {
+  int ok;
+float m[3];
+m[0] = LMK_x->value();
+m[1] = LMK_y->value();
+m[2] = LMK_z->value();
+MT->set_landmark_xyz(m);
+
+MT->redraw();
+}
+void MeshToolsUI::cb_Ok_lmk(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_lmk_i(o,v);
+}
+
+void MeshToolsUI::cb_LMK_next_i(Fl_Button*, void*) {
+  MT->LMK_next();
+lmk_update();
+MT->redraw();
+}
+void MeshToolsUI::cb_LMK_next(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_LMK_next_i(o,v);
+}
+
+static const char *idata_s_right_16[] = {
+"16 16 -5 1",
+" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
+"                ",
+"                ",
+"     \"\"$        ",
+"     \"#\"$       ",
+"     \"##\"$      ",
+"     \"###\"$     ",
+"     \"####\"$    ",
+"     \"#####\"$   ",
+"     \"######\"   ",
+"     \"#####\"!   ",
+"     \"####\"!    ",
+"     \"###\"!     ",
+"     \"##\"!      ",
+"     \"#\"!       ",
+"     \"\"!        ",
+"                "
+};
+static Fl_Pixmap image_s_right_16(idata_s_right_16);
+
+void MeshToolsUI::cb_LMK_preceding_i(Fl_Button*, void*) {
+  MT->LMK_preceding();
+lmk_update();
+MT->redraw();
+}
+void MeshToolsUI::cb_LMK_preceding(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_LMK_preceding_i(o,v);
+}
+
+static const char *idata_s_left_16[] = {
+"16 16 -5 1",
+" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
+"                ",
+"                ",
+"        $\"\"     ",
+"       $\"#\"     ",
+"      $\"##\"     ",
+"     $\"###\"     ",
+"    $\"####\"     ",
+"   $\"#####\"     ",
+"   \"######\"     ",
+"   !\"#####\"     ",
+"    !\"####\"     ",
+"     !\"###\"     ",
+"      !\"##\"     ",
+"       !\"#\"     ",
+"        !\"\"     ",
+"                "
+};
+static Fl_Pixmap image_s_left_16(idata_s_left_16);
+
 MeshToolsUI::MeshToolsUI() {
-  { mainWindow = new Fl_Double_Window(1000, 700, "Interactive SoftwarE : MeshTools");
+  { mainWindow = new Fl_Double_Window(1100, 700, "Interactive SoftwarE : MeshTools");
     mainWindow->box(FL_UP_BOX);
     mainWindow->color((Fl_Color)55);
     mainWindow->labelsize(12);
     mainWindow->callback((Fl_Callback*)cb_mainWindow, (void*)(this));
     mainWindow->align(Fl_Align(FL_ALIGN_RIGHT));
     mainWindow->when(FL_WHEN_CHANGED);
-    { Top = new Fl_Group(0, 0, 1002, 50);
-      { Unresizable = new Fl_Group(0, 0, 949, 50);
+    { Top = new Fl_Group(0, 0, 1100, 50);
+      { Unresizable = new Fl_Group(0, 0, 966, 57);
         { Del = new Fl_Button(0, 25, 25, 23);
           Del->tooltip("Delete");
           Del->color((Fl_Color)55);
@@ -8356,7 +8504,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Tag_mode_off->callback((Fl_Callback*)cb_Tag_mode_off);
           Tag_mode_off->when(FL_WHEN_CHANGED);
         } // Fl_Button* Tag_mode_off
-        { Tag_mode_on = new Fl_Button(767, 25, 25, 23);
+        { Tag_mode_on = new Fl_Button(765, 25, 25, 23);
           Tag_mode_on->tooltip("Tag select mode : selected surfaces are colored / unselected ones are grey");
           Tag_mode_on->down_box(FL_DOWN_BOX);
           Tag_mode_on->color((Fl_Color)55);
@@ -8365,7 +8513,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Tag_mode_on->callback((Fl_Callback*)cb_Tag_mode_on);
           Tag_mode_on->when(FL_WHEN_CHANGED);
         } // Fl_Button* Tag_mode_on
-        { Pencil = new Fl_Button(792, 25, 25, 23);
+        { Pencil = new Fl_Button(790, 25, 25, 23);
           Pencil->tooltip("Activate pencil tagging mode");
           Pencil->down_box(FL_DOWN_BOX);
           Pencil->value(1);
@@ -8375,7 +8523,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Pencil->callback((Fl_Callback*)cb_Pencil);
           Pencil->when(FL_WHEN_CHANGED);
         } // Fl_Button* Pencil
-        { Magic_Wand = new Fl_Button(817, 25, 25, 23);
+        { Magic_Wand = new Fl_Button(815, 25, 25, 23);
           Magic_Wand->tooltip("Activate magic wand tagging mode");
           Magic_Wand->down_box(FL_DOWN_BOX);
           Magic_Wand->color((Fl_Color)55);
@@ -8384,7 +8532,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Magic_Wand->callback((Fl_Callback*)cb_Magic_Wand);
           Magic_Wand->when(FL_WHEN_CHANGED);
         } // Fl_Button* Magic_Wand
-        { Flood_Fill = new Fl_Button(842, 25, 25, 23);
+        { Flood_Fill = new Fl_Button(840, 25, 25, 23);
           Flood_Fill->tooltip("Activateflood fill tagging mode");
           Flood_Fill->down_box(FL_DOWN_BOX);
           Flood_Fill->color((Fl_Color)55);
@@ -8393,7 +8541,7 @@ ently be displayed as color maps (see viewing options to display color maps)");
           Flood_Fill->callback((Fl_Callback*)cb_Flood_Fill);
           Flood_Fill->when(FL_WHEN_CHANGED);
         } // Fl_Button* Flood_Fill
-        { Lasso_plus = new Fl_Button(868, 25, 25, 23);
+        { Lasso_plus = new Fl_Button(865, 25, 25, 23);
           Lasso_plus->tooltip("Lasso tag + : draw a lasso contour using several left clicks + a final right \
 click. Then either middle click, or press \"t\"+ left or right click");
           Lasso_plus->down_box(FL_DOWN_BOX);
@@ -8403,7 +8551,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Lasso_plus->callback((Fl_Callback*)cb_Lasso_plus);
           Lasso_plus->when(FL_WHEN_CHANGED);
         } // Fl_Button* Lasso_plus
-        { Edit_flag = new Fl_Button(893, 25, 25, 23);
+        { Edit_flag = new Fl_Button(890, 25, 25, 23);
           Edit_flag->tooltip("Edit first selected flag label, length and colour");
           Edit_flag->color((Fl_Color)55);
           Edit_flag->selection_color(FL_DARK1);
@@ -8411,7 +8559,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Edit_flag->callback((Fl_Callback*)cb_Edit_flag);
           Edit_flag->when(FL_WHEN_CHANGED);
         } // Fl_Button* Edit_flag
-        { Show_Tag_Window = new Fl_Button(691, 25, 25, 23);
+        { Show_Tag_Window = new Fl_Button(690, 25, 25, 23);
           Show_Tag_Window->tooltip("Display tags");
           Show_Tag_Window->down_box(FL_DOWN_BOX);
           Show_Tag_Window->color((Fl_Color)55);
@@ -8420,7 +8568,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Show_Tag_Window->callback((Fl_Callback*)cb_Show_Tag_Window);
           Show_Tag_Window->when(FL_WHEN_CHANGED);
         } // Fl_Button* Show_Tag_Window
-        { Edit_name = new Fl_Button(916, 25, 25, 23);
+        { Edit_name = new Fl_Button(940, 25, 25, 23);
           Edit_name->tooltip("Edit first selected surface name");
           Edit_name->color((Fl_Color)55);
           Edit_name->selection_color(FL_DARK1);
@@ -8442,6 +8590,14 @@ click. Then either middle click, or press \"t\"+ left or right click");
           Move_cam_centre_of_mass->image(image_Move_cam);
           Move_cam_centre_of_mass->callback((Fl_Callback*)cb_Move_cam_centre_of_mass);
         } // Fl_Button* Move_cam_centre_of_mass
+        { Edit_lmk = new Fl_Button(915, 25, 25, 23);
+          Edit_lmk->tooltip("Edit first selected landmark coordinates");
+          Edit_lmk->color((Fl_Color)55);
+          Edit_lmk->selection_color(FL_DARK1);
+          Edit_lmk->image(image_Lmk_edit);
+          Edit_lmk->callback((Fl_Callback*)cb_Edit_lmk);
+          Edit_lmk->when(FL_WHEN_CHANGED);
+        } // Fl_Button* Edit_lmk
         Unresizable->end();
       } // Fl_Group* Unresizable
       { Resizable = new Fl_Group(980, 0, 22, 50);
@@ -8450,8 +8606,8 @@ click. Then either middle click, or press \"t\"+ left or right click");
       } // Fl_Group* Resizable
       Top->end();
     } // Fl_Group* Top
-    { Bottom = new Fl_Group(0, 50, 1000, 650);
-      { MT = new MeshTools(40, 50, 940, 610, "MeshTools 3D window");
+    { Bottom = new Fl_Group(0, 50, 1100, 650);
+      { MT = new MeshTools(40, 50, 1040, 610, "MeshTools 3D window");
         MT->box(FL_NO_BOX);
         MT->color(FL_BACKGROUND_COLOR);
         MT->selection_color(FL_BACKGROUND_COLOR);
@@ -8540,10 +8696,10 @@ click. Then either middle click, or press \"t\"+ left or right click");
         } // Fl_Group* WW_resizable
         WW->end();
       } // Fl_Group* WW
-      { EE = new Fl_Group(980, 50, 20, 650);
+      { EE = new Fl_Group(1080, 50, 20, 650);
         EE->align(Fl_Align(FL_ALIGN_CENTER));
         { EE_unresizable = new Fl_Group(980, 50, 20, 610);
-          { zpan = new SpecialSlider2(981, 217, 19, 239, "cp");
+          { zpan = new SpecialSlider2(1080, 217, 19, 239, "cp");
             zpan->tooltip("Displace clipping plane");
             zpan->type(4);
             zpan->box(FL_DOWN_BOX);
@@ -8560,7 +8716,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zpan->align(Fl_Align(FL_ALIGN_BOTTOM));
             zpan->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* zpan
-          { zroll = new SpecialSlider2(981, 51, 19, 152, "rZ");
+          { zroll = new SpecialSlider2(1080, 51, 19, 152, "rZ");
             zroll->tooltip("Rotate camera along viewing z axis");
             zroll->type(4);
             zroll->box(FL_DOWN_BOX);
@@ -8577,7 +8733,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zroll->align(Fl_Align(FL_ALIGN_BOTTOM));
             zroll->when(FL_WHEN_CHANGED);
           } // SpecialSlider2* zroll
-          { zoom = new SpecialRoller4(981, 505, 19, 145, "Zoom");
+          { zoom = new SpecialRoller4(1080, 505, 19, 145, "Zoom");
             zoom->tooltip("Zoom");
             zoom->box(FL_DOWN_BOX);
             zoom->color((Fl_Color)55);
@@ -8593,12 +8749,12 @@ click. Then either middle click, or press \"t\"+ left or right click");
             zoom->align(Fl_Align(FL_ALIGN_BOTTOM_LEFT));
             zoom->when(FL_WHEN_CHANGED);
           } // SpecialRoller4* zoom
-          { CP_cut_half2 = new Fl_Button(980, 464, 20, 20);
+          { CP_cut_half2 = new Fl_Button(1080, 464, 20, 20);
             CP_cut_half2->tooltip("Displace clipping plane to z=0");
             CP_cut_half2->image(image_Clipping_plane_z0);
             CP_cut_half2->callback((Fl_Callback*)cb_CP_cut_half2);
           } // Fl_Button* CP_cut_half2
-          { CP_normal_cp2 = new Fl_Button(980, 484, 20, 20);
+          { CP_normal_cp2 = new Fl_Button(1080, 484, 20, 20);
             CP_normal_cp2->tooltip("Replace clipping place normally");
             CP_normal_cp2->image(image_Clipping_plane_normal);
             CP_normal_cp2->callback((Fl_Callback*)cb_CP_normal_cp2);
@@ -8661,7 +8817,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     } // Fl_Group* Bottom
     mainWindow->end();
   } // Fl_Double_Window* mainWindow
-  { camWindow = new Fl_Double_Window(187, 315, "Camera options");
+  { camWindow = new Fl_Double_Window(185, 318, "Camera options");
     camWindow->color((Fl_Color)174);
     camWindow->user_data((void*)(this));
     { Cam_near = new Fl_Value_Input(99, 15, 52, 25, "Camera near :");
@@ -8950,7 +9106,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_rd_Window->end();
     opt_rd_Window->resizable(opt_rd_Window);
   } // Fl_Double_Window* opt_rd_Window
-  { matWindow = new Fl_Double_Window(252, 350, "Object Matrix");
+  { matWindow = new Fl_Double_Window(239, 339, "Object Matrix");
     matWindow->color((Fl_Color)215);
     matWindow->user_data((void*)(this));
     { Ok_mat = new Fl_Button(10, 270, 65, 25, "Ok");
@@ -10627,10 +10783,10 @@ trix\" (old version correction)");
     deleteregionWindow->end();
     deleteregionWindow->resizable(deleteregionWindow);
   } // Fl_Double_Window* deleteregionWindow
-  { flagWindow = new Fl_Double_Window(237, 179, "Edit 1 Selected Flag");
+  { flagWindow = new Fl_Double_Window(263, 198, "Edit 1 Selected Flag");
     flagWindow->color((Fl_Color)215);
     flagWindow->user_data((void*)(this));
-    { Refresh_flag = new Fl_Button(87, 140, 65, 25, "Refresh");
+    { Refresh_flag = new Fl_Button(115, 166, 65, 25, "Refresh");
       Refresh_flag->tooltip("Change Flag to first selected flag");
       Refresh_flag->color((Fl_Color)134);
       Refresh_flag->selection_color((Fl_Color)92);
@@ -10638,7 +10794,7 @@ trix\" (old version correction)");
     } // Fl_Button* Refresh_flag
     { Flag_Label = new Fl_Input(66, 10, 162, 24, "Label:");
     } // Fl_Input* Flag_Label
-    { Cancel_flag = new Fl_Button(151, 140, 65, 25, "Cancel");
+    { Cancel_flag = new Fl_Button(179, 166, 65, 25, "Cancel");
       Cancel_flag->color((Fl_Color)133);
       Cancel_flag->selection_color((Fl_Color)132);
       Cancel_flag->callback((Fl_Callback*)cb_Cancel_flag);
@@ -10652,12 +10808,21 @@ trix\" (old version correction)");
       Flag_Colour->labelcolor(FL_GRAY0);
       Flag_Colour->callback((Fl_Callback*)cb_Flag_Colour);
     } // Fl_Button* Flag_Colour
-    { Ok_flag = new Fl_Button(23, 140, 65, 25, "Ok");
+    { Ok_flag = new Fl_Button(51, 166, 65, 25, "Ok");
       Ok_flag->tooltip("Change Flag to first selected flag");
       Ok_flag->color((Fl_Color)134);
       Ok_flag->selection_color((Fl_Color)92);
       Ok_flag->callback((Fl_Callback*)cb_Ok_flag);
     } // Fl_Button* Ok_flag
+    { FL_x = new Fl_Value_Input(53, 135, 50, 20, "x");
+      FL_x->textsize(10);
+    } // Fl_Value_Input* FL_x
+    { FL_y = new Fl_Value_Input(118, 135, 50, 20, "y");
+      FL_y->textsize(10);
+    } // Fl_Value_Input* FL_y
+    { FL_z = new Fl_Value_Input(184, 135, 50, 20, "z");
+      FL_z->textsize(10);
+    } // Fl_Value_Input* FL_z
     flagWindow->set_non_modal();
     flagWindow->end();
     flagWindow->resizable(flagWindow);
@@ -11462,6 +11627,55 @@ trix\" (old version correction)");
     NTWSaveWindow->end();
     NTWSaveWindow->resizable(NTWSaveWindow);
   } // Fl_Double_Window* NTWSaveWindow
+  { lmkeditWindow = new Fl_Double_Window(267, 127, "Edit 1 Selected landmark");
+    lmkeditWindow->color((Fl_Color)215);
+    lmkeditWindow->user_data((void*)(this));
+    { Refresh_lmk = new Fl_Button(115, 90, 65, 25, "Refresh");
+      Refresh_lmk->tooltip("Change Flag to first selected flag");
+      Refresh_lmk->color((Fl_Color)134);
+      Refresh_lmk->selection_color((Fl_Color)92);
+      Refresh_lmk->callback((Fl_Callback*)cb_Refresh_lmk);
+    } // Fl_Button* Refresh_lmk
+    { Cancel_lmk = new Fl_Button(180, 90, 65, 25, "Cancel");
+      Cancel_lmk->color((Fl_Color)133);
+      Cancel_lmk->selection_color((Fl_Color)132);
+      Cancel_lmk->callback((Fl_Callback*)cb_Cancel_lmk);
+    } // Fl_Button* Cancel_lmk
+    { Ok_lmk = new Fl_Button(50, 90, 65, 25, "Ok");
+      Ok_lmk->tooltip("Change Flag to first selected flag");
+      Ok_lmk->color((Fl_Color)134);
+      Ok_lmk->selection_color((Fl_Color)92);
+      Ok_lmk->callback((Fl_Callback*)cb_Ok_lmk);
+    } // Fl_Button* Ok_lmk
+    { LMK_x = new Fl_Value_Input(40, 50, 50, 20, "x");
+      LMK_x->textsize(10);
+    } // Fl_Value_Input* LMK_x
+    { LMK_y = new Fl_Value_Input(105, 50, 50, 20, "y");
+      LMK_y->textsize(10);
+    } // Fl_Value_Input* LMK_y
+    { LMK_z = new Fl_Value_Input(171, 50, 50, 20, "z");
+      LMK_z->textsize(10);
+    } // Fl_Value_Input* LMK_z
+    { LMK_Label = new Fl_Value_Input(152, 10, 50, 20, "Landmark number");
+      LMK_Label->textsize(10);
+      LMK_Label->when(FL_WHEN_NEVER);
+    } // Fl_Value_Input* LMK_Label
+    { LMK_next = new Fl_Button(218, 10, 12, 20);
+      LMK_next->tooltip("Object list : move object(s) up");
+      LMK_next->color((Fl_Color)55);
+      LMK_next->image(image_s_right_16);
+      LMK_next->callback((Fl_Callback*)cb_LMK_next);
+    } // Fl_Button* LMK_next
+    { LMK_preceding = new Fl_Button(207, 10, 12, 20);
+      LMK_preceding->tooltip("Object list : move object(s) up");
+      LMK_preceding->color((Fl_Color)55);
+      LMK_preceding->image(image_s_left_16);
+      LMK_preceding->callback((Fl_Callback*)cb_LMK_preceding);
+    } // Fl_Button* LMK_preceding
+    lmkeditWindow->set_non_modal();
+    lmkeditWindow->end();
+    lmkeditWindow->resizable(lmkeditWindow);
+  } // Fl_Double_Window* lmkeditWindow
 }
 
 void MeshToolsUI::show(int argc, char **argv) {
@@ -12411,6 +12625,15 @@ void MeshToolsUI::flag_hide() {
 
 void MeshToolsUI::flag_update() {
   std::string label ="Flag";
+  float m[3];
+  m[0]=0;
+  m[1]=0;
+  m[2]=0;
+  MT->get_flag_xyz(m);
+  	FL_x->value(m[0]);
+  	FL_y->value(m[1]);
+  	FL_z->value(m[2]);
+  
   label = MT->get_flag();
   Flag_Label->value(label.c_str());
   Flag_Length->value(MT->get_flag_length());
@@ -12874,4 +13097,37 @@ void MeshToolsUI::ntw_show() {
 
 void MeshToolsUI::ntw_hide() {
   NTWSaveWindow->hide();
+}
+
+void MeshToolsUI::lmk_edit_show() {
+  lmkeditWindow->show();
+  lmk_update();
+  /*label = MT->get_flag();
+  Flag_Label->value(label.c_str());
+  Flag_Length->value(MT->get_flag_length());
+  uchar r,g,b;
+  Fl_Color c;
+  MT->get_flag_color(&r,&g,&b);
+  c = fl_rgb_color(r,g,b);
+  Flag_Colour->color(c);
+  Flag_Colour->redraw();*/
+}
+
+void MeshToolsUI::lmk_edit_hide() {
+  lmkeditWindow->hide();
+}
+
+void MeshToolsUI::lmk_update() {
+  std::string label ="Flag";
+  int lmk_num=0;
+  float m[3];
+  m[0]=0;
+  m[1]=0;
+  m[2]=0;
+  lmk_num=MT->get_landmark_xyz(m);
+  	LMK_x->value(m[0]);
+  	LMK_y->value(m[1]);
+  	LMK_z->value(m[2]);
+  	
+  LMK_Label->value(lmk_num);
 }

@@ -900,6 +900,11 @@ private:
   inline void cb_Move_cam_centre_of_mass_i(Fl_Button*, void*);
   static void cb_Move_cam_centre_of_mass(Fl_Button*, void*);
 public:
+  Fl_Button *Edit_lmk;
+private:
+  inline void cb_Edit_lmk_i(Fl_Button*, void*);
+  static void cb_Edit_lmk(Fl_Button*, void*);
+public:
   Fl_Group *Resizable;
   Fl_Group *Bottom;
   MeshTools *MT;
@@ -2381,6 +2386,9 @@ private:
   inline void cb_Ok_flag_i(Fl_Button*, void*);
   static void cb_Ok_flag(Fl_Button*, void*);
 public:
+  Fl_Value_Input *FL_x;
+  Fl_Value_Input *FL_y;
+  Fl_Value_Input *FL_z;
   Fl_Double_Window *thicknessWindow2;
   Fl_Button *Ok_th2;
 private:
@@ -2767,6 +2775,36 @@ private:
   inline void cb_CancelSaveNTW_i(Fl_Button*, void*);
   static void cb_CancelSaveNTW(Fl_Button*, void*);
 public:
+  Fl_Double_Window *lmkeditWindow;
+  Fl_Button *Refresh_lmk;
+private:
+  inline void cb_Refresh_lmk_i(Fl_Button*, void*);
+  static void cb_Refresh_lmk(Fl_Button*, void*);
+public:
+  Fl_Button *Cancel_lmk;
+private:
+  inline void cb_Cancel_lmk_i(Fl_Button*, void*);
+  static void cb_Cancel_lmk(Fl_Button*, void*);
+public:
+  Fl_Button *Ok_lmk;
+private:
+  inline void cb_Ok_lmk_i(Fl_Button*, void*);
+  static void cb_Ok_lmk(Fl_Button*, void*);
+public:
+  Fl_Value_Input *LMK_x;
+  Fl_Value_Input *LMK_y;
+  Fl_Value_Input *LMK_z;
+  Fl_Value_Input *LMK_Label;
+  Fl_Button *LMK_next;
+private:
+  inline void cb_LMK_next_i(Fl_Button*, void*);
+  static void cb_LMK_next(Fl_Button*, void*);
+public:
+  Fl_Button *LMK_preceding;
+private:
+  inline void cb_LMK_preceding_i(Fl_Button*, void*);
+  static void cb_LMK_preceding(Fl_Button*, void*);
+public:
   void show(int argc, char **argv);
   void cam_show();
   void cam_hide();
@@ -2880,5 +2918,8 @@ public:
   int Update_Chart_scale(vtkSmartPointer<vtkFloatArray> tab,float chart_height);
   void ntw_show();
   void ntw_hide();
+  void lmk_edit_show();
+  void lmk_edit_hide();
+  void lmk_update();
 };
 #endif
