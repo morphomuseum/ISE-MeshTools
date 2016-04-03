@@ -11627,46 +11627,46 @@ trix\" (old version correction)");
     NTWSaveWindow->end();
     NTWSaveWindow->resizable(NTWSaveWindow);
   } // Fl_Double_Window* NTWSaveWindow
-  { lmkeditWindow = new Fl_Double_Window(267, 127, "Edit 1 Selected landmark");
+  { lmkeditWindow = new Fl_Double_Window(311, 127, "Edit 1 Selected landmark");
     lmkeditWindow->color((Fl_Color)215);
     lmkeditWindow->user_data((void*)(this));
-    { Refresh_lmk = new Fl_Button(115, 90, 65, 25, "Refresh");
+    { Refresh_lmk = new Fl_Button(127, 90, 65, 25, "Refresh");
       Refresh_lmk->tooltip("Change Flag to first selected flag");
       Refresh_lmk->color((Fl_Color)134);
       Refresh_lmk->selection_color((Fl_Color)92);
       Refresh_lmk->callback((Fl_Callback*)cb_Refresh_lmk);
     } // Fl_Button* Refresh_lmk
-    { Cancel_lmk = new Fl_Button(180, 90, 65, 25, "Cancel");
+    { Cancel_lmk = new Fl_Button(192, 90, 65, 25, "Cancel");
       Cancel_lmk->color((Fl_Color)133);
       Cancel_lmk->selection_color((Fl_Color)132);
       Cancel_lmk->callback((Fl_Callback*)cb_Cancel_lmk);
     } // Fl_Button* Cancel_lmk
-    { Ok_lmk = new Fl_Button(50, 90, 65, 25, "Ok");
+    { Ok_lmk = new Fl_Button(62, 90, 65, 25, "Ok");
       Ok_lmk->tooltip("Change Flag to first selected flag");
       Ok_lmk->color((Fl_Color)134);
       Ok_lmk->selection_color((Fl_Color)92);
       Ok_lmk->callback((Fl_Callback*)cb_Ok_lmk);
     } // Fl_Button* Ok_lmk
-    { LMK_x = new Fl_Value_Input(40, 50, 50, 20, "x");
+    { LMK_x = new Fl_Value_Input(59, 50, 50, 20, "x");
       LMK_x->textsize(10);
     } // Fl_Value_Input* LMK_x
-    { LMK_y = new Fl_Value_Input(105, 50, 50, 20, "y");
+    { LMK_y = new Fl_Value_Input(124, 50, 50, 20, "y");
       LMK_y->textsize(10);
     } // Fl_Value_Input* LMK_y
-    { LMK_z = new Fl_Value_Input(171, 50, 50, 20, "z");
+    { LMK_z = new Fl_Value_Input(190, 50, 50, 20, "z");
       LMK_z->textsize(10);
     } // Fl_Value_Input* LMK_z
-    { LMK_Label = new Fl_Value_Input(152, 10, 50, 20, "Landmark number");
+    { LMK_Label = new Fl_Value_Input(171, 10, 50, 20, "Landmark number");
       LMK_Label->textsize(10);
       LMK_Label->when(FL_WHEN_NEVER);
     } // Fl_Value_Input* LMK_Label
-    { LMK_next = new Fl_Button(218, 10, 12, 20);
+    { LMK_next = new Fl_Button(237, 10, 12, 20);
       LMK_next->tooltip("Object list : move object(s) up");
       LMK_next->color((Fl_Color)55);
       LMK_next->image(image_s_right_16);
       LMK_next->callback((Fl_Callback*)cb_LMK_next);
     } // Fl_Button* LMK_next
-    { LMK_preceding = new Fl_Button(207, 10, 12, 20);
+    { LMK_preceding = new Fl_Button(226, 10, 12, 20);
       LMK_preceding->tooltip("Object list : move object(s) up");
       LMK_preceding->color((Fl_Color)55);
       LMK_preceding->image(image_s_left_16);

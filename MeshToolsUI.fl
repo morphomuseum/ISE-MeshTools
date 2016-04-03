@@ -12,7 +12,7 @@ class MeshToolsUI {open
 cam_hide();
 
 exit(0);}
-      private image {pixmap/s_face.gif} xywh {434 48 1100 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+      private image {pixmap/s_face.gif} xywh {-32000 -32000 1100 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {
         xywh {0 0 1100 50}
@@ -5653,17 +5653,17 @@ ntw_hide();}
     }
     Fl_Window lmkeditWindow {
       label {Edit 1 Selected landmark} open
-      image {pixmap/s_back_13.gif} xywh {799 231 267 127} type Double color 215 resizable non_modal visible
+      image {pixmap/s_back_13.gif} xywh {-32000 -32000 311 127} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_lmk {
         label Refresh
         callback {lmk_update();}
-        tooltip {Change Flag to first selected flag} xywh {115 90 65 25} color 134 selection_color 92
+        tooltip {Change Flag to first selected flag} xywh {127 90 65 25} color 134 selection_color 92
       }
       Fl_Button Cancel_lmk {
         label Cancel
         callback {lmk_edit_hide();}
-        xywh {180 90 65 25} color 133 selection_color 132
+        xywh {192 90 65 25} color 133 selection_color 132
       }
       Fl_Button Ok_lmk {
         label Ok
@@ -5675,35 +5675,35 @@ m[2] = LMK_z->value();
 MT->set_landmark_xyz(m);
 
 MT->redraw();}
-        tooltip {Change Flag to first selected flag} xywh {50 90 65 25} color 134 selection_color 92
+        tooltip {Change Flag to first selected flag} xywh {62 90 65 25} color 134 selection_color 92
       }
       Fl_Value_Input LMK_x {
         label x
-        xywh {40 50 50 20} textsize 10
+        xywh {59 50 50 20} textsize 10
       }
       Fl_Value_Input LMK_y {
         label y
-        xywh {105 50 50 20} textsize 10
+        xywh {124 50 50 20} textsize 10
       }
       Fl_Value_Input LMK_z {
         label z
-        xywh {171 50 50 20} textsize 10
+        xywh {190 50 50 20} textsize 10
       }
       Fl_Value_Input LMK_Label {
         label {Landmark number}
-        xywh {152 10 50 20} when 2 textsize 10
+        xywh {171 10 50 20} when 2 textsize 10
       }
       Fl_Button LMK_next {
         callback {MT->LMK_next();
 lmk_update();
-MT->redraw();}
-        tooltip {Object list : move object(s) up} image {pixmap/s_right_16.gif} xywh {218 10 12 20} color 55
+MT->redraw();} selected
+        tooltip {Object list : move object(s) up} image {pixmap/s_right_16.gif} xywh {237 10 12 20} color 55
       }
       Fl_Button LMK_preceding {
         callback {MT->LMK_preceding();
 lmk_update();
-MT->redraw();} selected
-        tooltip {Object list : move object(s) up} image {pixmap/s_left_16.gif} xywh {207 10 12 20} color 55
+MT->redraw();}
+        tooltip {Object list : move object(s) up} image {pixmap/s_left_16.gif} xywh {226 10 12 20} color 55
       }
     }
   }
