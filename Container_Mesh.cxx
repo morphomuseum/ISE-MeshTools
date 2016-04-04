@@ -141,7 +141,8 @@ OBJECT_LANDMARK* CONTAINER_MESH::Get_Selected_Landmark(int landmark_mode)
 	cpt = 0;
 	
 	cpt = this->OBJECTS_ROOT->Get_Landmark_Selected(landmark_mode);
-	if (cpt !=1)
+	//if (cpt !=1)
+	if (cpt < 1)
 	{return p;}
 	else 
 	{return this->OBJECTS_ROOT->Get_Selected_Landmark(landmark_mode);}
@@ -1187,6 +1188,7 @@ void CONTAINER_MESH::Stick_Selected_Landmarks_On_Surfaces()
 	
 }
 
+
 OBJECT_LANDMARK * CONTAINER_MESH::CreateLandmark(float x, float y, float z, float nx, float ny, float nz, int landmark_mode)
 {
 	
@@ -1341,6 +1343,23 @@ OBJECT_LANDMARK * CONTAINER_MESH::CreateLandmark(float x, float y, float z, floa
 			return My_Landmark;
 }
 
+void CONTAINER_MESH::create_landmark_at_xyz(float m[3], int type)
+{
+	OBJECT_LANDMARK * My_Landmark;
+
+	float nxx, nyy, nzz;
+	nxx = 1;
+	nyy = 0;
+	nzz = 0;
+	My_Landmark = NULL;
+	My_Landmark = CreateLandmark(m[0], m[1], m[2], nxx, nyy, nzz, type);
+	if (My_Landmark != NULL)
+	{
+		this->Add_Landmark(My_Landmark, type);
+
+	}
+	
+}
 
 void CONTAINER_MESH::Mesh_CreateLandmarkAtMouse(float x, float y, int landmark_mode)
 {

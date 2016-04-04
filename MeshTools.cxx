@@ -4048,7 +4048,29 @@ void MeshTools::LMK_next()
 		My_LMK = Cont_Mesh.Get_Selected_Landmark(1); 
 		lmk_type = 1;
 	}
-	if (My_LMK != NULL)
+
+	if (My_LMK == NULL)
+	{
+		// means that no landmark is currently selected... try to find whether at least a landmark exists!
+		int num_norm = Cont_Mesh.Get_Landmark_Number(0);
+		if (num_norm > 0) 
+		{
+			
+			k = Cont_Mesh.landmarkafter(0, 0);
+			k->selected = 1;
+		}
+		else 
+		{
+			int num_target = Cont_Mesh.Get_Landmark_Number(1);
+			if (num_target > 0)
+			{
+				k = Cont_Mesh.landmarkafter(0, 1);
+				k->selected = 1;
+			}
+
+		}
+	}
+	else
 	{
 		int ind = My_LMK->landmark_index;
 
@@ -4070,6 +4092,7 @@ void MeshTools::LMK_next()
 
 	}
 	
+	
 
 }
 void MeshTools::LMK_preceding() { 
@@ -4083,7 +4106,29 @@ void MeshTools::LMK_preceding() {
 		My_LMK = Cont_Mesh.Get_Selected_Landmark(1);
 		lmk_type = 1;
 	}
-	if (My_LMK != NULL)
+
+	if (My_LMK == NULL)
+	{
+		// means that no landmark is currently selected... try to find whether at least a landmark exists!
+		int num_norm = Cont_Mesh.Get_Landmark_Number(0);
+		if (num_norm > 0)
+		{
+
+			k = Cont_Mesh.landmarkbefore(num_norm+1, 0);
+			k->selected = 1;
+		}
+		else
+		{
+			int num_target = Cont_Mesh.Get_Landmark_Number(1);
+			if (num_target > 0)
+			{
+				k = Cont_Mesh.landmarkbefore(num_target+1, 1);
+				k->selected = 1;
+			}
+
+		}
+	}
+	else
 	{
 		int ind = My_LMK->landmark_index;
 
@@ -4497,6 +4542,10 @@ void MeshTools::Mesh_Select(int x1, int x2, int y1, int y2, int select_mode)
 	//std::cout<<"Mesh Select done"<<std::endl;
 	this->redraw();
 
+}
+void MeshTools::create_landmark_at_xyz(float m[3], int type)
+{
+	Cont_Mesh.create_landmark_at_xyz(m, type);
 }
 void MeshTools::Mesh_CreateLandmarkAtMouse(int x, int y)
 {
@@ -5006,9 +5055,9 @@ void MeshTools::Adapt_FOV_depth_before_draw()
 	{
 		camera.far1 =  10*zoom; // camera.far is a distance rather than a position... no g_mean_all[2]
 		camera.tz =  -g_mean_all[2] - 5*zoom;
-		cout << "camera.tz=" << camera.tz<<endl;
-		cout << "g_meanall[2]=" << g_mean_all[2] << endl;
-		cout << "zoom=" << zoom << endl;
+		//cout << "camera.tz=" << camera.tz<<endl;
+		//cout << "g_meanall[2]=" << g_mean_all[2] << endl;
+		//cout << "zoom=" << zoom << endl;
 
 	}
 }
@@ -5134,11 +5183,11 @@ void MeshTools::Adjust_landmark_rendering_size()
 {
 	//g_landmark_size = Cont_Mesh.dmean / 50;
 	Cont_Mesh.Compute_Global_MinMax();
-	std::cout << "" << std::endl;
-	std::cout << "min et max X:" << g_minx << "   |    " << g_maxx << std::endl;
-	std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
-	std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
-	std::cout << "" << std::endl;
+	//std::cout << "" << std::endl;
+	//std::cout << "min et max X:" << g_minx << "   |    " << g_maxx << std::endl;
+	//std::cout << "min et max Y:" << g_miny << "   |    " << g_maxy << std::endl;
+	//std::cout << "min et max Z:" << g_minz << "   |    " << g_maxz << std::endl;
+	//std::cout << "" << std::endl;
 
 	float mean_size = 0;
 	

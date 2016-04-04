@@ -375,6 +375,7 @@ void writeFloat4b(float value, FILE *filein)
 	void Mesh_Select(int x, int y);
 	void Mesh_MoveLandmarkAtMouse(int x, int y);
 	void Mesh_CreateLandmarkAtMouse(int x, int y);
+	void create_landmark_at_xyz(float m[3], int type);
 	void Mesh_Add_landmark();
 	
 	void Mesh_invert();
