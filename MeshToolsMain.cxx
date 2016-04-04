@@ -99,8 +99,12 @@ int main(int argc, char **argv) {
 	// camera now can rotate around objects center of mass (and not only around 0,0,0), 
 	// automatically adjustable landmark display size
 	// project files now include tags/landmarks/flags/curves/orientation labels/ 
-	
-	strcpy (Version,"1.3");	
+	// 1.3.1 => Zoom correction (should function correctly with very large and very small objects)
+	//       => Colours should be saved correctly now within .PLY files
+	//       => Possibility to edit landmarks coordinate
+	//       => Possibility to add landmarks at user-defined xyz coordinates.
+
+	strcpy (Version,"1.3.1");	
  
 	printf("Version : %s\n",Version);
 	

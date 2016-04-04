@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0302 
+version 1.0303 
 header_name {MeshToolsUI.h} 
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
@@ -12,13 +12,13 @@ class MeshToolsUI {open
 cam_hide();
 
 exit(0);}
-      private image {pixmap/s_face.gif} xywh {409 121 1000 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 resizable visible
+      private image {pixmap/s_face.gif} xywh {20 206 1100 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {
-        xywh {0 0 1002 50}
+        xywh {0 0 1100 57}
       } {
         Fl_Group Unresizable {open
-          xywh {0 0 949 50}
+          xywh {0 0 1081 50}
         } {
           Fl_Button Del {
             callback {int test;
@@ -1074,106 +1074,106 @@ Source_mode->value(0);
 Target_mode->value(0);
 MT->Landmark_Mode(2);
 MT->redraw();}
-            tooltip {"Flag" landmark mode} image {./pixmap/Flag01.png} xywh {150 25 25 23} color 55
+            tooltip {"Flag" landmark mode} image {./pixmap/Flag01.png} xywh {200 25 25 23} color 55
           }
           Fl_Button TRI_sort_0 {
             callback {Displaymode(4);
 //MT->Mesh_Tri_Sort(0);
 //MT->redraw();}
-            tooltip {Tansparency: sort all vertices once from back to front} image {./pixmap/Sort_vertices01.gif} xywh {175 25 25 23} color 55
+            tooltip {Tansparency: sort all vertices once from back to front} image {./pixmap/Sort_vertices01.gif} xywh {250 25 25 23} color 55
           }
           Fl_Button TRI_sort_1 {
             callback {Displaymode(5);
 //MT->Mesh_Tri_Sort(1);
 //MT->redraw();}
-            tooltip {Tansparency: sort all vertices once from front  to back} image {./pixmap/Sort_vertices02.gif} xywh {200 25 25 23} color 55
+            tooltip {Tansparency: sort all vertices once from front  to back} image {./pixmap/Sort_vertices02.gif} xywh {275 25 25 23} color 55
           }
           Fl_Button Grid {
             callback {MT->ShowGrid();
 MT->redraw();}
-            tooltip {Show/hide grid} image {./pixmap/grid3.gif} xywh {225 25 25 23} color 55 selection_color 23
+            tooltip {Show/hide grid} image {./pixmap/grid3.gif} xywh {370 25 25 23} color 55 selection_color 23
           }
           Fl_Button Bt_move_up {
             callback {MT->Object_Move_Up();
 MT->Landmark_Move_Up();
 MT->redraw();}
-            tooltip {Object list : move object(s) up} image {./pixmap/s_dessous_17.gif} xywh {301 25 20 12} color 55
+            tooltip {Object list : move object(s) up} image {./pixmap/s_dessous_17.gif} xywh {350 25 20 12} color 55
           }
           Fl_Button Bt_move_down {
             callback {MT->Object_Move_Down();
 MT->Landmark_Move_Down();
 MT->redraw();}
-            tooltip {Object list : move object(s) down} image {./pixmap/s_dessus_17.gif} xywh {301 37 20 11} color 55 align 16
+            tooltip {Object list : move object(s) down} image {./pixmap/s_dessus_17.gif} xywh {350 37 20 11} color 55 align 16
           }
           Fl_Button Bt_light_right {
             callback {MT->SetLightPosition(5);
 MT->redraw();}
-            tooltip {Lightning : from right side} image {./pixmap/s_right_17.gif} xywh {321 25 25 23} color 55 align 64
+            tooltip {Lightning : from right side} image {./pixmap/s_right_17.gif} xywh {445 25 25 23} color 55 align 64
           }
           Fl_Button Bt_light_left {
             callback {MT->SetLightPosition(6);
 MT->redraw();}
-            tooltip {Lightning : from left side} image {./pixmap/s_left_17.gif} xywh {346 25 25 23} color 55 align 80
+            tooltip {Lightning : from left side} image {./pixmap/s_left_17.gif} xywh {470 25 25 23} color 55 align 80
           }
           Fl_Button Bt_light_face {
             callback {MT->SetLightPosition(1);
 MT->redraw();}
-            tooltip {Lightning : from front side} image {./pixmap/s_face_17.gif} xywh {370 25 25 23} color 55 align 144
+            tooltip {Lightning : from front side} image {./pixmap/s_face_17.gif} xywh {495 25 25 23} color 55 align 144
           }
           Fl_Button Bt_light_back {
             callback {MT->SetLightPosition(2);
 MT->redraw();}
-            tooltip {Lightning : from backside} image {./pixmap/s_back_18.gif} xywh {395 25 25 23} color 55 align 128
+            tooltip {Lightning : from backside} image {./pixmap/s_back_18.gif} xywh {520 25 25 23} color 55 align 128
           }
           Fl_Button Bt_light_above {
             callback {MT->SetLightPosition(4);
 MT->redraw();}
-            tooltip {Lightning : from above} image {./pixmap/s_dessus_18.gif} xywh {420 25 25 23} color 55 align 16
+            tooltip {Lightning : from above} image {./pixmap/s_dessus_18.gif} xywh {545 25 25 23} color 55 align 16
           }
           Fl_Button Bt_light_below {
             callback {MT->SetLightPosition(3);
 MT->redraw();}
-            tooltip {Lightning: from below} image {./pixmap/s_dessous_18.gif} xywh {445 25 25 23} color 55
+            tooltip {Lightning: from below} image {./pixmap/s_dessous_18.gif} xywh {570 25 25 23} color 55
           }
           Fl_Button Bt_pos_left {
             callback {MT->Set_Grid_Plane(1);
 MT->SetPosition(5);
 MT->redraw();}
-            tooltip {Move camera : view object from left side} image {./pixmap/left2.gif} xywh {494 25 25 23} color 55 align 80
+            tooltip {Move camera : view object from left side} image {./pixmap/left2.gif} xywh {620 25 25 23} color 55 align 80
           }
           Fl_Button Bt_pos_right {
             callback {MT->Set_Grid_Plane(1);
 MT->SetPosition(6);
 MT->redraw();}
-            tooltip {Move camera : view object from right side} image {./pixmap/right2.gif} xywh {470 25 24 23} color 55 align 64
+            tooltip {Move camera : view object from right side} image {./pixmap/right2.gif} xywh {595 25 24 23} color 55 align 64
           }
           Fl_Button Bt_pos_face {
             callback {MT->Set_Grid_Plane(0);
 MT->SetPosition(1);
 MT->redraw();}
-            tooltip {Move camera : view object from font side} image {./pixmap/front2.gif} xywh {517 25 25 23} color 55 align 144
+            tooltip {Move camera : view object from font side} image {./pixmap/front2.gif} xywh {645 25 25 23} color 55 align 144
           }
           Fl_Button Bt_pos_back {
             callback {MT->Set_Grid_Plane(0);
 MT->SetPosition(2);
 MT->redraw();}
-            tooltip {Move camera : view object from back side} image {./pixmap/back2.gif} xywh {542 25 25 23} color 55 align 128
+            tooltip {Move camera : view object from back side} image {./pixmap/back2.gif} xywh {670 25 25 23} color 55 align 128
           }
           Fl_Button Bt_pos_above {
             callback {MT->Set_Grid_Plane(2);
 MT->SetPosition(4);
 MT->redraw();}
-            tooltip {Move camera : view object from above} image {./pixmap/above2.gif} xywh {567 25 25 23} color 55
+            tooltip {Move camera : view object from above} image {./pixmap/above2.gif} xywh {695 25 25 23} color 55
           }
           Fl_Button Bt_pos_below {
             callback {MT->Set_Grid_Plane(2);
 MT->SetPosition(3);
 MT->redraw();}
-            tooltip {Move camera : view object from below} image {./pixmap/below2.gif} xywh {590 25 25 23} color 55
+            tooltip {Move camera : view object from below} image {./pixmap/below2.gif} xywh {720 25 25 23} color 55
           }
           Fl_Button Matrix_button {
             callback {mat_show();}
-            tooltip {Edit first selected object position and aspect matrices} image {./pixmap/mat.gif} xywh {615 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected object position and aspect matrices} image {./pixmap/mat.gif} xywh {325 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_button {
             callback {//((Fl_Button *)o)->value(1);
@@ -1187,15 +1187,15 @@ MT->Change_Scalars_Display_Mode();
 MT->SetColorScaleId(0);// calls update_rgb
 MT->Update_RGB();
 MT->redraw();}
-            tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {640 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Draw / Stop drawing object scalars as colour scales} image {./pixmap/show_color_scale.gif} xywh {745 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Color_Scale_Show {
             callback {sc_show();}
-            tooltip {Open Scalar Window} image {./pixmap/edit_color_scale.gif} xywh {665 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Open Scalar Window} image {./pixmap/edit_color_scale.gif} xywh {770 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Show_Tag_Window2 {
             callback {tags_show();}
-            tooltip {Show tag window} image {./pixmap/Show_Tag_Window2.gif} xywh {715 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Show tag window} image {./pixmap/Show_Tag_Window2.gif} xywh {820 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Tag_mode_off {
             callback {((Fl_Button *)o)->value(1);
@@ -1205,7 +1205,7 @@ MT->Desactivate_Tags_Display_Mode();
 //MT->SetColorScaleId(1);
 MT->SetModeTool(0);
 MT->redraw();}
-            tooltip {Normal select mode : selected surfaces are grey / unselected ones are colored} image {./pixmap/Normal_select_mode.gif} xywh {740 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
+            tooltip {Normal select mode : selected surfaces are grey / unselected ones are colored} image {./pixmap/Normal_select_mode.gif} xywh {845 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
           }
           Fl_Button Tag_mode_on {
             callback {((Fl_Button *)o)->value(1);
@@ -1217,7 +1217,7 @@ MT->Set_Active_Scalar(-1);
 
 //MT->SetModeTool(0);
 MT->redraw();}
-            tooltip {Tag select mode : selected surfaces are colored / unselected ones are grey} image {./pixmap/Tag_select_mode.gif} xywh {767 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Tag select mode : selected surfaces are colored / unselected ones are grey} image {./pixmap/Tag_select_mode.gif} xywh {870 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Pencil {
             callback {((Fl_Button *)o)->value(1);
@@ -1228,7 +1228,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Pencil();
 MT->redraw();}
-            tooltip {Activate pencil tagging mode} image {./pixmap/pencil.gif} xywh {792 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
+            tooltip {Activate pencil tagging mode} image {./pixmap/pencil.gif} xywh {895 25 25 23} down_box DOWN_BOX value 1 color 55 selection_color 47 when 1
           }
           Fl_Button Magic_Wand {
             callback {((Fl_Button *)o)->value(1);
@@ -1239,7 +1239,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Magic_Wand();
 MT->redraw();}
-            tooltip {Activate magic wand tagging mode} image {./pixmap/magic_wand.gif} xywh {817 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Activate magic wand tagging mode} image {./pixmap/magic_wand.gif} xywh {920 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Flood_Fill {
             callback {((Fl_Button *)o)->value(1);
@@ -1250,7 +1250,7 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->Activate_Flood_Fill();
 MT->redraw();}
-            tooltip {Activateflood fill tagging mode} image {./pixmap/Flood_fill.gif} xywh {842 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Activateflood fill tagging mode} image {./pixmap/Flood_fill.gif} xywh {945 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Lasso_plus {
             callback {MT->Set_Active_Scalar(-1);
@@ -1258,11 +1258,11 @@ MT->Activate_Tags_Display_Mode();
 MT->SetColorScaleId(-1);
 MT->SetModeTool(2);
 MT->redraw();}
-            tooltip {Lasso tag + : draw a lasso contour using several left clicks + a final right click. Then either middle click, or press "t"+ left or right click} image {./pixmap/Lasso_plus.gif} xywh {868 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Lasso tag + : draw a lasso contour using several left clicks + a final right click. Then either middle click, or press "t"+ left or right click} image {./pixmap/Lasso_plus.gif} xywh {970 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Edit_flag {
             callback {flag_show();}
-            tooltip {Edit first selected flag label, length and colour} image {pixmap/Flag02.png} xywh {893 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected flag label, length and colour} image {pixmap/Flag02.png} xywh {225 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Show_Tag_Window {
             callback {if (((Fl_Button *)o)->value()==0)
@@ -1276,16 +1276,16 @@ MT->SetColorScaleId(-1);//may call update_rgb
 MT->Change_Tags_Display_Mode();
 MT->Update_RGB();
 MT->redraw();}
-            tooltip {Display tags} image {./pixmap/Show_Tag_Window.gif} xywh {691 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
+            tooltip {Display tags} image {./pixmap/Show_Tag_Window.gif} xywh {795 25 25 23} down_box DOWN_BOX color 55 selection_color 47 when 1
           }
           Fl_Button Edit_name {
             callback {name_show();}
-            tooltip {Edit first selected surface name} image {./pixmap/name.png} xywh {916 25 25 23} color 55 selection_color 47 when 1
+            tooltip {Edit first selected surface name} image {./pixmap/name.png} xywh {300 25 25 23} color 55 selection_color 47 when 1
           }
           Fl_Button Orientation {
             callback {MT->ShowOrientation();
 MT->redraw();}
-            tooltip {Show/hide orientation} image {./pixmap/grid2.gif} xywh {276 25 25 23} color 55 selection_color 23
+            tooltip {Show/hide orientation} image {./pixmap/grid2.gif} xywh {420 25 25 23} color 55 selection_color 23
           }
           Fl_Button Move_cam_centre_of_mass {
             callback {if (((Fl_Button *)o)->value()==0)
@@ -1304,23 +1304,31 @@ MT->Cam_Centre_At_Landmark(-1);
 }
 MT->save_ini_param();
 MT->redraw();}
-            tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {250 25 25 23} color 55 selection_color 23
+            tooltip {Move camera center at origin or centre of mass of all objects} image {./pixmap/Move_cam.gif} xywh {395 25 25 23} color 55 selection_color 23
+          }
+          Fl_Button Edit_lmk {
+            callback {lmk_edit_show();}
+            tooltip {Edit first selected landmark coordinates} image {pixmap/Lmk_edit.png} xywh {150 25 25 23} color 55 selection_color 47 when 1
+          }
+          Fl_Button Set_lmk_xyz {
+            callback {lmk_xyz_show();}
+            tooltip {Edit first selected landmark coordinates} image {pixmap/Lmk_xyz.png} xywh {175 25 25 23} color 55 selection_color 47 when 1
           }
         }
         Fl_Group Resizable {
-          xywh {980 0 22 50} resizable
+          xywh {1081 0 19 50} resizable
         } {}
       }
-      Fl_Group Bottom {open
-        xywh {0 50 1000 650} resizable
+      Fl_Group Bottom {
+        xywh {0 50 1100 650} resizable
       } {
         Fl_Box MT {
           label {MeshTools 3D window}
-          xywh {40 50 940 610} when 1 resizable
+          xywh {40 50 1040 610} when 1 resizable
           code0 {\#include "MeshTools.h"}
           class MeshTools
         }
-        Fl_Group WW {open
+        Fl_Group WW {
           xywh {0 50 40 650} color 207
         } {
           Fl_Group WW_unresizable {open
@@ -1361,17 +1369,17 @@ MT->redraw();}
             xywh {0 660 40 40} resizable
           } {}
         }
-        Fl_Group EE {open
-          xywh {980 50 20 650} align 0
+        Fl_Group EE {
+          xywh {980 50 120 650} align 0
         } {
           Fl_Group EE_unresizable {open
-            xywh {980 50 20 610}
+            xywh {980 50 120 610}
           } {
             Fl_Slider zpan {
               label cp
               callback {MT->panz(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Displace clipping plane} xywh {981 217 19 239} type {Vert Knob} color 92 labelsize 7 minimum -100 maximum 100 step 0.1
+              tooltip {Displace clipping plane} xywh {1080 217 19 239} type {Vert Knob} color 92 labelsize 7 minimum -100 maximum 100 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
@@ -1379,7 +1387,7 @@ MT->redraw();}
               label rZ
               callback {MT->rollz(((Fl_Slider *)o)->value());
 MT->redraw();}
-              tooltip {Rotate camera along viewing z axis} xywh {981 51 19 152} type {Vert Knob} color 92 minimum -45 maximum 45 step 0.1
+              tooltip {Rotate camera along viewing z axis} xywh {1080 51 19 152} type {Vert Knob} color 92 minimum -45 maximum 45 step 0.1
               code0 {\#include "SpecialSlider2.h"}
               class SpecialSlider2
             }
@@ -1387,7 +1395,7 @@ MT->redraw();}
               label Zoom
               callback {MT->SetZoom(((Fl_Roller *)o)->value());
 MT->redraw();}
-              tooltip Zoom xywh {981 505 19 145} box DOWN_BOX color 55 selection_color 255 labelsize 7 align 6 minimum -50 maximum 50 step 0.5
+              tooltip Zoom xywh {1080 505 19 145} box DOWN_BOX color 55 selection_color 255 labelsize 7 align 6 minimum -50 maximum 50 step 0.5
               code0 {\#include "SpecialRoller4.h"}
               class SpecialRoller4
             }
@@ -1411,7 +1419,7 @@ MT->cam_validate(
 );
 
 MT->redraw();}
-              tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {980 464 20 20}
+              tooltip {Displace clipping plane to z=0} image {pixmap/Clipping_plane_z0.png} xywh {1080 464 20 20}
             }
             Fl_Button CP_normal_cp2 {
               callback {float tz = -5*MT->cam_getzoom();
@@ -1434,14 +1442,14 @@ MT->cam_validate(
        );
 
 MT->redraw();}
-              tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {980 484 20 20}
+              tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {1080 484 20 20}
             }
           }
           Fl_Group EE_resizable {
             xywh {980 660 20 40} resizable
           } {}
         }
-        Fl_Group SS {open
+        Fl_Group SS {
           xywh {40 659 940 41} color 207
         } {
           Fl_Group SS_unresizable {open
@@ -1470,8 +1478,8 @@ MT->redraw();}
       }
     }
     Fl_Window camWindow {
-      label {Camera options} open
-      image {pixmap/s_back_13.gif} xywh {24 46 187 315} type Double color 174 resizable non_modal visible
+      label {Camera options}
+      image {pixmap/s_back_13.gif} xywh {28 50 185 318} type Double color 174 hide resizable non_modal
     } {
       Fl_Value_Input Cam_near {
         label {Camera near :}
@@ -1580,7 +1588,7 @@ Cam_tx->value(),
 Cam_ty->value(),
 Cam_tz->value()
 );
-MT->redraw();} selected
+MT->redraw();}
         tooltip {Replace clipping place normally} image {pixmap/Clipping_plane_normal.png} xywh {117 252 25 23} color 84 selection_color 92 align 128
       }
     }
@@ -1914,7 +1922,7 @@ options_lm_hide();}
     }
     Fl_Window matWindow {
       label {Object Matrix}
-      image {pixmap/s_back_13.gif} xywh {16 39 252 350} type Double color 215 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {451 249 239 339} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_mat {
         label Ok
@@ -4239,12 +4247,12 @@ deleteregion_hide();}
     }
     Fl_Window flagWindow {
       label {Edit 1 Selected Flag}
-      image {pixmap/s_back_13.gif} xywh {1128 188 237 179} type Double color 215 hide resizable non_modal
+      image {pixmap/s_back_13.gif} xywh {1117 200 263 198} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_flag {
         label Refresh
         callback {flag_update();}
-        tooltip {Change Flag to first selected flag} xywh {87 140 65 25} color 134 selection_color 92
+        tooltip {Change Flag to first selected flag} xywh {115 166 65 25} color 134 selection_color 92
       }
       Fl_Input Flag_Label {
         label {Label:}
@@ -4253,7 +4261,7 @@ deleteregion_hide();}
       Fl_Button Cancel_flag {
         label Cancel
         callback {flag_hide();}
-        xywh {151 140 65 25} color 133 selection_color 132
+        xywh {179 166 65 25} color 133 selection_color 132
       }
       Fl_Value_Input Flag_Length {
         label {Flag length (mm):}
@@ -4278,10 +4286,27 @@ MT->redraw();}
 
 std::string label;
 label = Flag_Label->value();
-
+float m[3];
+m[0] = FL_x->value();
+m[1] = FL_y->value();
+m[2] = FL_z->value();
+MT->set_flag_xyz(m);
 MT->set_flag(label, Flag_Length->value());
+
 MT->redraw();}
-        tooltip {Change Flag to first selected flag} xywh {23 140 65 25} color 134 selection_color 92
+        tooltip {Change Flag to first selected flag} xywh {51 166 65 25} color 134 selection_color 92
+      }
+      Fl_Value_Input FL_x {
+        label x
+        xywh {53 135 50 20} textsize 10
+      }
+      Fl_Value_Input FL_y {
+        label y
+        xywh {118 135 50 20} textsize 10
+      }
+      Fl_Value_Input FL_z {
+        label z
+        xywh {184 135 50 20} textsize 10
       }
     }
     Fl_Window thicknessWindow2 {
@@ -5567,10 +5592,10 @@ color_data->activate();
     }
     Fl_Window NTWSaveWindow {
       label {NTW save options}
-      xywh {462 192 740 123} type Double color 215 hide resizable non_modal
+      xywh {466 196 732 115} type Double color 215 hide resizable non_modal
     } {
       Fl_Group NTW_O_RB {
-        label {Orientation labels} open
+        label {Orientation labels}
         xywh {12 25 113 71}
       } {
         Fl_Round_Button NTW_O_0 {
@@ -5630,6 +5655,109 @@ ntw_hide();}
         xywh {341 90 60 25} color 174 selection_color 133
       }
     }
+    Fl_Window lmkeditWindow {
+      label {Edit 1 Selected landmark}
+      image {pixmap/s_back_13.gif} xywh {-32000 -32000 311 127} type Double color 215 hide resizable non_modal
+    } {
+      Fl_Button Refresh_lmk {
+        label Refresh
+        callback {lmk_update();}
+        tooltip {Change Flag to first selected flag} xywh {127 90 65 25} color 134 selection_color 92
+      }
+      Fl_Button Cancel_lmk {
+        label Cancel
+        callback {lmk_edit_hide();}
+        xywh {192 90 65 25} color 133 selection_color 132
+      }
+      Fl_Button Ok_lmk {
+        label Ok
+        callback {int ok;
+float m[3];
+m[0] = LMK_x->value();
+m[1] = LMK_y->value();
+m[2] = LMK_z->value();
+MT->set_landmark_xyz(m);
+
+MT->redraw();}
+        tooltip {Change Flag to first selected flag} xywh {62 90 65 25} color 134 selection_color 92
+      }
+      Fl_Value_Input LMK_x {
+        label x
+        xywh {59 50 50 20} textsize 10
+      }
+      Fl_Value_Input LMK_y {
+        label y
+        xywh {124 50 50 20} textsize 10
+      }
+      Fl_Value_Input LMK_z {
+        label z
+        xywh {190 50 50 20} textsize 10
+      }
+      Fl_Value_Input LMK_Label {
+        label {Landmark number}
+        xywh {171 10 50 20} when 2 textsize 10
+      }
+      Fl_Button LMK_next {
+        callback {MT->LMK_next();
+lmk_update();
+MT->redraw();}
+        tooltip {Object list : move object(s) up} image {pixmap/s_right_16.gif} xywh {237 10 12 20} color 55
+      }
+      Fl_Button LMK_preceding {
+        callback {MT->LMK_preceding();
+lmk_update();
+MT->redraw();}
+        tooltip {Object list : move object(s) up} image {pixmap/s_left_16.gif} xywh {226 10 12 20} color 55
+      }
+    }
+    Fl_Window lmkxyzWindow {
+      label {Create landmark at XYZ} open
+      image {pixmap/s_back_13.gif} xywh {10 30 261 189} type Double color 215 hide resizable non_modal
+    } {
+      Fl_Button Cancel_lmk_xyz {
+        label Close
+        callback {lmk_xyz_hide();} selected
+        xywh {155 135 65 25} color 133 selection_color 132
+      }
+      Fl_Button Ok_lmk_xyz {
+        label Ok
+        callback {int ok;
+int type=0;
+float m[3];
+m[0] = LMKXYZ_x->value();
+m[1] = LMKXYZ_y->value();
+m[2] = LMKXYZ_z->value();
+if (LMK_XYZ_Target->value() == 1){type = 1;}
+MT->create_landmark_at_xyz(m, type);
+MT->redraw();}
+        tooltip {Change Flag to first selected flag} xywh {40 135 65 25} color 134 selection_color 92
+      }
+      Fl_Value_Input LMKXYZ_x {
+        label x
+        xywh {45 96 50 20} textsize 10
+      }
+      Fl_Value_Input LMKXYZ_y {
+        label y
+        xywh {110 96 50 20} textsize 10
+      }
+      Fl_Value_Input LMKXYZ_z {
+        label z
+        xywh {176 96 50 20} textsize 10
+      }
+      Fl_Group LMK_XYZ_TYPE {
+        label {Landmark type} open
+        xywh {50 39 118 66}
+      } {
+        Fl_Round_Button LMK_XYZ_Normal {
+          label {Normal landmark}
+          xywh {50 39 69 23} type Radio down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Round_Button LMK_XYZ_Target {
+          label {Target landmark}
+          xywh {50 57 70 22} type Radio down_box ROUND_DOWN_BOX
+        }
+      }
+    }
   }
   Function {show(int argc, char **argv)} {} {
     code {\#ifdef WIN32
@@ -5654,8 +5782,7 @@ Cam_tw->value(MT->cam_gettw());} {}
   Function {cam_hide()} {} {
     code {camWindow->hide();} {}
   }
-  Function {options_lc_show()} {open
-  } {
+  Function {options_lc_show()} {} {
     code {options_lc_update();
 
 opt_lc_Window->show();} {}
@@ -5663,8 +5790,7 @@ opt_lc_Window->show();} {}
   Function {options_lc_hide()} {} {
     code {opt_lc_Window->hide();} {}
   }
-  Function {options_lc_update()} {open
-  } {
+  Function {options_lc_update()} {} {
     code {Fl_Color c;
 uchar r,g,b;
 
@@ -6007,8 +6133,7 @@ TF100pixels_in_mm_value->value(MT->Get_100pixels_in_mm());} {}
   Function {decimate_hide()} {} {
     code {decimateWindow->hide();} {}
   }
-  Function {lmk_show()} {open
-  } {
+  Function {lmk_show()} {} {
     code {LMKSaveNormal->show();} {}
   }
   Function {lmk_hide()} {} {
@@ -6026,8 +6151,7 @@ TF100pixels_in_mm_value->value(MT->Get_100pixels_in_mm());} {}
   Function {thickness_hide()} {} {
     code {thicknessWindow->hide();} {}
   }
-  Function {sc_show()} {open
-  } {
+  Function {sc_show()} {} {
     code {scWindow->show();
 std::vector<std::string> scalar_list= MT->Get_Scalar_List();
 sc_active->clear();
@@ -6490,8 +6614,7 @@ extractrangeWindow->show();} {}
   Function {deleteregion_hide()} {} {
     code {deleteregionWindow->hide();} {}
   }
-  Function {flag_show()} {open
-  } {
+  Function {flag_show()} {} {
     code {flagWindow->show();
 flag_update();
 /*label = MT->get_flag();
@@ -6507,9 +6630,17 @@ Flag_Colour->redraw();*/} {}
   Function {flag_hide()} {} {
     code {flagWindow->hide();} {}
   }
-  Function {flag_update()} {open
-  } {
+  Function {flag_update()} {} {
     code {std::string label ="Flag";
+float m[3];
+m[0]=0;
+m[1]=0;
+m[2]=0;
+MT->get_flag_xyz(m);
+	FL_x->value(m[0]);
+	FL_y->value(m[1]);
+	FL_z->value(m[2]);
+
 label = MT->get_flag();
 Flag_Label->value(label.c_str());
 Flag_Length->value(MT->get_flag_length());
@@ -6936,12 +7067,46 @@ for(int i=0;i<size;i++){
 
 return chart_height/max;} {}
   }
-  Function {ntw_show()} {open
-  } {
+  Function {ntw_show()} {} {
     code {NTWSaveWindow->show();} {}
   }
-  Function {ntw_hide()} {open
-  } {
+  Function {ntw_hide()} {} {
     code {NTWSaveWindow->hide();} {}
+  }
+  Function {lmk_edit_show()} {} {
+    code {lmkeditWindow->show();
+lmk_update();
+/*label = MT->get_flag();
+Flag_Label->value(label.c_str());
+Flag_Length->value(MT->get_flag_length());
+uchar r,g,b;
+Fl_Color c;
+MT->get_flag_color(&r,&g,&b);
+c = fl_rgb_color(r,g,b);
+Flag_Colour->color(c);
+Flag_Colour->redraw();*/} {}
+  }
+  Function {lmk_edit_hide()} {} {
+    code {lmkeditWindow->hide();} {}
+  }
+  Function {lmk_update()} {} {
+    code {std::string label ="Flag";
+int lmk_num=0;
+float m[3];
+m[0]=0;
+m[1]=0;
+m[2]=0;
+lmk_num=MT->get_landmark_xyz(m);
+	LMK_x->value(m[0]);
+	LMK_y->value(m[1]);
+	LMK_z->value(m[2]);
+	
+LMK_Label->value(lmk_num);} {}
+  }
+  Function {lmk_xyz_show()} {} {
+    code {lmkxyzWindow->show();} {}
+  }
+  Function {lmk_xyz_hide()} {} {
+    code {lmkxyzWindow->hide();} {}
   }
 } 

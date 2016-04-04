@@ -516,7 +516,7 @@ void get_camera_transform_matrix (glMatrix cam)
 	glLoadIdentity();
    glTranslated(tx, ty, tz);   //M2
    glTranslated(camera.tx, camera.ty, camera.tz);   //M2
-   glTranslated(camera.atx, camera.aty, camera.atz); //M1
+   glTranslated(camera.atx, camera.aty, camera.atz); //M1 Rotation center... 
 glRotated(-90, 0.0, 0.0, 1.0);
    glRotated(-90, 0.0, 1.0, 0.0);
   

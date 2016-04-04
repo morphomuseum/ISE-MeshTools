@@ -65,6 +65,7 @@ int GetNumtri();
 void MergeObjects(vtkSmartPointer<vtkAppendPolyData> mergedObjects, int mode);
 void SC_calc_depth();
 void SC_calc_mean();
+
 void SC_calc_thickness(float thickness_max_distance, Fl_Double_Window* thicknessWindow);
 
 void Mesh_init_Mat();

@@ -68,6 +68,7 @@ public:
 
 	void Landmark_Move_Down();
 	void Landmark_Move_Up();
+
 	int Is_Segment_Selected (int seg);
 	std::string Get_Active_Scalar_Name();
 	std::string Get_Scalar_Name(int scalar);
@@ -103,6 +104,7 @@ public:
 	float scalars_get_min();
 	float scalars_get_max();
 	void Mesh_CreateLandmarkAtMouse (float x, float y, int landmark_mode);
+	void create_landmark_at_xyz(float m[3], int type);
 	void Mesh_MoveLandmarkAtMouse(OBJECT_LANDMARK *p, float x, float y, int landmark_mode);
 	void Mesh_Select(float x, float y);
 	void Selected_Landmarks_Change_Orientation(int landmark_mode);
