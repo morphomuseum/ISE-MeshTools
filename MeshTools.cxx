@@ -7566,17 +7566,17 @@ void MeshTools::Update_Selected_Landmarks_Pos(glMatrix Mat1, glMatrix Mat2)
 				glPushMatrix();
 				glLoadIdentity();
 				glMultMatrixf((GLfloat*)Mat2);
-				glTranslated(
+			/*	glTranslated(
 					k->Mat2[3][0],
 					k->Mat2[3][1],
 					k->Mat2[3][2]
-					);
+					);*/
 				glMultMatrixf((GLfloat *)Mat1);
-				glTranslated(
+				/*glTranslated(
 					-k->Mat2[3][0],
 					-k->Mat2[3][1],
 					-k->Mat2[3][2]
-					);
+					);*/
 
 				getmatrix(new_mat);
 
