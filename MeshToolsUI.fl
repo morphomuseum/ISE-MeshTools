@@ -11,10 +11,10 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);}
+exit(0);} open
       private image {pixmap/s_face.gif} xywh {20 206 1100 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
-      Fl_Group Top {
+      Fl_Group Top {open
         xywh {0 0 1100 57}
       } {
         Fl_Group Unresizable {open
@@ -32,7 +32,7 @@ if (test ==1)
             tooltip Delete image {./pixmap/delete2.gif} xywh {0 25 25 23} color 55
           }
           Fl_Menu_Button File {
-            label File
+            label File open
             xywh {0 0 55 25} color 55 labelcolor 32
           } {
             MenuItem Generic_Open_Surface {
@@ -131,13 +131,14 @@ if (ok==1)
               }
             }
             Submenu Position_submenu {
-              label Position
+              label Position open
               xywh {30 30 100 20}
             } {
               MenuItem Load_POS {
-                label {Load Position}
+                label {Load Position for selected meshes}
                 callback {MT->Compute_Name_Lists();
 int ok=1;
+
 if (g_selected_names.size()==0)
 {
 	fl_alert("No mesh selected. Please select at least one mesh.");
@@ -145,9 +146,8 @@ if (g_selected_names.size()==0)
 }
 else if (g_selected_names.size()>1)
 {
-	ok = fl_ask("More than one mesh are currently selected. Do you want to give the same position to all selected meshes?");	
+	ok = fl_ask("Several meshes are currently selected. Do you want to give the same position to all selected meshes?");	
 }
-
 if (ok==1)
 {
 
@@ -157,7 +157,7 @@ if (ok==1)
                 xywh {50 50 100 20} labelcolor 32
               }
               MenuItem Load_POS_Inv {
-                label {Load Transposed Position}
+                label {Load Transposed Position for selected meshes}
                 callback {MT->Compute_Name_Lists();
 int ok=1;
 if (g_selected_names.size()==0)
@@ -167,7 +167,7 @@ if (g_selected_names.size()==0)
 }
 else if (g_selected_names.size()>1)
 {
-	ok = fl_ask("More than one mesh are currently selected. Do you want to give the same position to all selected meshes?");	
+	ok = fl_ask("Several meshes are currently selected. Do you want to give the same position to all selected meshes?");	
 }
 
 if (ok==1)
@@ -198,6 +198,53 @@ if (ok==1)
 	MT->redraw();
 }}
                 xywh {60 60 100 20} labelcolor 56
+              }
+              MenuItem Load_POS_LMK {
+                label {Load Position for selected landmarks/flags}
+                callback {int ok=1;
+
+int num_lmk_and_flags_selected = MT->Get_Selected_Landmark_Number();
+
+if (num_lmk_and_flags_selected<1)
+{
+	fl_alert("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+	ok =0;
+}
+else if (num_lmk_and_flags_selected>1)
+{
+	ok = fl_ask("Several landmarks/flags are currently selected. Do you want to give the same position to all selected landmarks/flags?");	
+}
+
+if (ok==1)
+{
+
+	MT->Open_POS_File_NEW(2);
+	MT->redraw();
+}} selected
+                xywh {60 60 100 20} labelcolor 32
+              }
+              MenuItem Load_POS_Inv_LMK {
+                label {Load Transposed Position for selected landmarks/flags}
+                callback {int ok=1;
+
+int num_lmk_and_flags_selected = MT->Get_Selected_Landmark_Number();
+
+if (num_lmk_and_flags_selected<1)
+{
+	fl_alert("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+	ok =0;
+}
+else if (g_selected_names.size()>1)
+{
+	ok = fl_ask("Several landmarks/flags are currently selected. Do you want to give the same position to all selected landmarks/flags?");	
+}
+
+if (ok==1)
+{
+	MT->Open_POS_File_Inv_NEW(2);
+	MT->redraw();
+}}
+                xywh {70 70 100 20} labelcolor 56
               }
             }
             Submenu Project_submenu {
@@ -280,7 +327,7 @@ ntw_show();}
               }
             }
             Submenu Tags_submenu {
-              label {Tags and Flags} open
+              label {Tags and Flags}
               xywh {45 45 100 20}
             } {
               MenuItem Open_TAG {
@@ -557,7 +604,7 @@ MT->redraw();}
             xywh {155 0 155 25} color 55
           } {
             Submenu Object_structure_modification {
-              label {Structure modification} open
+              label {Structure modification}
               xywh {0 0 62 20}
             } {
               MenuItem INVERT {
@@ -750,7 +797,7 @@ MT->redraw();}
               }
             }
             Submenu Object_rendering_list_submenu {
-              label {Object list order} open
+              label {Object list order}
               tooltip {Objects are rendrered on the screen according to a list, which has consequences on the way they are rendrered when using alpha values (transparency) smaller than 100%. You may change this order} xywh {0 0 62 20}
             } {
               MenuItem Obj_move_up {
@@ -767,7 +814,7 @@ MT->redraw();}
               }
             }
             Submenu Edit_delete_submenu {
-              label {Delete small objects} open
+              label {Delete small objects}
               xywh {0 0 62 20}
             } {
               MenuItem Delete_smaller_than_tri {
@@ -783,7 +830,7 @@ MT->redraw();}
             }
           }
           Fl_Menu_Button Landmarks {
-            label Landmarks
+            label Landmarks open
             tooltip {Doing so, your curve will be closed} xywh {310 0 180 25} color 55
           } {
             MenuItem SelectLandmark {
@@ -806,6 +853,12 @@ MT->redraw();}
               label {Edit all selected flag landmarks}
               callback {all_flag_show();}
               xywh {10 10 30 20}
+            }
+            MenuItem AllFlagOptions2 {
+              label {Update all flags colours automatically}
+              callback {MT->update_all_flags_colours();
+MT->redraw();}
+              xywh {20 20 30 20}
             }
             MenuItem LandmarkNormals {
               label {Change selected landmarks orientation according to surface normals}
@@ -1921,8 +1974,8 @@ options_lm_hide();}
       }
     }
     Fl_Window matWindow {
-      label {Object Matrix}
-      image {pixmap/s_back_13.gif} xywh {451 249 239 339} type Double color 215 hide resizable non_modal
+      label {Object Matrix} open
+      image {pixmap/s_back_13.gif} xywh {455 253 231 331} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_mat {
         label Ok
@@ -4246,8 +4299,8 @@ deleteregion_hide();}
       }
     }
     Fl_Window flagWindow {
-      label {Edit 1 Selected Flag}
-      image {pixmap/s_back_13.gif} xywh {1117 200 263 198} type Double color 215 hide resizable non_modal
+      label {Edit 1 Selected Flag} open
+      image {pixmap/s_back_13.gif} xywh {701 202 359 208} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_flag {
         label Refresh
@@ -4268,7 +4321,7 @@ deleteregion_hide();}
         xywh {175 45 52 25} align 36 value 25
       }
       Fl_Button Flag_Colour {
-        label {Flag colour}
+        label {Pick flag colour}
         callback {Fl_Color c = o->color();
 uchar r,g,b;
 Fl::get_color(c,r,g,b);
@@ -4278,7 +4331,7 @@ o->color(c);
 o->redraw();
 MT->set_flag_colour(r,g,b);
 MT->redraw();}
-        xywh {75 82 114 23} color 43 labelcolor 32
+        xywh {28 82 114 23} color 43 labelcolor 32
       }
       Fl_Button Ok_flag {
         label Ok
@@ -4307,6 +4360,35 @@ MT->redraw();}
       Fl_Value_Input FL_z {
         label z
         xywh {184 135 50 20} textsize 10
+      }
+      Fl_Button FLG_next {
+        callback {MT->FLG_next();
+flag_update();
+MT->redraw();}
+        tooltip {Select next flag} image {pixmap/s_right_16.gif} xywh {241 11 12 20} color 55
+      }
+      Fl_Button FLG_preceding {
+        callback {MT->FLG_preceding();
+flag_update();
+MT->redraw();}
+        tooltip {Select preceding flag} image {pixmap/s_left_16.gif} xywh {230 11 12 20} color 55
+      }
+      Fl_Button Flag_Grab_colour {
+        label {Change to closest vertex colour}
+        callback {float m[3];
+m[0] = FL_x->value();
+m[1] = FL_y->value();
+m[2] = FL_z->value();
+
+uchar r,g,b;
+Fl_Color c;
+MT->get_closest_vertex_colour(m, &r,&g,&b);
+c = fl_rgb_color(r,g,b);
+Flag_Colour->color(c);
+Flag_Colour->redraw();
+MT->set_flag_colour(r,g,b);
+MT->redraw();}
+        tooltip {Gets colour of closest vertex} xywh {142 82 200 23} color 43 labelcolor 32
       }
     }
     Fl_Window thicknessWindow2 {
@@ -5656,8 +5738,8 @@ ntw_hide();}
       }
     }
     Fl_Window lmkeditWindow {
-      label {Edit 1 Selected landmark}
-      image {pixmap/s_back_13.gif} xywh {-32000 -32000 311 127} type Double color 215 hide resizable non_modal
+      label {Edit 1 Selected landmark} open
+      image {pixmap/s_back_13.gif} xywh {8 30 303 119} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Refresh_lmk {
         label Refresh
@@ -5701,22 +5783,22 @@ MT->redraw();}
         callback {MT->LMK_next();
 lmk_update();
 MT->redraw();}
-        tooltip {Object list : move object(s) up} image {pixmap/s_right_16.gif} xywh {237 10 12 20} color 55
+        tooltip {Select next landmark} image {pixmap/s_right_16.gif} xywh {237 10 12 20} color 55
       }
       Fl_Button LMK_preceding {
         callback {MT->LMK_preceding();
 lmk_update();
 MT->redraw();}
-        tooltip {Object list : move object(s) up} image {pixmap/s_left_16.gif} xywh {226 10 12 20} color 55
+        tooltip {Select preceding landmark} image {pixmap/s_left_16.gif} xywh {226 10 12 20} color 55
       }
     }
     Fl_Window lmkxyzWindow {
-      label {Create landmark at XYZ} open
+      label {Create landmark at XYZ}
       image {pixmap/s_back_13.gif} xywh {10 30 261 189} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Cancel_lmk_xyz {
         label Close
-        callback {lmk_xyz_hide();} selected
+        callback {lmk_xyz_hide();}
         xywh {155 135 65 25} color 133 selection_color 132
       }
       Fl_Button Ok_lmk_xyz {
@@ -6630,7 +6712,8 @@ Flag_Colour->redraw();*/} {}
   Function {flag_hide()} {} {
     code {flagWindow->hide();} {}
   }
-  Function {flag_update()} {} {
+  Function {flag_update()} {open
+  } {
     code {std::string label ="Flag";
 float m[3];
 m[0]=0;

@@ -103,8 +103,12 @@ int main(int argc, char **argv) {
 	//       => Colours should be saved correctly now within .PLY files
 	//       => Possibility to edit landmarks coordinate
 	//       => Possibility to add landmarks at user-defined xyz coordinates.
-
-	strcpy (Version,"1.3.1");	
+	// 1.3.2 => Possibility to apply a position/transposed positions to landmarks and flags
+	//       => Edit flags 1 by 1
+	//       => Get colour of closest vertex for 1 flag or for all flags.
+	//       => Some colours are rendered badly for flags... where does it come from ?
+	
+	strcpy (Version,"1.3.2");	
  
 	printf("Version : %s\n",Version);
 	

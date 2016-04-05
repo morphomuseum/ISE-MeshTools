@@ -2663,6 +2663,53 @@ float MeshTools::get_g_flag_length ()
 
 
 }
+void MeshTools::update_all_flags_colours()
+{
+	uchar r;
+	uchar g;
+	uchar b;
+	int r1, g1, b1;
+	
+	glMatrix wc_mat;
+	float vv[3], vv1[3];
+	OBJECT_LANDMARK *k = NULL;
+	int ind = 0;
+	k = Cont_Mesh.landmarkafter(ind, 2);
+	while (k != NULL)
+	{
+		r1 = 128;
+		g1 = 128;
+		b1 = 128;
+		k->get_world_coordinates_matrix(wc_mat);
+		vv[0] = 0;
+		vv[1] = 0;
+		vv[2] = 0;
+		
+		ApplyTransformation(vv, vv1, wc_mat);	
+		//cout << ": vv1[0]=" << vv1[0] << ", vv1[1]=" << vv1[1] << ", vv1[2]" << vv1[2] << endl;
+		Cont_Mesh.get_closest_vertex_colour(vv1, &r, &g, &b);
+		r1 = (int)r;
+		g1 = (int)g;
+		b1 = (int)b;
+		cout << "Flag" << ind << ": r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+	
+		k->color[0]=(float)r1/255;
+		k->color[1]= (float)g1 / 255;
+		k->color[2] = (float)b1/255;			
+		ind = k->landmark_index;
+		k = Cont_Mesh.landmarkafter(ind, 2);
+	}
+	
+}
+
+void MeshTools::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, uchar *b)
+{
+	Cont_Mesh.get_closest_vertex_colour(m, r, g, b);
+	//cout << "*r=" << *r << ", *g=" << *g << ", *b=" << *b << endl;
+		 
+
+}
+
 void MeshTools::get_flag_color (uchar *r, uchar *g, uchar *b)
 {
 	OBJECT_LANDMARK * My_Flag= NULL;
@@ -2749,7 +2796,7 @@ void MeshTools::set_landmark_xyz(float m[3])
 	{
 		My_Flag->flag_label = label.c_str();
 		My_Flag->flag_length = length;
-		My_Flag->selected=0;
+		//My_Flag->selected=0;
 	}
 		
 	}
@@ -4088,12 +4135,113 @@ void MeshTools::LMK_next()
 			{
 				My_LMK->selected = 0; k->selected = 1;
 			}
+			else
+			{
+				if (lmk_type == 1) { lmk_type = 0; }
+				else { lmk_type = 1; }
+				ind = 0;
+				k = Cont_Mesh.landmarkafter(ind, lmk_type);
+				if (k != NULL)
+				{
+					My_LMK->selected = 0; k->selected = 1;
+				}
+
+			}
 		}
 
 	}
 	
 	
 
+}
+void MeshTools::FLG_next()
+{
+	OBJECT_LANDMARK *My_FLG = NULL;
+	OBJECT_LANDMARK *k = NULL;
+
+	int lmk_type = 2;
+	My_FLG = Cont_Mesh.Get_Selected_Landmark(lmk_type);
+	
+
+	if (My_FLG == NULL)
+	{
+		// means that no flag is currently selected... try to find whether at least one FLAG exists!
+		int num_flag = Cont_Mesh.Get_Landmark_Number(lmk_type);
+		if (num_flag > 0)
+		{
+
+			k = Cont_Mesh.landmarkafter(0, lmk_type);
+			k->selected = 1;
+		}		
+	}
+	else
+	{
+		int ind = My_FLG->landmark_index;
+
+
+		k = Cont_Mesh.landmarkafter(ind, lmk_type);
+		if (k != NULL)
+		{
+			My_FLG->selected = 0; k->selected = 1;
+		}
+		else // we start back at first flag...
+		{			
+			ind = 0;
+			k = Cont_Mesh.landmarkafter(ind, lmk_type);
+			if (k != NULL)
+			{
+				My_FLG->selected = 0; k->selected = 1;
+			}
+		}
+
+	}
+
+
+
+}
+void MeshTools::FLG_preceding() {
+	
+	OBJECT_LANDMARK *My_FLG = NULL;
+	OBJECT_LANDMARK *k = NULL;
+
+	int lmk_type = 2;
+	My_FLG = Cont_Mesh.Get_Selected_Landmark(2);
+	
+	if (My_FLG == NULL)
+	{
+		// means that no FLAG is currently selected... try to find whether at least a FLAG exists!
+		int num_flag = Cont_Mesh.Get_Landmark_Number(lmk_type);
+		if (num_flag > 0)
+		{
+
+			k = Cont_Mesh.landmarkbefore(num_flag + 1, 0);
+			k->selected = 1;
+		}
+
+	}
+	else
+	{
+		int ind = My_FLG->landmark_index;
+
+
+		k = Cont_Mesh.landmarkbefore(ind, lmk_type);
+		if (k != NULL)
+		{
+			My_FLG->selected = 0; k->selected = 1;
+		}
+		else
+		{ // we were the first flag => go back to last!
+			
+			ind = Cont_Mesh.Get_Landmark_Number(lmk_type) + 1;
+			k = Cont_Mesh.landmarkbefore(ind, lmk_type);
+			if (k != NULL)
+			{
+				My_FLG->selected = 0; k->selected = 1;
+			}
+			
+		}
+
+	}
 }
 void MeshTools::LMK_preceding() { 
 	//k = Cont_Mesh.landmarkafter(ind, landmark_mode);
@@ -4147,6 +4295,18 @@ void MeshTools::LMK_preceding() {
 			if (k != NULL)
 			{
 				My_LMK->selected = 0; k->selected = 1;
+			}
+			else
+			{
+				if (lmk_type == 1) { lmk_type = 0; }
+				else { lmk_type = 1; }
+				ind = Cont_Mesh.Get_Landmark_Number(lmk_type) + 1;
+				k = Cont_Mesh.landmarkbefore(ind, lmk_type);
+				if (k != NULL)
+				{
+					My_LMK->selected = 0; k->selected = 1;
+				}
+
 			}
 		}
 
@@ -7387,11 +7547,461 @@ void MeshTools::Open_POS_File( std::string filename, OBJECT_MESH * My_Obj)
 	}	//length
 
 }
+
+void MeshTools::Update_Selected_Landmarks_Pos(glMatrix Mat1, glMatrix Mat2)
+{
+	glMatrix new_mat;
+	glMatrix old_mat;
+
+	OBJECT_LANDMARK *k = NULL;
+	
+	for (int lmk_type = 0; lmk_type < 3; lmk_type++)
+	{
+		int ind = 0;
+		k = Cont_Mesh.landmarkafter(ind, lmk_type);
+		while (k != NULL)
+		{
+			if (k->selected == 1)
+			{
+				glPushMatrix();
+				glLoadIdentity();
+				glMultMatrixf((GLfloat*)Mat2);
+				glTranslated(
+					k->Mat2[3][0],
+					k->Mat2[3][1],
+					k->Mat2[3][2]
+					);
+				glMultMatrixf((GLfloat *)Mat1);
+				glTranslated(
+					-k->Mat2[3][0],
+					-k->Mat2[3][1],
+					-k->Mat2[3][2]
+					);
+
+				getmatrix(new_mat);
+
+				glPopMatrix();
+				float vv[3], vv1[3], vvn[3], vvn1[3],vvn2[3], vvn3[3];
+				vv1[0] = k->Mat2[3][0];
+				vv1[1] = k->Mat2[3][1];
+				vv1[2] = k->Mat2[3][2];
+				ApplyTransformation(vv1, vv, new_mat);
+
+				k->Mat2[3][0] = vv[0];
+				k->Mat2[3][1]= vv[1];
+				k->Mat2[3][2]= vv[2];
+
+
+				k->get_world_coordinates_matrix(old_mat);
+				
+				vvn[0] = 1.0;
+				vvn[1] = 0;
+				vvn[2] = 0;
+				ApplyRotation(vvn, vvn1, old_mat);
+				
+				// vvn1 is the orientation of the tip of the landmark using old  transformation				
+
+				float leng = sqrt(vvn1[0] * vvn1[0] + vvn1[1] * vvn1[1] + vvn1[2] * vvn1[2]);
+				if (leng != 0)
+				{
+					vvn1[0] /=leng;
+					vvn1[1] /= leng;
+					vvn1[2] /= leng;
+				}
+			
+				ApplyRotation(vvn1, vvn2, new_mat);
+				
+				// again, normalization of vvn2
+				leng = sqrt(vvn2[0] * vvn2[0] + vvn2[1] * vvn2[1] + vvn2[2] * vvn2[2]);
+				if (leng != 0)
+				{
+					vvn2[0]/= leng;
+					vvn2[1] /= leng;
+					vvn2[2] /= leng;
+				}
+
+				// vvn3 is the orientation of the landmark after new transformation...
+				// we will now translate vvn3 into MAT1 expression... 
+				// rotation 
+				// Landmark object oriented along x axis : 0 0 1 
+				// assume rot.  
+				// 1) around z 
+				// 2)    around x 
+				// -> values sinz,cosz,sinx,cosx need to be computed
+
+				float cosz = vvn2[0]; // nx
+				float sinz = sqrt(1.0 - (cosz*cosz));
+				float cosx, sinx;
+				if (sinz == 0.0) // just in case we are in the speciale case
+				{
+					cosx = 1.0; sinx = 0.0;
+				}
+				else
+				{
+					cosx = vvn2[1] / sinz;
+
+					sinx = vvn2[2] / sinz;
+				}
+
+				k->Mat2[0][0] = cosz; //=nx
+				k->Mat2[0][1] = cosx*sinz; //=ny
+				k->Mat2[0][2] = sinx *sinz;    //=nz
+
+				k->Mat2[1][0] = -sinz;
+				k->Mat2[1][1] = cosx*cosz;
+				k->Mat2[1][2] = sinx*cosz;
+
+				k->Mat2[2][0] = 0;
+				k->Mat2[2][1] = -sinx;
+				k->Mat2[2][2] = cosx;
+
+								
+
+
+				ind = k->landmark_index;
+				k = Cont_Mesh.landmarkafter(ind, lmk_type);
+			}
+
+		}
+	}
+
+}
+
+void MeshTools::Update_Selected_Meshes_Pos(glMatrix Mat1, glMatrix Mat2)
+{
+
+}
+
+
+void MeshTools::Open_POS_File_NEW(int mode)
+{
+	// mode : 1 for all selected meshes only
+	// mode : 2 for all selected landmarks/flags only
+	// mode : 3 for all selected landmarks/flags and meshes
+
+	int i, j, l;
+	FILE	*filein;									// Filename To Open
+	glMatrix Mat2;
+	glMatrix Mat1;
+
+	std::string filename;
+	Fl_Native_File_Chooser fnfc;
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
+	fnfc.title("Load position");
+	fnfc.filter("POS\t*.{pos,POS}");
+
+	switch (fnfc.show())
+	{
+	case -1:
+	{
+		break;  // ERROR
+	}
+	case  1:
+	{
+		break;  // CANCEL
+	}
+	default:
+	{
+		filename = this->correct_filename(fnfc.filename());
+		int file_exists = 1;
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+			union {
+				float f;
+				char c[4];
+			} u; // holds one float or 4 characters (bytes)
+
+			char	oneline[255];
+			float  param1, param2, param3, param4; // ASCII File 			
+			int done = 0;
+			int done2 = 0;
+			if (filename.length() > 0)
+			{	//filein = fopen(szFile, "rb");
+				//fopen_s(&filein, szFile, "rb");	
+				std::string MAText(".mat");
+				std::string MAText2(".MAT");
+				std::string POSext(".pos");
+				std::string POSext2(".POS");
+
+				int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File
+
+				std::size_t found = filename.find(MAText);
+				std::size_t found2 = filename.find(MAText2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					type = 1;
+					//MAT
+				}
+
+				found = filename.find(POSext);
+				found2 = filename.find(POSext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					type = 0; //POS
+				}
+
+				if (type == 1)
+				{
+					filein = fopen(filename.c_str(), "rb");
+				}
+				else
+				{
+					filein = fopen(filename.c_str(), "rt");
+				}
+
+
+				
+				if (type == 1)
+				{
+					for (i = 0; i < 4; i++)
+						for (j = 0; j < 4; j++)
+							{
+								for (l = 3; l >= 0; l--)
+								{
+									u.c[l] = fgetc(filein);
+								}
+								Mat1[i][j] = u.f;
+							}
+
+						for (i = 0; i < 4; i++)
+							for (j = 0; j < 4; j++)
+							{
+								//for( l=0;l<4;l++)
+								for (l = 3; l >= 0; l--)
+								{
+									u.c[l] = fgetc(filein);
+								}
+								Mat2[i][j] = u.f;
+							}
+				}
+				else
+				{
+					for (i = 0; i < 4; i++)
+					{
+						readstr(filein, oneline);
+						sscanf(oneline, "%f %f %f %f\n", &param1, &param2, &param3, &param4);
+						Mat1[i][0] = param1;
+						Mat1[i][1] = param2;
+						Mat1[i][2] = param3;
+						Mat1[i][3] = param4;
+					}
+					for (i = 0; i < 4; i++)
+					{
+						readstr(filein, oneline);
+						sscanf(oneline, "%f %f %f %f\n", &param1, &param2, &param3, &param4);
+						Mat2[i][0] = param1;
+						Mat2[i][1] = param2;
+						Mat2[i][2] = param3;
+						Mat2[i][3] = param4;
+					}
+
+				}
+				// Now we can apply these matrices to all selected landmarks/flags						
+				if (mode == 2 || mode == 3) { this->Update_Selected_Landmarks_Pos(Mat1,Mat2); }
+				if (mode == 1 || mode == 3) { this->Update_Selected_Meshes_Pos(Mat1, Mat2); }
+			}// if (filename.length() > 0)
+		}// if file exists
+	}//default
+	}//switch
+}
+void MeshTools::Open_POS_File_Inv_NEW(int mode)
+{
+	// mode : 1 for all selected meshes only
+	// mode : 2 for all selected landmarks/flags only
+	// mode : 3 for all selected landmarks/flags and meshes
+
+	int i, j, l;
+	FILE	*filein;									// Filename To Open
+	glMatrix Mat2;
+	glMatrix Mat1;
+
+	std::string filename;
+	Fl_Native_File_Chooser fnfc;
+	fnfc.type(Fl_Native_File_Chooser::BROWSE_FILE);
+	fnfc.title("Load position");
+	fnfc.filter("POS\t*.{pos,POS}");
+
+	switch (fnfc.show())
+	{
+	case -1:
+	{
+		break;  // ERROR
+	}
+	case  1:
+	{
+		break;  // CANCEL
+	}
+	default:
+	{
+		filename = this->correct_filename(fnfc.filename());
+		int file_exists = 1;
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+			union {
+				float f;
+				char c[4];
+			} u; // holds one float or 4 characters (bytes)
+
+			char	oneline[255];
+			float  param1, param2, param3, param4; // ASCII File 			
+			int done = 0;
+			int done2 = 0;
+			if (filename.length() > 0)
+			{	//filein = fopen(szFile, "rb");
+				//fopen_s(&filein, szFile, "rb");	
+				std::string MAText(".mat");
+				std::string MAText2(".MAT");
+				std::string POSext(".pos");
+				std::string POSext2(".POS");
+
+				int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File
+
+				std::size_t found = filename.find(MAText);
+				std::size_t found2 = filename.find(MAText2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					type = 1;
+					//MAT
+				}
+
+				found = filename.find(POSext);
+				found2 = filename.find(POSext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					type = 0; //POS
+				}
+
+				if (type == 1)
+				{
+					filein = fopen(filename.c_str(), "rb");
+				}
+				else
+				{
+					filein = fopen(filename.c_str(), "rt");
+				}
+
+
+
+				if (type == 1)
+				{
+
+					for (i = 0; i<4; i++)
+						for (j = 0; j<4; j++)
+
+						{
+							for (l = 3; l >= 0; l--)
+							{
+								u.c[l] = fgetc(filein);
+							}
+							Mat1[j][i] = u.f;
+						}
+
+
+					for (i = 0; i<4; i++)
+						for (j = 0; j<4; j++)
+						{
+							//for( l=0;l<4;l++)
+							for (l = 3; l >= 0; l--)
+							{
+								u.c[l] = fgetc(filein);
+							}
+							Mat2[j][i] = u.f;
+						}
+				}
+				else
+				{
+					for (i = 0; i<4; i++)
+					{
+						readstr(filein, oneline);
+						sscanf(oneline, "%f %f %f %f\n", &param1, &param2, &param3, &param4);
+						Mat1[0][i] = param1;
+						Mat1[1][i] = param2;
+						Mat1[2][i] = param3;
+						Mat1[3][i] = param4;
+					}
+					for (i = 0; i<4; i++)
+					{
+						readstr(filein, oneline);
+						sscanf(oneline, "%f %f %f %f\n", &param1, &param2, &param3, &param4);
+						Mat2[0][i] = param1;
+						Mat2[1][i] = param2;
+						Mat2[2][i] = param3;
+						Mat2[3][i] = param4;
+					}
+
+
+				}
+				// line column
+				Mat1[3][0] = -(Mat1[0][3] * Mat1[0][0] +
+					Mat1[1][3] * Mat1[1][0]
+					+ Mat1[2][3] * Mat1[2][0]);
+
+				Mat1[3][1] = -(Mat1[0][3] * Mat1[0][1] +
+					Mat1[1][3] * Mat1[1][1]
+					+ Mat1[2][3] * Mat1[2][1]);
+
+				Mat1[3][2] = -(Mat1[0][3] * Mat1[0][2] +
+					Mat1[1][3] * Mat1[1][2]
+					+ Mat1[2][3] * Mat1[2][2]);
+				Mat1[0][3] = 0;
+				Mat1[1][3] = 0;
+				Mat1[2][3] = 0;
+
+				Mat2[3][0] = -(Mat2[0][3] * Mat2[0][0] +
+					Mat2[1][3] * Mat2[1][0]
+					+ Mat2[2][3] * Mat2[2][0]);
+
+				Mat2[3][1] = -(Mat2[0][3] * Mat2[0][1] +
+					Mat2[1][3] * Mat2[1][1]
+					+ Mat2[2][3] * Mat2[2][1]);
+
+				Mat2[3][2] = -(Mat2[0][3] * Mat2[0][2] +
+					Mat2[1][3] * Mat2[1][2]
+					+ Mat2[2][3] * Mat2[2][2]);
+				Mat2[0][3] = 0;
+				Mat2[1][3] = 0;
+				Mat2[2][3] = 0;
+				// Now we can apply these matrices to all selected landmarks/flags						
+				if (mode == 2 || mode == 3) { this->Update_Selected_Landmarks_Pos(Mat1, Mat2); }
+				if (mode == 1 || mode == 3) { this->Update_Selected_Meshes_Pos(Mat1, Mat2); }
+			}// if (filename.length() > 0)
+		}// if file exists
+	}//default
+	}//switch
+}
 void MeshTools::Open_POS_File()
 {
-	
+	// Hideous function... POS file is read once and MAT1 and MAT2 are set in first selected Mesh... 
+	// Then if may happen that some other objects are selected. In that case the matrices of the first selected objects are copied in those objects
+	// I leave it that way for the moment but it should be changed!!!
 	//Open a position file!
 	OBJECT_MESH * My_Obj;
+	
+	
 	OBJECT * First_Obj;
 	OBJECT_LOG * My_Log;
 	int i,j,l;
@@ -9028,6 +9638,28 @@ void MeshTools::Open_NTW_File()
 	}
 	this->redraw();
 	
+}
+int MeshTools::Get_Selected_Landmark_Number()
+{
+	int num_norm = Get_Selected_Landmark_Number(0);
+	int num_target = Get_Selected_Landmark_Number(1);
+	int num_flag = Get_Selected_Landmark_Number(2);
+	int num_all = num_norm + num_target +num_flag;
+	return num_all;
+}
+int MeshTools::Get_Selected_Landmark_Number(int mode)
+{
+	int cpt = 0;
+	OBJECT_LANDMARK *k = NULL;
+	int ind = 0;
+	k = Cont_Mesh.landmarkafter(ind, mode);
+	while (k != NULL)
+	{
+		if (k->selected == 1) { cpt++; }
+		ind = k->landmark_index;
+		k = Cont_Mesh.landmarkafter(ind, mode);
+	}
+	return cpt;
 }
 void MeshTools::Selected_Landmarks_Change_Orientation()
 {

@@ -193,6 +193,8 @@ public:
 	void set_landmark_xyz(float m[3]);
 	void LMK_next();
 	void LMK_preceding();
+	void FLG_next();
+	void FLG_preceding();
 	void get_flag_xyz(float m[3]);
 	void set_flag_xyz(float m[3]);
 	float get_flag_length ();
@@ -203,6 +205,8 @@ public:
 	void set_g_flag_colour (uchar r, uchar g, uchar b);
 	void set_flag_length (float length);
 	void set_g_flag_length (float length);
+	void update_all_flags_colours();
+	void get_closest_vertex_colour(float m[3], uchar *r, uchar *g, uchar *b);
 	void get_flag_color (uchar *r, uchar *g, uchar *b);
 	void get_g_flag_color (uchar *r, uchar *g, uchar *b);
 
@@ -436,10 +440,17 @@ void Open_FLG_File(std::string filename);
 void Open_CUR_File(); 
 void Open_CUR_File(std::string filename);
 void Selected_Landmarks_Change_Orientation();
+int MeshTools::Get_Selected_Landmark_Number(int mode);
+int MeshTools::Get_Selected_Landmark_Number();
 
 void Open_POS_File(std::string filename,OBJECT_MESH * My_Obj);
 void Open_POS_File();
 void Open_POS_File_Inv();
+void Open_POS_File_NEW(int mode);
+void Open_POS_File_Inv_NEW(int mode);
+void Update_Selected_Landmarks_Pos(glMatrix Mat1, glMatrix Mat2);
+
+void Update_Selected_Meshes_Pos(glMatrix Mat1, glMatrix Mat2);
 //void Open_STL_File2(); 
 void Open_NTW_File();
 

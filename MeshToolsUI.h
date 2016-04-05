@@ -88,6 +88,16 @@ private:
   inline void cb_Save_POS_i(Fl_Menu_*, void*);
   static void cb_Save_POS(Fl_Menu_*, void*);
 public:
+  static Fl_Menu_Item *Load_POS_LMK;
+private:
+  inline void cb_Load_POS_LMK_i(Fl_Menu_*, void*);
+  static void cb_Load_POS_LMK(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *Load_POS_Inv_LMK;
+private:
+  inline void cb_Load_POS_Inv_LMK_i(Fl_Menu_*, void*);
+  static void cb_Load_POS_Inv_LMK(Fl_Menu_*, void*);
+public:
   static Fl_Menu_Item *Project_submenu;
   static Fl_Menu_Item *Open_NTW;
 private:
@@ -537,6 +547,11 @@ public:
 private:
   inline void cb_AllFlagOptions_i(Fl_Menu_*, void*);
   static void cb_AllFlagOptions(Fl_Menu_*, void*);
+public:
+  static Fl_Menu_Item *AllFlagOptions2;
+private:
+  inline void cb_AllFlagOptions2_i(Fl_Menu_*, void*);
+  static void cb_AllFlagOptions2(Fl_Menu_*, void*);
 public:
   static Fl_Menu_Item *LandmarkNormals;
 private:
@@ -2394,6 +2409,21 @@ public:
   Fl_Value_Input *FL_x;
   Fl_Value_Input *FL_y;
   Fl_Value_Input *FL_z;
+  Fl_Button *FLG_next;
+private:
+  inline void cb_FLG_next_i(Fl_Button*, void*);
+  static void cb_FLG_next(Fl_Button*, void*);
+public:
+  Fl_Button *FLG_preceding;
+private:
+  inline void cb_FLG_preceding_i(Fl_Button*, void*);
+  static void cb_FLG_preceding(Fl_Button*, void*);
+public:
+  Fl_Button *Flag_Grab_colour;
+private:
+  inline void cb_Flag_Grab_colour_i(Fl_Button*, void*);
+  static void cb_Flag_Grab_colour(Fl_Button*, void*);
+public:
   Fl_Double_Window *thicknessWindow2;
   Fl_Button *Ok_th2;
 private:

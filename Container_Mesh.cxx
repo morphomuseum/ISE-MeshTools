@@ -1122,6 +1122,7 @@ void CONTAINER_MESH::Stick_Selected_Landmarks_On_Surfaces()
 {
 	glMatrix wc_mat;
 	float vv[3], vv1[3], x,y,z, nx,ny,nz;
+	uchar r, g, b;
 	vtkIdType ve;
 	int ind;
 	int print = 0;
@@ -1148,7 +1149,7 @@ void CONTAINER_MESH::Stick_Selected_Landmarks_On_Surfaces()
 			ApplyTransformation(vv, vv1, wc_mat);
 			if (My_Landmark->selected ==1)
 			{
-				GetClosestVertex(vv1,&x,&y,&z, &nx, &ny, &nz, &ve,1);
+				GetClosestVertex(vv1,&x,&y,&z, &nx, &ny, &nz, &ve, &r, &g, &b, 1);
 				My_Landmark->Mat2[3][0]= x;
 				My_Landmark->Mat2[3][1]=y; 
 				My_Landmark->Mat2[3][2]=z;
@@ -1175,7 +1176,7 @@ void CONTAINER_MESH::Stick_Selected_Landmarks_On_Surfaces()
 			ApplyTransformation(vv, vv1, wc_mat);
 			if (My_Landmark->selected ==1)
 			{
-				GetClosestVertex(vv1,&x,&y,&z, &nx, &ny, &nz, &ve, 1);
+				GetClosestVertex(vv1,&x,&y,&z, &nx, &ny, &nz, &ve, &r, &g, &b, 1);
 				My_Landmark->Mat2[3][0]= x;
 				My_Landmark->Mat2[3][1]=y; 
 				My_Landmark->Mat2[3][2]=z;
@@ -1361,12 +1362,90 @@ void CONTAINER_MESH::create_landmark_at_xyz(float m[3], int type)
 	
 }
 
+void CONTAINER_MESH::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, uchar *b)
+{
+	//Cont_Mesh.get_closest_vertex_colour(m3, r, g, b);
+
+	float closest[3];
+	float nclosest[3];
+	closest[0] = 0;
+	closest[1] = 0;
+	closest[2] = 0;
+
+	float vvs[3], vv1[3];
+
+
+
+	float xx, yy, zz;
+	vtkIdType veve;
+	vtkIdType vemin;
+	float nxx, nyy, nzz;
+	OBJECT_MESH *My_Obj;
+	OBJECT_MESH *Return_Obj = NULL;
+
+	float min_dist;
+	float dist;
+	glMatrix screen_mat;
+	glMatrix cam_mat;
+	glMatrix screenproj;
+
+	get_projection_matrix(screenproj);
+	get_camera_transform_matrix(cam_mat);
+	glPushMatrix();
+	glLoadIdentity();
+	glMultMatrixf((GLfloat*)screenproj);
+	glMultMatrixf((GLfloat*)cam_mat);
+	getmatrix(screen_mat);
+	glPopMatrix();
+
+	min_dist = 1000000000;
+	if (this->OBJECTS_ROOT->OBJECTS != NULL)
+	{
+
+		My_Obj = this->OBJECTS_ROOT->OBJECTS;
+		Return_Obj = My_Obj;
+		while (My_Obj != NULL)
+		{
+
+
+			// We only do this on viewed objects
+			if (My_Obj->view == 1)
+			{
+
+
+				My_Obj->Mesh_Find_Closest_Vertex(m, &xx, &yy, &zz, &nxx, &nyy, &nzz, &veve, r, g, b, 1);
+				
+				dist = (xx - m[0])*(xx - m[0]) + (yy - m[1])*(yy - m[1]) + (zz - m[2])*(zz - m[2]);
+				
+				if (dist<min_dist)
+				{
+					Return_Obj = My_Obj;
+					closest[0] = xx;
+					closest[1] = yy;
+					closest[2] = zz;
+					nclosest[0] = nxx;
+					nclosest[1] = nyy;
+					nclosest[2] = nzz;
+					min_dist = dist;
+					vemin = veve;
+				}
+			}
+			My_Obj = My_Obj->nextobj;
+		}
+	}
+	
+	
+
+
+}
+
 void CONTAINER_MESH::Mesh_CreateLandmarkAtMouse(float x, float y, int landmark_mode)
 {
 
 	OBJECT_LANDMARK * My_Landmark;
 	
 	float xx, yy, zz, nxx, nyy, nzz;
+	uchar r, g, b;
 	vtkIdType ve;
 	float mouse_vertex[3];
 	
@@ -1375,7 +1454,7 @@ void CONTAINER_MESH::Mesh_CreateLandmarkAtMouse(float x, float y, int landmark_m
     mouse_vertex[0]=x;
 	mouse_vertex[1]=y;
 	mouse_vertex[2]= -1;
-	GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nxx, &nyy, &nzz, &ve, 2);
+	GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nxx, &nyy, &nzz, &ve, &r, &g, &b, 2);
 	//std::cout<<"Tag: mouse vertex :"<<x<<","<<y<<""<<std::endl;
 	//std::cout<<"Closest vertex :"<<xx<<","<<yy<<","<<zz<<std::endl;
 	//std::cout <<"Closest vertex ID : "<<ve<<std::endl;
@@ -1394,7 +1473,7 @@ void CONTAINER_MESH::Mesh_CreateLandmarkAtMouse(float x, float y, int landmark_m
 
 
 
-OBJECT_MESH* CONTAINER_MESH::GetClosestVertex(float input [3], float *x,float *y,float *z, float *nx,float *ny,float *nz, vtkIdType* ve, int mode)
+OBJECT_MESH* CONTAINER_MESH::GetClosestVertex(float input [3], float *x,float *y,float *z, float *nx,float *ny,float *nz, vtkIdType* ve, uchar *r, uchar *g, uchar *b, int mode)
 									 
 {	
 
@@ -1445,7 +1524,7 @@ float nclosest[3];
 		{
 		
 			
-			My_Obj->Mesh_Find_Closest_Vertex(input, &xx, &yy, &zz,&nxx, &nyy, &nzz, &veve, mode);
+			My_Obj->Mesh_Find_Closest_Vertex(input, &xx, &yy, &zz,&nxx, &nyy, &nzz, &veve, r, g, b, mode);
 			if (mode ==1)
 			{
 				dist = (xx - input[0])*(xx - input[0]) + (yy - input[1])*(yy - input[1]) + (zz - input[2])*(zz - input[2]);
@@ -1490,7 +1569,7 @@ void CONTAINER_MESH::Selected_Landmarks_Change_Orientation(int landmark_mode)
 	OBJECT_LANDMARK *p;
 	float xx, yy, zz, nx, ny, nz, input[3];
 	vtkIdType ve;
-	
+	uchar r, g, b;
 	 int ind =0;
 	
 	 p = this->landmarkafter(ind, landmark_mode);
@@ -1504,7 +1583,7 @@ void CONTAINER_MESH::Selected_Landmarks_Change_Orientation(int landmark_mode)
 			input[1] = p->Mat2[3][1];
 			input[2]= p->Mat2[3][2];
 
-			GetClosestVertex(input,&xx,&yy,&zz, &nx, &ny, &nz, &ve, 1);
+			GetClosestVertex(input,&xx,&yy,&zz, &nx, &ny, &nz, &ve, &r, &g, &b, 1);
 			
 			
 
@@ -1616,13 +1695,14 @@ void CONTAINER_MESH::Mesh_MoveLandmarkAtMouse(OBJECT_LANDMARK *p, float x, float
 		float xx, yy, zz, nx, ny, nz;
 		vtkIdType ve;
 		float mouse_vertex[3];
+		uchar r, g, b;
 		
 
 	  // contains the coordinates of the mouse pointer (=mouse vertex)
 	  // assume that the mouse vertex is at the front plane of the viewing cube, i.e. z-coord= -1.0
 		mouse_vertex[0]=x;mouse_vertex[1]=y;mouse_vertex[2]= -1;
 		std::cout<<"x="<<x<<"y="<<y<<std::endl;
-		GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz,&ve, 2);
+		GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz,&ve,&r,&g,&b, 2);
 			
 		
 
@@ -1724,6 +1804,7 @@ void CONTAINER_MESH::Mesh_Select(float x, float y)
 {
 		OBJECT_MESH* My_Obj=NULL;
 		float xx, yy, zz, nx, ny, nz;
+		uchar r, g, b;
 		vtkIdType ve;
 		float mouse_vertex[3];
 		
@@ -1731,7 +1812,7 @@ void CONTAINER_MESH::Mesh_Select(float x, float y)
 	  // contains the coordinates of the mouse pointer (=mouse vertex)
 	  // assume that the mouse vertex is at the front plane of the viewing cube, i.e. z-coord= -1.0
 		mouse_vertex[0]=x;mouse_vertex[1]=y;mouse_vertex[2]= -1;
-		My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz,&ve, 2);
+		My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz,&ve, &r,&g,&b, 2);
 		if (My_Obj !=NULL)
 		{
 			if (My_Obj->selected ==1)
@@ -4072,13 +4153,14 @@ void CONTAINER_MESH::Mesh_Tag(float x, float y, int mode)
 {
 	float xx, yy, zz, nx, ny, nz;
 	vtkIdType ve;
+	uchar r, g, b;
 	OBJECT_MESH *My_Obj;
 	float mouse_vertex[3];
 		
 	  // contains the coordinates of the mouse pointer (=mouse vertex)
 	  // assume that the mouse vertex is at the front plane of the viewing cube, i.e. z-coord= -1.0
 	  mouse_vertex[0]=x;mouse_vertex[1]=y;mouse_vertex[2]= -1;
-	  My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz, &ve, 2);
+	  My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz, &ve,&r,&g,&b, 2);
 	  //std::cout<<"Tag: mouse vertex :"<<x<<","<<y<<""<<std::endl;
 	  //std::cout<<"Closest vertex :"<<xx<<","<<yy<<","<<zz<<std::endl;
 	  //std::cout <<"Closest vertex ID : "<<ve<<std::endl;
@@ -4246,12 +4328,13 @@ void CONTAINER_MESH::Mesh_Tag_Within_Lasso(float x, float y, int lasso_x, int la
 {
 	float xx, yy, zz, nx, ny, nz;
 	vtkIdType ve;
+	uchar r, g, b;
 	OBJECT_MESH *My_Obj;
 	float mouse_vertex[3];	
 	// contains the coordinates of the mouse pointer (=mouse vertex)
 	// assume that the mouse vertex is at the front plane of the viewing cube, i.e. z-coord= -1.0
 	mouse_vertex[0]=x;mouse_vertex[1]=y;mouse_vertex[2]= -1;
-	My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz, &ve, 2);
+	My_Obj = GetClosestVertex(mouse_vertex,&xx,&yy,&zz, &nx, &ny, &nz, &ve, &r,&g,&b, 2);
 	  //std::cout<<"Tag: mouse vertex :"<<x<<","<<y<<""<<std::endl;
 	  //std::cout<<"Closest vertex :"<<xx<<","<<yy<<","<<zz<<std::endl;
 	  //std::cout <<"Closest vertex ID : "<<ve<<std::endl;

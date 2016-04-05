@@ -167,6 +167,7 @@ void MeshToolsUI::cb_Save_OBJ(Fl_Menu_* o, void* v) {
 void MeshToolsUI::cb_Load_POS_i(Fl_Menu_*, void*) {
   MT->Compute_Name_Lists();
 int ok=1;
+
 if (g_selected_names.size()==0)
 {
 	fl_alert("No mesh selected. Please select at least one mesh.");
@@ -174,9 +175,8 @@ if (g_selected_names.size()==0)
 }
 else if (g_selected_names.size()>1)
 {
-	ok = fl_ask("More than one mesh are currently selected. Do you want to give the same position to all selected meshes?");	
+	ok = fl_ask("Several meshes are currently selected. Do you want to give the same position to all selected meshes?");	
 }
-
 if (ok==1)
 {
 
@@ -198,7 +198,7 @@ if (g_selected_names.size()==0)
 }
 else if (g_selected_names.size()>1)
 {
-	ok = fl_ask("More than one mesh are currently selected. Do you want to give the same position to all selected meshes?");	
+	ok = fl_ask("Several meshes are currently selected. Do you want to give the same position to all selected meshes?");	
 }
 
 if (ok==1)
@@ -233,6 +233,57 @@ if (ok==1)
 }
 void MeshToolsUI::cb_Save_POS(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Save_POS_i(o,v);
+}
+
+void MeshToolsUI::cb_Load_POS_LMK_i(Fl_Menu_*, void*) {
+  int ok=1;
+
+int num_lmk_and_flags_selected = MT->Get_Selected_Landmark_Number();
+
+if (num_lmk_and_flags_selected<1)
+{
+	fl_alert("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+	ok =0;
+}
+else if (num_lmk_and_flags_selected>1)
+{
+	ok = fl_ask("Several landmarks/flags are currently selected. Do you want to give the same position to all selected landmarks/flags?");	
+}
+
+if (ok==1)
+{
+
+	MT->Open_POS_File_NEW(2);
+	MT->redraw();
+};
+}
+void MeshToolsUI::cb_Load_POS_LMK(Fl_Menu_* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Load_POS_LMK_i(o,v);
+}
+
+void MeshToolsUI::cb_Load_POS_Inv_LMK_i(Fl_Menu_*, void*) {
+  int ok=1;
+
+int num_lmk_and_flags_selected = MT->Get_Selected_Landmark_Number();
+
+if (num_lmk_and_flags_selected<1)
+{
+	fl_alert("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+	ok =0;
+}
+else if (g_selected_names.size()>1)
+{
+	ok = fl_ask("Several landmarks/flags are currently selected. Do you want to give the same position to all selected landmarks/flags?");	
+}
+
+if (ok==1)
+{
+	MT->Open_POS_File_Inv_NEW(2);
+	MT->redraw();
+};
+}
+void MeshToolsUI::cb_Load_POS_Inv_LMK(Fl_Menu_* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_Load_POS_Inv_LMK_i(o,v);
 }
 
 void MeshToolsUI::cb_Open_NTW_i(Fl_Menu_*, void*) {
@@ -397,9 +448,11 @@ Fl_Menu_Item MeshToolsUI::menu_File[] = {
  {"Save OBJ", 0,  (Fl_Callback*)MeshToolsUI::cb_Save_OBJ, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"Position", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"Load Position", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS, 0, 0, FL_NORMAL_LABEL, 0, 14, 32},
- {"Load Transposed Position", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS_Inv, 0, 0, FL_NORMAL_LABEL, 0, 14, 56},
+ {"Load Position for selected meshes", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS, 0, 0, FL_NORMAL_LABEL, 0, 14, 32},
+ {"Load Transposed Position for selected meshes", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS_Inv, 0, 0, FL_NORMAL_LABEL, 0, 14, 56},
  {"Save Position", 0,  (Fl_Callback*)MeshToolsUI::cb_Save_POS, 0, 0, FL_NORMAL_LABEL, 0, 14, 56},
+ {"Load Position for selected landmarks/flags", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS_LMK, 0, 0, FL_NORMAL_LABEL, 0, 14, 32},
+ {"Load Transposed Position for selected landmarks/flags", 0,  (Fl_Callback*)MeshToolsUI::cb_Load_POS_Inv_LMK, 0, 0, FL_NORMAL_LABEL, 0, 14, 56},
  {0,0,0,0,0,0,0,0,0},
  {"Project", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Open project", 0,  (Fl_Callback*)MeshToolsUI::cb_Open_NTW, 0, 0, FL_NORMAL_LABEL, 0, 14, 56},
@@ -442,30 +495,32 @@ Fl_Menu_Item* MeshToolsUI::Position_submenu = MeshToolsUI::menu_File + 7;
 Fl_Menu_Item* MeshToolsUI::Load_POS = MeshToolsUI::menu_File + 8;
 Fl_Menu_Item* MeshToolsUI::Load_POS_Inv = MeshToolsUI::menu_File + 9;
 Fl_Menu_Item* MeshToolsUI::Save_POS = MeshToolsUI::menu_File + 10;
-Fl_Menu_Item* MeshToolsUI::Project_submenu = MeshToolsUI::menu_File + 12;
-Fl_Menu_Item* MeshToolsUI::Open_NTW = MeshToolsUI::menu_File + 13;
-Fl_Menu_Item* MeshToolsUI::Save_NTW = MeshToolsUI::menu_File + 14;
-Fl_Menu_Item* MeshToolsUI::Landmarks_submenu = MeshToolsUI::menu_File + 16;
-Fl_Menu_Item* MeshToolsUI::Open_VER = MeshToolsUI::menu_File + 17;
-Fl_Menu_Item* MeshToolsUI::Open_VER1 = MeshToolsUI::menu_File + 18;
-Fl_Menu_Item* MeshToolsUI::Save_VER = MeshToolsUI::menu_File + 19;
-Fl_Menu_Item* MeshToolsUI::Save_VER1 = MeshToolsUI::menu_File + 20;
-Fl_Menu_Item* MeshToolsUI::Open_VER2 = MeshToolsUI::menu_File + 21;
-Fl_Menu_Item* MeshToolsUI::Save_VER3 = MeshToolsUI::menu_File + 22;
-Fl_Menu_Item* MeshToolsUI::Curves_submenu = MeshToolsUI::menu_File + 24;
-Fl_Menu_Item* MeshToolsUI::Open_CUR = MeshToolsUI::menu_File + 25;
-Fl_Menu_Item* MeshToolsUI::Save_CUR = MeshToolsUI::menu_File + 26;
-Fl_Menu_Item* MeshToolsUI::Save_CURLMK = MeshToolsUI::menu_File + 27;
-Fl_Menu_Item* MeshToolsUI::Save_Curve_Infos = MeshToolsUI::menu_File + 28;
-Fl_Menu_Item* MeshToolsUI::Tags_submenu = MeshToolsUI::menu_File + 30;
-Fl_Menu_Item* MeshToolsUI::Open_TAG = MeshToolsUI::menu_File + 31;
-Fl_Menu_Item* MeshToolsUI::Save_TAG = MeshToolsUI::menu_File + 32;
-Fl_Menu_Item* MeshToolsUI::Open_FLG = MeshToolsUI::menu_File + 33;
-Fl_Menu_Item* MeshToolsUI::Save_FLG = MeshToolsUI::menu_File + 34;
-Fl_Menu_Item* MeshToolsUI::Save_Infos = MeshToolsUI::menu_File + 36;
-Fl_Menu_Item* MeshToolsUI::Orientation_submenu = MeshToolsUI::menu_File + 37;
-Fl_Menu_Item* MeshToolsUI::Open_ORI = MeshToolsUI::menu_File + 38;
-Fl_Menu_Item* MeshToolsUI::Save_ORI = MeshToolsUI::menu_File + 39;
+Fl_Menu_Item* MeshToolsUI::Load_POS_LMK = MeshToolsUI::menu_File + 11;
+Fl_Menu_Item* MeshToolsUI::Load_POS_Inv_LMK = MeshToolsUI::menu_File + 12;
+Fl_Menu_Item* MeshToolsUI::Project_submenu = MeshToolsUI::menu_File + 14;
+Fl_Menu_Item* MeshToolsUI::Open_NTW = MeshToolsUI::menu_File + 15;
+Fl_Menu_Item* MeshToolsUI::Save_NTW = MeshToolsUI::menu_File + 16;
+Fl_Menu_Item* MeshToolsUI::Landmarks_submenu = MeshToolsUI::menu_File + 18;
+Fl_Menu_Item* MeshToolsUI::Open_VER = MeshToolsUI::menu_File + 19;
+Fl_Menu_Item* MeshToolsUI::Open_VER1 = MeshToolsUI::menu_File + 20;
+Fl_Menu_Item* MeshToolsUI::Save_VER = MeshToolsUI::menu_File + 21;
+Fl_Menu_Item* MeshToolsUI::Save_VER1 = MeshToolsUI::menu_File + 22;
+Fl_Menu_Item* MeshToolsUI::Open_VER2 = MeshToolsUI::menu_File + 23;
+Fl_Menu_Item* MeshToolsUI::Save_VER3 = MeshToolsUI::menu_File + 24;
+Fl_Menu_Item* MeshToolsUI::Curves_submenu = MeshToolsUI::menu_File + 26;
+Fl_Menu_Item* MeshToolsUI::Open_CUR = MeshToolsUI::menu_File + 27;
+Fl_Menu_Item* MeshToolsUI::Save_CUR = MeshToolsUI::menu_File + 28;
+Fl_Menu_Item* MeshToolsUI::Save_CURLMK = MeshToolsUI::menu_File + 29;
+Fl_Menu_Item* MeshToolsUI::Save_Curve_Infos = MeshToolsUI::menu_File + 30;
+Fl_Menu_Item* MeshToolsUI::Tags_submenu = MeshToolsUI::menu_File + 32;
+Fl_Menu_Item* MeshToolsUI::Open_TAG = MeshToolsUI::menu_File + 33;
+Fl_Menu_Item* MeshToolsUI::Save_TAG = MeshToolsUI::menu_File + 34;
+Fl_Menu_Item* MeshToolsUI::Open_FLG = MeshToolsUI::menu_File + 35;
+Fl_Menu_Item* MeshToolsUI::Save_FLG = MeshToolsUI::menu_File + 36;
+Fl_Menu_Item* MeshToolsUI::Save_Infos = MeshToolsUI::menu_File + 38;
+Fl_Menu_Item* MeshToolsUI::Orientation_submenu = MeshToolsUI::menu_File + 39;
+Fl_Menu_Item* MeshToolsUI::Open_ORI = MeshToolsUI::menu_File + 40;
+Fl_Menu_Item* MeshToolsUI::Save_ORI = MeshToolsUI::menu_File + 41;
 
 void MeshToolsUI::cb_SET_GENERAL_COLOUR_LIGHTNING_i(Fl_Menu_*, void*) {
   options_lc_show();
@@ -1169,6 +1224,14 @@ void MeshToolsUI::cb_AllFlagOptions(Fl_Menu_* o, void* v) {
   ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_AllFlagOptions_i(o,v);
 }
 
+void MeshToolsUI::cb_AllFlagOptions2_i(Fl_Menu_*, void*) {
+  MT->update_all_flags_colours();
+MT->redraw();
+}
+void MeshToolsUI::cb_AllFlagOptions2(Fl_Menu_* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->parent()->parent()->user_data()))->cb_AllFlagOptions2_i(o,v);
+}
+
 void MeshToolsUI::cb_LandmarkNormals_i(Fl_Menu_*, void*) {
   MT->Selected_Landmarks_Change_Orientation();
 MT->redraw();
@@ -1221,6 +1284,7 @@ Fl_Menu_Item MeshToolsUI::menu_Landmarks[] = {
  {"Select a given range of landmarks", 0,  (Fl_Callback*)MeshToolsUI::cb_SelectLandmarkRange, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Push back selected landmarks on object surface", 0,  (Fl_Callback*)MeshToolsUI::cb_SitckyLandmarks, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Edit all selected flag landmarks", 0,  (Fl_Callback*)MeshToolsUI::cb_AllFlagOptions, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Update all flags colours automatically", 0,  (Fl_Callback*)MeshToolsUI::cb_AllFlagOptions2, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Change selected landmarks orientation according to surface normals", 0,  (Fl_Callback*)MeshToolsUI::cb_LandmarkNormals, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Selected landmarks involved into curves", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Move curve handles (selected target landmarks) semi-automatically", 0,  (Fl_Callback*)MeshToolsUI::cb_Move_handles_option, 0, 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -1235,13 +1299,14 @@ Fl_Menu_Item* MeshToolsUI::SelectLandmark = MeshToolsUI::menu_Landmarks + 0;
 Fl_Menu_Item* MeshToolsUI::SelectLandmarkRange = MeshToolsUI::menu_Landmarks + 1;
 Fl_Menu_Item* MeshToolsUI::SitckyLandmarks = MeshToolsUI::menu_Landmarks + 2;
 Fl_Menu_Item* MeshToolsUI::AllFlagOptions = MeshToolsUI::menu_Landmarks + 3;
-Fl_Menu_Item* MeshToolsUI::LandmarkNormals = MeshToolsUI::menu_Landmarks + 4;
-Fl_Menu_Item* MeshToolsUI::Curves_submenu_edition = MeshToolsUI::menu_Landmarks + 5;
-Fl_Menu_Item* MeshToolsUI::Move_handles_option = MeshToolsUI::menu_Landmarks + 6;
-Fl_Menu_Item* MeshToolsUI::StartCurve = MeshToolsUI::menu_Landmarks + 7;
-Fl_Menu_Item* MeshToolsUI::ConnectStartingPointCurve = MeshToolsUI::menu_Landmarks + 8;
-Fl_Menu_Item* MeshToolsUI::StartCurveConnection = MeshToolsUI::menu_Landmarks + 9;
-Fl_Menu_Item* MeshToolsUI::NoStartCurve = MeshToolsUI::menu_Landmarks + 10;
+Fl_Menu_Item* MeshToolsUI::AllFlagOptions2 = MeshToolsUI::menu_Landmarks + 4;
+Fl_Menu_Item* MeshToolsUI::LandmarkNormals = MeshToolsUI::menu_Landmarks + 5;
+Fl_Menu_Item* MeshToolsUI::Curves_submenu_edition = MeshToolsUI::menu_Landmarks + 6;
+Fl_Menu_Item* MeshToolsUI::Move_handles_option = MeshToolsUI::menu_Landmarks + 7;
+Fl_Menu_Item* MeshToolsUI::StartCurve = MeshToolsUI::menu_Landmarks + 8;
+Fl_Menu_Item* MeshToolsUI::ConnectStartingPointCurve = MeshToolsUI::menu_Landmarks + 9;
+Fl_Menu_Item* MeshToolsUI::StartCurveConnection = MeshToolsUI::menu_Landmarks + 10;
+Fl_Menu_Item* MeshToolsUI::NoStartCurve = MeshToolsUI::menu_Landmarks + 11;
 
 void MeshToolsUI::cb_Scalars_SHOW_i(Fl_Menu_*, void*) {
   sc_show();
@@ -7174,6 +7239,87 @@ void MeshToolsUI::cb_Ok_flag(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_Ok_flag_i(o,v);
 }
 
+void MeshToolsUI::cb_FLG_next_i(Fl_Button*, void*) {
+  MT->FLG_next();
+flag_update();
+MT->redraw();
+}
+void MeshToolsUI::cb_FLG_next(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_FLG_next_i(o,v);
+}
+
+static const char *idata_s_right_16[] = {
+"16 16 -5 1",
+" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
+"                ",
+"                ",
+"     \"\"$        ",
+"     \"#\"$       ",
+"     \"##\"$      ",
+"     \"###\"$     ",
+"     \"####\"$    ",
+"     \"#####\"$   ",
+"     \"######\"   ",
+"     \"#####\"!   ",
+"     \"####\"!    ",
+"     \"###\"!     ",
+"     \"##\"!      ",
+"     \"#\"!       ",
+"     \"\"!        ",
+"                "
+};
+static Fl_Pixmap image_s_right_16(idata_s_right_16);
+
+void MeshToolsUI::cb_FLG_preceding_i(Fl_Button*, void*) {
+  MT->FLG_preceding();
+flag_update();
+MT->redraw();
+}
+void MeshToolsUI::cb_FLG_preceding(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_FLG_preceding_i(o,v);
+}
+
+static const char *idata_s_left_16[] = {
+"16 16 -5 1",
+" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
+"                ",
+"                ",
+"        $\"\"     ",
+"       $\"#\"     ",
+"      $\"##\"     ",
+"     $\"###\"     ",
+"    $\"####\"     ",
+"   $\"#####\"     ",
+"   \"######\"     ",
+"   !\"#####\"     ",
+"    !\"####\"     ",
+"     !\"###\"     ",
+"      !\"##\"     ",
+"       !\"#\"     ",
+"        !\"\"     ",
+"                "
+};
+static Fl_Pixmap image_s_left_16(idata_s_left_16);
+
+void MeshToolsUI::cb_Flag_Grab_colour_i(Fl_Button*, void*) {
+  float m[3];
+m[0] = FL_x->value();
+m[1] = FL_y->value();
+m[2] = FL_z->value();
+
+uchar r,g,b;
+Fl_Color c;
+MT->get_closest_vertex_colour(m, &r,&g,&b);
+c = fl_rgb_color(r,g,b);
+Flag_Colour->color(c);
+Flag_Colour->redraw();
+MT->set_flag_colour(r,g,b);
+MT->redraw();
+}
+void MeshToolsUI::cb_Flag_Grab_colour(Fl_Button* o, void* v) {
+  ((MeshToolsUI*)(o->parent()->user_data()))->cb_Flag_Grab_colour_i(o,v);
+}
+
 void MeshToolsUI::cb_Ok_th2_i(Fl_Button*, void*) {
   MT->Set_Active_Scalar(5);
 MT->SC_calc_thickness_between_objects(
@@ -8251,28 +8397,6 @@ void MeshToolsUI::cb_LMK_next(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_LMK_next_i(o,v);
 }
 
-static const char *idata_s_right_16[] = {
-"16 16 -5 1",
-" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
-"                ",
-"                ",
-"     \"\"$        ",
-"     \"#\"$       ",
-"     \"##\"$      ",
-"     \"###\"$     ",
-"     \"####\"$    ",
-"     \"#####\"$   ",
-"     \"######\"   ",
-"     \"#####\"!   ",
-"     \"####\"!    ",
-"     \"###\"!     ",
-"     \"##\"!      ",
-"     \"#\"!       ",
-"     \"\"!        ",
-"                "
-};
-static Fl_Pixmap image_s_right_16(idata_s_right_16);
-
 void MeshToolsUI::cb_LMK_preceding_i(Fl_Button*, void*) {
   MT->LMK_preceding();
 lmk_update();
@@ -8281,28 +8405,6 @@ MT->redraw();
 void MeshToolsUI::cb_LMK_preceding(Fl_Button* o, void* v) {
   ((MeshToolsUI*)(o->parent()->user_data()))->cb_LMK_preceding_i(o,v);
 }
-
-static const char *idata_s_left_16[] = {
-"16 16 -5 1",
-" \377\377\377!))(\"\31\24\1#\312\237\t$~~~",
-"                ",
-"                ",
-"        $\"\"     ",
-"       $\"#\"     ",
-"      $\"##\"     ",
-"     $\"###\"     ",
-"    $\"####\"     ",
-"   $\"#####\"     ",
-"   \"######\"     ",
-"   !\"#####\"     ",
-"    !\"####\"     ",
-"     !\"###\"     ",
-"      !\"##\"     ",
-"       !\"#\"     ",
-"        !\"\"     ",
-"                "
-};
-static Fl_Pixmap image_s_left_16(idata_s_left_16);
 
 void MeshToolsUI::cb_Cancel_lmk_xyz_i(Fl_Button*, void*) {
   lmk_xyz_hide();
@@ -9189,7 +9291,7 @@ click. Then either middle click, or press \"t\"+ left or right click");
     opt_rd_Window->end();
     opt_rd_Window->resizable(opt_rd_Window);
   } // Fl_Double_Window* opt_rd_Window
-  { matWindow = new Fl_Double_Window(239, 339, "Object Matrix");
+  { matWindow = new Fl_Double_Window(231, 331, "Object Matrix");
     matWindow->color((Fl_Color)215);
     matWindow->user_data((void*)(this));
     { Ok_mat = new Fl_Button(10, 270, 65, 25, "Ok");
@@ -10866,7 +10968,7 @@ trix\" (old version correction)");
     deleteregionWindow->end();
     deleteregionWindow->resizable(deleteregionWindow);
   } // Fl_Double_Window* deleteregionWindow
-  { flagWindow = new Fl_Double_Window(263, 198, "Edit 1 Selected Flag");
+  { flagWindow = new Fl_Double_Window(359, 208, "Edit 1 Selected Flag");
     flagWindow->color((Fl_Color)215);
     flagWindow->user_data((void*)(this));
     { Refresh_flag = new Fl_Button(115, 166, 65, 25, "Refresh");
@@ -10886,7 +10988,7 @@ trix\" (old version correction)");
       Flag_Length->value(25);
       Flag_Length->align(Fl_Align(36));
     } // Fl_Value_Input* Flag_Length
-    { Flag_Colour = new Fl_Button(75, 82, 114, 23, "Flag colour");
+    { Flag_Colour = new Fl_Button(28, 82, 114, 23, "Pick flag colour");
       Flag_Colour->color((Fl_Color)43);
       Flag_Colour->labelcolor(FL_GRAY0);
       Flag_Colour->callback((Fl_Callback*)cb_Flag_Colour);
@@ -10906,6 +11008,24 @@ trix\" (old version correction)");
     { FL_z = new Fl_Value_Input(184, 135, 50, 20, "z");
       FL_z->textsize(10);
     } // Fl_Value_Input* FL_z
+    { FLG_next = new Fl_Button(241, 11, 12, 20);
+      FLG_next->tooltip("Select next flag");
+      FLG_next->color((Fl_Color)55);
+      FLG_next->image(image_s_right_16);
+      FLG_next->callback((Fl_Callback*)cb_FLG_next);
+    } // Fl_Button* FLG_next
+    { FLG_preceding = new Fl_Button(230, 11, 12, 20);
+      FLG_preceding->tooltip("Select preceding flag");
+      FLG_preceding->color((Fl_Color)55);
+      FLG_preceding->image(image_s_left_16);
+      FLG_preceding->callback((Fl_Callback*)cb_FLG_preceding);
+    } // Fl_Button* FLG_preceding
+    { Flag_Grab_colour = new Fl_Button(142, 82, 200, 23, "Change to closest vertex colour");
+      Flag_Grab_colour->tooltip("Gets colour of closest vertex");
+      Flag_Grab_colour->color((Fl_Color)43);
+      Flag_Grab_colour->labelcolor(FL_GRAY0);
+      Flag_Grab_colour->callback((Fl_Callback*)cb_Flag_Grab_colour);
+    } // Fl_Button* Flag_Grab_colour
     flagWindow->set_non_modal();
     flagWindow->end();
     flagWindow->resizable(flagWindow);
@@ -11710,7 +11830,7 @@ trix\" (old version correction)");
     NTWSaveWindow->end();
     NTWSaveWindow->resizable(NTWSaveWindow);
   } // Fl_Double_Window* NTWSaveWindow
-  { lmkeditWindow = new Fl_Double_Window(311, 127, "Edit 1 Selected landmark");
+  { lmkeditWindow = new Fl_Double_Window(303, 119, "Edit 1 Selected landmark");
     lmkeditWindow->color((Fl_Color)215);
     lmkeditWindow->user_data((void*)(this));
     { Refresh_lmk = new Fl_Button(127, 90, 65, 25, "Refresh");
@@ -11744,13 +11864,13 @@ trix\" (old version correction)");
       LMK_Label->when(FL_WHEN_NEVER);
     } // Fl_Value_Input* LMK_Label
     { LMK_next = new Fl_Button(237, 10, 12, 20);
-      LMK_next->tooltip("Object list : move object(s) up");
+      LMK_next->tooltip("Select next landmark");
       LMK_next->color((Fl_Color)55);
       LMK_next->image(image_s_right_16);
       LMK_next->callback((Fl_Callback*)cb_LMK_next);
     } // Fl_Button* LMK_next
     { LMK_preceding = new Fl_Button(226, 10, 12, 20);
-      LMK_preceding->tooltip("Object list : move object(s) up");
+      LMK_preceding->tooltip("Select preceding landmark");
       LMK_preceding->color((Fl_Color)55);
       LMK_preceding->image(image_s_left_16);
       LMK_preceding->callback((Fl_Callback*)cb_LMK_preceding);

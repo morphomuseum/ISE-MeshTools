@@ -176,7 +176,7 @@ public:
 		float scalars_get_min();
 		float scalars_get_max(); 
 		void Mesh_Tri_Sort(int side);
-		void Mesh_Find_Closest_Vertex (float input[3], float *x, float *y, float *z,float *nx,float *ny,float *nz, vtkIdType *ve, int mode);
+		void Mesh_Find_Closest_Vertex (float input[3], float *x, float *y, float *z,float *nx,float *ny,float *nz, vtkIdType *ve, uchar *r, uchar *g, uchar *b, int mode);
 		/*float Mesh_Distance_To_Plane(VERTEX * My_Vertex, VERTEX * A, VERTEX * B, VERTEX *C);*/
 		  
 		OBJECT_MESH();

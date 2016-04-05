@@ -135,7 +135,7 @@ void OBJECT_MESH::Update_RGB()
 
 }
 
-void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, float *z, float *nx,float *ny,float *nz, vtkIdType *ve, int mode)
+void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, float *z, float *nx,float *ny,float *nz, vtkIdType *ve, uchar *r, uchar *g, uchar *b, int mode)
 {
 	// Fin closest vertex of My_Vertex in world coordinates.
 	
@@ -194,8 +194,16 @@ void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, f
 
 	norms = vtkFloatArray::SafeDownCast(this->GetPointData()->GetNormals()); // recupere les normales
 			
-	
-			
+																			 // recuperation de la couleur courante
+	vtkSmartPointer<vtkUnsignedCharArray> colors =
+		vtkSmartPointer<vtkUnsignedCharArray>::New();
+	colors->SetNumberOfComponents(4);
+	colors = (vtkUnsignedCharArray*)this->GetPointData()->GetScalars("RGB");
+	double c_closest[4];
+	c_closest[0] = 128;
+	c_closest[1] = 128;
+	c_closest[2] = 128;
+
 	for (int i=0;i<this->numvert;i++)	// for each vertex of this
 	{							
 
@@ -237,6 +245,8 @@ void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, f
 		if (dist<min_dist)
 		{
 			
+			colors->GetTuple(i, c_closest);
+
 			closest[0]=vv[0];
 			closest[1]=vv[1];
 			closest[2]=vv[2];
@@ -264,6 +274,19 @@ void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, f
 	*ny=nclosest[1];
 	*nz=nclosest[2];
 	*ve = iclosest;
+	
+	int r1, g1, b1;
+	r1= (int)c_closest[0];
+	g1 = (int)c_closest[1];
+	b1 = (int)c_closest[2];
+	*r = r1;
+	*g = g1;
+	*b = b1;
+	/*cout << "r=" << c_closest[0] << ", g=" << c_closest[1] << ", b=" << c_closest[2] << endl;
+	cout << "r1=" << r1 << ", g1=" << g1 << ", b1=" << b1 << endl;
+	cout << "*r=" << *r << ", *g=" << *g << ", *b=" << *b << endl;
+	cout << "&r=" << &r << ", &g=" << &g << ", &b=" << &b << endl;
+	cout << "r=" << r << ", g=" << g << ", b=" << b << endl;*/
 }
 
 

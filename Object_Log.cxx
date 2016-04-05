@@ -775,13 +775,6 @@ if (this->level == 1) //Grouped of first level
 		this->OBJECTS_LANDMARK_TARGET->Landmark_DrawObj(this->level, mode);
 	}
 
-	if (this->OBJECTS_LANDMARK_LABELS !=NULL)
-	{
-		//glEnable(GL_COLOR_MATERIAL); 
-		//@@@@
-		
-		this->OBJECTS_LANDMARK_LABELS->Landmark_DrawObj(this->level, mode);
-	}
 	if (this->OBJECTS !=NULL)
 	{
 		
@@ -792,7 +785,14 @@ if (this->level == 1) //Grouped of first level
 		
 		this->OBJECTS_LOG->Mesh_DrawObj(mode, bool_change_pos_obj,bool_vbo);
 	}
-	
+
+	if (this->OBJECTS_LANDMARK_LABELS != NULL)
+	{
+		//glEnable(GL_COLOR_MATERIAL); 
+		//@@@@
+
+		this->OBJECTS_LANDMARK_LABELS->Landmark_DrawObj(this->level, mode);
+	}
 	glPopMatrix()
 		;
     //glDisable(GL_COLOR_MATERIAL); 

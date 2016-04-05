@@ -178,9 +178,14 @@ void OBJECT_LANDMARK::Landmark_DrawObj(int level, int mode)
 	//method : 1 for free form objects
  //poupoune = 10000;
 		float tx,ty,tz;
-  //glColorMaterial(GL_FRONT, GL_DIFFUSE);
-	   glDisable(GL_COLOR_MATERIAL);
-		//glEnable(GL_COLOR_MATERIAL);
+  
+	   //glDisable(GL_COLOR_MATERIAL);
+
+	   glEnable(GL_LIGHTING);
+	     glDisable(GL_COLOR_MATERIAL); // Activé : couleur = glcolor
+									 // Désactivé : couleur = glmaterial
+
+
   VERTEX2 c;
   c.x =0; c.y =0; c.z = 16.9;
   double r = (double)3;
@@ -216,13 +221,33 @@ void OBJECT_LANDMARK::Landmark_DrawObj(int level, int mode)
 			}
 			else
 			{
-				glColor4fv((GLfloat*)this->color);
+				
 
-				glMaterialfv(GL_FRONT,GL_AMBIENT,this->color);
-				glMaterialfv(GL_FRONT,GL_DIFFUSE,this->color);
-				glMaterialfv(GL_FRONT,GL_SPECULAR,this->color);
-				glMaterialfv(GL_FRONT,GL_SHININESS,this->color);
-				glMaterialfv(GL_FRONT,GL_EMISSION,this->color);	
+				float c[4];
+
+				if (color[0] > 1 || color[1] > 1 || color[2] > 1 || color[3] > 1)
+				{
+					for (int j = 0; j < 4; j++)
+						c[j] = color[j] / 255;
+				}
+				else {
+					for (int j = 0; j < 4; j++)
+						c[j] = color[j];
+				}
+				
+
+				glMaterialfv(GL_FRONT, GL_AMBIENT, c);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, c);
+				glMaterialfv(GL_FRONT, GL_SHININESS, bone_shininess);
+				glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
+
+				glMaterialfv(GL_BACK, GL_AMBIENT, rose);
+				glMaterialfv(GL_BACK, GL_DIFFUSE, rose);
+				glMaterialfv(GL_BACK, GL_SPECULAR, bone_specular);
+				glMaterialfv(GL_BACK, GL_SHININESS, rose);
+				glMaterialfv(GL_BACK, GL_EMISSION, no_mat);
+
 				
 			}
 		}
@@ -281,11 +306,15 @@ void OBJECT_LANDMARK::Landmark_DrawObj(int level, int mode)
 					{
 						
 
+				/*	glRasterPos3f(tx, ty, tz);
+					printString(itoa( this->landmark_index,  10 )); */
 					glRasterPos3f(tx, ty, tz);
-					printString(itoa( this->landmark_index,  10 )); 
-					 // Je ne sais pas pourquoi si je ne fais pas ça, ça ne fonctionne pas...
-					 glRasterPos3f(tx, ty, tz);
-					printString(itoa( this->landmark_index,  10 )); 
+					printString(itoa(this->landmark_index, 10));
+					glRasterPos3f(tx, ty, tz);
+					printString(itoa(this->landmark_index, 10));
+					// I do not know why, but if we dont call 3 times "glRasterPos and printstring,
+					// the first target landmark has a strange colour...
+					 
 					 
 					}
 					
@@ -320,7 +349,10 @@ void OBJECT_LANDMARK::Landmark_DrawObj(int level, int mode)
 					printString((char*)this->flag_label.c_str()); 					 
 					glRasterPos3f(tx, ty, tz);
 					printString((char*)this->flag_label.c_str()); 					 
-					// Je ne sais pas pourquoi si je ne fais pas ça, ça ne fonctionne pas...
+					glRasterPos3f(tx, ty, tz);
+					printString((char*)this->flag_label.c_str());
+					// I do not know why, but if we dont call 3 times "glRasterPos and printstring,
+					// the first flag has no label... 
 					//glRasterPos3f(tx, ty, tz);
 					//printString((char*)this->flag_label.c_str()); 																		
 			
