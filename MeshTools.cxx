@@ -2677,25 +2677,29 @@ void MeshTools::update_all_flags_colours()
 	k = Cont_Mesh.landmarkafter(ind, 2);
 	while (k != NULL)
 	{
-		r1 = 128;
-		g1 = 128;
-		b1 = 128;
-		k->get_world_coordinates_matrix(wc_mat);
-		vv[0] = 0;
-		vv[1] = 0;
-		vv[2] = 0;
-		
-		ApplyTransformation(vv, vv1, wc_mat);	
-		//cout << ": vv1[0]=" << vv1[0] << ", vv1[1]=" << vv1[1] << ", vv1[2]" << vv1[2] << endl;
-		Cont_Mesh.get_closest_vertex_colour(vv1, &r, &g, &b);
-		r1 = (int)r;
-		g1 = (int)g;
-		b1 = (int)b;
-		cout << "Flag" << ind << ": r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
-	
-		k->color[0]=(float)r1/255;
-		k->color[1]= (float)g1 / 255;
-		k->color[2] = (float)b1/255;			
+		if (k->selected == 1)
+		{
+			r1 = 128;
+			g1 = 128;
+			b1 = 128;
+			k->get_world_coordinates_matrix(wc_mat);
+			vv[0] = 0;
+			vv[1] = 0;
+			vv[2] = 0;
+
+			ApplyTransformation(vv, vv1, wc_mat);
+			//cout << ": vv1[0]=" << vv1[0] << ", vv1[1]=" << vv1[1] << ", vv1[2]" << vv1[2] << endl;
+			Cont_Mesh.get_closest_vertex_colour(vv1, &r, &g, &b);
+			r1 = (int)r;
+			g1 = (int)g;
+			b1 = (int)b;
+			cout << "Flag" << ind << ": r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+
+			k->color[0] = (float)r1 / 255;
+			k->color[1] = (float)g1 / 255;
+			k->color[2] = (float)b1 / 255;
+			k->selected = 0;
+		}
 		ind = k->landmark_index;
 		k = Cont_Mesh.landmarkafter(ind, 2);
 	}

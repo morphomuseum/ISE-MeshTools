@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0303 
+version 1.0302 
 header_name {MeshToolsUI.h} 
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
@@ -32,7 +32,7 @@ if (test ==1)
             tooltip Delete image {./pixmap/delete2.gif} xywh {0 25 25 23} color 55
           }
           Fl_Menu_Button File {
-            label File open
+            label File
             xywh {0 0 55 25} color 55 labelcolor 32
           } {
             MenuItem Generic_Open_Surface {
@@ -220,7 +220,7 @@ if (ok==1)
 
 	MT->Open_POS_File_NEW(2);
 	MT->redraw();
-}} selected
+}}
                 xywh {60 60 100 20} labelcolor 32
               }
               MenuItem Load_POS_Inv_LMK {
@@ -855,10 +855,10 @@ MT->redraw();}
               xywh {10 10 30 20}
             }
             MenuItem AllFlagOptions2 {
-              label {Update all flags colours automatically}
+              label {Update all selected flags colours automatically}
               callback {MT->update_all_flags_colours();
-MT->redraw();}
-              xywh {20 20 30 20}
+MT->redraw();} selected
+              tooltip {Gives closest vertex colour to all selected flags} xywh {20 20 30 20}
             }
             MenuItem LandmarkNormals {
               label {Change selected landmarks orientation according to surface normals}
