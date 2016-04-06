@@ -71,6 +71,7 @@ FIND_PACKAGE(OpenGL)
     INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR})    
   ENDIF(FLTK_FOUND)
 
+  FIND_PACKAGE( VTK REQUIRED)
 # define needed VTK Modules 
 set( required_vtk_modules
   vtkCommonComputationalGeometry
@@ -92,9 +93,15 @@ set( required_vtk_modules
   vtkFiltersHybrid
   vtkIOImport
   vtkRenderingCore
-  vtkRenderingOpenGL
+  # vtkRenderingOpenGL
   vtkIOPLY
   )
+if(VTK_RENDERING_BACKEND) #in vtk 7, the rendering backend is exported as a var.
+  LIST(APPEND required_vtk_modules vtkRendering${VTK_RENDERING_BACKEND})
+else(VTK_RENDERING_BACKEND)
+  LIST(APPEND required_vtk_modules vtkRenderingOpenGL)
+endif(VTK_RENDERING_BACKEND)
+  
 find_package( VTK REQUIRED COMPONENTS ${required_vtk_modules} )
 
 OPTION(CMAKE_INSTALL_PREFIX ".")
