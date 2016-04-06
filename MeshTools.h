@@ -440,8 +440,8 @@ void Open_FLG_File(std::string filename);
 void Open_CUR_File(); 
 void Open_CUR_File(std::string filename);
 void Selected_Landmarks_Change_Orientation();
-int MeshTools::Get_Selected_Landmark_Number(int mode);
-int MeshTools::Get_Selected_Landmark_Number();
+int Get_Selected_Landmark_Number(int mode);
+int Get_Selected_Landmark_Number();
 
 void Open_POS_File(std::string filename,OBJECT_MESH * My_Obj);
 void Open_POS_File();
