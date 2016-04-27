@@ -1,3 +1,24 @@
+meshtools (1.3.1xenial0) xenial; urgency=medium
+
+  * ISE-MeshTools should now display correctly objects of both very large and small size (the "auto-zoom" and "clipping-plane" related functions have been corrected).
+  * Colours should be now correctly saved within .PLY files
+  * Users have now the possibility to have access and to edit landmarks coordinates (Saving landmarks into files is not anymore the only way to get access to landmark coordinates).
+  * Users can now create new landmarks at specified x,y, and z coordinates (setting landmark using the mouse+keyboard is not anymore the only way to digitize landmarks).
+
+ -- Stefan Schlager <zarquon42@gmail.com>  Wed, 06 Apr 2016 13:00:48 +0200
+
+meshtools (1.3trusty0) trusty; urgency=medium
+
+  *  A few corrections have been brought regarding colour display when VBO functions are used (graphic card acceleration).
+  *  MeshTools.ini is now located at a user's specific location.
+  *  When freshly compiled/installed, MeshTools.ini does not exist and is now created with convenient default values.
+  *  Tag colours and labels, as well as object/grid/background colours can now be reinitialized.
+  *  The camera can rotate around objects centre of mass (and not only around 0,0,0), which is convenient when users prefer not to modify the original position of an object.
+  *  Possibility to automatically adjust landmark display size, depending of the size of the objects currently opened
+  *  Project files now include tags/landmarks/flags/curves/orientation labels 
+
+ -- Stefan Schlager <zarquon42@gmail.com>  Tue, 12 Jan 2016 11:29:55 +0100
+
 meshtools (1.2trusty0) trusty; urgency=medium
 
   * intitial deb
