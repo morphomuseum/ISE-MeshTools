@@ -1371,6 +1371,8 @@ void CONTAINER_MESH::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, u
 	closest[0] = 0;
 	closest[1] = 0;
 	closest[2] = 0;
+	uchar r1, g1, b1;
+	
 
 	float vvs[3], vv1[3];
 
@@ -1413,7 +1415,7 @@ void CONTAINER_MESH::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, u
 			{
 
 
-				My_Obj->Mesh_Find_Closest_Vertex(m, &xx, &yy, &zz, &nxx, &nyy, &nzz, &veve, r, g, b, 1);
+				My_Obj->Mesh_Find_Closest_Vertex(m, &xx, &yy, &zz, &nxx, &nyy, &nzz, &veve, &r1, &g1, &b1, 1);
 				
 				dist = (xx - m[0])*(xx - m[0]) + (yy - m[1])*(yy - m[1]) + (zz - m[2])*(zz - m[2]);
 				
@@ -1428,6 +1430,9 @@ void CONTAINER_MESH::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, u
 					nclosest[2] = nzz;
 					min_dist = dist;
 					vemin = veve;
+					*r = r1;
+					*g = g1;
+					*b = b1;
 				}
 			}
 			My_Obj = My_Obj->nextobj;
