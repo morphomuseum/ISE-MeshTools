@@ -2991,6 +2991,7 @@ void MeshTools::Set_Blend(int blend_value)
 
 void MeshTools::color_setobjcolor (uchar r, uchar g, uchar b)
 	{
+	//color obj is a float : so conversion 0..255 => 0.0 ... 1.0
 	OBJECT_MESH * My_Obj;
 	OBJECT_LOG * My_Log;
 	color_obj[0] = r;

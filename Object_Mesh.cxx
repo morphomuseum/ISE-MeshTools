@@ -92,6 +92,7 @@ void OBJECT_MESH::Update_RGB()
 					//@@@@@
 					int nr,ng,nb,na;
 					
+					//Colour scale!
 					if (currentScalars!=NULL && (g_scalar_display_mode ==1 || g_tag_display_mode ==1))
 					{
 						//std::cout<<"currentScalars not null "<<std::endl;
@@ -103,23 +104,17 @@ void OBJECT_MESH::Update_RGB()
 						nb= (unsigned char)(mround(255*cv[2]));
 						na= (unsigned char)(mround(255*cv[3]));
 						
-						nr = (unsigned char)(mround(this->color[0]));
-						ng = (unsigned char)(mround(this->color[1]));
-						nb = (unsigned char)(mround(this->color[2]));
-						na = (unsigned char)(mround(this->blend));
+						
 					}
 					else
 					{
+						// And YES...  NR NG NB should be a 0.. 255 value !!!! For the moment, color[] is a 0.0 ... 1.0 range
 						//std::cout<<"currentScalars null "<<std::endl;
-						/*nr= (unsigned char)(mround(255*this->color[0]));
+						nr= (unsigned char)(mround(255*this->color[0]));
 						ng= (unsigned char)(mround(255*this->color[1]));
 						nb= (unsigned char)(mround(255*this->color[2]));
-						na= (unsigned char)(mround(255*this->blend));*/
-						nr = (unsigned char)(mround( this->color[0]));
-						ng = (unsigned char)(mround( this->color[1]));
-						nb = (unsigned char)(mround( this->color[2]));
-						na = (unsigned char)(mround( this->blend));
-
+						na= (unsigned char)(mround(255*this->blend));
+						
 					}
 					if (i<500)
 					{
@@ -129,7 +124,7 @@ void OBJECT_MESH::Update_RGB()
 					//newcolors->InsertTuple3(i, 0,0,255);			
 					if(i<10)
 					{
-					//		std::cout<<"nr="<<nr<<", ng="<<ng<<", nb="<<nb<<", na="<<na<<std::endl;
+							//std::cout<<"nr="<<nr<<", ng="<<ng<<", nb="<<nb<<", na="<<na<<std::endl;
 					}
 					newcolors->InsertTuple4(i, nr,ng,nb,na);		
 					newcolors->InsertTuple4(i, nr,ng,nb,na);																				
