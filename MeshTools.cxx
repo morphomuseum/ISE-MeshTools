@@ -2690,6 +2690,7 @@ void MeshTools::update_all_flags_colours()
 			ApplyTransformation(vv, vv1, wc_mat);
 			//cout << ": vv1[0]=" << vv1[0] << ", vv1[1]=" << vv1[1] << ", vv1[2]" << vv1[2] << endl;
 			Cont_Mesh.get_closest_vertex_colour(vv1, &r, &g, &b);
+
 			r1 = (int)r;
 			g1 = (int)g;
 			b1 = (int)b;

@@ -282,15 +282,17 @@ void OBJECT_MESH::Mesh_Find_Closest_Vertex (float input[3], float *x, float*y, f
 	// depends on the mode...
 	if (g_scalar_display_mode == 1 || g_tag_display_mode == 1)
 	{
+		// c_closes is a 0.. 255 (retrieved from "RGB" scalar!)
 		r1 = (int)c_closest[0];
 		g1 = (int)c_closest[1];
 		b1 = (int)c_closest[2];
 	}
 	else
 	{
-		r1 = (int)(mround(this->color[0]));
-		g1 = (int)(mround(this->color[1])); 
-		b1 = (int)(mround(this->color[2]));		
+		//remember that color is a float => 0.0 .. 1.0
+		r1 = (int)(mround(255*this->color[0]));
+		g1 = (int)(mround(255*this->color[1])); 
+		b1 = (int)(mround(255*this->color[2]));		
 		//cout <<"name:"<<this->name<< ", r1=" << r1 << ", g1=" << g1 << ", b1=" << b1 << endl;
 
 	}

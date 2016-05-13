@@ -1364,6 +1364,7 @@ void CONTAINER_MESH::create_landmark_at_xyz(float m[3], int type)
 
 void CONTAINER_MESH::get_closest_vertex_colour(float m[3], uchar *r, uchar *g, uchar *b)
 {
+	// !!!! r, g, b => 0.. 255
 	//Cont_Mesh.get_closest_vertex_colour(m3, r, g, b);
 
 	float closest[3];
