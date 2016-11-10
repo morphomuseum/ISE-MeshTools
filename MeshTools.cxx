@@ -8,6 +8,7 @@
 #include <vtkElevationFilter.h>
 #include <vtkActor.h>
 #include <vtkCamera.h>
+#include <vtkCenterOfMass.h>
 #include <vtkProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataReader.h>
@@ -59,7 +60,8 @@ MeshTools::MeshTools()
   
   vtkSmartPointer<vtkPolyDataReader> reader2 =
 	  vtkSmartPointer<vtkPolyDataReader>::New();
-  reader2->SetFileName("Letf_inner_ear.vtk");
+  //reader2->SetFileName("Letf_inner_ear.vtk");
+  reader2->SetFileName("Letf_modified.vtk");
   reader2->Update();
 
   vtkSmartPointer<vtkPolyDataReader> reader3 =
@@ -96,16 +98,27 @@ MeshTools::MeshTools()
 
   // Add Actor to renderer
   ren->AddActor(actor2);
-  ren->AddActor(actor3);
-  ren->AddActor(actor);
+ // ren->AddActor(actor3);
+ // ren->AddActor(actor);
  
+  vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
+	  vtkSmartPointer<vtkCenterOfMass>::New();
+
+  centerOfMassFilter->SetInputData(reader2->GetOutput());
+centerOfMassFilter->SetUseScalarsAsWeights(false);
+double center[3];
+  centerOfMassFilter->Update();
+  centerOfMassFilter->GetCenter(center);
+  std::cout << "Center of mass of object 2 is " << center[0] << " " << center[1] << " " << center[2] << std::endl;
+
 
   this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
   this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
   
-  ren->SetUseDepthPeeling(1);
+
+  /*ren->SetUseDepthPeeling(1);
   ren->SetMaximumNumberOfPeels(100);
-  ren->SetOcclusionRatio(0.1);
+  ren->SetOcclusionRatio(0.1);*/
   
 
   // VTK/Qt wedded
@@ -117,13 +130,22 @@ MeshTools::MeshTools()
 	  vtkSmartPointer<vtkCamera>::New();
  
   camera = ren->GetActiveCamera();
-  camera->SetViewUp(0, 0, -1);
-  camera->SetPosition(0, 1, -100);
-  camera->SetFocalPoint(0, 0, 0);
-  camera->ComputeViewPlaneNormal();
-  camera->Azimuth(30.0);
-  camera->Elevation(30.0);
+  
+  camera->SetPosition(center[0], center[1], center[2]-100);
+  camera->SetFocalPoint(center[0], center[1], center[2]);
+  camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
+ camera->Roll(90); // around "x" (horizontal) viewing axis
+ camera->Elevation(180); // around "y" (vertical) viewing axis
+ camera->SetParallelScale(10);
+ //camera->Set
+  //camera->Azimuth(-90);
+  //camera->Elevation(90);
+  //camera->SetViewUp(center[0]-1, center[1], center[2] - 100);
+ //camera->ComputeViewPlaneNormal();
+ //camera->Azimuth(30.0);
+ //camera->Elevation(30.0);
   camera->ParallelProjectionOn();
+
   // Just a bit of Qt interest: Culling off the
   // point data and handing it to a vtkQtTableView
   VTK_CREATE(vtkDataObjectToTable, toTable);
@@ -137,10 +159,10 @@ MeshTools::MeshTools()
   connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
   connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
-
+  /**/
   vtkSmartPointer<vtkAxesActor> axes =
 	  vtkSmartPointer<vtkAxesActor>::New();
-
+  /**/
 //  VTK_CREATE(vtkOrientationMarkerWidget, widget);
   vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
   // ça ne marche pas avec class widget!!!!
@@ -155,7 +177,7 @@ MeshTools::MeshTools()
   widget->InteractiveOff();
   widget->PickingManagedOn();
   
-
+  
 };
 
 MeshTools::~MeshTools()
