@@ -17,6 +17,7 @@
 
 #include "vtkSmartPointer.h"    // Required for smart pointer internal ivars.
 #include <QMainWindow>
+#include <QFileDialog>
 
 // Forward Qt class declarations
 class Ui_MeshTools;

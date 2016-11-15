@@ -131,7 +131,7 @@ double center[3];
  
   camera = ren->GetActiveCamera();
   
-  camera->SetPosition(center[0], center[1], center[2]-100);
+  camera->SetPosition(center[0], center[1], center[2]-1);
   camera->SetFocalPoint(center[0], center[1], center[2]);
   camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
  camera->Roll(90); // around "x" (horizontal) viewing axis
@@ -189,7 +189,22 @@ MeshTools::~MeshTools()
 // Action to be taken upon file open
 void MeshTools::slotOpenFile()
 {
+	
+	QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Load surface"), QDir::currentPath(),
+		tr("Images (*.ply *.stl *.vtk)"));
+	
+	std::cout << fileName.toStdString();
 
+/*	if (fileName.isEmpty()) return;
+
+	//if (img.loadImage(fileName.toStdString().c_str()))
+
+	fileName = QFileDialog::getOpenFileName(this,
+		tr("Open File"), "/home/jana", tr("Surface Files (*.vtk *.stl *.ply)"));
+	VTK_CREATE(vtkActor, actor);
+	actor->GetProperty()->SetColor(0.5, 1, 0.5);
+	actor->GetProperty()->SetOpacity(0.5);*/
 }
 
 void MeshTools::slotExit() {
