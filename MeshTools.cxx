@@ -11,6 +11,7 @@
 #include <vtkCenterOfMass.h>
 #include <vtkProperty.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkDataSetMapper.h>
 #include <vtkPolyDataReader.h>
 #include <vtkQtTableView.h>
 #include <vtkRenderWindow.h>
@@ -22,9 +23,11 @@
 #include <vtkSTLReader.h>
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
+#include <vtkDoubleArray.h>
 #include <vtkCellData.h>
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
+
 
 
 
@@ -41,6 +44,7 @@ MeshTools::MeshTools()
   this->TableView = vtkSmartPointer<vtkQtTableView>::New();
   this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
   this->Renderer = vtkSmartPointer<vtkRenderer>::New();
+  this->Grid = vtkSmartPointer<vtkStructuredGrid>::New();
 
   // Place the table view in the designer form
   this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
@@ -68,7 +72,24 @@ MeshTools::MeshTools()
 
 
   this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->Renderer);
-  cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
+  /*
+  vtkSmartPointer<vtkRectilinearGrid> rectilinearGrid =
+  vtkSmartPointer<vtkRectilinearGrid>::New();
+  this->InitGrid(10);
+  vtkSmartPointer<vtkDataSetMapper> rectilinearGridMapper =
+vtkSmartPointer<vtkDataSetMapper>::New();
+  rectilinearGridMapper->SetInputData(this->Grid);
+
+  vtkSmartPointer<vtkActor> rectilinearGridActor =
+vtkSmartPointer<vtkActor>::New();
+  rectilinearGridActor->GetProperty()->SetRepresentationToWireframe();
+  rectilinearGridActor->SetMapper(rectilinearGridMapper);
+  
+  this->Renderer->AddActor(rectilinearGridActor);*/
+
+
+
+  //cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
   
   this->Camera = this->Renderer->GetActiveCamera();
   
@@ -132,6 +153,43 @@ MeshTools::~MeshTools()
 
 }
 
+
+void MeshTools::InitGrid(int gridSize)
+{
+
+	/*this->Grid->SetExtent(0, gridSize - 1, 0, gridSize - 1, 0, gridSize - 1);
+
+	vtkSmartPointer<vtkDoubleArray> xCoords =
+		vtkSmartPointer<vtkDoubleArray>::New();
+	xCoords->SetNumberOfComponents(1);
+	vtkSmartPointer<vtkDoubleArray> yCoords =
+		vtkSmartPointer<vtkDoubleArray>::New();
+	yCoords->SetNumberOfComponents(1);
+	vtkSmartPointer<vtkDoubleArray> zCoords =
+		vtkSmartPointer<vtkDoubleArray>::New();
+	zCoords->SetNumberOfComponents(1);
+
+	vtkSmartPointer<vtkPoints> points =
+		vtkSmartPointer<vtkPoints>::New();
+
+	for (int z = 0; z < gridSize; z++)
+	{
+		
+			for ( int y = 0; y < gridSize; y++)
+			{
+				for ( int x = 0; x < gridSize; x++)
+				{
+					points->InsertNextPoint(x, y, z);
+				}
+			}
+		}
+	
+	*/
+	
+
+	
+}
+
 //On ajoute un indice au nom si le nom existe déjà.
 //fonction recurente pour savoir quel indice lui donner.
 std::string  MeshTools::CheckingName(std::string name_obj, int cpt_name) {
@@ -148,8 +206,8 @@ void MeshTools::UpdateRenderer()
 	//this->Renderer->RemoveAllViewProps();
 	//for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	//{
-		vtkActor* actor = this->ActorCollection->GetLastActor();				
-		this->Renderer->AddActor(actor);
+		//vtkActor* actor = this->ActorCollection->GetLastActor();				
+		//this->Renderer->AddActor(actor);
 	//}
 }
 
@@ -430,9 +488,9 @@ void MeshTools::slotOpenFile()
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
 			//actor->GetProperty()->SetOpacity(0.9);
 			actor->SetMapper(mapper);
-			
+			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
-
+			
 			/*vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
 				vtkSmartPointer<vtkCenterOfMass>::New();
 
@@ -466,9 +524,10 @@ void MeshTools::slotOpenFile()
 			//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
 			this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
 			this->Camera->SetParallelScale(GlobalBoundingBoxLength);
-			this->Camera->ParallelProjectionOn();
-
-			this->UpdateRenderer();
+			//this->Camera->ParallelProjectionOn();
+			
+			
+			//this->UpdateRenderer();
 
 			//My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());
 

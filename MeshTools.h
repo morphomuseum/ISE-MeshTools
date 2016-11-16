@@ -19,6 +19,7 @@
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
 #include <vtkCamera.h>
+#include <vtkStructuredGrid.h>
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -43,6 +44,7 @@ public:
   vtkSmartPointer<vtkActorCollection> ActorCollection;
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
+  vtkSmartPointer<vtkStructuredGrid> Grid;
 
 public slots:
 
@@ -57,7 +59,7 @@ private:
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();
 	void GetGlobalCenterOfMass(double center[3]);
-	
+	void InitGrid(int gridSize);
 	std::string CheckingName(std::string name_obj, int cpt_name);
 
   vtkSmartPointer<vtkQtTableView>         TableView;
