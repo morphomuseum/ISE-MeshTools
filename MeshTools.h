@@ -15,7 +15,11 @@
 #ifndef MeshTools_H
 #define MeshTools_H
 
-#include "vtkSmartPointer.h"    // Required for smart pointer internal ivars.
+#include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
+#include <vtkActorCollection.h>
+#include <vtkRenderer.h>
+#include <vtkCamera.h>
+
 #include <QMainWindow>
 #include <QFileDialog>
 
@@ -35,6 +39,10 @@ public:
   // Constructor/Destructor
   MeshTools();
   ~MeshTools();
+  
+  vtkSmartPointer<vtkActorCollection> ActorCollection;
+  vtkSmartPointer<vtkRenderer> Renderer;
+  vtkSmartPointer<vtkCamera> Camera;
 
 public slots:
 
@@ -46,6 +54,11 @@ protected:
 protected slots:
 
 private:
+	void UpdateRenderer();
+	double GetGlobalBoundingBoxLength();
+	void GetGlobalCenterOfMass(double center[3]);
+	
+	std::string CheckingName(std::string name_obj, int cpt_name);
 
   vtkSmartPointer<vtkQtTableView>         TableView;
 
