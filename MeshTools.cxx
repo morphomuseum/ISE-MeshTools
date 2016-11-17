@@ -133,6 +133,8 @@ vtkSmartPointer<vtkActor>::New();
 
   vtkSmartPointer<vtkOrientationHelperActor> axes =
 	  vtkSmartPointer<vtkOrientationHelperActor>::New();
+  axes->Print(std::cout); 
+
   /**/
 //  VTK_CREATE(vtkOrientationMarkerWidget, widget);
   vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();

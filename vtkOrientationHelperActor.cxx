@@ -32,6 +32,9 @@ vtkOrientationHelperActor::vtkOrientationHelperActor()//:vtkAxesActor()
 {
 	
 	this->AxisLabels = 1;
+	this->XAxisLabels = 1;
+	this->YAxisLabels = 1;
+	this->ZAxisLabels = 1;
 
 	this->XAxisLabelText = NULL;
 	this->YAxisLabelText = NULL;
@@ -247,6 +250,9 @@ void vtkOrientationHelperActor::ShallowCopy(vtkProp *prop)
 	if (a != NULL)
 	{
 		this->SetAxisLabels(a->GetAxisLabels());
+		this->SetXAxisLabels(a->GetXAxisLabels());
+		this->SetYAxisLabels(a->GetYAxisLabels());
+		this->SetZAxisLabels(a->GetZAxisLabels());
 		this->SetXAxisLabelText(a->GetXAxisLabelText());
 		this->SetYAxisLabelText(a->GetYAxisLabelText());
 		this->SetZAxisLabelText(a->GetZAxisLabelText());
@@ -290,9 +296,20 @@ void vtkOrientationHelperActor::GetActors(vtkPropCollection *ac)
 //----------------------------------------------------------------------------
 int vtkOrientationHelperActor::RenderOpaqueGeometry(vtkViewport *vp)
 {
-	int renderedSomething = this->Superclass::RenderOpaqueGeometry(vp);
+	//int renderedSomething = this->Superclass::RenderOpaqueGeometry(vp);
+	int renderedSomething = 0;
 
-	
+	this->UpdateProps();
+
+	renderedSomething += this->XAxisShaft->RenderOpaqueGeometry(vp);
+	renderedSomething += this->YAxisShaft->RenderOpaqueGeometry(vp);
+	renderedSomething += this->ZAxisShaft->RenderOpaqueGeometry(vp);
+
+	renderedSomething += this->XAxisTip->RenderOpaqueGeometry(vp);
+	renderedSomething += this->YAxisTip->RenderOpaqueGeometry(vp);
+	renderedSomething += this->ZAxisTip->RenderOpaqueGeometry(vp);
+
+		
 	renderedSomething += this->X2AxisShaft->RenderOpaqueGeometry(vp);
 	renderedSomething += this->Y2AxisShaft->RenderOpaqueGeometry(vp);
 	renderedSomething += this->Z2AxisShaft->RenderOpaqueGeometry(vp);
@@ -303,9 +320,22 @@ int vtkOrientationHelperActor::RenderOpaqueGeometry(vtkViewport *vp)
 
 	if (this->AxisLabels)
 	{
-		renderedSomething += this->X2AxisLabel->RenderOpaqueGeometry(vp);
-		renderedSomething += this->Y2AxisLabel->RenderOpaqueGeometry(vp);
-		renderedSomething += this->Z2AxisLabel->RenderOpaqueGeometry(vp);
+		
+		if (this->XAxisLabels)
+		{
+			renderedSomething += this->XAxisLabel->RenderOpaqueGeometry(vp);
+			renderedSomething += this->X2AxisLabel->RenderOpaqueGeometry(vp);
+		}
+		if (this->YAxisLabels)
+		{
+			renderedSomething += this->YAxisLabel->RenderOpaqueGeometry(vp);
+			renderedSomething += this->Y2AxisLabel->RenderOpaqueGeometry(vp);
+		}
+		if (this->ZAxisLabels)
+		{
+			renderedSomething += this->ZAxisLabel->RenderOpaqueGeometry(vp);
+			renderedSomething += this->Z2AxisLabel->RenderOpaqueGeometry(vp);
+		}
 	}
 
 	renderedSomething = (renderedSomething > 0) ? (1) : (0);
@@ -315,9 +345,20 @@ int vtkOrientationHelperActor::RenderOpaqueGeometry(vtkViewport *vp)
 //-----------------------------------------------------------------------------
 int vtkOrientationHelperActor::RenderTranslucentPolygonalGeometry(vtkViewport *vp)
 {
-	int renderedSomething = this->Superclass::RenderTranslucentPolygonalGeometry(vp);
+//	int renderedSomething = this->Superclass::RenderTranslucentPolygonalGeometry(vp);
+	int renderedSomething = 0;
 
-	
+	this->UpdateProps();
+
+	renderedSomething += this->XAxisShaft->RenderTranslucentPolygonalGeometry(vp);
+	renderedSomething += this->YAxisShaft->RenderTranslucentPolygonalGeometry(vp);
+	renderedSomething += this->ZAxisShaft->RenderTranslucentPolygonalGeometry(vp);
+
+	renderedSomething += this->XAxisTip->RenderTranslucentPolygonalGeometry(vp);
+	renderedSomething += this->YAxisTip->RenderTranslucentPolygonalGeometry(vp);
+	renderedSomething += this->ZAxisTip->RenderTranslucentPolygonalGeometry(vp);
+
+		
 	renderedSomething += this->X2AxisShaft->RenderTranslucentPolygonalGeometry(vp);
 	renderedSomething += this->Y2AxisShaft->RenderTranslucentPolygonalGeometry(vp);
 	renderedSomething += this->Z2AxisShaft->RenderTranslucentPolygonalGeometry(vp);
@@ -327,12 +368,23 @@ int vtkOrientationHelperActor::RenderTranslucentPolygonalGeometry(vtkViewport *v
 	renderedSomething += this->Z2AxisTip->RenderTranslucentPolygonalGeometry(vp);
 
 	if (this->AxisLabels)
-	{
-		renderedSomething += this->X2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
-		renderedSomething += this->Y2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
-		renderedSomething += this->Z2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
+	{		
+		if (this->XAxisLabels)
+		{
+			renderedSomething += this->XAxisLabel->RenderTranslucentPolygonalGeometry(vp);
+			renderedSomething += this->X2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
+		}
+		if (this->YAxisLabels)
+		{
+			renderedSomething += this->YAxisLabel->RenderTranslucentPolygonalGeometry(vp);
+			renderedSomething += this->Y2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
+		}
+		if (this->ZAxisLabels)
+		{
+			renderedSomething += this->ZAxisLabel->RenderTranslucentPolygonalGeometry(vp);
+			renderedSomething += this->Z2AxisLabel->RenderTranslucentPolygonalGeometry(vp);
+		}
 	}
-
 	renderedSomething = (renderedSomething > 0) ? (1) : (0);
 	return renderedSomething;
 }
@@ -342,23 +394,44 @@ int vtkOrientationHelperActor::RenderTranslucentPolygonalGeometry(vtkViewport *v
 // Does this prop have some translucent polygonal geometry?
 int vtkOrientationHelperActor::HasTranslucentPolygonalGeometry()
 {
-	int result = this->Superclass::HasTranslucentPolygonalGeometry();
+	//int result = this->Superclass::HasTranslucentPolygonalGeometry();
+	int result = 0;
 
-	
+	this->UpdateProps();
+
+	result |= this->XAxisShaft->HasTranslucentPolygonalGeometry();
+	result |= this->YAxisShaft->HasTranslucentPolygonalGeometry();
+	result |= this->ZAxisShaft->HasTranslucentPolygonalGeometry();
+
+	result |= this->XAxisTip->HasTranslucentPolygonalGeometry();
+	result |= this->YAxisTip->HasTranslucentPolygonalGeometry();
+	result |= this->ZAxisTip->HasTranslucentPolygonalGeometry();
+		
 	result |= this->X2AxisShaft->HasTranslucentPolygonalGeometry();
 	result |= this->Y2AxisShaft->HasTranslucentPolygonalGeometry();
 	result |= this->Z2AxisShaft->HasTranslucentPolygonalGeometry();
-
 
 	result |= this->X2AxisTip->HasTranslucentPolygonalGeometry();
 	result |= this->Y2AxisTip->HasTranslucentPolygonalGeometry();
 	result |= this->Z2AxisTip->HasTranslucentPolygonalGeometry();
 
 	if (this->AxisLabels)
-	{
-		result |= this->X2AxisLabel->HasTranslucentPolygonalGeometry();
-		result |= this->Y2AxisLabel->HasTranslucentPolygonalGeometry();
-		result |= this->Z2AxisLabel->HasTranslucentPolygonalGeometry();
+	{		
+		if (this->XAxisLabels)
+		{
+			result |= this->XAxisLabel->HasTranslucentPolygonalGeometry();
+			result |= this->X2AxisLabel->HasTranslucentPolygonalGeometry();
+		}
+		if (this->YAxisLabels)
+		{
+			result |= this->YAxisLabel->HasTranslucentPolygonalGeometry();
+			result |= this->Y2AxisLabel->HasTranslucentPolygonalGeometry();
+		}
+		if (this->ZAxisLabels)
+		{
+			result |= this->ZAxisLabel->HasTranslucentPolygonalGeometry();
+			result |= this->Z2AxisLabel->HasTranslucentPolygonalGeometry();
+		}
 	}
 	return result;
 }
@@ -366,13 +439,30 @@ int vtkOrientationHelperActor::HasTranslucentPolygonalGeometry()
 //-----------------------------------------------------------------------------
 int vtkOrientationHelperActor::RenderOverlay(vtkViewport *vp)
 {
-	int renderedSomething = this->Superclass::RenderOverlay(vp);
+	//int renderedSomething = this->Superclass::RenderOverlay(vp);
+	int renderedSomething = 0;
 
-	
-	
-	renderedSomething += this->X2AxisLabel->RenderOverlay(vp);
-	renderedSomething += this->Y2AxisLabel->RenderOverlay(vp);
-	renderedSomething += this->Z2AxisLabel->RenderOverlay(vp);
+	if (!this->AxisLabels)
+	{
+		return renderedSomething;
+	}
+
+	this->UpdateProps();
+	if (this->XAxisLabels)
+	{
+		renderedSomething += this->XAxisLabel->RenderOverlay(vp);
+		renderedSomething += this->X2AxisLabel->RenderOverlay(vp);
+	}
+	if (this->YAxisLabels)
+	{
+		renderedSomething += this->YAxisLabel->RenderOverlay(vp);
+		renderedSomething += this->Y2AxisLabel->RenderOverlay(vp);
+	}
+	if (this->YAxisLabels)
+	{
+		renderedSomething += this->ZAxisLabel->RenderOverlay(vp);
+		renderedSomething += this->Z2AxisLabel->RenderOverlay(vp);
+	}
 
 	renderedSomething = (renderedSomething > 0) ? (1) : (0);
 	return renderedSomething;
@@ -641,13 +731,17 @@ void vtkOrientationHelperActor::PrintSelf(ostream& os, vtkIndent indent)
 	
 
 	os << indent << "X2AxisLabelText: " << (this->X2AxisLabelText ?
-		this->XAxisLabelText : "(none)")
+		this->X2AxisLabelText : "(none)")
 		<< endl;
 	os << indent << "Y2AxisLabelText: " << (this->Y2AxisLabelText ?
-		this->YAxisLabelText : "(none)")
+		this->Y2AxisLabelText : "(none)")
 		<< endl;
 	os << indent << "Z2AxisLabelText: " << (this->Z2AxisLabelText ?
-		this->ZAxisLabelText : "(none)")
+		this->Z2AxisLabelText : "(none)")
 		<< endl;
+
+	os << indent << "XAxisLabels: " << (this->XAxisLabels ? "On\n" : "Off\n");
+	os << indent << "YAxisLabels: " << (this->YAxisLabels ? "On\n" : "Off\n");
+	os << indent << "ZAxisLabels: " << (this->ZAxisLabels ? "On\n" : "Off\n");
 
 }

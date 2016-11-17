@@ -94,8 +94,18 @@ public:
 	vtkSetStringMacro(Z2AxisLabelText);
 	vtkGetStringMacro(Z2AxisLabelText)
 
+	// Description:
+	// Enable/disable drawing the X, Y, and Z axis labels.
+	vtkSetMacro(XAxisLabels, int);
+	vtkGetMacro(XAxisLabels, int);
+	vtkBooleanMacro(XAxisLabels, int);
+	vtkSetMacro(YAxisLabels, int);
+	vtkGetMacro(YAxisLabels, int);
+	vtkBooleanMacro(YAxisLabels, int);
 
-
+	vtkSetMacro(ZAxisLabels, int);
+	vtkGetMacro(ZAxisLabels, int);
+	vtkBooleanMacro(ZAxisLabels, int);
 
 protected:
 	vtkOrientationHelperActor();
@@ -126,7 +136,9 @@ protected:
 	vtkCaptionActor2D *Y2AxisLabel;
 	vtkCaptionActor2D *Z2AxisLabel;
 
-
+	int                XAxisLabels;
+	int                YAxisLabels;
+	int                ZAxisLabels;
 
 
 
