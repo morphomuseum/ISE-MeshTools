@@ -53,9 +53,9 @@ include_directories(
 )
 
 # Set your files and resources here
-set( Srcs main.cxx MeshTools.cxx )
+set( Srcs main.cxx MeshTools.cxx vtkOrientationHelperActor.cxx)
 
-set( Hdrs MeshTools.h )
+set( Hdrs MeshTools.h vtkOrientationHelperActor.h)
 
 set( MOC_Hdrs MeshTools.h )
 

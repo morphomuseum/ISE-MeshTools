@@ -3,6 +3,7 @@
 
 #include "ui_MeshTools.h"
 #include "MeshTools.h"
+#include "vtkOrientationHelperActor.h"
 
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -127,8 +128,11 @@ vtkSmartPointer<vtkActor>::New();
   connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
   /**/
-  vtkSmartPointer<vtkAxesActor> axes =
-	  vtkSmartPointer<vtkAxesActor>::New();
+  //vtkSmartPointer<vtkAxesActor> axes =
+//	  vtkSmartPointer<vtkAxesActor>::New();
+
+  vtkSmartPointer<vtkOrientationHelperActor> axes =
+	  vtkSmartPointer<vtkOrientationHelperActor>::New();
   /**/
 //  VTK_CREATE(vtkOrientationMarkerWidget, widget);
   vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
