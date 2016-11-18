@@ -64,9 +64,9 @@ MeshTools::MeshTools()
   this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
   
 
-  /*ren->SetUseDepthPeeling(1);
-  ren->SetMaximumNumberOfPeels(100);
-  ren->SetOcclusionRatio(0.1);*/
+  this->Renderer->SetUseDepthPeeling(1);
+  this->Renderer->SetMaximumNumberOfPeels(100);
+  this->Renderer->SetOcclusionRatio(0.1);
   
 
   // VTK/Qt wedded
@@ -492,7 +492,7 @@ void MeshTools::slotOpenFile()
 			mapper->SetInputData(MyPolyData);
 			VTK_CREATE(vtkActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
-			//actor->GetProperty()->SetOpacity(0.9);
+			actor->GetProperty()->SetOpacity(0.5);
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
