@@ -4,6 +4,7 @@
 #include "ui_MeshTools.h"
 #include "MeshTools.h"
 #include "vtkOrientationHelperActor.h"
+#include "vtkOrientationHelperWidget.h"
 
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -18,7 +19,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkVectorText.h>
 #include <vtkAxesActor.h>
-#include <vtkOrientationMarkerWidget.h>
+//#include <vtkOrientationMarkerWidget.h>
+
 #include <vtkPolyDataNormals.h>
 #include <vtkPLYReader.h>
 #include <vtkSTLReader.h>
@@ -133,11 +135,13 @@ vtkSmartPointer<vtkActor>::New();
 
   vtkSmartPointer<vtkOrientationHelperActor> axes =
 	  vtkSmartPointer<vtkOrientationHelperActor>::New();
-  axes->Print(std::cout); 
+  //axes->Print(std::cout); 
 
   /**/
 //  VTK_CREATE(vtkOrientationMarkerWidget, widget);
-  vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
+  //
+  vtkOrientationHelperWidget* widget = vtkOrientationHelperWidget::New();
+  //vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
   // ça ne marche pas avec class widget!!!!
 
   
