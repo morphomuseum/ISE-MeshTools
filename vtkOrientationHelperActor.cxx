@@ -458,7 +458,7 @@ int vtkOrientationHelperActor::RenderOverlay(vtkViewport *vp)
 		renderedSomething += this->YAxisLabel->RenderOverlay(vp);
 		renderedSomething += this->Y2AxisLabel->RenderOverlay(vp);
 	}
-	if (this->YAxisLabels)
+	if (this->ZAxisLabels)
 	{
 		renderedSomething += this->ZAxisLabel->RenderOverlay(vp);
 		renderedSomething += this->Z2AxisLabel->RenderOverlay(vp);

@@ -247,15 +247,35 @@ void vtkOrientationHelperWidget::ExecuteCameraUpdateEventHelper(vtkObject *vtkNo
   {
     return;
   }
+ 
+  
+ 
+  
   vtkOrientationHelperActor *myAct = (vtkOrientationHelperActor*)this->OrientationMarker;
-  myAct->XAxisLabelsOff();
-  myAct->SetXAxisLabels(0);
+  
  // cout << "X labels off" << endl;
   vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
   double pos[3], fp[3], viewup[3];
   cam->GetPosition( pos );
   cam->GetFocalPoint( fp );
   cam->GetViewUp( viewup );
+  double viewing_vector[3];
+  vtkMath::Subtract(pos, fp, viewing_vector);
+  vtkMath::Normalize(viewing_vector);
+  myAct->XAxisLabelsOn();
+  myAct->YAxisLabelsOn();
+  myAct->ZAxisLabelsOn();
+  cout << "viewing vector: " << viewing_vector[0] << ", " << viewing_vector[1] << ", " << viewing_vector[2] << endl;
+  if (abs(viewing_vector[0]) > 0.8) {
+	  myAct->XAxisLabelsOff();
+  }
+  if (abs(viewing_vector[1]) > 0.8) {
+	  myAct->YAxisLabelsOff();
+  }
+
+  if (abs(viewing_vector[2]) > 0.8) {
+	  myAct->ZAxisLabelsOff();
+  }
 
   cam = this->Renderer->GetActiveCamera();
   cam->SetPosition( pos );
