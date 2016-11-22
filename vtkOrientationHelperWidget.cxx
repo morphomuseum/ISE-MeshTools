@@ -67,14 +67,21 @@ vtkOrientationHelperWidget::vtkOrientationHelperWidget()
 	this->Tolerance = 7;
 	this->Moving = 0;
 
-	this->Viewport[0] = 0.0;
-	this->Viewport[1] = 0.0;
-	this->Viewport[2] = 0.2;
-	this->Viewport[3] = 0.2;
-
+	
+	
 	this->Renderer = vtkRenderer::New();
+	// VTK 7.0
+	this->Renderer->SetViewport(0.0, 0.0, 0.2, 0.2);
+	// END VTK 7.0
 	this->Renderer->SetLayer(1);
 	this->Renderer->InteractiveOff();
+
+	//VTK 7.1!
+	/*this->Viewport[0] = 0.0;
+	this->Viewport[1] = 0.0;
+	this->Viewport[2] = 0.2;
+	this->Viewport[3] = 0.2;*/
+	// END VTK 7.1
 
 	this->Priority = 0.55;
 	this->OrientationMarker = NULL;
@@ -155,7 +162,8 @@ void vtkOrientationHelperWidget::SetEnabled(int enabling)
 		this->Enabled = 1;
 
 		// Compute the viewport for the widget w.r.t. to the current renderer
-		double currentViewport[4];
+		// VTK 7.1!!!!
+		/*double currentViewport[4];
 		this->CurrentRenderer->GetViewport(currentViewport);
 		double vp[4], currentViewportRange[2];
 		for (int i = 0; i < 2; ++i)
@@ -166,7 +174,8 @@ void vtkOrientationHelperWidget::SetEnabled(int enabling)
 			vp[i + 2] = this->Viewport[i + 2] * currentViewportRange[i] +
 				currentViewport[i];
 		}
-		this->Renderer->SetViewport(vp);
+		this->Renderer->SetViewport(vp);*/
+		// END VTK 7.1
 
 		vtkRenderWindow* renwin = this->CurrentRenderer->GetRenderWindow();
 		renwin->AddRenderer(this->Renderer);
@@ -265,7 +274,7 @@ void vtkOrientationHelperWidget::ExecuteCameraUpdateEventHelper(vtkObject *vtkNo
   myAct->XAxisLabelsOn();
   myAct->YAxisLabelsOn();
   myAct->ZAxisLabelsOn();
-  cout << "viewing vector: " << viewing_vector[0] << ", " << viewing_vector[1] << ", " << viewing_vector[2] << endl;
+  //cout << "viewing vector: " << viewing_vector[0] << ", " << viewing_vector[1] << ", " << viewing_vector[2] << endl;
   if (abs(viewing_vector[0]) > 0.8) {
 	  myAct->XAxisLabelsOff();
   }

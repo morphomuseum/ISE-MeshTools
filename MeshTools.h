@@ -18,6 +18,7 @@
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
+#include <vtkImageData.h>
 #include <vtkCamera.h>
 #include <vtkStructuredGrid.h>
 
@@ -56,6 +57,8 @@ protected:
 protected slots:
 
 private:
+	vtkActor* CreateGridOutline(const int type, const int plane, const int gridSize, const double gridSpacing, const double origin[3]);
+	
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();
 	void GetGlobalCenterOfMass(double center[3]);

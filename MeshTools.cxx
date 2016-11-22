@@ -18,6 +18,8 @@
 #include <vtkQtTableView.h>
 #include <vtkRenderWindow.h>
 #include <vtkVectorText.h>
+#include <vtkImageData.h>
+
 #include <vtkAxesActor.h>
 //#include <vtkOrientationMarkerWidget.h>
 
@@ -30,6 +32,7 @@
 #include <vtkCellData.h>
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
+#include <vtkLine.h>
 
 
 
@@ -76,21 +79,52 @@ MeshTools::MeshTools()
 
   this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->Renderer);
   /*
-  vtkSmartPointer<vtkRectilinearGrid> rectilinearGrid =
-  vtkSmartPointer<vtkRectilinearGrid>::New();
-  this->InitGrid(10);
-  vtkSmartPointer<vtkDataSetMapper> rectilinearGridMapper =
-vtkSmartPointer<vtkDataSetMapper>::New();
-  rectilinearGridMapper->SetInputData(this->Grid);
 
-  vtkSmartPointer<vtkActor> rectilinearGridActor =
-vtkSmartPointer<vtkActor>::New();
-  rectilinearGridActor->GetProperty()->SetRepresentationToWireframe();
-  rectilinearGridActor->SetMapper(rectilinearGridMapper);
+  int gridSize = 10;
+  double gridSpacing = 0.1; //0.1 mm
+  vtkSmartPointer<vtkImageData> imageData =
+	  vtkSmartPointer<vtkImageData>::New();
+  GridData(imageData, gridSize, gridSpacing);
+
   
-  this->Renderer->AddActor(rectilinearGridActor);*/
+
+  vtkSmartPointer<vtkDataSetMapper> imageDataMapper =
+	  vtkSmartPointer<vtkDataSetMapper>::New();
 
 
+imageDataMapper->SetInputData(imageData);
+imageDataMapper->ScalarVisibilityOff();
+
+vtkSmartPointer<vtkActor> imageDataActor =
+vtkSmartPointer<vtkActor>::New();
+imageDataActor->GetProperty()->SetRepresentationToWireframe();
+imageDataActor->SetMapper(imageDataMapper);
+imageDataActor->GetProperty()->SetColor(1, 1, 1);
+imageDataActor->GetProperty()->SetLineWidth(1);
+this->Renderer->AddActor(imageDataActor);
+
+
+vtkSmartPointer<vtkImageData> imageData2 =
+vtkSmartPointer<vtkImageData>::New();
+GridData(imageData2, 2, 0.5);
+
+
+vtkSmartPointer<vtkDataSetMapper> imageDataMapper2 =
+vtkSmartPointer<vtkDataSetMapper>::New();
+imageDataMapper2->SetInputData(imageData2);
+imageDataMapper2->ScalarVisibilityOff();
+
+vtkSmartPointer<vtkActor> imageDataActor2 =
+vtkSmartPointer<vtkActor>::New();
+
+imageDataActor2->GetProperty()->SetRepresentationToWireframe();
+imageDataActor2->SetMapper(imageDataMapper2);
+imageDataActor2->GetProperty()->SetColor(1, 0,1);
+imageDataActor2->GetProperty()->SetLineWidth(2);
+
+
+
+this->Renderer->AddActor(imageDataActor2);*/
 
   //cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
   
@@ -153,7 +187,19 @@ vtkSmartPointer<vtkActor>::New();
   widget->SetEnabled(1);
   widget->InteractiveOff();
   widget->PickingManagedOn();
-  
+  double myorigin[3];
+  myorigin[0] = 0; 
+  myorigin[1] = 0;
+  myorigin[2] = 0;
+  vtkActor *gridactor1 = CreateGridOutline(0, 0, 10, 0.1, myorigin);
+  gridactor1->GetProperty()->SetOpacity(0.5);
+  this->Renderer->AddActor(gridactor1);
+  vtkActor *gridactor2 = CreateGridOutline(0, 1, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridactor2);
+  gridactor2->GetProperty()->SetOpacity(0.5);
+  vtkActor *gridactor3 = CreateGridOutline(0, 2, 10, 0.1, myorigin);
+  gridactor3->GetProperty()->SetOpacity(0.5);
+  this->Renderer->AddActor(gridactor3);
   
 };
 
@@ -163,6 +209,300 @@ MeshTools::~MeshTools()
 
 }
 
+vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const int gridSize,  const double gridSpacing, const double origin[3])
+{
+	// plane : 0 : xy plane (z=0)
+	// plane : 1 : xz plane (y=0)
+	// plane : 2 : yz plane (x=0)
+
+	//type : 0 = regular lines
+	//type : 1 = bold colored outline
+    // gridSize is the number of spaces between lines for each quadrant
+	
+	// gridSpacing : space between 2 lines in mm.
+
+	
+	if (type == 0)
+	{
+		// We need 8* (gridSize -1) points.
+		// Then we need "only" 4 * (gridSize -1) lines (lines should be written only once: A=>B, not B=>A).
+		
+		vtkSmartPointer<vtkPoints> pts =
+		vtkSmartPointer<vtkPoints>::New();
+		// create points.
+		double coord[3];
+		double coord2[3];
+		double coord3[3];
+		for (int i = (-gridSize+1); i < gridSize	; i++)
+		{
+			if (i != 0)
+			{
+				if (plane == 0)
+				{
+					coord[0] = i*gridSpacing;
+					coord[1] = gridSize*gridSpacing;
+					coord[2] = 0;
+
+					coord2[0] = coord[0];
+					coord2[1] = 0;
+					coord2[2] = coord[2];
+
+					coord3[0] = coord[0];
+					coord3[1] = -coord[1];
+					coord3[2] = coord[2];
+				}
+				if (plane == 1)
+				{
+					coord[0] = i*gridSpacing;
+					coord[1] = 0;
+					coord[2] = gridSize*gridSpacing;
+
+					coord2[0] = coord[0];
+					coord2[1] = coord[1];
+					coord2[2] = 0;
+
+					coord3[0] = coord[0];
+					coord3[1] = coord[1];
+					coord3[2] = -coord[2];
+				}
+				if (plane == 2)
+				{
+					coord[0] = 0;
+					coord[1] = i*gridSpacing;
+					coord[2] = gridSize*gridSpacing;
+
+					coord2[0] = coord[0];
+					coord2[1] = coord[1];
+					coord2[2] = 0;
+
+					coord3[0] = coord[0];
+					coord3[1] = coord[1];
+					coord3[2] = -coord[2];
+				}
+				vtkMath::Add(coord, origin, coord);
+				vtkMath::Add(coord2, origin, coord2);
+				vtkMath::Add(coord3, origin, coord3);
+				//cout << "point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
+				//cout << "point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
+				pts->InsertNextPoint(coord);
+				pts->InsertNextPoint(coord2);
+				pts->InsertNextPoint(coord3);
+
+			}
+
+		}
+		for (int i = (-gridSize+1); i < gridSize	; i++)
+		{
+			if (i != 0)
+			{
+				if (plane == 0)
+				{
+					coord[0] = gridSize*gridSpacing;
+					coord[1] = i*gridSpacing;
+					coord[2] = 0;
+
+					coord2[0] = 0;
+					coord2[1] = coord[1];
+					coord2[2] = coord[2];
+
+
+					coord3[0] = -coord[0];
+					coord3[1] = coord[1];
+					coord3[2] = coord[2];
+				}
+				if (plane == 1)
+				{
+					coord[0] = gridSize*gridSpacing;
+					coord[1] = 0;
+					coord[2] = i*gridSpacing;
+
+					coord2[0] = 0;
+					coord2[1] = coord[1];
+					coord2[2] = coord[2];
+
+					coord3[0] = -coord[0];
+					coord3[1] = coord[1];
+					coord3[2] = coord[2];
+				}
+				if (plane == 2)
+				{
+					coord[0] = 0;
+					coord[1] = gridSize*gridSpacing;
+					coord[2] = i*gridSpacing;
+
+					coord2[0] = coord[0];
+					coord2[1] = 0;
+					coord2[2] = coord[2];
+
+					coord3[0] = coord[0];
+					coord3[1] = -coord[1];
+					coord3[2] = coord[2];
+				}
+				vtkMath::Add(coord, origin, coord);
+				vtkMath::Add(coord2, origin, coord2);
+				vtkMath::Add(coord3, origin, coord3);
+				//cout << "2point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
+				//cout << "2point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
+				pts->InsertNextPoint(coord);
+				pts->InsertNextPoint(coord2);
+				pts->InsertNextPoint(coord3);
+
+			}
+
+		}
+		vtkSmartPointer<vtkPolyData> linesPolyData =
+			vtkSmartPointer<vtkPolyData>::New();
+		// Add the points to the polydata container
+		linesPolyData->SetPoints(pts);
+		// We have 4* (gridSize -1) lines. *2
+
+		vtkSmartPointer<vtkCellArray> lines =
+		vtkSmartPointer<vtkCellArray>::New();
+
+		for (int i = 0; i < (4 * (gridSize - 1)); i++)
+		{
+			vtkSmartPointer<vtkLine> line =
+				vtkSmartPointer<vtkLine>::New();
+			line->GetPointIds()->SetId(0, 3*i); 
+			line->GetPointIds()->SetId(1, 3*i+1); 
+			lines->InsertNextCell(line);
+			
+			
+		}
+		for (int i = 0; i < (4 * (gridSize - 1)); i++)
+		{
+			vtkSmartPointer<vtkLine> line2 =
+				vtkSmartPointer<vtkLine>::New();
+			line2->GetPointIds()->SetId(0, 3 * i + 1);
+			line2->GetPointIds()->SetId(1, 3 * i + 2);
+			lines->InsertNextCell(line2);
+
+
+		}
+
+		
+		linesPolyData->SetLines(lines);
+
+
+		// Create six colors - one for each line
+		unsigned char red[3] = { 255, 0, 0 };
+		unsigned char green[3] = { 0, 255, 0 };
+		unsigned char blue[3] = { 0, 0, 255 };
+		unsigned char yellow[3] = { 255, 255, 0 };
+		unsigned char cyann[3] = { 0, 255, 255 };
+		unsigned char purple[3] = { 255, 0, 255 };
+
+		// Create a vtkUnsignedCharArray container and store the colors in it
+		vtkSmartPointer<vtkUnsignedCharArray> colors =
+			vtkSmartPointer<vtkUnsignedCharArray>::New();
+		colors->SetNumberOfComponents(3);
+		for (int i = 0; i < (2*(gridSize - 1)); i++)
+		{
+			if (plane == 0)
+			{
+				colors->InsertNextTupleValue(green);
+			}
+			else if (plane == 1)
+			{
+				colors->InsertNextTupleValue(blue);
+			}
+			else 
+			{
+				colors->InsertNextTupleValue(blue);
+			}
+
+		}
+		for (int i = 0; i < (2*(gridSize - 1)); i++)
+		{
+			if (plane == 0)
+			{
+				colors->InsertNextTupleValue(red);
+			}
+			else if (plane == 1)
+			{
+				colors->InsertNextTupleValue(red);
+			}
+			else
+			{
+				colors->InsertNextTupleValue(green);
+			}
+		}
+		for (int i = 0; i < (2*(gridSize - 1)); i++)
+		{
+			if (plane == 0)
+			{
+				colors->InsertNextTupleValue(cyann);
+			}
+			else if (plane == 1)
+			{
+				colors->InsertNextTupleValue(purple);
+			}
+			else
+			{
+				colors->InsertNextTupleValue(purple);
+			}
+		}
+		
+		
+		for (int i = 0; i < (2*(gridSize - 1)); i++)
+		{
+			if (plane == 0)
+			{
+				colors->InsertNextTupleValue(yellow);
+			}
+			else if (plane == 1)
+			{
+				colors->InsertNextTupleValue(yellow);
+			}
+			else
+			{
+				colors->InsertNextTupleValue(cyann);
+			}
+			
+		}
+		
+
+
+	
+		linesPolyData->GetCellData()->SetScalars(colors);
+
+		// Setup the visualization pipeline
+		vtkSmartPointer<vtkPolyDataMapper> mapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		mapper->SetInputData(linesPolyData);
+
+		vtkActor *actor =	vtkActor::New();
+		actor->SetMapper(mapper);
+		return actor;
+
+		
+
+
+	}
+	else
+	{
+		// we need 8 points + origin = 9 points
+		// we need to draw 12 bold lines.
+		
+
+	}
+
+	
+
+	
+
+
+
+	
+
+									   // Create a vtkCellArray container and store the lines in it
+	
+	
+
+
+
+	
+}
 
 void MeshTools::InitGrid(int gridSize)
 {
