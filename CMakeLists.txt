@@ -11,6 +11,7 @@ endif()
 if(POLICY CMP0053)
   cmake_policy(SET CMP0053 NEW) # CMake 3.1
 endif()
+
 project(MeshTools)
 
 find_package(VTK COMPONENTS
@@ -53,9 +54,13 @@ include_directories(
 )
 
 # Set your files and resources here
-set( Srcs main.cxx MeshTools.cxx vtkOrientationHelperActor.cxx vtkOrientationHelperWidget.cxx)
+#set( Srcs main.cxx MeshTools.cxx vtkOrientationHelperActor.cxx vtkOrientationHelperWidget.cxx)
 
-set( Hdrs MeshTools.h vtkOrientationHelperActor.h vtkOrientationHelperWidget.h)
+set( Srcs main.cxx MeshTools.cxx)
+
+#set( Hdrs MeshTools.h vtkOrientationHelperActor.h vtkOrientationHelperWidget.h)
+
+set( Hdrs MeshTools.h )
 
 set( MOC_Hdrs MeshTools.h )
 
@@ -88,11 +93,14 @@ if(VTK_QT_VERSION VERSION_GREATER "4")
     ${QRC_Srcs}
     ${QRC_Srcs}
   )
+include_directories ("${PROJECT_SOURCE_DIR}/Helpers")
+add_subdirectory (Helpers) 
+set (EXTRA_LIBRARIES ${EXTRA_LIBRARIES} MeshToolsHelpers)
 
   add_executable(MeshTools MACOSX_BUNDLE
     ${Srcs} ${Hdrs} ${UI_Srcs} ${MOC_Hdrs} ${QRC_Srcs})
   qt5_use_modules(MeshTools Core Gui Widgets)
-  target_link_libraries(MeshTools ${VTK_LIBRARIES})
+  target_link_libraries(MeshTools ${VTK_LIBRARIES} ${EXTRA_LIBRARIES} )
 else()
   find_package(Qt4 REQUIRED)
   include(${QT_USE_FILE})

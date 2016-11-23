@@ -415,15 +415,28 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTypedTuple(green);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(green);
+				#else
+								colors->InsertNextTupleValue(green);				
+				#endif
+
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTypedTuple(blue);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(blue);
+				#else
+								colors->InsertNextTupleValue(blue);
+				#endif				
 			}
 			else 
 			{
-				colors->InsertNextTypedTuple(blue);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(blue);
+				#else
+								colors->InsertNextTupleValue(blue);
+				#endif				
 			}
 
 		}
@@ -431,30 +444,61 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTypedTuple(red);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(red);
+				#else
+								colors->InsertNextTupleValue(red);
+				#endif				
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTypedTuple(red);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(red);
+				#else
+								colors->InsertNextTupleValue(red);
+				#endif
+				
 			}
 			else
 			{
-				colors->InsertNextTypedTuple(green);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(green);
+				#else
+								colors->InsertNextTupleValue(green);
+				#endif
+				
 			}
 		}
 		for (int i = 0; i < (2*(gridSize - 1)); i++)
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTypedTuple(cyann);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(cyann);
+				#else
+								colors->InsertNextTupleValue(cyann);
+				#endif
+				
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTypedTuple(purple);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(purple);
+				#else
+								colors->InsertNextTupleValue(purple);
+				#endif
+
+				
 			}
 			else
 			{
-				colors->InsertNextTypedTuple(purple);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(purple);
+				#else
+								colors->InsertNextTupleValue(purple);
+				#endif
+
+				
 			}
 		}
 		
@@ -463,15 +507,32 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTypedTuple(yellow);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(yellow);
+				#else
+								colors->InsertNextTupleValue(yellow);
+				#endif
+
+				
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTypedTuple(yellow);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(yellow);
+				#else
+								colors->InsertNextTupleValue(yellow);
+				#endif
+
 			}
 			else
 			{
-				colors->InsertNextTypedTuple(cyann);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(cyann);
+				#else
+								colors->InsertNextTupleValue(cyann);
+				#endif
+
+
 			}
 			
 		}
@@ -758,27 +819,52 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			for (int i = 0; i < 3; i++)
 			{
+				#if VTK_MINOR_VERSION >= 1
 				colors->InsertNextTypedTuple(green);
 				colors->InsertNextTypedTuple(cyann);
+				#else
+				colors->InsertNextTupleValue(green);
+				colors->InsertNextTupleValue(cyann);
+				#endif
 			}
 			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTypedTuple(red);
-				colors->InsertNextTypedTuple(yellow);
-
+				#if VTK_MINOR_VERSION >= 1
+					colors->InsertNextTypedTuple(red);
+					colors->InsertNextTypedTuple(yellow);				
+				#else
+					colors->InsertNextTupleValue(red);
+					colors->InsertNextTupleValue(yellow);
+				#endif
+		
 			}
 		}
 		else if (plane == 1)
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTypedTuple(blue);
-				colors->InsertNextTypedTuple(purple);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(blue);
+								colors->InsertNextTypedTuple(purple);
+				#else
+								colors->InsertNextTupleValue(blue);
+								colors->InsertNextTupleValue(purple);
+				#endif
+		
 			}
 			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTypedTuple(red);
-				colors->InsertNextTypedTuple(yellow);
+				for (int i = 0; i < 3; i++)
+				{
+				#if VTK_MINOR_VERSION >= 1
+									colors->InsertNextTypedTuple(red);
+									colors->InsertNextTypedTuple(yellow);
+				#else
+									colors->InsertNextTupleValue(red);
+									colors->InsertNextTupleValue(yellow);
+				#endif
+
+				}
 
 			}
 		}
@@ -786,13 +872,23 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTypedTuple(blue);
-				colors->InsertNextTypedTuple(purple);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(blue);
+								colors->InsertNextTypedTuple(purple);
+				#else
+								colors->InsertNextTupleValue(blue);
+								colors->InsertNextTupleValue(purple);
+				#endif
 			}
 			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTypedTuple(green);
-				colors->InsertNextTypedTuple(cyann);
+				#if VTK_MINOR_VERSION >= 1
+								colors->InsertNextTypedTuple(green);
+								colors->InsertNextTypedTuple(cyann);
+				#else
+								colors->InsertNextTupleValue(green);
+								colors->InsertNextTupleValue(cyann);
+				#endif
 
 			}
 		}
