@@ -195,12 +195,27 @@ this->Renderer->AddActor(imageDataActor2);*/
   gridactor1->GetProperty()->SetOpacity(0.5);
   this->Renderer->AddActor(gridactor1);
   vtkActor *gridactor2 = CreateGridOutline(0, 1, 10, 0.1, myorigin);
-  this->Renderer->AddActor(gridactor2);
-  gridactor2->GetProperty()->SetOpacity(0.5);
-  vtkActor *gridactor3 = CreateGridOutline(0, 2, 10, 0.1, myorigin);
+   gridactor2->GetProperty()->SetOpacity(0.5);
+   this->Renderer->AddActor(gridactor2);
+
+   vtkActor *gridactor3 = CreateGridOutline(0, 2, 10, 0.1, myorigin);
   gridactor3->GetProperty()->SetOpacity(0.5);
   this->Renderer->AddActor(gridactor3);
   
+
+  vtkActor *gridactor4 = CreateGridOutline(1, 0, 10, 0.1, myorigin);
+  gridactor4->GetProperty()->SetOpacity(0.5);
+  gridactor4->GetProperty()->SetLineWidth(2);
+  this->Renderer->AddActor(gridactor4);
+  vtkActor *gridactor5 = CreateGridOutline(1, 1, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridactor5);
+  gridactor5->GetProperty()->SetLineWidth(2);
+  gridactor5->GetProperty()->SetOpacity(0.5);
+  vtkActor *gridactor6 = CreateGridOutline(1, 2, 10, 0.1, myorigin);
+  gridactor6->GetProperty()->SetLineWidth(2);
+  gridactor6->GetProperty()->SetOpacity(0.5);
+  this->Renderer->AddActor(gridactor6);
+
 };
 
 MeshTools::~MeshTools()
@@ -400,15 +415,15 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTupleValue(green);
+				colors->InsertNextTypedTuple(green);
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTupleValue(blue);
+				colors->InsertNextTypedTuple(blue);
 			}
 			else 
 			{
-				colors->InsertNextTupleValue(blue);
+				colors->InsertNextTypedTuple(blue);
 			}
 
 		}
@@ -416,30 +431,30 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTupleValue(red);
+				colors->InsertNextTypedTuple(red);
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTupleValue(red);
+				colors->InsertNextTypedTuple(red);
 			}
 			else
 			{
-				colors->InsertNextTupleValue(green);
+				colors->InsertNextTypedTuple(green);
 			}
 		}
 		for (int i = 0; i < (2*(gridSize - 1)); i++)
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTupleValue(cyann);
+				colors->InsertNextTypedTuple(cyann);
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTupleValue(purple);
+				colors->InsertNextTypedTuple(purple);
 			}
 			else
 			{
-				colors->InsertNextTupleValue(purple);
+				colors->InsertNextTypedTuple(purple);
 			}
 		}
 		
@@ -448,15 +463,15 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		{
 			if (plane == 0)
 			{
-				colors->InsertNextTupleValue(yellow);
+				colors->InsertNextTypedTuple(yellow);
 			}
 			else if (plane == 1)
 			{
-				colors->InsertNextTupleValue(yellow);
+				colors->InsertNextTypedTuple(yellow);
 			}
 			else
 			{
-				colors->InsertNextTupleValue(cyann);
+				colors->InsertNextTypedTuple(cyann);
 			}
 			
 		}
@@ -720,37 +735,8 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			line12->GetPointIds()->SetId(1, 2);
 			lines->InsertNextCell(line12);
 
-		vtkSmartPointer<vtkPolyData> linesPolyData =
-			vtkSmartPointer<vtkPolyData>::New();
-		// Add the points to the polydata container
-		linesPolyData->SetPoints(pts);
-		// We have 4* (gridSize -1) lines. *2
-
-		vtkSmartPointer<vtkCellArray> lines =
-			vtkSmartPointer<vtkCellArray>::New();
-
-		for (int i = 0; i < (4 * (gridSize - 1)); i++)
-		{
-			vtkSmartPointer<vtkLine> line =
-				vtkSmartPointer<vtkLine>::New();
-			line->GetPointIds()->SetId(0, 3 * i);
-			line->GetPointIds()->SetId(1, 3 * i + 1);
-			lines->InsertNextCell(line);
-
-
-		}
-		for (int i = 0; i < (4 * (gridSize - 1)); i++)
-		{
-			vtkSmartPointer<vtkLine> line2 =
-				vtkSmartPointer<vtkLine>::New();
-			line2->GetPointIds()->SetId(0, 3 * i + 1);
-			line2->GetPointIds()->SetId(1, 3 * i + 2);
-			lines->InsertNextCell(line2);
-
-
-		}
-
-
+	
+		
 		linesPolyData->SetLines(lines);
 
 
@@ -766,72 +752,50 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		vtkSmartPointer<vtkUnsignedCharArray> colors =
 			vtkSmartPointer<vtkUnsignedCharArray>::New();
 		colors->SetNumberOfComponents(3);
-		for (int i = 0; i < (2 * (gridSize - 1)); i++)
+		
+		//1
+		if (plane == 0)
 		{
-			if (plane == 0)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(green);
+				colors->InsertNextTypedTuple(green);
+				colors->InsertNextTypedTuple(cyann);
 			}
-			else if (plane == 1)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(blue);
-			}
-			else
-			{
-				colors->InsertNextTupleValue(blue);
-			}
+				colors->InsertNextTypedTuple(red);
+				colors->InsertNextTypedTuple(yellow);
 
-		}
-		for (int i = 0; i < (2 * (gridSize - 1)); i++)
-		{
-			if (plane == 0)
-			{
-				colors->InsertNextTupleValue(red);
-			}
-			else if (plane == 1)
-			{
-				colors->InsertNextTupleValue(red);
-			}
-			else
-			{
-				colors->InsertNextTupleValue(green);
 			}
 		}
-		for (int i = 0; i < (2 * (gridSize - 1)); i++)
+		else if (plane == 1)
 		{
-			if (plane == 0)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(cyann);
+				colors->InsertNextTypedTuple(blue);
+				colors->InsertNextTypedTuple(purple);
 			}
-			else if (plane == 1)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(purple);
-			}
-			else
-			{
-				colors->InsertNextTupleValue(purple);
+				colors->InsertNextTypedTuple(red);
+				colors->InsertNextTypedTuple(yellow);
+
 			}
 		}
-
-
-		for (int i = 0; i < (2 * (gridSize - 1)); i++)
+		else
 		{
-			if (plane == 0)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(yellow);
+				colors->InsertNextTypedTuple(blue);
+				colors->InsertNextTypedTuple(purple);
 			}
-			else if (plane == 1)
+			for (int i = 0; i < 3; i++)
 			{
-				colors->InsertNextTupleValue(yellow);
-			}
-			else
-			{
-				colors->InsertNextTupleValue(cyann);
-			}
+				colors->InsertNextTypedTuple(green);
+				colors->InsertNextTypedTuple(cyann);
 
+			}
 		}
-
-
 
 
 		linesPolyData->GetCellData()->SetScalars(colors);
@@ -847,19 +811,8 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 
 	}
 
-	
-
-	
-
-
-
-	
-
 									   // Create a vtkCellArray container and store the lines in it
 	
-	
-
-
 
 	
 }
