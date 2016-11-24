@@ -6,6 +6,7 @@
 #include "vtkOrientationHelperActor.h"
 #include "vtkOrientationHelperWidget.h"
 
+#include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkActor.h>
@@ -19,7 +20,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkVectorText.h>
 #include <vtkImageData.h>
-
+#include <vtkCaptionActor2D.h>
+#include <vtkProperty2D.h>
 #include <vtkAxesActor.h>
 //#include <vtkOrientationMarkerWidget.h>
 
@@ -191,10 +193,10 @@ this->Renderer->AddActor(imageDataActor2);*/
   myorigin[0] = 0; 
   myorigin[1] = 0;
   myorigin[2] = 0;
-  vtkActor *gridactor1 = CreateGridOutline(0, 0, 10, 0.1, myorigin);
+  vtkSmartPointer<vtkActor> gridactor1 = CreateGridOutline(0, 0, 10, 0.1, myorigin);
   gridactor1->GetProperty()->SetOpacity(0.5);
   this->Renderer->AddActor(gridactor1);
-  vtkActor *gridactor2 = CreateGridOutline(0, 1, 10, 0.1, myorigin);
+  /*vtkActor *gridactor2 = CreateGridOutline(0, 1, 10, 0.1, myorigin);
    gridactor2->GetProperty()->SetOpacity(0.5);
    this->Renderer->AddActor(gridactor2);
 
@@ -214,8 +216,20 @@ this->Renderer->AddActor(imageDataActor2);*/
   vtkActor *gridactor6 = CreateGridOutline(1, 2, 10, 0.1, myorigin);
   gridactor6->GetProperty()->SetLineWidth(2);
   gridactor6->GetProperty()->SetOpacity(0.5);
-  this->Renderer->AddActor(gridactor6);
+  this->Renderer->AddActor(gridactor6);*/
 
+  vtkSmartPointer<vtkCaptionActor2D> gridlabelactor1 = CreateGridLabelText(0, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor1);
+  vtkSmartPointer<vtkCaptionActor2D> gridlabelactor2 = CreateGridLabelText(1, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor2);
+  vtkSmartPointer<vtkCaptionActor2D>gridlabelactor3 = CreateGridLabelText(2, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor3);
+  vtkSmartPointer<vtkCaptionActor2D> gridlabelactor4 = CreateGridLabelText(3, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor4);
+  vtkSmartPointer<vtkCaptionActor2D>gridlabelactor5 = CreateGridLabelText(4, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor5);
+  vtkSmartPointer<vtkCaptionActor2D> gridlabelactor6 = CreateGridLabelText(5, 10, 0.1, myorigin);
+  this->Renderer->AddActor(gridlabelactor6);
 };
 
 MeshTools::~MeshTools()
@@ -224,7 +238,100 @@ MeshTools::~MeshTools()
 
 }
 
-vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const int gridSize,  const double gridSpacing, const double origin[3])
+vtkSmartPointer<vtkCaptionActor2D> MeshTools::CreateGridLabelText(const int type, const int gridSize, const double gridSpacing, const double origin[3])
+{
+	// type : 
+	// 0 : -x
+	// 1 : x
+	// 2 : -y
+	// 3 : y
+	// 4 : -z
+	// 5 : z
+	char              *LabelText;	
+	double pos[3] = { origin[0] , origin[1], origin[2] };
+	
+
+	// Create six colors - one for each line
+	double red[3] = { 1, 0, 0 };
+	double green[3] = { 0, 1, 0 };
+	double blue[3] = { 0, 0, 1 };
+	double yellow[3] = { 1, 1, 0 };
+	double cyan[3] = { 0, 1, 1 };
+	double fuschia[3] = { 1, 0, 1 };
+
+	vtkSmartPointer<vtkCaptionActor2D> AxisLabel= vtkSmartPointer<vtkCaptionActor2D>::New();
+
+	vtkSmartPointer<vtkTextProperty> property = vtkSmartPointer<vtkTextProperty>::New();
+
+
+
+
+	//AxisLabel->
+	std::string myStr;
+	if (type == 0)
+	{
+		myStr= "-x";
+		pos[0] -= gridSize*(gridSpacing);
+		property->SetColor(yellow);
+		AxisLabel->GetProperty()->SetColor(yellow);
+	}
+	else if(type == 1)
+	{
+		myStr = "x";
+		pos[0] += gridSize*(gridSpacing);
+		property->SetColor(red);
+		//AxisLabel->GetProperty()->SetColor(red);
+	}
+	else if (type == 2)
+	{
+
+		pos[1] -= gridSize*(gridSpacing);
+		property->SetColor(cyan);
+		//AxisLabel->GetProperty()->SetColor(cyan);
+		myStr = "-y";
+
+
+	}
+	else if (type == 3)
+	{
+		pos[1] += gridSize*(gridSpacing);
+		property->SetColor(green);
+		//AxisLabel->GetProperty()->SetColor(green);
+		myStr = "y";
+
+
+	}
+	else if (type == 4)
+	{
+		pos[2] -= gridSize*(gridSpacing);
+		property->SetColor(fuschia);
+		//AxisLabel->GetProperty()->SetColor(fuschia);		
+		myStr = "-z";
+
+	}
+	else 
+	{
+		pos[2] += gridSize*(gridSpacing);
+		property->SetColor(blue);
+		//AxisLabel->GetProperty()->SetColor(blue);
+		myStr = "z";
+
+	}
+	
+	
+	//Set the color to green and font to arial. 
+	property->SetFontFamilyToArial();
+	AxisLabel->SetCaptionTextProperty(property);
+	AxisLabel->SetPosition(0, 0);
+	AxisLabel->SetAttachmentPoint(pos);
+	AxisLabel->SetHeight(0.03);
+	AxisLabel->BorderOff();
+	AxisLabel->LeaderOff();
+	AxisLabel->SetCaption(myStr.c_str());
+	return AxisLabel;
+}
+
+vtkSmartPointer<vtkActor> MeshTools::CreateGridOutline(const int type, const int plane, const int gridSize,  const double gridSpacing, const double origin[3])
 {
 	// plane : 0 : xy plane (z=0)
 	// plane : 1 : xz plane (y=0)
@@ -404,8 +511,8 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		unsigned char green[3] = { 0, 255, 0 };
 		unsigned char blue[3] = { 0, 0, 255 };
 		unsigned char yellow[3] = { 255, 255, 0 };
-		unsigned char cyann[3] = { 0, 255, 255 };
-		unsigned char purple[3] = { 255, 0, 255 };
+		unsigned char cyan[3] = { 0, 255, 255 };
+		unsigned char fuschia[3] = { 255, 0, 255 };
 
 		// Create a vtkUnsignedCharArray container and store the colors in it
 		vtkSmartPointer<vtkUnsignedCharArray> colors =
@@ -474,18 +581,18 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			if (plane == 0)
 			{
 				#if VTK_MINOR_VERSION >= 1
-								colors->InsertNextTypedTuple(cyann);
+								colors->InsertNextTypedTuple(cyan);
 				#else
-								colors->InsertNextTupleValue(cyann);
+								colors->InsertNextTupleValue(cyan);
 				#endif
 				
 			}
 			else if (plane == 1)
 			{
 				#if VTK_MINOR_VERSION >= 1
-								colors->InsertNextTypedTuple(purple);
+								colors->InsertNextTypedTuple(fuschia);
 				#else
-								colors->InsertNextTupleValue(purple);
+								colors->InsertNextTupleValue(fuschia);
 				#endif
 
 				
@@ -493,9 +600,9 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			else
 			{
 				#if VTK_MINOR_VERSION >= 1
-								colors->InsertNextTypedTuple(purple);
+								colors->InsertNextTypedTuple(fuschia);
 				#else
-								colors->InsertNextTupleValue(purple);
+								colors->InsertNextTupleValue(fuschia);
 				#endif
 
 				
@@ -527,9 +634,9 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			else
 			{
 				#if VTK_MINOR_VERSION >= 1
-								colors->InsertNextTypedTuple(cyann);
+								colors->InsertNextTypedTuple(cyan);
 				#else
-								colors->InsertNextTupleValue(cyann);
+								colors->InsertNextTupleValue(cyan);
 				#endif
 
 
@@ -806,8 +913,8 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 		unsigned char green[3] = { 0, 255, 0 };
 		unsigned char blue[3] = { 0, 0, 255 };
 		unsigned char yellow[3] = { 255, 255, 0 };
-		unsigned char cyann[3] = { 0, 255, 255 };
-		unsigned char purple[3] = { 255, 0, 255 };
+		unsigned char cyan[3] = { 0, 255, 255 };
+		unsigned char fuschia[3] = { 255, 0, 255 };
 
 		// Create a vtkUnsignedCharArray container and store the colors in it
 		vtkSmartPointer<vtkUnsignedCharArray> colors =
@@ -821,10 +928,10 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			{
 				#if VTK_MINOR_VERSION >= 1
 				colors->InsertNextTypedTuple(green);
-				colors->InsertNextTypedTuple(cyann);
+				colors->InsertNextTypedTuple(cyan);
 				#else
 				colors->InsertNextTupleValue(green);
-				colors->InsertNextTupleValue(cyann);
+				colors->InsertNextTupleValue(cyan);
 				#endif
 			}
 			for (int i = 0; i < 3; i++)
@@ -845,10 +952,10 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			{
 				#if VTK_MINOR_VERSION >= 1
 								colors->InsertNextTypedTuple(blue);
-								colors->InsertNextTypedTuple(purple);
+								colors->InsertNextTypedTuple(fuschia);
 				#else
 								colors->InsertNextTupleValue(blue);
-								colors->InsertNextTupleValue(purple);
+								colors->InsertNextTupleValue(fuschia);
 				#endif
 		
 			}
@@ -874,20 +981,20 @@ vtkActor* MeshTools::CreateGridOutline(const int type, const int plane, const in
 			{
 				#if VTK_MINOR_VERSION >= 1
 								colors->InsertNextTypedTuple(blue);
-								colors->InsertNextTypedTuple(purple);
+								colors->InsertNextTypedTuple(fuschia);
 				#else
 								colors->InsertNextTupleValue(blue);
-								colors->InsertNextTupleValue(purple);
+								colors->InsertNextTupleValue(fuschia);
 				#endif
 			}
 			for (int i = 0; i < 3; i++)
 			{
 				#if VTK_MINOR_VERSION >= 1
 								colors->InsertNextTypedTuple(green);
-								colors->InsertNextTypedTuple(cyann);
+								colors->InsertNextTypedTuple(cyan);
 				#else
 								colors->InsertNextTupleValue(green);
-								colors->InsertNextTupleValue(cyann);
+								colors->InsertNextTupleValue(cyan);
 				#endif
 
 			}

@@ -21,7 +21,7 @@
 #include <vtkImageData.h>
 #include <vtkCamera.h>
 #include <vtkStructuredGrid.h>
-
+#include <vtkCaptionActor2D.h>
 #include <QMainWindow>
 #include <QFileDialog>
 
@@ -57,7 +57,9 @@ protected:
 protected slots:
 
 private:
-	vtkActor* CreateGridOutline(const int type, const int plane, const int gridSize, const double gridSpacing, const double origin[3]);
+	vtkSmartPointer<vtkActor> CreateGridOutline(const int type, const int plane, const int gridSize, const double gridSpacing, const double origin[3]);
+	
+	vtkSmartPointer<vtkCaptionActor2D> CreateGridLabelText(const int type, const int gridSize, const double gridSpacing, const double origin[3]);
 	
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();

@@ -9,6 +9,7 @@ Module:    vtkOrientationHelperActor.cxx
 
 #include <vtkActor.h>
 #include <vtkCaptionActor2D.h>
+#include <vtkTextProperty.h>
 #include <vtkConeSource.h>
 #include <vtkCylinderSource.h>
 #include <vtkLineSource.h>
@@ -163,32 +164,64 @@ vtkOrientationHelperActor::vtkOrientationHelperActor()//:vtkAxesActor()
 	this->Y2AxisLabel = vtkCaptionActor2D::New();
 	this->Z2AxisLabel = vtkCaptionActor2D::New();
 
+	double red[3] = { 1, 0, 0 };
+	double green[3] = { 0, 1, 0 };
+	double blue[3] = { 0, 0, 1 };
+	double yellow[3] = { 1, 1, 0 };
+	double cyan[3] = { 0, 1, 1 };
+	double fuschia[3] = { 1, 0, 1 };
 
+	vtkTextProperty* Xproperty = vtkTextProperty::New();
+	Xproperty->SetColor(red);
+	Xproperty->SetFontFamilyToArial();
+	this->XAxisLabel->SetCaptionTextProperty(Xproperty);
 	this->XAxisLabel->ThreeDimensionalLeaderOff();
 	this->XAxisLabel->LeaderOff();
 	this->XAxisLabel->BorderOff();
 	this->XAxisLabel->SetPosition(0, 0);
 
+	vtkTextProperty* X2property = vtkTextProperty::New();
+	X2property->SetColor(yellow);
+	X2property->SetFontFamilyToArial();
+	this->X2AxisLabel->SetCaptionTextProperty(X2property);
 	this->X2AxisLabel->ThreeDimensionalLeaderOff();
 	this->X2AxisLabel->LeaderOff();
 	this->X2AxisLabel->BorderOff();
 	this->X2AxisLabel->SetPosition(0, 0);
 
+
+	vtkTextProperty* Yproperty = vtkTextProperty::New();
+	Yproperty->SetColor(green);
+	Yproperty->SetFontFamilyToArial();
+	this->YAxisLabel->SetCaptionTextProperty(Yproperty);
 	this->YAxisLabel->ThreeDimensionalLeaderOff();
 	this->YAxisLabel->LeaderOff();
 	this->YAxisLabel->BorderOff();
 	this->YAxisLabel->SetPosition(0, 0);
 
+	vtkTextProperty* Y2property = vtkTextProperty::New();
+	Y2property->SetColor(cyan);
+	Y2property->SetFontFamilyToArial();
+	this->Y2AxisLabel->SetCaptionTextProperty(Y2property);
 	this->Y2AxisLabel->ThreeDimensionalLeaderOff();
 	this->Y2AxisLabel->LeaderOff();
 	this->Y2AxisLabel->BorderOff();
 	this->Y2AxisLabel->SetPosition(0, 0);
+
+	vtkTextProperty* Zproperty = vtkTextProperty::New();
+	Zproperty->SetColor(blue);
+	Zproperty->SetFontFamilyToArial();
+	this->ZAxisLabel->SetCaptionTextProperty(Zproperty);
 
 	this->ZAxisLabel->ThreeDimensionalLeaderOff();
 	this->ZAxisLabel->LeaderOff();
 	this->ZAxisLabel->BorderOff();
 	this->ZAxisLabel->SetPosition(0, 0);
 
+	vtkTextProperty* Z2property = vtkTextProperty::New();
+	Z2property->SetColor(fuschia);
+	Z2property->SetFontFamilyToArial();
+	this->Z2AxisLabel->SetCaptionTextProperty(Z2property);
 	this->Z2AxisLabel->ThreeDimensionalLeaderOff();
 	this->Z2AxisLabel->LeaderOff();
 	this->Z2AxisLabel->BorderOff();
@@ -640,7 +673,7 @@ void vtkOrientationHelperActor::UpdateProps()
 	this->X2AxisLabel->SetCaption(this->X2AxisLabelText);
 	this->Y2AxisLabel->SetCaption(this->Y2AxisLabelText);
 	this->Z2AxisLabel->SetCaption(this->Z2AxisLabelText);
-
+	/*
 	
 	this->X2AxisShaft->GetBounds(bounds);
 	double offset = -1* this->NormalizedLabelPosition[0] * (bounds[1] - bounds[0]);
@@ -649,6 +682,7 @@ void vtkOrientationHelperActor::UpdateProps()
 		bounds[2] - (bounds[3] - bounds[2])*2.0,
 		bounds[5] + (bounds[5] - bounds[4]) / 2.0);
 
+	
 	this->Y2AxisShaft->GetBounds(bounds);
 	offset = -1 * this->NormalizedLabelPosition[1] * (bounds[3] - bounds[2]);
 	this->Y2AxisLabel->SetAttachmentPoint((bounds[0] + bounds[1]) / 2,
@@ -660,6 +694,24 @@ void vtkOrientationHelperActor::UpdateProps()
 	this->Z2AxisLabel->SetAttachmentPoint(bounds[0],
 		bounds[2] - (bounds[3] - bounds[2])*2.0,
 		bounds[4] + offset);
+	*/
+	/*hack */
+	this->XAxisLabel->SetAttachmentPoint(1,
+		0,
+		0);
+	this->X2AxisLabel->SetAttachmentPoint(-1,
+		0,
+		0);
+	this->YAxisLabel->SetAttachmentPoint(0,
+		1,
+		0);
+	this->Y2AxisLabel->SetAttachmentPoint(0,-1,0);
+	this->ZAxisLabel->SetAttachmentPoint(0,
+		0,
+		1);
+	this->Z2AxisLabel->SetAttachmentPoint(0,
+		0,
+		-1);
 
 	vtkLinearTransform* transform = this->GetUserTransform();
 	if (transform)
