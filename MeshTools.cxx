@@ -23,8 +23,6 @@
 #include <vtkCaptionActor2D.h>
 #include <vtkProperty2D.h>
 #include <vtkAxesActor.h>
-//#include <vtkOrientationMarkerWidget.h>
-
 #include <vtkPolyDataNormals.h>
 #include <vtkPLYReader.h>
 #include <vtkSTLReader.h>
@@ -45,167 +43,99 @@
 // Constructor
 MeshTools::MeshTools()
 {
-  this->ui = new Ui_MeshTools;
-  this->ui->setupUi(this);
+	this->ui = new Ui_MeshTools;
+	this->ui->setupUi(this);
 
-  // Qt Table View
-  this->TableView = vtkSmartPointer<vtkQtTableView>::New();
-  this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
-  this->Renderer = vtkSmartPointer<vtkRenderer>::New();
-  
-
-  // Place the table view in the designer form
-  this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
-
-  
-  
-  // Geometry
-  
- 
-  
-
- 
- 
-
-  this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
-  this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
-  
-
-  this->Renderer->SetUseDepthPeeling(1);
-  this->Renderer->SetMaximumNumberOfPeels(100);
-  this->Renderer->SetOcclusionRatio(0.1);
-  
-
-  // VTK/Qt wedded
+	// Qt Table View
+	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
+	this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
+	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
 
 
-  this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->Renderer);
-  /*
-
-  int gridSize = 10;
-  double gridSpacing = 0.1; //0.1 mm
-  vtkSmartPointer<vtkImageData> imageData =
-	  vtkSmartPointer<vtkImageData>::New();
-  GridData(imageData, gridSize, gridSpacing);
-
-  
-
-  vtkSmartPointer<vtkDataSetMapper> imageDataMapper =
-	  vtkSmartPointer<vtkDataSetMapper>::New();
-
-
-imageDataMapper->SetInputData(imageData);
-imageDataMapper->ScalarVisibilityOff();
-
-vtkSmartPointer<vtkActor> imageDataActor =
-vtkSmartPointer<vtkActor>::New();
-imageDataActor->GetProperty()->SetRepresentationToWireframe();
-imageDataActor->SetMapper(imageDataMapper);
-imageDataActor->GetProperty()->SetColor(1, 1, 1);
-imageDataActor->GetProperty()->SetLineWidth(1);
-this->Renderer->AddActor(imageDataActor);
-
-
-vtkSmartPointer<vtkImageData> imageData2 =
-vtkSmartPointer<vtkImageData>::New();
-GridData(imageData2, 2, 0.5);
-
-
-vtkSmartPointer<vtkDataSetMapper> imageDataMapper2 =
-vtkSmartPointer<vtkDataSetMapper>::New();
-imageDataMapper2->SetInputData(imageData2);
-imageDataMapper2->ScalarVisibilityOff();
-
-vtkSmartPointer<vtkActor> imageDataActor2 =
-vtkSmartPointer<vtkActor>::New();
-
-imageDataActor2->GetProperty()->SetRepresentationToWireframe();
-imageDataActor2->SetMapper(imageDataMapper2);
-imageDataActor2->GetProperty()->SetColor(1, 0,1);
-imageDataActor2->GetProperty()->SetLineWidth(2);
+	// Place the table view in the designer form
+	this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
 
 
 
-this->Renderer->AddActor(imageDataActor2);*/
+	this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
+	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
 
-  //cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
-  
-  this->Camera = this->Renderer->GetActiveCamera();
-  
-  
-  this->Camera->SetPosition(0, 0, -10);
-  this->Camera->SetFocalPoint(0, 0, 0);
 
-  this->Camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
-  this->Camera->Roll(90); // around "x" (horizontal) viewing axis
-  this->Camera->Elevation(180); // around "y" (vertical) viewing axis
-  this->Camera->SetParallelScale(10);
-  this->Camera->ParallelProjectionOn();
+	this->Renderer->SetUseDepthPeeling(1);
+	this->Renderer->SetMaximumNumberOfPeels(100);
+	this->Renderer->SetOcclusionRatio(0.1);
 
-  /*this->Camera->SetParallelScale(10);
-   this->Camera->ParallelProjectionOn();
-  double a[3];
-  a[0] = 0;
-  a[1] = 0;
-  a[2] = 1;
-  this->Camera->SetViewUp(a);*/
-  //this->Renderer->ResetCamera();
- 
 
-  // Just a bit of Qt interest: Culling off the
-  // point data and handing it to a vtkQtTableView
- /* VTK_CREATE(vtkDataObjectToTable, toTable);
-  toTable->SetInputConnection(elevation->GetOutputPort());
-  toTable->SetFieldType(vtkDataObjectToTable::POINT_DATA);
-  toTable->Update();
-  // Here we take the end of the VTK pipeline and give it to a Qt View
-  this->TableView->SetRepresentationFromInputConnection(toTable->GetOutputPort());*/
+	// VTK/Qt wedded
 
-  // Set up action signals and slots
-  connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
-  connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
-  /**/
-  //vtkSmartPointer<vtkAxesActor> axes =
-//	  vtkSmartPointer<vtkAxesActor>::New();
+	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->Renderer);
 
-  vtkSmartPointer<vtkOrientationHelperActor> axes =
-	  vtkSmartPointer<vtkOrientationHelperActor>::New();
-  //axes->Print(std::cout); 
+	//cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
 
-  /**/
-//  VTK_CREATE(vtkOrientationMarkerWidget, widget);
-  //
-  vtkOrientationHelperWidget* widget = vtkOrientationHelperWidget::New();
-  //vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
-  // ça ne marche pas avec class widget!!!!
+	this->Camera = this->Renderer->GetActiveCamera();
 
-  
-  widget->SetOutlineColor(0.9300, 0.5700, 0.1300);
-  widget->SetOrientationMarker(axes);
-  widget->SetDefaultRenderer(this->Renderer);
-  widget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
-  widget->SetViewport(0.0, 0.0, 0.2, 0.2);
-  widget->SetEnabled(1);
-  widget->InteractiveOff();
-  widget->PickingManagedOn();
-  double myorigin[3];
-  myorigin[0] = 0; 
-  myorigin[1] = 0;
-  myorigin[2] = 0;
 
-  this->GridActor = vtkSmartPointer<vtkGridActor>::New();
-  this->GridActor->SetGridType(2);
-  this->Renderer->AddActor(this->GridActor);
+	this->Camera->SetPosition(0, 0, -20);
+	this->Camera->SetFocalPoint(0, 0, 0);
 
-  
+	this->Camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
+	this->Camera->Roll(90); // around "x" (horizontal) viewing axis
+	this->Camera->Elevation(180); // around "y" (vertical) viewing axis
+	this->Camera->SetParallelScale(20);
+	this->Camera->ParallelProjectionOn();
+
+
+
+
+	// Just a bit of Qt interest: Culling off the
+	// point data and handing it to a vtkQtTableView
+	/* VTK_CREATE(vtkDataObjectToTable, toTable);
+	toTable->SetInputConnection(elevation->GetOutputPort());
+	toTable->SetFieldType(vtkDataObjectToTable::POINT_DATA);
+	toTable->Update();
+	// Here we take the end of the VTK pipeline and give it to a Qt View
+	this->TableView->SetRepresentationFromInputConnection(toTable->GetOutputPort());*/
+
+	// Set up action signals and slots
+	connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
+
+
+	vtkSmartPointer<vtkOrientationHelperActor> axes =
+		vtkSmartPointer<vtkOrientationHelperActor>::New();
+
+	//
+	vtkOrientationHelperWidget* widget = vtkOrientationHelperWidget::New();
+	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
+	// Does not work with a smart pointer, can't figure out why
+
+
+	widget->SetOutlineColor(0.9300, 0.5700, 0.1300);
+	widget->SetOrientationMarker(axes);
+	widget->SetDefaultRenderer(this->Renderer);
+	widget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
+	widget->SetViewport(0.0, 0.0, 0.2, 0.2);
+	widget->SetEnabled(1);
+	widget->InteractiveOff();
+	widget->PickingManagedOn();
+	double myorigin[3];
+	myorigin[0] = 0;
+	myorigin[1] = 0;
+	myorigin[2] = 0;
+
+	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
+	this->GridActor->SetGridType(2);
+	this->Renderer->AddActor(this->GridActor);
+
+
 };
 
 
 
 MeshTools::~MeshTools()
 {
-  // The smart pointers should clean up for up
+	// The smart pointers should clean up for up
 
 }
 
@@ -229,8 +159,8 @@ void MeshTools::UpdateRenderer()
 	//this->Renderer->RemoveAllViewProps();
 	//for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	//{
-		//vtkActor* actor = this->ActorCollection->GetLastActor();				
-		//this->Renderer->AddActor(actor);
+	//vtkActor* actor = this->ActorCollection->GetLastActor();				
+	//this->Renderer->AddActor(actor);
 	//}
 }
 
@@ -242,7 +172,7 @@ void MeshTools::GetGlobalCenterOfMass(double center[3])
 	center[1] = 0;
 	center[2] = 0;
 
-	vtkIdType globalvn=0;
+	vtkIdType globalvn = 0;
 	vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
 		vtkSmartPointer<vtkCenterOfMass>::New();
 	this->ActorCollection->InitTraversal();
@@ -270,6 +200,7 @@ void MeshTools::GetGlobalCenterOfMass(double center[3])
 		center[2] /= globalvn;
 
 	}
+	this->GridActor->SetGridOrigin(center);
 
 
 }
@@ -287,10 +218,10 @@ double MeshTools::GetGlobalBoundingBoxLength()
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
 		vtkActor* actor = this->ActorCollection->GetNextActor();
-		if (i == 0) {actor->GetBounds(largestbounds);}
-		else 
-		{ 
-			double bounds[6]; 
+		if (i == 0) { actor->GetBounds(largestbounds); }
+		else
+		{
+			double bounds[6];
 			actor->GetBounds(bounds);
 			if (bounds[0] < largestbounds[0]) { largestbounds[0] = bounds[0]; }
 			if (bounds[1] > largestbounds[1]) { largestbounds[1] = bounds[1]; }
@@ -298,13 +229,13 @@ double MeshTools::GetGlobalBoundingBoxLength()
 			if (bounds[3] > largestbounds[3]) { largestbounds[3] = bounds[3]; }
 			if (bounds[4] < largestbounds[4]) { largestbounds[4] = bounds[4]; }
 			if (bounds[5] > largestbounds[5]) { largestbounds[5] = bounds[5]; }
-			
+
 		}
-			
+
 	}
 	double A[3];//min
 	double B[3];//max
-	
+
 	A[0] = largestbounds[0];
 	A[1] = largestbounds[2];
 	A[2] = largestbounds[4];
@@ -325,31 +256,31 @@ double MeshTools::GetGlobalBoundingBoxLength()
 // Action to be taken upon file open
 void MeshTools::slotOpenFile()
 {
-	
+
 	std::string SfileName;
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Load surface"), QDir::currentPath(),
 		tr("surfaces (*.ply *.stl *.vtk)"));
-	
+
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;
 	int file_exists = 1;
 
-	
+
 	QFile file(fileName);
-	QString name = ""; 
+	QString name = "";
 	if (file.exists()) {
 		// Message
 		name = file.fileName(); // Return only a file name		
 		file.close();
 	}
-	else 
+	else
 	{
 		file_exists = 0;
-		
-	} 
-			
-	
+
+	}
+
+
 	if (file_exists == 1)
 	{
 		std::string STLext(".stl");
@@ -489,23 +420,11 @@ void MeshTools::slotOpenFile()
 			// to change... 
 			newname = CheckingName(newname, 0);
 
-		
-			/*double a[3];
-			a[0] = 0;
-			a[1] = 0;
-			a[2] = 1;
-			
-
-
-			this->Camera->SetViewUp(a);*/
-
-			
-			
 
 
 			// Mapper
 			VTK_CREATE(vtkPolyDataMapper, mapper);
-			mapper->ImmediateModeRenderingOn();			
+			mapper->ImmediateModeRenderingOn();
 			mapper->SetInputData(MyPolyData);
 			VTK_CREATE(vtkActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
@@ -513,15 +432,7 @@ void MeshTools::slotOpenFile()
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
-			
-			/*vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
-				vtkSmartPointer<vtkCenterOfMass>::New();
 
-			centerOfMassFilter->SetInputData(MyPolyData);
-			centerOfMassFilter->SetUseScalarsAsWeights(false);
-			double center[3];
-			centerOfMassFilter->Update();
-			centerOfMassFilter->GetCenter(center);*/
 			double globalcenterofmass[3];
 			this->GetGlobalCenterOfMass(globalcenterofmass);
 			cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
@@ -541,15 +452,15 @@ void MeshTools::slotOpenFile()
 			movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
 			movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
 			this->Camera->SetPosition
-				(globalcenterofmass[0] + movex, 
-				globalcenterofmass[1]+ movey, 
-					globalcenterofmass[2]+ movez);
+				(globalcenterofmass[0] + movex,
+					globalcenterofmass[1] + movey,
+					globalcenterofmass[2] + movez);
 			//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
 			this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
 			this->Camera->SetParallelScale(GlobalBoundingBoxLength);
 			//this->Camera->ParallelProjectionOn();
-			
-			
+
+
 			//this->UpdateRenderer();
 
 			//My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());
@@ -569,27 +480,27 @@ void MeshTools::slotOpenFile()
 
 			cout << "color init: ";
 			vtkSmartPointer<vtkUnsignedCharArray> newcolors =
-				vtkSmartPointer<vtkUnsignedCharArray>::New();
+			vtkSmartPointer<vtkUnsignedCharArray>::New();
 			newcolors->SetNumberOfComponents(4);
 			newcolors->SetNumberOfTuples(numpoints);
 			//ici init_RGB ou RGB_i
 			if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL) {
-				newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
+			newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
 
-				for (int i = 0; i < numpoints; i++)
-				{
-					if (i < 100)
-					{
-						cout << newcolors->GetComponent(i, 0) << "," << newcolors->GetComponent(i, 1)
-							<< "," << newcolors->GetComponent(i, 2) << std::endl;
-					}
-					//newcolors->SetComponent(i, 3, 255.);
+			for (int i = 0; i < numpoints; i++)
+			{
+			if (i < 100)
+			{
+			cout << newcolors->GetComponent(i, 0) << "," << newcolors->GetComponent(i, 1)
+			<< "," << newcolors->GetComponent(i, 2) << std::endl;
+			}
+			//newcolors->SetComponent(i, 3, 255.);
 
-				}
+			}
 
-				cout << "found RGB colours: ";
-				newcolors->SetName("Init_RGB");
-				My_Obj->GetPointData()->AddArray(newcolors);
+			cout << "found RGB colours: ";
+			newcolors->SetName("Init_RGB");
+			My_Obj->GetPointData()->AddArray(newcolors);
 			}
 			cout << "ok." << endl;
 
@@ -604,7 +515,7 @@ void MeshTools::slotOpenFile()
 			vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)My_Obj->GetPointData()->GetScalars("RGB");
 			if (test == NULL)
 			{
-				My_Obj->Update_RGB();
+			My_Obj->Update_RGB();
 			}
 
 
@@ -614,40 +525,40 @@ void MeshTools::slotOpenFile()
 			//Move object at center of mass only in some cases
 			if (g_move_cm == 1)
 			{
-				My_Obj->Mat2[3][0] = -My_Obj->mean[0];
-				My_Obj->Mat2[3][1] = -My_Obj->mean[1];
-				My_Obj->Mat2[3][2] = -My_Obj->mean[2];
+			My_Obj->Mat2[3][0] = -My_Obj->mean[0];
+			My_Obj->Mat2[3][1] = -My_Obj->mean[1];
+			My_Obj->Mat2[3][2] = -My_Obj->mean[2];
 			}
 
 			this->Compute_Global_Mean(0);
 			if (g_landmark_auto_rendering_size)
 			{
-				this->Adjust_landmark_rendering_size();
+			this->Adjust_landmark_rendering_size();
 			}
 			this->Compute_Global_Scalar_List();
 
-		}
-		cout << "Reinitialize camera" << endl;
-		rollinit_camera();
-		cout << "G_zoom after initialization:" << g_zoom << endl;
-		this->redraw();
-		cout << "G_zoom after redraw:" << g_zoom << endl;*/
+			}
+			cout << "Reinitialize camera" << endl;
+			rollinit_camera();
+			cout << "G_zoom after initialization:" << g_zoom << endl;
+			this->redraw();
+			cout << "G_zoom after redraw:" << g_zoom << endl;*/
 
 		}
 	}
 
 
-/*	if (fileName.isEmpty()) return;
+	/*	if (fileName.isEmpty()) return;
 
 	//if (img.loadImage(fileName.toStdString().c_str()))
 
 	fileName = QFileDialog::getOpenFileName(this,
-		tr("Open File"), "/home/jana", tr("Surface Files (*.vtk *.stl *.ply)"));
+	tr("Open File"), "/home/jana", tr("Surface Files (*.vtk *.stl *.ply)"));
 	VTK_CREATE(vtkActor, actor);
 	actor->GetProperty()->SetColor(0.5, 1, 0.5);
 	actor->GetProperty()->SetOpacity(0.5);*/
 }
 
 void MeshTools::slotExit() {
-  qApp->exit();
+	qApp->exit();
 }

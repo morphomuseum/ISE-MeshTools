@@ -1,15 +1,15 @@
 /*=========================================================================
 
-  Program:   Visualization Toolkit
-  Module:    vtkGridActor.cxx
+Program:   Visualization Toolkit
+Module:    vtkGridActor.cxx
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+All rights reserved.
+See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
 #include "vtkGridActor.h"
@@ -37,166 +37,166 @@ vtkStandardNewMacro(vtkGridActor);
 //----------------------------------------------------------------------------
 vtkGridActor::vtkGridActor()
 {
-  this->AxisLabels = 1;
-  this->GridType = 0;
-  this->GridSize = 10; // by default 10 squares in each grid quadrant
-  this->GridSpacing = 10; // by default 10 mm between each line
+	this->AxisLabels = 1;
+	this->GridType = 0;
+	this->GridSize = 10; // by default 10 squares in each grid quadrant
+	this->GridSpacing = 10; // by default 10 mm between each line
 
-  this->GridOrigin[0] = 0;
-  this->GridOrigin[1] = 0;
-  this->GridOrigin[2] = 0;
+	this->GridOrigin[0] = 0;
+	this->GridOrigin[1] = 0;
+	this->GridOrigin[2] = 0;
 
-  this->FirstAxisLabelText = NULL;
-  this->FirstAxisLabelText2 = NULL;
-  this->SecondAxisLabelText = NULL;
-  this->SecondAxisLabelText2 = NULL;
-  
-  this->FirstAxisLabel = vtkCaptionActor2D::New();
-  this->FirstAxisLabel2 = vtkCaptionActor2D::New();
-  this->SecondAxisLabel = vtkCaptionActor2D::New();
-  this->SecondAxisLabel2 = vtkCaptionActor2D::New();
-  /*
-  this->SetFirstAxisLabelText("-X");
-  this->SetFirstAxisLabelText2("X");
-  this->SetSecondAxisLabelText("-Y");
-  this->SetSecondAxisLabelText2("Y");*/
-  
-  this->GridLines = vtkActor::New();
-  // instanciate grid lines!
+	this->FirstAxisLabelText = NULL;
+	this->FirstAxisLabelText2 = NULL;
+	this->SecondAxisLabelText = NULL;
+	this->SecondAxisLabelText2 = NULL;
 
-  this->GridOutline = vtkActor::New();
+	this->FirstAxisLabel = vtkCaptionActor2D::New();
+	this->FirstAxisLabel2 = vtkCaptionActor2D::New();
+	this->SecondAxisLabel = vtkCaptionActor2D::New();
+	this->SecondAxisLabel2 = vtkCaptionActor2D::New();
+	/*
+	this->SetFirstAxisLabelText("-X");
+	this->SetFirstAxisLabelText2("X");
+	this->SetSecondAxisLabelText("-Y");
+	this->SetSecondAxisLabelText2("Y");*/
 
+	this->GridLines = vtkActor::New();
+	// instanciate grid lines!
 
+	this->GridOutline = vtkActor::New();
 
 
-  // instanciate grid outilne!
-  /*this->CreateGridLines();
-  this->CreateGridOutline();
-  */
 
-  
-  /*
 
- 
-  
+	// instanciate grid outilne!
+	/*this->CreateGridLines();
+	this->CreateGridOutline();
+	*/
 
-  this->FirstAxisLabel->ThreeDimensionalLeaderOff();
-  this->FirstAxisLabel->LeaderOff();
-  this->FirstAxisLabel->BorderOff();
-  this->FirstAxisLabel->SetPosition(0, 0);
 
-  this->FirstAxisLabel2->ThreeDimensionalLeaderOff();
-  this->FirstAxisLabel2->LeaderOff();
-  this->FirstAxisLabel2->BorderOff();
-  this->FirstAxisLabel2->SetPosition(0, 0);
+	/*
 
-  this->SecondAxisLabel->ThreeDimensionalLeaderOff();
-  this->SecondAxisLabel->LeaderOff();
-  this->SecondAxisLabel->BorderOff();
-  this->SecondAxisLabel->SetPosition(0, 0);
 
-  this->SecondAxisLabel2->ThreeDimensionalLeaderOff();
-  this->SecondAxisLabel2->LeaderOff();
-  this->SecondAxisLabel2->BorderOff();
-  this->SecondAxisLabel2->SetPosition(0, 0);
-  */
-  this->UpdateProps();
+
+
+	this->FirstAxisLabel->ThreeDimensionalLeaderOff();
+	this->FirstAxisLabel->LeaderOff();
+	this->FirstAxisLabel->BorderOff();
+	this->FirstAxisLabel->SetPosition(0, 0);
+
+	this->FirstAxisLabel2->ThreeDimensionalLeaderOff();
+	this->FirstAxisLabel2->LeaderOff();
+	this->FirstAxisLabel2->BorderOff();
+	this->FirstAxisLabel2->SetPosition(0, 0);
+
+	this->SecondAxisLabel->ThreeDimensionalLeaderOff();
+	this->SecondAxisLabel->LeaderOff();
+	this->SecondAxisLabel->BorderOff();
+	this->SecondAxisLabel->SetPosition(0, 0);
+
+	this->SecondAxisLabel2->ThreeDimensionalLeaderOff();
+	this->SecondAxisLabel2->LeaderOff();
+	this->SecondAxisLabel2->BorderOff();
+	this->SecondAxisLabel2->SetPosition(0, 0);
+	*/
+	this->UpdateProps();
 }
 
 //----------------------------------------------------------------------------
 vtkGridActor::~vtkGridActor()
 {
-  
-  this->GridOutline->Delete();
-  this->GridLines->Delete();
-  
-  this->SetFirstAxisLabelText( NULL );
-  this->SetFirstAxisLabelText2(NULL);  
-  this->SetSecondAxisLabelText(NULL);
-  this->SetSecondAxisLabelText2(NULL);
 
-  this->FirstAxisLabel->Delete();
-  this->FirstAxisLabel2->Delete();
-  this->SecondAxisLabel->Delete();
-  this->SecondAxisLabel2->Delete();  
-  
+	this->GridOutline->Delete();
+	this->GridLines->Delete();
+
+	this->SetFirstAxisLabelText(NULL);
+	this->SetFirstAxisLabelText2(NULL);
+	this->SetSecondAxisLabelText(NULL);
+	this->SetSecondAxisLabelText2(NULL);
+
+	this->FirstAxisLabel->Delete();
+	this->FirstAxisLabel2->Delete();
+	this->SecondAxisLabel->Delete();
+	this->SecondAxisLabel2->Delete();
+
 }
 
 //----------------------------------------------------------------------------
 // Shallow copy of an actor.
 void vtkGridActor::ShallowCopy(vtkProp *prop)
 {
-  vtkGridActor *a = vtkGridActor::SafeDownCast(prop);
-  if ( a != NULL )
-    {
-    this->SetAxisLabels( a->GetAxisLabels() );
-    this->SetFirstAxisLabelText( a->GetFirstAxisLabelText() );
-	this->SetSecondAxisLabelText(a->GetSecondAxisLabelText());
-	this->SetFirstAxisLabelText2(a->GetFirstAxisLabelText2());
-	this->SetSecondAxisLabelText2(a->GetSecondAxisLabelText2());
-	this->SetGridOrigin(a->GetGridOrigin());
-    this->SetGridSpacing( a->GetGridSpacing() );
-	this->SetGridSpacing( a->GetGridSize() );
-	this->SetGridType(a->GetGridType());
+	vtkGridActor *a = vtkGridActor::SafeDownCast(prop);
+	if (a != NULL)
+	{
+		this->SetAxisLabels(a->GetAxisLabels());
+		this->SetFirstAxisLabelText(a->GetFirstAxisLabelText());
+		this->SetSecondAxisLabelText(a->GetSecondAxisLabelText());
+		this->SetFirstAxisLabelText2(a->GetFirstAxisLabelText2());
+		this->SetSecondAxisLabelText2(a->GetSecondAxisLabelText2());
+		this->SetGridOrigin(a->GetGridOrigin());
+		this->SetGridSpacing(a->GetGridSpacing());
+		this->SetGridSpacing(a->GetGridSize());
+		this->SetGridType(a->GetGridType());
 
-    }
+	}
 
-  // Now do superclass
-  this->vtkProp3D::ShallowCopy(prop);
+	// Now do superclass
+	this->vtkProp3D::ShallowCopy(prop);
 }
 
 //----------------------------------------------------------------------------
 void vtkGridActor::GetActors(vtkPropCollection *ac)
 {
-  ac->AddItem( this->GridOutline );
-  ac->AddItem( this->GridLines);
-  
+	ac->AddItem(this->GridOutline);
+	ac->AddItem(this->GridLines);
+
 }
 
 //----------------------------------------------------------------------------
 int vtkGridActor::RenderOpaqueGeometry(vtkViewport *vp)
 {
-  int renderedSomething = 0;
+	int renderedSomething = 0;
 
-  this->UpdateProps();
+	this->UpdateProps();
 
-  renderedSomething += this->GridOutline->RenderOpaqueGeometry( vp );
-  renderedSomething += this->GridLines->RenderOpaqueGeometry( vp );
-  
+	renderedSomething += this->GridOutline->RenderOpaqueGeometry(vp);
+	renderedSomething += this->GridLines->RenderOpaqueGeometry(vp);
 
-  if ( this->AxisLabels )
-    {
-    renderedSomething += this->FirstAxisLabel->RenderOpaqueGeometry( vp );
-	renderedSomething += this->SecondAxisLabel->RenderOpaqueGeometry(vp);
-	renderedSomething += this->FirstAxisLabel2->RenderOpaqueGeometry(vp);
-	renderedSomething += this->SecondAxisLabel2->RenderOpaqueGeometry(vp);
 
-    }
+	if (this->AxisLabels)
+	{
+		renderedSomething += this->FirstAxisLabel->RenderOpaqueGeometry(vp);
+		renderedSomething += this->SecondAxisLabel->RenderOpaqueGeometry(vp);
+		renderedSomething += this->FirstAxisLabel2->RenderOpaqueGeometry(vp);
+		renderedSomething += this->SecondAxisLabel2->RenderOpaqueGeometry(vp);
 
-  renderedSomething = (renderedSomething > 0)?(1):(0);
-  return renderedSomething;
+	}
+
+	renderedSomething = (renderedSomething > 0) ? (1) : (0);
+	return renderedSomething;
 }
 
 //-----------------------------------------------------------------------------
 int vtkGridActor::RenderTranslucentPolygonalGeometry(vtkViewport *vp)
 {
-  int renderedSomething = 0;
+	int renderedSomething = 0;
 
-  this->UpdateProps();
+	this->UpdateProps();
 
-  renderedSomething += this->GridOutline->RenderTranslucentPolygonalGeometry( vp );
-  renderedSomething += this->GridLines->RenderTranslucentPolygonalGeometry( vp );  
+	renderedSomething += this->GridOutline->RenderTranslucentPolygonalGeometry(vp);
+	renderedSomething += this->GridLines->RenderTranslucentPolygonalGeometry(vp);
 
-  if ( this->AxisLabels )
-    {
-    renderedSomething += this->FirstAxisLabel->RenderTranslucentPolygonalGeometry( vp );
-	renderedSomething += this->FirstAxisLabel2->RenderTranslucentPolygonalGeometry(vp);
-	renderedSomething += this->SecondAxisLabel->RenderTranslucentPolygonalGeometry(vp);
-	renderedSomething += this->SecondAxisLabel2->RenderTranslucentPolygonalGeometry(vp);
-    }
+	if (this->AxisLabels)
+	{
+		renderedSomething += this->FirstAxisLabel->RenderTranslucentPolygonalGeometry(vp);
+		renderedSomething += this->FirstAxisLabel2->RenderTranslucentPolygonalGeometry(vp);
+		renderedSomething += this->SecondAxisLabel->RenderTranslucentPolygonalGeometry(vp);
+		renderedSomething += this->SecondAxisLabel2->RenderTranslucentPolygonalGeometry(vp);
+	}
 
-  renderedSomething = (renderedSomething > 0)?(1):(0);
-  return renderedSomething;
+	renderedSomething = (renderedSomething > 0) ? (1) : (0);
+	return renderedSomething;
 }
 
 //-----------------------------------------------------------------------------
@@ -204,70 +204,70 @@ int vtkGridActor::RenderTranslucentPolygonalGeometry(vtkViewport *vp)
 // Does this prop have some translucent polygonal geometry?
 int vtkGridActor::HasTranslucentPolygonalGeometry()
 {
-  int result = 0;
+	int result = 0;
 
-  this->UpdateProps();
+	this->UpdateProps();
 
-  result |= this->GridOutline->HasTranslucentPolygonalGeometry();
-  result |= this->GridLines->HasTranslucentPolygonalGeometry();
-  
+	result |= this->GridOutline->HasTranslucentPolygonalGeometry();
+	result |= this->GridLines->HasTranslucentPolygonalGeometry();
 
-  if ( this->AxisLabels )
-    {
-    result |= this->FirstAxisLabel->HasTranslucentPolygonalGeometry();
-    result |= this->SecondAxisLabel->HasTranslucentPolygonalGeometry();
-	result |= this->FirstAxisLabel2->HasTranslucentPolygonalGeometry();
-	result |= this->SecondAxisLabel2->HasTranslucentPolygonalGeometry();
-    }
-  return result;
+
+	if (this->AxisLabels)
+	{
+		result |= this->FirstAxisLabel->HasTranslucentPolygonalGeometry();
+		result |= this->SecondAxisLabel->HasTranslucentPolygonalGeometry();
+		result |= this->FirstAxisLabel2->HasTranslucentPolygonalGeometry();
+		result |= this->SecondAxisLabel2->HasTranslucentPolygonalGeometry();
+	}
+	return result;
 }
 
 //-----------------------------------------------------------------------------
 int vtkGridActor::RenderOverlay(vtkViewport *vp)
 {
-  int renderedSomething = 0;
+	int renderedSomething = 0;
 
-  if ( !this->AxisLabels )
-    {
-    return renderedSomething;
-    }
+	if (!this->AxisLabels)
+	{
+		return renderedSomething;
+	}
 
-  this->UpdateProps();
+	this->UpdateProps();
 
-  renderedSomething += this->FirstAxisLabel->RenderOverlay( vp );
-  renderedSomething += this->FirstAxisLabel2->RenderOverlay(vp);
-  renderedSomething += this->SecondAxisLabel->RenderOverlay(vp);
-  renderedSomething += this->SecondAxisLabel2->RenderOverlay(vp);
-  
+	renderedSomething += this->FirstAxisLabel->RenderOverlay(vp);
+	renderedSomething += this->FirstAxisLabel2->RenderOverlay(vp);
+	renderedSomething += this->SecondAxisLabel->RenderOverlay(vp);
+	renderedSomething += this->SecondAxisLabel2->RenderOverlay(vp);
 
-  renderedSomething = (renderedSomething > 0)?(1):(0);
-  return renderedSomething;
+
+	renderedSomething = (renderedSomething > 0) ? (1) : (0);
+	return renderedSomething;
 }
 
 //----------------------------------------------------------------------------
 void vtkGridActor::ReleaseGraphicsResources(vtkWindow *win)
 {
-  this->GridLines->ReleaseGraphicsResources( win );
-  this->GridOutline->ReleaseGraphicsResources( win );
-  
+	this->GridLines->ReleaseGraphicsResources(win);
+	this->GridOutline->ReleaseGraphicsResources(win);
 
-  this->FirstAxisLabel->ReleaseGraphicsResources( win );
-  this->SecondAxisLabel->ReleaseGraphicsResources(win);
-  this->FirstAxisLabel2->ReleaseGraphicsResources(win);
-  this->SecondAxisLabel2->ReleaseGraphicsResources(win);
-  
+
+	this->FirstAxisLabel->ReleaseGraphicsResources(win);
+	this->SecondAxisLabel->ReleaseGraphicsResources(win);
+	this->FirstAxisLabel2->ReleaseGraphicsResources(win);
+	this->SecondAxisLabel2->ReleaseGraphicsResources(win);
+
 }
 
 //----------------------------------------------------------------------------
 void vtkGridActor::GetBounds(double bounds[6])
 {
-  double *bds = this->GetBounds();
-  bounds[0] = bds[0];
-  bounds[1] = bds[1];
-  bounds[2] = bds[2];
-  bounds[3] = bds[3];
-  bounds[4] = bds[4];
-  bounds[5] = bds[5];
+	double *bds = this->GetBounds();
+	bounds[0] = bds[0];
+	bounds[1] = bds[1];
+	bounds[2] = bds[2];
+	bounds[3] = bds[3];
+	bounds[4] = bds[4];
+	bounds[5] = bds[5];
 }
 
 
@@ -296,7 +296,7 @@ void vtkGridActor::GetGridOrigin(double origin[3])
 	origin[0] = org[0];
 	origin[1] = org[1];
 	origin[2] = org[2];
-	
+
 }
 
 
@@ -457,762 +457,784 @@ void vtkGridActor::CreateGridLabelText()
 
 void vtkGridActor::CreateGridLines()
 {
-	
-	
-		// this->GridType : 0 : xy plane (z=0)
-		// this->GridType : 1 : xz plane (y=0)
-		// this->GridType : 2 : yz plane (x=0)
-
-		// this->GridSize is the number of spaces between lines for each quadrant
-
-		// this->GridSpacing : space between 2 lines in mm.
 
 
-		// We need 8* (this->GridSize -1) points.
-			// Then we need "only" 4 * (this->GridSize -1) lines (lines should be written only once: A=>B, not B=>A).
+	// this->GridType : 0 : xy plane (z=0)
+	// this->GridType : 1 : xz plane (y=0)
+	// this->GridType : 2 : yz plane (x=0)
+
+	// this->GridSize is the number of spaces between lines for each quadrant
+
+	// this->GridSpacing : space between 2 lines in mm.
 
 
-			vtkSmartPointer<vtkPoints> pts =
-				vtkSmartPointer<vtkPoints>::New();
-			// create points.
-			double coord[3];
-			double coord2[3];
-			double coord3[3];
-			for (int i = (-this->GridSize + 1); i < this->GridSize; i++)
+	// We need 8* (this->GridSize -1) points.
+	// Then we need "only" 4 * (this->GridSize -1) lines (lines should be written only once: A=>B, not B=>A).
+
+
+	vtkSmartPointer<vtkPoints> pts =
+		vtkSmartPointer<vtkPoints>::New();
+	// create points.
+	double coord[3];
+	double coord2[3];
+	double coord3[3];
+	for (int i = (-this->GridSize + 1); i < this->GridSize; i++)
+	{
+		if (i != 0)
+		{
+			if (this->GridType == 0)
 			{
-				if (i != 0)
-				{
-					if (this->GridType == 0)
-					{
-						coord[0] = i*this->GridSpacing;
-						coord[1] = this->GridSize*this->GridSpacing;
-						coord[2] = 0;
+				coord[0] = i*this->GridSpacing;
+				coord[1] = this->GridSize*this->GridSpacing;
+				coord[2] = 0;
 
-						coord2[0] = coord[0];
-						coord2[1] = 0;
-						coord2[2] = coord[2];
+				coord2[0] = coord[0];
+				coord2[1] = 0;
+				coord2[2] = coord[2];
 
-						coord3[0] = coord[0];
-						coord3[1] = -coord[1];
-						coord3[2] = coord[2];
-					}
-					if (this->GridType == 1)
-					{
-						coord[0] = i*this->GridSpacing;
-						coord[1] = 0;
-						coord[2] = this->GridSize*this->GridSpacing;
-
-						coord2[0] = coord[0];
-						coord2[1] = coord[1];
-						coord2[2] = 0;
-
-						coord3[0] = coord[0];
-						coord3[1] = coord[1];
-						coord3[2] = -coord[2];
-					}
-					if (this->GridType == 2)
-					{
-						coord[0] = 0;
-						coord[1] = i*this->GridSpacing;
-						coord[2] = this->GridSize*this->GridSpacing;
-
-						coord2[0] = coord[0];
-						coord2[1] = coord[1];
-						coord2[2] = 0;
-
-						coord3[0] = coord[0];
-						coord3[1] = coord[1];
-						coord3[2] = -coord[2];
-					}
-					vtkMath::Add(coord, this->GridOrigin, coord);
-					vtkMath::Add(coord2, this->GridOrigin, coord2);
-					vtkMath::Add(coord3, this->GridOrigin, coord3);
-					//cout << "point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
-					//cout << "point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
-					pts->InsertNextPoint(coord);
-					pts->InsertNextPoint(coord2);
-					pts->InsertNextPoint(coord3);
-
-				}
-
+				coord3[0] = coord[0];
+				coord3[1] = -coord[1];
+				coord3[2] = coord[2];
 			}
-			for (int i = (-this->GridSize + 1); i < this->GridSize; i++)
+			if (this->GridType == 1)
 			{
-				if (i != 0)
-				{
-					if (this->GridType == 0)
-					{
-						coord[0] = this->GridSize*this->GridSpacing;
-						coord[1] = i*this->GridSpacing;
-						coord[2] = 0;
+				coord[0] = i*this->GridSpacing;
+				coord[1] = 0;
+				coord[2] = this->GridSize*this->GridSpacing;
 
-						coord2[0] = 0;
-						coord2[1] = coord[1];
-						coord2[2] = coord[2];
+				coord2[0] = coord[0];
+				coord2[1] = coord[1];
+				coord2[2] = 0;
 
-
-						coord3[0] = -coord[0];
-						coord3[1] = coord[1];
-						coord3[2] = coord[2];
-					}
-					if (this->GridType == 1)
-					{
-						coord[0] = this->GridSize*this->GridSpacing;
-						coord[1] = 0;
-						coord[2] = i*this->GridSpacing;
-
-						coord2[0] = 0;
-						coord2[1] = coord[1];
-						coord2[2] = coord[2];
-
-						coord3[0] = -coord[0];
-						coord3[1] = coord[1];
-						coord3[2] = coord[2];
-					}
-					if (this->GridType == 2)
-					{
-						coord[0] = 0;
-						coord[1] = this->GridSize*this->GridSpacing;
-						coord[2] = i*this->GridSpacing;
-
-						coord2[0] = coord[0];
-						coord2[1] = 0;
-						coord2[2] = coord[2];
-
-						coord3[0] = coord[0];
-						coord3[1] = -coord[1];
-						coord3[2] = coord[2];
-					}
-					vtkMath::Add(coord, this->GridOrigin, coord);
-					vtkMath::Add(coord2, this->GridOrigin, coord2);
-					vtkMath::Add(coord3, this->GridOrigin, coord3);
-					//cout << "2point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
-					//cout << "2point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
-					pts->InsertNextPoint(coord);
-					pts->InsertNextPoint(coord2);
-					pts->InsertNextPoint(coord3);
-
-				}
-
+				coord3[0] = coord[0];
+				coord3[1] = coord[1];
+				coord3[2] = -coord[2];
 			}
-			vtkSmartPointer<vtkPolyData> linesPolyData =
-				vtkSmartPointer<vtkPolyData>::New();
-			// Add the points to the polydata container
-			linesPolyData->SetPoints(pts);
-			// We have 4* (this->GridSize -1) lines. *2
-
-			vtkSmartPointer<vtkCellArray> lines =
-				vtkSmartPointer<vtkCellArray>::New();
-
-			for (int i = 0; i < (4 * (this->GridSize - 1)); i++)
+			if (this->GridType == 2)
 			{
-				vtkSmartPointer<vtkLine> line =
-					vtkSmartPointer<vtkLine>::New();
-				line->GetPointIds()->SetId(0, 3 * i);
-				line->GetPointIds()->SetId(1, 3 * i + 1);
-				lines->InsertNextCell(line);
+				coord[0] = 0;
+				coord[1] = i*this->GridSpacing;
+				coord[2] = this->GridSize*this->GridSpacing;
 
+				coord2[0] = coord[0];
+				coord2[1] = coord[1];
+				coord2[2] = 0;
 
+				coord3[0] = coord[0];
+				coord3[1] = coord[1];
+				coord3[2] = -coord[2];
 			}
-			for (int i = 0; i < (4 * (this->GridSize - 1)); i++)
+			vtkMath::Add(coord, this->GridOrigin, coord);
+			vtkMath::Add(coord2, this->GridOrigin, coord2);
+			vtkMath::Add(coord3, this->GridOrigin, coord3);
+			//cout << "point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
+			//cout << "point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
+			pts->InsertNextPoint(coord);
+			pts->InsertNextPoint(coord2);
+			pts->InsertNextPoint(coord3);
+
+		}
+
+	}
+	for (int i = (-this->GridSize + 1); i < this->GridSize; i++)
+	{
+		if (i != 0)
+		{
+			if (this->GridType == 0)
 			{
-				vtkSmartPointer<vtkLine> line2 =
-					vtkSmartPointer<vtkLine>::New();
-				line2->GetPointIds()->SetId(0, 3 * i + 1);
-				line2->GetPointIds()->SetId(1, 3 * i + 2);
-				lines->InsertNextCell(line2);
+				coord[0] = this->GridSize*this->GridSpacing;
+				coord[1] = i*this->GridSpacing;
+				coord[2] = 0;
+
+				coord2[0] = 0;
+				coord2[1] = coord[1];
+				coord2[2] = coord[2];
 
 
+				coord3[0] = -coord[0];
+				coord3[1] = coord[1];
+				coord3[2] = coord[2];
 			}
-
-
-			linesPolyData->SetLines(lines);
-
-
-			// Create six colors - one for each line
-			unsigned char red[3] = { 255, 0, 0 };
-			unsigned char green[3] = { 0, 255, 0 };
-			unsigned char blue[3] = { 0, 0, 255 };
-			unsigned char yellow[3] = { 255, 255, 0 };
-			unsigned char cyan[3] = { 0, 255, 255 };
-			unsigned char fuschia[3] = { 255, 0, 255 };
-
-			// Create a vtkUnsignedCharArray container and store the colors in it
-			vtkSmartPointer<vtkUnsignedCharArray> colors =
-				vtkSmartPointer<vtkUnsignedCharArray>::New();
-			colors->SetNumberOfComponents(3);
-			for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
+			if (this->GridType == 1)
 			{
-				if (this->GridType == 0)
-				{
+				coord[0] = this->GridSize*this->GridSpacing;
+				coord[1] = 0;
+				coord[2] = i*this->GridSpacing;
+
+				coord2[0] = 0;
+				coord2[1] = coord[1];
+				coord2[2] = coord[2];
+
+				coord3[0] = -coord[0];
+				coord3[1] = coord[1];
+				coord3[2] = coord[2];
+			}
+			if (this->GridType == 2)
+			{
+				coord[0] = 0;
+				coord[1] = this->GridSize*this->GridSpacing;
+				coord[2] = i*this->GridSpacing;
+
+				coord2[0] = coord[0];
+				coord2[1] = 0;
+				coord2[2] = coord[2];
+
+				coord3[0] = coord[0];
+				coord3[1] = -coord[1];
+				coord3[2] = coord[2];
+			}
+			vtkMath::Add(coord, this->GridOrigin, coord);
+			vtkMath::Add(coord2, this->GridOrigin, coord2);
+			vtkMath::Add(coord3, this->GridOrigin, coord3);
+			//cout << "2point 1:" << coord[0] << "," << coord[1] << "," << coord[2] << endl;
+			//cout << "2point 2:" << coord2[0] << "," << coord2[1] << "," << coord2[2] << endl;
+			pts->InsertNextPoint(coord);
+			pts->InsertNextPoint(coord2);
+			pts->InsertNextPoint(coord3);
+
+		}
+
+	}
+	vtkSmartPointer<vtkPolyData> linesPolyData =
+		vtkSmartPointer<vtkPolyData>::New();
+	// Add the points to the polydata container
+	linesPolyData->SetPoints(pts);
+	// We have 4* (this->GridSize -1) lines. *2
+
+	vtkSmartPointer<vtkCellArray> lines =
+		vtkSmartPointer<vtkCellArray>::New();
+
+	for (int i = 0; i < (4 * (this->GridSize - 1)); i++)
+	{
+		vtkSmartPointer<vtkLine> line =
+			vtkSmartPointer<vtkLine>::New();
+		line->GetPointIds()->SetId(0, 3 * i);
+		line->GetPointIds()->SetId(1, 3 * i + 1);
+		lines->InsertNextCell(line);
+
+
+	}
+	for (int i = 0; i < (4 * (this->GridSize - 1)); i++)
+	{
+		vtkSmartPointer<vtkLine> line2 =
+			vtkSmartPointer<vtkLine>::New();
+		line2->GetPointIds()->SetId(0, 3 * i + 1);
+		line2->GetPointIds()->SetId(1, 3 * i + 2);
+		lines->InsertNextCell(line2);
+
+
+	}
+
+
+	linesPolyData->SetLines(lines);
+
+
+	// Create six colors - one for each line
+	unsigned char red[3] = { 255, 0, 0 };
+	unsigned char green[3] = { 0, 255, 0 };
+	unsigned char blue[3] = { 0, 0, 255 };
+	unsigned char yellow[3] = { 255, 255, 0 };
+	unsigned char cyan[3] = { 0, 255, 255 };
+	unsigned char fuschia[3] = { 255, 0, 255 };
+
+	// Create a vtkUnsignedCharArray container and store the colors in it
+	vtkSmartPointer<vtkUnsignedCharArray> colors =
+		vtkSmartPointer<vtkUnsignedCharArray>::New();
+	colors->SetNumberOfComponents(3);
+	for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
+	{
+		if (this->GridType == 0)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(green);
 #else
-					colors->InsertNextTupleValue(green);
+			colors->InsertNextTupleValue(green);
 #endif
 
-				}
-				else if (this->GridType == 1)
-				{
+		}
+		else if (this->GridType == 1)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(blue);
 #else
-					colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(blue);
 #endif				
-				}
-				else
-				{
+		}
+		else
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(blue);
 #else
-					colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(blue);
 #endif				
-				}
+		}
 
-			}
-			for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
-			{
-				if (this->GridType == 0)
-				{
+	}
+	for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
+	{
+		if (this->GridType == 0)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(red);
+			colors->InsertNextTypedTuple(red);
 #else
-					colors->InsertNextTupleValue(red);
+			colors->InsertNextTupleValue(red);
 #endif				
-				}
-				else if (this->GridType == 1)
-				{
+		}
+		else if (this->GridType == 1)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(red);
+			colors->InsertNextTypedTuple(red);
 #else
-					colors->InsertNextTupleValue(red);
+			colors->InsertNextTupleValue(red);
 #endif
 
-				}
-				else
-				{
+		}
+		else
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(green);
 #else
-					colors->InsertNextTupleValue(green);
+			colors->InsertNextTupleValue(green);
 #endif
 
-				}
-			}
-			for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
-			{
-				if (this->GridType == 0)
-				{
+		}
+	}
+	for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
+	{
+		if (this->GridType == 0)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(cyan);
+			colors->InsertNextTypedTuple(cyan);
 #else
-					colors->InsertNextTupleValue(cyan);
+			colors->InsertNextTupleValue(cyan);
 #endif
 
-				}
-				else if (this->GridType == 1)
-				{
+		}
+		else if (this->GridType == 1)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(fuschia);
+			colors->InsertNextTypedTuple(fuschia);
 #else
-					colors->InsertNextTupleValue(fuschia);
-#endif
-
-
-				}
-				else
-				{
-#if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(fuschia);
-#else
-					colors->InsertNextTupleValue(fuschia);
+			colors->InsertNextTupleValue(fuschia);
 #endif
 
 
-				}
-			}
-
-
-			for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
-			{
-				if (this->GridType == 0)
-				{
+		}
+		else
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(yellow);
+			colors->InsertNextTypedTuple(fuschia);
 #else
-					colors->InsertNextTupleValue(yellow);
+			colors->InsertNextTupleValue(fuschia);
 #endif
 
 
-				}
-				else if (this->GridType == 1)
-				{
-#if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(yellow);
-#else
-					colors->InsertNextTupleValue(yellow);
-#endif
+		}
+	}
 
-				}
-				else
-				{
+
+	for (int i = 0; i < (2 * (this->GridSize - 1)); i++)
+	{
+		if (this->GridType == 0)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(cyan);
+			colors->InsertNextTypedTuple(yellow);
 #else
-					colors->InsertNextTupleValue(cyan);
+			colors->InsertNextTupleValue(yellow);
 #endif
 
 
-				}
+		}
+		else if (this->GridType == 1)
+		{
+#if VTK_MINOR_VERSION >= 1
+			colors->InsertNextTypedTuple(yellow);
+#else
+			colors->InsertNextTupleValue(yellow);
+#endif
 
-			}
-
-
-
-
-			linesPolyData->GetCellData()->SetScalars(colors);
-
-			// Setup the visualization pipeline
-			vtkSmartPointer<vtkPolyDataMapper> mapper =
-				vtkSmartPointer<vtkPolyDataMapper>::New();
-			mapper->SetInputData(linesPolyData);
-
-			
-			this->GridLines->SetMapper(mapper);
-			
-
-
+		}
+		else
+		{
+#if VTK_MINOR_VERSION >= 1
+			colors->InsertNextTypedTuple(cyan);
+#else
+			colors->InsertNextTupleValue(cyan);
+#endif
 
 
-		
-		
+		}
+
+	}
+
+
+
+
+	linesPolyData->GetCellData()->SetScalars(colors);
+
+	// Setup the visualization pipeline
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(linesPolyData);
+
+
+	this->GridLines->SetMapper(mapper);
+
+
+
+
+
+
+
 }
 
 void vtkGridActor::CreateGridOutline()
 {
-	
-		// GridType : 0 : xy this->GridType (z=0)
-		// GridType : 1 : xz this->GridType (y=0)
-		// GridType : 2 : yz this->GridType (x=0)
-		// this->GridSize is the number of spaces between lines for each quadrant
 
-		// this->GridSpacing : space between 2 lines in mm.
+	// GridType : 0 : xy this->GridType (z=0)
+	// GridType : 1 : xz this->GridType (y=0)
+	// GridType : 2 : yz this->GridType (x=0)
+	// this->GridSize is the number of spaces between lines for each quadrant
 
-
-		
-			vtkSmartPointer<vtkPoints> pts =
-				vtkSmartPointer<vtkPoints>::New();
-			// create points.
-
-			// we need 8 points + origin = 9 points
-			// we need to draw 12 bold lines.
-			// create points.
-			double coord[3];
-			double coord2[3];
-			double coord3[3];
-			double coord4[3];
-			double coord5[3];
-			double coord6[3];
-			double coord7[3];
-			double coord8[3];
-			double coord9[3];
-
-			if (this->GridType == 0)
-			{
-				coord[0] = -this->GridSize*this->GridSpacing;
-				coord[1] = this->GridSize*this->GridSpacing;
-				coord[2] = 0;
-
-				coord2[0] = -this->GridSize*this->GridSpacing;
-				coord2[1] = 0;
-				coord2[2] = 0;
-
-				coord3[0] = -this->GridSize*this->GridSpacing;
-				coord3[1] = -this->GridSize*this->GridSpacing;
-				coord3[2] = 0;
-
-
-				coord4[0] = 0;
-				coord4[1] = this->GridSize*this->GridSpacing;
-				coord4[2] = 0;
-
-				coord5[0] = 0;
-				coord5[1] = 0;
-				coord5[2] = 0;
-
-				coord6[0] = 0;
-				coord6[1] = -this->GridSize*this->GridSpacing;
-				coord6[2] = 0;
-
-				coord7[0] = this->GridSize*this->GridSpacing;
-				coord7[1] = this->GridSize*this->GridSpacing;
-				coord7[2] = 0;
-
-				coord8[0] = this->GridSize*this->GridSpacing;
-				coord8[1] = 0;
-				coord8[2] = 0;
-
-				coord9[0] = this->GridSize*this->GridSpacing;
-				coord9[1] = -this->GridSize*this->GridSpacing;
-				coord9[2] = 0;
-
-			}
-			else if (this->GridType == 1)
-			{
-				coord[0] = -this->GridSize*this->GridSpacing;
-				coord[1] = 0;
-				coord[2] = this->GridSize*this->GridSpacing;
-
-				coord2[0] = -this->GridSize*this->GridSpacing;
-				coord2[1] = 0;
-				coord2[2] = 0;
-
-				coord3[0] = -this->GridSize*this->GridSpacing;
-				coord3[1] = 0;
-				coord3[2] = -this->GridSize*this->GridSpacing;
-
-
-				coord4[0] = 0;
-				coord4[1] = 0;
-				coord4[2] = this->GridSize*this->GridSpacing;
-
-				coord5[0] = 0;
-				coord5[1] = 0;
-				coord5[2] = 0;
-
-				coord6[0] = 0;
-				coord6[1] = 0;
-				coord6[2] = -this->GridSize*this->GridSpacing;
-
-				coord7[0] = this->GridSize*this->GridSpacing;
-				coord7[1] = 0;
-				coord7[2] = this->GridSize*this->GridSpacing;
-
-				coord8[0] = this->GridSize*this->GridSpacing;
-				coord8[1] = 0;
-				coord8[2] = 0;
-
-				coord9[0] = this->GridSize*this->GridSpacing;
-				coord9[1] = 0;
-				coord9[2] = -this->GridSize*this->GridSpacing;
-
-			}
-			else
-			{
-				coord[0] = 0;
-				coord[1] = -this->GridSize*this->GridSpacing;
-				coord[2] = this->GridSize*this->GridSpacing;
-
-				coord2[0] = 0;
-				coord2[1] = -this->GridSize*this->GridSpacing;
-				coord2[2] = 0;
-
-				coord3[0] = 0;
-				coord3[1] = -this->GridSize*this->GridSpacing;
-				coord3[2] = -this->GridSize*this->GridSpacing;
-
-
-				coord4[0] = 0;
-				coord4[1] = 0;
-				coord4[2] = this->GridSize*this->GridSpacing;
-
-				coord5[0] = 0;
-				coord5[1] = 0;
-				coord5[2] = 0;
-
-				coord6[0] = 0;
-				coord6[1] = 0;
-				coord6[2] = -this->GridSize*this->GridSpacing;
-
-				coord7[0] = 0;
-				coord7[1] = this->GridSize*this->GridSpacing;
-				coord7[2] = this->GridSize*this->GridSpacing;
-
-				coord8[0] = 0;
-				coord8[1] = this->GridSize*this->GridSpacing;
-				coord8[2] = 0;
-
-				coord9[0] = 0;
-				coord9[1] = this->GridSize*this->GridSpacing;
-				coord9[2] = -this->GridSize*this->GridSpacing;
-			}
-
-			vtkMath::Add(coord, this->GridOrigin, coord);
-			vtkMath::Add(coord2, this->GridOrigin, coord2);
-			vtkMath::Add(coord3, this->GridOrigin, coord3);
-			vtkMath::Add(coord4, this->GridOrigin, coord4);
-			vtkMath::Add(coord5, this->GridOrigin, coord5);
-			vtkMath::Add(coord6, this->GridOrigin, coord6);
-			vtkMath::Add(coord7, this->GridOrigin, coord7);
-			vtkMath::Add(coord8, this->GridOrigin, coord8);
-			vtkMath::Add(coord9, this->GridOrigin, coord9);
-
-			pts->InsertNextPoint(coord);
-			pts->InsertNextPoint(coord2);
-			pts->InsertNextPoint(coord3);
-			pts->InsertNextPoint(coord4);
-			pts->InsertNextPoint(coord5);
-			pts->InsertNextPoint(coord6);
-			pts->InsertNextPoint(coord7);
-			pts->InsertNextPoint(coord8);
-			pts->InsertNextPoint(coord9);
-
-			vtkSmartPointer<vtkPolyData> linesPolyData =
-				vtkSmartPointer<vtkPolyData>::New();
-			// Add the points to the polydata container
-			linesPolyData->SetPoints(pts);
-			// We have 4* (this->GridSize -1) lines. *2
-
-			vtkSmartPointer<vtkCellArray> lines =
-				vtkSmartPointer<vtkCellArray>::New();
-
-
-			vtkSmartPointer<vtkLine> line1 =
-				vtkSmartPointer<vtkLine>::New();
-			line1->GetPointIds()->SetId(0, 0);
-			line1->GetPointIds()->SetId(1, 1);
-			lines->InsertNextCell(line1);
-
-			vtkSmartPointer<vtkLine> line2 =
-				vtkSmartPointer<vtkLine>::New();
-			line2->GetPointIds()->SetId(0, 1);
-			line2->GetPointIds()->SetId(1, 2);
-			lines->InsertNextCell(line2);
-
-			vtkSmartPointer<vtkLine> line3 =
-				vtkSmartPointer<vtkLine>::New();
-			line3->GetPointIds()->SetId(0, 3);
-			line3->GetPointIds()->SetId(1, 4);
-			lines->InsertNextCell(line3);
-
-			vtkSmartPointer<vtkLine> line4 =
-				vtkSmartPointer<vtkLine>::New();
-			line4->GetPointIds()->SetId(0, 4);
-			line4->GetPointIds()->SetId(1, 5);
-			lines->InsertNextCell(line4);
-
-			vtkSmartPointer<vtkLine> line5 =
-				vtkSmartPointer<vtkLine>::New();
-			line5->GetPointIds()->SetId(0, 6);
-			line5->GetPointIds()->SetId(1, 7);
-			lines->InsertNextCell(line5);
-
-			vtkSmartPointer<vtkLine> line6 =
-				vtkSmartPointer<vtkLine>::New();
-			line6->GetPointIds()->SetId(0, 7);
-			line6->GetPointIds()->SetId(1, 8);
-			lines->InsertNextCell(line6);
-
-			vtkSmartPointer<vtkLine> line7 =
-				vtkSmartPointer<vtkLine>::New();
-			line7->GetPointIds()->SetId(0, 6);
-			line7->GetPointIds()->SetId(1, 3);
-			lines->InsertNextCell(line7);
-
-			vtkSmartPointer<vtkLine> line8 =
-				vtkSmartPointer<vtkLine>::New();
-			line8->GetPointIds()->SetId(0, 3);
-			line8->GetPointIds()->SetId(1, 0);
-			lines->InsertNextCell(line8);
-
-			vtkSmartPointer<vtkLine> line9 =
-				vtkSmartPointer<vtkLine>::New();
-			line9->GetPointIds()->SetId(0, 7);
-			line9->GetPointIds()->SetId(1, 4);
-			lines->InsertNextCell(line9);
-
-			vtkSmartPointer<vtkLine> line10 =
-				vtkSmartPointer<vtkLine>::New();
-			line10->GetPointIds()->SetId(0, 4);
-			line10->GetPointIds()->SetId(1, 1);
-			lines->InsertNextCell(line10);
-
-			vtkSmartPointer<vtkLine> line11 =
-				vtkSmartPointer<vtkLine>::New();
-			line11->GetPointIds()->SetId(0, 8);
-			line11->GetPointIds()->SetId(1, 5);
-			lines->InsertNextCell(line11);
-
-			vtkSmartPointer<vtkLine> line12 =
-				vtkSmartPointer<vtkLine>::New();
-			line12->GetPointIds()->SetId(0, 5);
-			line12->GetPointIds()->SetId(1, 2);
-			lines->InsertNextCell(line12);
+	// this->GridSpacing : space between 2 lines in mm.
 
 
 
-			linesPolyData->SetLines(lines);
+	vtkSmartPointer<vtkPoints> pts =
+		vtkSmartPointer<vtkPoints>::New();
+	// create points.
+
+	// we need 8 points + origin = 9 points
+	// we need to draw 12 bold lines.
+	// create points.
+	double coord[3];
+	double coord2[3];
+	double coord3[3];
+	double coord4[3];
+	double coord5[3];
+	double coord6[3];
+	double coord7[3];
+	double coord8[3];
+	double coord9[3];
+
+	if (this->GridType == 0)
+	{
+		coord[0] = -this->GridSize*this->GridSpacing;
+		coord[1] = this->GridSize*this->GridSpacing;
+		coord[2] = 0;
+
+		coord2[0] = -this->GridSize*this->GridSpacing;
+		coord2[1] = 0;
+		coord2[2] = 0;
+
+		coord3[0] = -this->GridSize*this->GridSpacing;
+		coord3[1] = -this->GridSize*this->GridSpacing;
+		coord3[2] = 0;
 
 
-			// Create six colors - one for each line
-			unsigned char red[3] = { 255, 0, 0 };
-			unsigned char green[3] = { 0, 255, 0 };
-			unsigned char blue[3] = { 0, 0, 255 };
-			unsigned char yellow[3] = { 255, 255, 0 };
-			unsigned char cyan[3] = { 0, 255, 255 };
-			unsigned char fuschia[3] = { 255, 0, 255 };
+		coord4[0] = 0;
+		coord4[1] = this->GridSize*this->GridSpacing;
+		coord4[2] = 0;
 
-			// Create a vtkUnsignedCharArray container and store the colors in it
-			vtkSmartPointer<vtkUnsignedCharArray> colors =
-				vtkSmartPointer<vtkUnsignedCharArray>::New();
-			colors->SetNumberOfComponents(3);
+		coord5[0] = 0;
+		coord5[1] = 0;
+		coord5[2] = 0;
 
-			//1
-			if (this->GridType == 0)
-			{
-				for (int i = 0; i < 3; i++)
-				{
+		coord6[0] = 0;
+		coord6[1] = -this->GridSize*this->GridSpacing;
+		coord6[2] = 0;
+
+		coord7[0] = this->GridSize*this->GridSpacing;
+		coord7[1] = this->GridSize*this->GridSpacing;
+		coord7[2] = 0;
+
+		coord8[0] = this->GridSize*this->GridSpacing;
+		coord8[1] = 0;
+		coord8[2] = 0;
+
+		coord9[0] = this->GridSize*this->GridSpacing;
+		coord9[1] = -this->GridSize*this->GridSpacing;
+		coord9[2] = 0;
+
+	}
+	else if (this->GridType == 1)
+	{
+		coord[0] = -this->GridSize*this->GridSpacing;
+		coord[1] = 0;
+		coord[2] = this->GridSize*this->GridSpacing;
+
+		coord2[0] = -this->GridSize*this->GridSpacing;
+		coord2[1] = 0;
+		coord2[2] = 0;
+
+		coord3[0] = -this->GridSize*this->GridSpacing;
+		coord3[1] = 0;
+		coord3[2] = -this->GridSize*this->GridSpacing;
+
+
+		coord4[0] = 0;
+		coord4[1] = 0;
+		coord4[2] = this->GridSize*this->GridSpacing;
+
+		coord5[0] = 0;
+		coord5[1] = 0;
+		coord5[2] = 0;
+
+		coord6[0] = 0;
+		coord6[1] = 0;
+		coord6[2] = -this->GridSize*this->GridSpacing;
+
+		coord7[0] = this->GridSize*this->GridSpacing;
+		coord7[1] = 0;
+		coord7[2] = this->GridSize*this->GridSpacing;
+
+		coord8[0] = this->GridSize*this->GridSpacing;
+		coord8[1] = 0;
+		coord8[2] = 0;
+
+		coord9[0] = this->GridSize*this->GridSpacing;
+		coord9[1] = 0;
+		coord9[2] = -this->GridSize*this->GridSpacing;
+
+	}
+	else
+	{
+		coord[0] = 0;
+		coord[1] = -this->GridSize*this->GridSpacing;
+		coord[2] = this->GridSize*this->GridSpacing;
+
+		coord2[0] = 0;
+		coord2[1] = -this->GridSize*this->GridSpacing;
+		coord2[2] = 0;
+
+		coord3[0] = 0;
+		coord3[1] = -this->GridSize*this->GridSpacing;
+		coord3[2] = -this->GridSize*this->GridSpacing;
+
+
+		coord4[0] = 0;
+		coord4[1] = 0;
+		coord4[2] = this->GridSize*this->GridSpacing;
+
+		coord5[0] = 0;
+		coord5[1] = 0;
+		coord5[2] = 0;
+
+		coord6[0] = 0;
+		coord6[1] = 0;
+		coord6[2] = -this->GridSize*this->GridSpacing;
+
+		coord7[0] = 0;
+		coord7[1] = this->GridSize*this->GridSpacing;
+		coord7[2] = this->GridSize*this->GridSpacing;
+
+		coord8[0] = 0;
+		coord8[1] = this->GridSize*this->GridSpacing;
+		coord8[2] = 0;
+
+		coord9[0] = 0;
+		coord9[1] = this->GridSize*this->GridSpacing;
+		coord9[2] = -this->GridSize*this->GridSpacing;
+	}
+
+	vtkMath::Add(coord, this->GridOrigin, coord);
+	vtkMath::Add(coord2, this->GridOrigin, coord2);
+	vtkMath::Add(coord3, this->GridOrigin, coord3);
+	vtkMath::Add(coord4, this->GridOrigin, coord4);
+	vtkMath::Add(coord5, this->GridOrigin, coord5);
+	vtkMath::Add(coord6, this->GridOrigin, coord6);
+	vtkMath::Add(coord7, this->GridOrigin, coord7);
+	vtkMath::Add(coord8, this->GridOrigin, coord8);
+	vtkMath::Add(coord9, this->GridOrigin, coord9);
+
+	pts->InsertNextPoint(coord);
+	pts->InsertNextPoint(coord2);
+	pts->InsertNextPoint(coord3);
+	pts->InsertNextPoint(coord4);
+	pts->InsertNextPoint(coord5);
+	pts->InsertNextPoint(coord6);
+	pts->InsertNextPoint(coord7);
+	pts->InsertNextPoint(coord8);
+	pts->InsertNextPoint(coord9);
+
+	vtkSmartPointer<vtkPolyData> linesPolyData =
+		vtkSmartPointer<vtkPolyData>::New();
+	// Add the points to the polydata container
+	linesPolyData->SetPoints(pts);
+	// We have 4* (this->GridSize -1) lines. *2
+
+	vtkSmartPointer<vtkCellArray> lines =
+		vtkSmartPointer<vtkCellArray>::New();
+
+
+	vtkSmartPointer<vtkLine> line1 =
+		vtkSmartPointer<vtkLine>::New();
+	line1->GetPointIds()->SetId(0, 0);
+	line1->GetPointIds()->SetId(1, 1);
+	lines->InsertNextCell(line1);
+
+	vtkSmartPointer<vtkLine> line2 =
+		vtkSmartPointer<vtkLine>::New();
+	line2->GetPointIds()->SetId(0, 1);
+	line2->GetPointIds()->SetId(1, 2);
+	lines->InsertNextCell(line2);
+
+	vtkSmartPointer<vtkLine> line3 =
+		vtkSmartPointer<vtkLine>::New();
+	line3->GetPointIds()->SetId(0, 3);
+	line3->GetPointIds()->SetId(1, 4);
+	lines->InsertNextCell(line3);
+
+	vtkSmartPointer<vtkLine> line4 =
+		vtkSmartPointer<vtkLine>::New();
+	line4->GetPointIds()->SetId(0, 4);
+	line4->GetPointIds()->SetId(1, 5);
+	lines->InsertNextCell(line4);
+
+	vtkSmartPointer<vtkLine> line5 =
+		vtkSmartPointer<vtkLine>::New();
+	line5->GetPointIds()->SetId(0, 6);
+	line5->GetPointIds()->SetId(1, 7);
+	lines->InsertNextCell(line5);
+
+	vtkSmartPointer<vtkLine> line6 =
+		vtkSmartPointer<vtkLine>::New();
+	line6->GetPointIds()->SetId(0, 7);
+	line6->GetPointIds()->SetId(1, 8);
+	lines->InsertNextCell(line6);
+
+	vtkSmartPointer<vtkLine> line7 =
+		vtkSmartPointer<vtkLine>::New();
+	line7->GetPointIds()->SetId(0, 6);
+	line7->GetPointIds()->SetId(1, 3);
+	lines->InsertNextCell(line7);
+
+	vtkSmartPointer<vtkLine> line8 =
+		vtkSmartPointer<vtkLine>::New();
+	line8->GetPointIds()->SetId(0, 3);
+	line8->GetPointIds()->SetId(1, 0);
+	lines->InsertNextCell(line8);
+
+	vtkSmartPointer<vtkLine> line9 =
+		vtkSmartPointer<vtkLine>::New();
+	line9->GetPointIds()->SetId(0, 7);
+	line9->GetPointIds()->SetId(1, 4);
+	lines->InsertNextCell(line9);
+
+	vtkSmartPointer<vtkLine> line10 =
+		vtkSmartPointer<vtkLine>::New();
+	line10->GetPointIds()->SetId(0, 4);
+	line10->GetPointIds()->SetId(1, 1);
+	lines->InsertNextCell(line10);
+
+	vtkSmartPointer<vtkLine> line11 =
+		vtkSmartPointer<vtkLine>::New();
+	line11->GetPointIds()->SetId(0, 8);
+	line11->GetPointIds()->SetId(1, 5);
+	lines->InsertNextCell(line11);
+
+	vtkSmartPointer<vtkLine> line12 =
+		vtkSmartPointer<vtkLine>::New();
+	line12->GetPointIds()->SetId(0, 5);
+	line12->GetPointIds()->SetId(1, 2);
+	lines->InsertNextCell(line12);
+
+
+
+	linesPolyData->SetLines(lines);
+
+
+	// Create six colors - one for each line
+	unsigned char red[3] = { 255, 0, 0 };
+	unsigned char green[3] = { 0, 255, 0 };
+	unsigned char blue[3] = { 0, 0, 255 };
+	unsigned char yellow[3] = { 255, 255, 0 };
+	unsigned char cyan[3] = { 0, 255, 255 };
+	unsigned char fuschia[3] = { 255, 0, 255 };
+
+	// Create a vtkUnsignedCharArray container and store the colors in it
+	vtkSmartPointer<vtkUnsignedCharArray> colors =
+		vtkSmartPointer<vtkUnsignedCharArray>::New();
+	colors->SetNumberOfComponents(3);
+
+	//1
+	if (this->GridType == 0)
+	{
+		for (int i = 0; i < 3; i++)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(green);
-					colors->InsertNextTypedTuple(cyan);
+			colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(cyan);
 #else
-					colors->InsertNextTupleValue(green);
-					colors->InsertNextTupleValue(cyan);
+			colors->InsertNextTupleValue(green);
+			colors->InsertNextTupleValue(cyan);
 #endif
-				}
-				for (int i = 0; i < 3; i++)
-				{
+		}
+		for (int i = 0; i < 3; i++)
+		{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(red);
-					colors->InsertNextTypedTuple(yellow);
+			colors->InsertNextTypedTuple(red);
+			colors->InsertNextTypedTuple(yellow);
 #else
-					colors->InsertNextTupleValue(red);
-					colors->InsertNextTupleValue(yellow);
-#endif
-
-				}
-			}
-			else if (this->GridType == 1)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-#if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(blue);
-					colors->InsertNextTypedTuple(fuschia);
-#else
-					colors->InsertNextTupleValue(blue);
-					colors->InsertNextTupleValue(fuschia);
+			colors->InsertNextTupleValue(red);
+			colors->InsertNextTupleValue(yellow);
 #endif
 
-				}
-				for (int i = 0; i < 3; i++)
-				{
-					for (int i = 0; i < 3; i++)
-					{
+		}
+	}
+	else if (this->GridType == 1)
+	{
+		for (int i = 0; i < 3; i++)
+		{
 #if VTK_MINOR_VERSION >= 1
-						colors->InsertNextTypedTuple(red);
-						colors->InsertNextTypedTuple(yellow);
+			colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(fuschia);
 #else
-						colors->InsertNextTupleValue(red);
-						colors->InsertNextTupleValue(yellow);
+			colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(fuschia);
 #endif
 
-					}
-
-				}
-			}
-			else
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			for (int i = 0; i < 3; i++)
 			{
-				for (int i = 0; i < 3; i++)
-				{
 #if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(blue);
-					colors->InsertNextTypedTuple(fuschia);
+				colors->InsertNextTypedTuple(red);
+				colors->InsertNextTypedTuple(yellow);
 #else
-					colors->InsertNextTupleValue(blue);
-					colors->InsertNextTupleValue(fuschia);
-#endif
-				}
-				for (int i = 0; i < 3; i++)
-				{
-#if VTK_MINOR_VERSION >= 1
-					colors->InsertNextTypedTuple(green);
-					colors->InsertNextTypedTuple(cyan);
-#else
-					colors->InsertNextTupleValue(green);
-					colors->InsertNextTupleValue(cyan);
+				colors->InsertNextTupleValue(red);
+				colors->InsertNextTupleValue(yellow);
 #endif
 
-				}
 			}
 
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 3; i++)
+		{
+#if VTK_MINOR_VERSION >= 1
+			colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(fuschia);
+#else
+			colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(fuschia);
+#endif
+		}
+		for (int i = 0; i < 3; i++)
+		{
+#if VTK_MINOR_VERSION >= 1
+			colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(cyan);
+#else
+			colors->InsertNextTupleValue(green);
+			colors->InsertNextTupleValue(cyan);
+#endif
 
-			linesPolyData->GetCellData()->SetScalars(colors);
-
-			// Setup the visualization pipeline
-			vtkSmartPointer<vtkPolyDataMapper> mapper =
-				vtkSmartPointer<vtkPolyDataMapper>::New();
-			mapper->SetInputData(linesPolyData);
-
-			this->GridOutline->SetMapper(mapper);
-			
-	
+		}
+	}
 
 
-	
+	linesPolyData->GetCellData()->SetScalars(colors);
+
+	// Setup the visualization pipeline
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(linesPolyData);
+
+	this->GridOutline->SetMapper(mapper);
+
+
+
+
+
 }
 //----------------------------------------------------------------------------
 // Get the bounds for this Actor as (Xmin,Xmax,Ymin,Ymax,Zmin,Zmax).
 double *vtkGridActor::GetBounds()
 {
-	
 
-  if (this->GridType == 0) // z=0
-  {
-	  this->Bounds[0] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[1] = this->GridSize * this->GridSpacing;
-	  this->Bounds[2] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[3] = this->GridSize * this->GridSpacing;
-	  this->Bounds[4] = 0;
-	  this->Bounds[5] = 0;
-  }
-  else if (this->GridType == 1) //y=0
-  {
-	  this->Bounds[0] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[1] = this->GridSize * this->GridSpacing;	  
-	  this->Bounds[2] = 0;
-	  this->Bounds[3] = 0;
-	  this->Bounds[4] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[5] = this->GridSize * this->GridSpacing;
-  }
-  else // x=0
-  {
-	  this->Bounds[0] = 0;
-	  this->Bounds[1] = 0;
-	  this->Bounds[2] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[3] = this->GridSize * this->GridSpacing;	  
-	  this->Bounds[4] = -this->GridSize * this->GridSpacing;
-	  this->Bounds[5] = this->GridSize * this->GridSpacing;
-  }
 
-  return this->Bounds;
+	if (this->GridType == 0) // z=0
+	{
+		this->Bounds[0] = -this->GridSize * this->GridSpacing;
+		this->Bounds[1] = this->GridSize * this->GridSpacing;
+		this->Bounds[2] = -this->GridSize * this->GridSpacing;
+		this->Bounds[3] = this->GridSize * this->GridSpacing;
+		this->Bounds[4] = 0;
+		this->Bounds[5] = 0;
+	}
+	else if (this->GridType == 1) //y=0
+	{
+		this->Bounds[0] = -this->GridSize * this->GridSpacing;
+		this->Bounds[1] = this->GridSize * this->GridSpacing;
+		this->Bounds[2] = 0;
+		this->Bounds[3] = 0;
+		this->Bounds[4] = -this->GridSize * this->GridSpacing;
+		this->Bounds[5] = this->GridSize * this->GridSpacing;
+	}
+	else // x=0
+	{
+		this->Bounds[0] = 0;
+		this->Bounds[1] = 0;
+		this->Bounds[2] = -this->GridSize * this->GridSpacing;
+		this->Bounds[3] = this->GridSize * this->GridSpacing;
+		this->Bounds[4] = -this->GridSize * this->GridSpacing;
+		this->Bounds[5] = this->GridSize * this->GridSpacing;
+	}
+
+	return this->Bounds;
 }
 
 //----------------------------------------------------------------------------
+#if VTK_MINOR_VERSION >= 1
+
+vtkMTimeType vtkGridActor::GetMTime()
+{
+	vtkMTimeType mTime = this->Superclass::GetMTime();
+	return mTime;
+}
+
+vtkMTimeType vtkGridActor::GetRedrawMTime()
+{
+	vtkMTimeType mTime = this->GetMTime();
+	return mTime;
+}
+#else
 unsigned long int vtkGridActor::GetMTime()
 {
-  unsigned long mTime = this->Superclass::GetMTime();
-  return mTime;
+	unsigned long mTime = this->Superclass::GetMTime();
+	return mTime;
 }
+
+
+
+//----------------------------------------------------------------------------
+
 
 //----------------------------------------------------------------------------
 unsigned long int vtkGridActor::GetRedrawMTime()
 {
-  unsigned long mTime = this->GetMTime();
-  return mTime;
+	unsigned long mTime = this->GetMTime();
+	return mTime;
 }
 
+#endif
+
+
 //----------------------------------------------------------------------------
-void vtkGridActor::SetGridType( int type )
+void vtkGridActor::SetGridType(int type)
 {
-	if (this->GridType != type && type >=0 && type <=2)
+	if (this->GridType != type && type >= 0 && type <= 2)
 	{
 		this->GridType = type;
 		this->Modified();
 		this->UpdateProps();
 	}
-	
-    
+
+
 }
 
 void vtkGridActor::SetGridSize(double size)
@@ -1241,7 +1263,7 @@ void vtkGridActor::SetGridSpacing(double spacing)
 //----------------------------------------------------------------------------
 void vtkGridActor::UpdateProps()
 {
-  //Recreates the 4 text actors and the GridOutline and GridLines actors
+	//Recreates the 4 text actors and the GridOutline and GridLines actors
 	this->CreateGridLabelText();
 	this->CreateGridLines();
 	this->CreateGridOutline();
@@ -1251,64 +1273,64 @@ void vtkGridActor::UpdateProps()
 //----------------------------------------------------------------------------
 void vtkGridActor::PrintSelf(ostream& os, vtkIndent indent)
 {
-  this->Superclass::PrintSelf(os,indent);
+	this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "GridType: ";
-  if (this->GridType)
-  {
-	  os << this->GridType << endl;
-  }
-  else
-  {
-	  os << "(no Grid Type)" << endl;
-  }
+	os << indent << "GridType: ";
+	if (this->GridType)
+	{
+		os << this->GridType << endl;
+	}
+	else
+	{
+		os << "(no Grid Type)" << endl;
+	}
 
-  os << indent << "Grid origin: ";
-  if (this->GridOrigin[0])
-  {
-	  os << this->GridOrigin[0]<<","<< this->GridOrigin[1]<<","<< this->GridOrigin[2] << endl;
-  }
-  else
-  {
-	  os << "(no Grid Origin)" << endl;
-  }
+	os << indent << "Grid origin: ";
+	if (this->GridOrigin[0])
+	{
+		os << this->GridOrigin[0] << "," << this->GridOrigin[1] << "," << this->GridOrigin[2] << endl;
+	}
+	else
+	{
+		os << "(no Grid Origin)" << endl;
+	}
 
-  os << indent << "GridSize: ";
-  if (this->GridSize)
-    {
-    os << this->GridSize << endl;
-    }
-  else
-    {
-    os << "(no Grid Size)" << endl;
-    }
+	os << indent << "GridSize: ";
+	if (this->GridSize)
+	{
+		os << this->GridSize << endl;
+	}
+	else
+	{
+		os << "(no Grid Size)" << endl;
+	}
 
-  os << indent << "GridSpacing: ";
-  if (this->GridSpacing)
-    {
-    os << this->GridSpacing << endl;
-    }
-  else
-    {
-    os << "(no Grid Spacing)" << endl;
-    }
+	os << indent << "GridSpacing: ";
+	if (this->GridSpacing)
+	{
+		os << this->GridSpacing << endl;
+	}
+	else
+	{
+		os << "(no Grid Spacing)" << endl;
+	}
 
-  os << indent << "FirstAxisLabelText: " << (this->FirstAxisLabelText ?
-                                         this->FirstAxisLabelText : "(none)")
-     << endl;
-  os << indent << "FirstAxisLabelText2: " << (this->FirstAxisLabelText2 ?
-	  this->FirstAxisLabelText2 : "(none)")
-	  << endl;
+	os << indent << "FirstAxisLabelText: " << (this->FirstAxisLabelText ?
+		this->FirstAxisLabelText : "(none)")
+		<< endl;
+	os << indent << "FirstAxisLabelText2: " << (this->FirstAxisLabelText2 ?
+		this->FirstAxisLabelText2 : "(none)")
+		<< endl;
 
-  os << indent << "SecondAxisLabelText: " << (this->SecondAxisLabelText ?
-	  this->SecondAxisLabelText : "(none)")
-	  << endl;
+	os << indent << "SecondAxisLabelText: " << (this->SecondAxisLabelText ?
+		this->SecondAxisLabelText : "(none)")
+		<< endl;
 
-  os << indent << "SecondAxisLabelText2: " << (this->SecondAxisLabelText2 ?
-	  this->SecondAxisLabelText2 : "(none)")
-	  << endl;
+	os << indent << "SecondAxisLabelText2: " << (this->SecondAxisLabelText2 ?
+		this->SecondAxisLabelText2 : "(none)")
+		<< endl;
 
-  os << indent << "AxisLabels: " << (this->AxisLabels ? "On\n" : "Off\n");
+	os << indent << "AxisLabels: " << (this->AxisLabels ? "On\n" : "Off\n");
 
-  
+
 }
