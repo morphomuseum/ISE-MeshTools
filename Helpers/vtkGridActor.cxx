@@ -29,6 +29,7 @@ PURPOSE.  See the above copyright notice for more information.
 #include <vtkTransform.h>
 #include <vtkLine.h>
 #include <vtkCellData.h>
+#include <vtkProperty.h>
 
 
 vtkStandardNewMacro(vtkGridActor);
@@ -67,8 +68,8 @@ vtkGridActor::vtkGridActor()
 	this->GridOutline = vtkActor::New();
 
 
-
-
+	GridLines->GetProperty()->SetOpacity(0.5);
+	GridOutline->GetProperty()->SetLineWidth(5);
 	// instanciate grid outilne!
 	/*this->CreateGridLines();
 	this->CreateGridOutline();

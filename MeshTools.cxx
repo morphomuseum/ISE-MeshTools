@@ -207,12 +207,12 @@ void MeshTools::GetGlobalCenterOfMass(double center[3])
 double MeshTools::GetGlobalBoundingBoxLength()
 {
 	double largestbounds[6];
-	largestbounds[0] = 0;
-	largestbounds[1] = 0;
-	largestbounds[2] = 0;
-	largestbounds[3] = 0;
-	largestbounds[4] = 0;
-	largestbounds[5] = 0;
+	largestbounds[0] = DBL_MAX; 
+	largestbounds[1] = -DBL_MAX;
+	largestbounds[2] = DBL_MAX;
+	largestbounds[3] = -DBL_MAX;
+	largestbounds[4] = DBL_MAX;
+	largestbounds[5] = -DBL_MAX;
 
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -242,11 +242,12 @@ double MeshTools::GetGlobalBoundingBoxLength()
 	B[0] = largestbounds[1];
 	B[1] = largestbounds[3];
 	B[2] = largestbounds[5];
-
+	//cout << "A:" << A[0] << "," << A[1] << "," << A[2] << endl;
+	//cout << "B:" << B[0] << "," << B[1] << "," << B[2] << endl;
 	double diag[3];
 	diag[0] = B[0] - A[0];
-	diag[2] = B[1] - A[1];
-	diag[3] = B[2] - A[2];
+	diag[1] = B[1] - A[1];
+	diag[2] = B[2] - A[2];
 	double lengthxyz = sqrt((diag[0])*(diag[0]) + (diag[1])*(diag[1]) + (diag[2])*(diag[2]));
 
 	return lengthxyz;
