@@ -15,6 +15,8 @@
 #ifndef MeshTools_H
 #define MeshTools_H
 
+#include "vtkGridActor.h"
+
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
@@ -45,7 +47,7 @@ public:
   vtkSmartPointer<vtkActorCollection> ActorCollection;
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
-  vtkSmartPointer<vtkStructuredGrid> Grid;
+  vtkSmartPointer<vtkGridActor> GridActor;
 
 public slots:
 
@@ -57,14 +59,10 @@ protected:
 protected slots:
 
 private:
-	vtkSmartPointer<vtkActor> CreateGridOutline(const int type, const int plane, const int gridSize, const double gridSpacing, const double origin[3]);
-	
-	vtkSmartPointer<vtkCaptionActor2D> CreateGridLabelText(const int type, const int gridSize, const double gridSpacing, const double origin[3]);
 	
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();
 	void GetGlobalCenterOfMass(double center[3]);
-	void InitGrid(int gridSize);
 	std::string CheckingName(std::string name_obj, int cpt_name);
 
   vtkSmartPointer<vtkQtTableView>         TableView;
