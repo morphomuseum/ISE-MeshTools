@@ -33,7 +33,7 @@
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
 #include <vtkLine.h>
-
+#include <QIcon>
 
 
 
@@ -76,13 +76,17 @@ MeshTools::MeshTools()
 	this->Camera = this->Renderer->GetActiveCamera();
 
 
-	this->Camera->SetPosition(0, 0, -20);
+	this->Camera->SetPosition(150, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
-
-	this->Camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
+	this->Camera->SetViewUp(0, 0, 1);
+	//double *viewup;
+	//viewup= this->Camera->GetViewUp();
+	//cout << "Initial view up:" << viewup[0] << "," << viewup[1] << "," << viewup[2] << endl;
+	/*this->Camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
 	this->Camera->Roll(90); // around "x" (horizontal) viewing axis
 	this->Camera->Elevation(180); // around "y" (vertical) viewing axis
-	this->Camera->SetParallelScale(20);
+	*/
+	this->Camera->SetParallelScale(120);
 	this->Camera->ParallelProjectionOn();
 
 
@@ -98,7 +102,13 @@ MeshTools::MeshTools()
 	this->TableView->SetRepresentationFromInputConnection(toTable->GetOutputPort());*/
 
 	// Set up action signals and slots
-	connect(this->ui->actionOpenFile, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
+	connect(this->ui->actionOpenMesh, SIGNAL(triggered()), this, SLOT(slotOpenMeshFile()));
+	connect(this->ui->actionCameraFront, SIGNAL(triggered()), this, SLOT(slotCameraFront()));
+	connect(this->ui->actionCameraBack, SIGNAL(triggered()), this, SLOT(slotCameraBack()));
+	connect(this->ui->actionCameraLeft, SIGNAL(triggered()), this, SLOT(slotCameraLeft()));
+	connect(this->ui->actionCameraRight, SIGNAL(triggered()), this, SLOT(slotCameraRight()));
+	connect(this->ui->actionCameraAbove, SIGNAL(triggered()), this, SLOT(slotCameraAbove()));
+	connect(this->ui->actionCameraBelow, SIGNAL(triggered()), this, SLOT(slotCameraBelow()));
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
 
@@ -255,7 +265,7 @@ double MeshTools::GetGlobalBoundingBoxLength()
 }
 
 // Action to be taken upon file open
-void MeshTools::slotOpenFile()
+void MeshTools::slotOpenMeshFile()
 {
 
 	std::string SfileName;
@@ -562,4 +572,92 @@ void MeshTools::slotOpenFile()
 
 void MeshTools::slotExit() {
 	qApp->exit();
+}
+// Action to be taken upon camera front side
+void MeshTools::slotCameraFront()
+{
+	
+	
+
+	this->Camera->SetPosition(150, 0, 0);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(0, 0, 1);
+	//this->Camera->SetParallelScale(120);
+
+	//this->Camera->Modified();
+	this->GridActor->SetGridType(2);
+	this->ui->actionCameraFront->icon().Selected;
+	this->ui->actionCameraBack->icon().Normal;
+	this->ui->actionCameraRight->icon().Normal;
+	this->ui->actionCameraLeft->icon().Normal;
+	this->ui->actionCameraAbove->icon().Normal;
+	this->ui->actionCameraBelow->icon().Normal;
+	
+
+	this->ui->qvtkWidget->update(); // update main window!
+}
+// Action to be taken upon camera back side
+void MeshTools::slotCameraBack()
+{
+	this->Camera->SetPosition(-150, 0, 0);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(0, 0, 1);
+	this->ui->actionCameraFront->icon().Normal;
+	this->ui->actionCameraBack->icon().Selected;
+	this->ui->actionCameraRight->icon().Normal;
+	this->ui->actionCameraLeft->icon().Normal;
+	this->ui->actionCameraAbove->icon().Normal;
+	this->ui->actionCameraBelow->icon().Normal;
+
+	
+	//this->Camera->Elevation(180); // around "y" (vertical) viewing axis
+	//this->Camera->Modified();
+	//this->Camera->SetParallelScale(120);
+	this->GridActor->SetGridType(2);
+	this->ui->qvtkWidget->update();
+
+}
+// Action to be taken upon camera left side
+void MeshTools::slotCameraLeft()
+{
+	this->Camera->SetPosition(0, 150, 0);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(0,0, 1);
+	//this->Camera->SetParallelScale(120);
+	this->GridActor->SetGridType(1);
+	//this->Camera->Modified();
+	this->ui->qvtkWidget->update(); // update main window!
+
+}
+// Action to be taken upon camera right side
+void MeshTools::slotCameraRight()
+{
+	this->Camera->SetPosition(0, -150, 0);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(0, 0, 1);
+	//this->Camera->SetParallelScale(120);
+	this->GridActor->SetGridType(1);
+	this->ui->qvtkWidget->update(); // update main window!
+}
+// Action to be taken upon camera underneath side
+void MeshTools::slotCameraBelow()
+{
+	this->Camera->SetPosition(0, 0, -150);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(1, 0, 0);
+	this->Camera->SetParallelScale(120);
+	this->GridActor->SetGridType(0);
+	this->ui->qvtkWidget->update(); // update main window!
+
+}
+// Action to be taken upon camera upper side
+void MeshTools::slotCameraAbove()
+{
+	this->Camera->SetPosition(0, 0, 150);
+	this->Camera->SetFocalPoint(0, 0, 0);
+	this->Camera->SetViewUp(-1, 0, 0);
+	this->Camera->SetParallelScale(120);
+	this->GridActor->SetGridType(0);
+	this->ui->qvtkWidget->update(); // update main window!
+
 }

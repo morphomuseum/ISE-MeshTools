@@ -8,5 +8,12 @@
 
     <!-- Help -->
     <file>help.png</file>
+	<!-- Typical camera operations. -->
+    <file>camera_above22_2.png</file>
+    <file>camera_back22_2.png</file>
+    <file>camera_below22_2.png</file>
+    <file>camera_front22_2.png</file>
+    <file>camera_left22_2.png</file>
+    <file>camera_right22_2.png</file>
   </qresource>
 </RCC>

@@ -27,6 +27,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 
+
 // Forward Qt class declarations
 class Ui_MeshTools;
 
@@ -51,7 +52,14 @@ public:
 
 public slots:
 
-  virtual void slotOpenFile();
+  virtual void slotOpenMeshFile();
+  virtual void slotCameraFront();
+  virtual void slotCameraBack();
+  virtual void slotCameraLeft();
+  virtual void slotCameraRight();
+  virtual void slotCameraAbove();
+  virtual void slotCameraBelow();
+
   virtual void slotExit();
 
 protected:

@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>MeshTools</class>
- <widget class="QMainWindow" name="MeshTools" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MeshTools">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,21 +10,22 @@
     <height>666</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MeshTools</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="Icons/icons.qrc" >:/Icons/help.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="Icons/icons.qrc">
+    <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
   </property>
-  <property name="iconSize" >
+  <property name="iconSize">
    <size>
     <width>22</width>
     <height>22</height>
    </size>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <widget class="QGroupBox" name="groupBoxGraph" >
-    <property name="geometry" >
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="groupBoxGraph">
+    <property name="geometry">
      <rect>
       <x>9</x>
       <y>9</y>
@@ -31,63 +33,63 @@
       <height>569</height>
      </rect>
     </property>
-    <property name="sizePolicy" >
-     <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
       <horstretch>1</horstretch>
       <verstretch>1</verstretch>
      </sizepolicy>
     </property>
-    <property name="title" >
+    <property name="title">
      <string>Views</string>
     </property>
-    <layout class="QVBoxLayout" >
-     <property name="spacing" >
+    <layout class="QVBoxLayout">
+     <property name="spacing">
       <number>0</number>
      </property>
-     <property name="leftMargin" >
+     <property name="leftMargin">
       <number>0</number>
      </property>
-     <property name="topMargin" >
+     <property name="topMargin">
       <number>0</number>
      </property>
-     <property name="rightMargin" >
+     <property name="rightMargin">
       <number>0</number>
      </property>
-     <property name="bottomMargin" >
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QSplitter" name="splitter" >
-       <property name="orientation" >
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QFrame" name="tableFrame" >
-        <layout class="QVBoxLayout" >
-         <property name="spacing" >
+       <widget class="QFrame" name="tableFrame">
+        <layout class="QVBoxLayout">
+         <property name="spacing">
           <number>0</number>
          </property>
-         <property name="leftMargin" >
+         <property name="leftMargin">
           <number>0</number>
          </property>
-         <property name="topMargin" >
+         <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="rightMargin" >
+         <property name="rightMargin">
           <number>0</number>
          </property>
-         <property name="bottomMargin" >
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
        </widget>
-       <widget class="QVTKWidget" name="qvtkWidget" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <widget class="QVTKWidget" name="qvtkWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>1</horstretch>
           <verstretch>1</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimumSize" >
+        <property name="minimumSize">
          <size>
           <width>300</width>
           <height>300</height>
@@ -99,89 +101,183 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>1002</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpenFile" />
-    <addaction name="actionSave" />
-    <addaction name="separator" />
-    <addaction name="actionPrint" />
-    <addaction name="actionHelp" />
-    <addaction name="actionExit" />
+    <addaction name="actionOpenMesh"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionHelp"/>
+    <addaction name="actionExit"/>
    </widget>
-   <addaction name="menuFile" />
+   <addaction name="menuFile"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
-  <widget class="QToolBar" name="toolBar" >
-   <property name="orientation" >
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>22</width>
      <height>22</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionOpenFile" />
-   <addaction name="actionSave" />
-   <addaction name="separator" />
-   <addaction name="actionPrint" />
-   <addaction name="actionHelp" />
+   <addaction name="actionSave"/>
+   <addaction name="actionOpenMesh"/>
+   <addaction name="separator"/>
+   <addaction name="actionCameraRight"/>
+   <addaction name="actionCameraLeft"/>
+   <addaction name="actionCameraFront"/>
+   <addaction name="actionCameraBack"/>
+   <addaction name="actionCameraAbove"/>
+   <addaction name="actionCameraBelow"/>
   </widget>
-  <action name="actionOpenFile" >
-   <property name="enabled" >
+  <action name="actionOpenMesh">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="Icons/icons.qrc" >:/Icons/fileopen.png</iconset>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
    </property>
-   <property name="text" >
-    <string>Open File...</string>
+   <property name="text">
+    <string>Open Mesh File</string>
    </property>
   </action>
-  <action name="actionExit" >
-   <property name="text" >
+  <action name="actionExit">
+   <property name="text">
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionPrint" >
-   <property name="icon" >
-    <iconset resource="Icons/icons.qrc" >:/Icons/print.png</iconset>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
    </property>
-   <property name="text" >
-    <string>Print</string>
-   </property>
-  </action>
-  <action name="actionHelp" >
-   <property name="icon" >
-    <iconset resource="Icons/icons.qrc" >:/Icons/help.png</iconset>
-   </property>
-   <property name="text" >
+   <property name="text">
     <string>Help</string>
    </property>
   </action>
-  <action name="actionSave" >
-   <property name="icon" >
-    <iconset resource="Icons/icons.qrc" >:/Icons/filesave.png</iconset>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/filesave.png</normaloff>:/Icons/filesave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionCameraFront">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_front22_2.png</normaloff>
+     <normalon>:/Icons/camera_front22_2.png</normalon>:/Icons/camera_front22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: front</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from front side</string>
+   </property>
+  </action>
+  <action name="actionCameraLeft">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_left22_2.png</normaloff>
+     <normalon>:/Icons/camera_left22_2.png</normalon>:/Icons/camera_left22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: left</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from left side</string>
+   </property>
+  </action>
+  <action name="actionCameraRight">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_right22_2.png</normaloff>
+     <normalon>:/Icons/camera_right22_2.png</normalon>:/Icons/camera_right22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: right</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from right side</string>
+   </property>
+  </action>
+  <action name="actionCameraAbove">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/camera_above22_2.png</normaloff>
+     <normalon>:/Icons/camera_above22_2.png</normalon>Icons/camera_above22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: above</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from above</string>
+   </property>
+  </action>
+  <action name="actionCameraBelow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_below22_2.png</normaloff>
+     <normalon>:/Icons/camera_below22_2.png</normalon>:/Icons/camera_below22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: below</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: underneath view</string>
+   </property>
+  </action>
+  <action name="actionCameraBack">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_back22_2.png</normaloff>
+     <normalon>:/Icons/camera_back22_2.png</normalon>:/Icons/camera_back22_2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: back</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from back side</string>
    </property>
   </action>
  </widget>
@@ -193,7 +289,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="Icons/icons.qrc" />
+  <include location="Icons/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
