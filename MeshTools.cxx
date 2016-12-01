@@ -45,8 +45,10 @@ MeshTools::MeshTools()
 {
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
-	this->mui_showgrid = 1;
+	this->mui_ShowGrid = 1;
+	this->mui_ShowOrientationHelper = 1;
 
+	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
 	this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
@@ -111,6 +113,7 @@ MeshTools::MeshTools()
 	connect(this->ui->actionCameraAbove, SIGNAL(triggered()), this, SLOT(slotCameraAbove()));
 	connect(this->ui->actionCameraBelow, SIGNAL(triggered()), this, SLOT(slotCameraBelow()));
 	connect(this->ui->actionGridToggle, SIGNAL(triggered()), this, SLOT(slotGridToggle()));
+	connect(this->ui->actionOrientationHelperToggle, SIGNAL(triggered()), this, SLOT(slotOrientationHelperToggle()));
 	
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
@@ -119,19 +122,19 @@ MeshTools::MeshTools()
 		vtkSmartPointer<vtkOrientationHelperActor>::New();
 
 	//
-	vtkOrientationHelperWidget* widget = vtkOrientationHelperWidget::New();
+
 	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
 	// Does not work with a smart pointer, can't figure out why
 
 
-	widget->SetOutlineColor(0.9300, 0.5700, 0.1300);
-	widget->SetOrientationMarker(axes);
-	widget->SetDefaultRenderer(this->Renderer);
-	widget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
-	widget->SetViewport(0.0, 0.0, 0.2, 0.2);
-	widget->SetEnabled(1);
-	widget->InteractiveOff();
-	widget->PickingManagedOn();
+	this->OrientationHelperWidget->SetOutlineColor(0.9300, 0.5700, 0.1300);
+	this->OrientationHelperWidget->SetOrientationMarker(axes);
+	this->OrientationHelperWidget->SetDefaultRenderer(this->Renderer);
+	this->OrientationHelperWidget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
+	this->OrientationHelperWidget->SetViewport(0.0, 0.0, 0.2, 0.2);
+	this->OrientationHelperWidget->SetEnabled(1);
+	this->OrientationHelperWidget->InteractiveOff();
+	this->OrientationHelperWidget->PickingManagedOn();
 	double myorigin[3];
 	myorigin[0] = 0;
 	myorigin[1] = 0;
@@ -649,13 +652,13 @@ void MeshTools::slotCameraAbove()
 // show or hide grid actor
 void MeshTools::slotGridToggle()
 {
-	if (this->mui_showgrid==1)
+	if (this->mui_ShowGrid==1)
 	{
-		this->mui_showgrid = 0;
+		this->mui_ShowGrid = 0;
 	}
 	else
 	{
-		this->mui_showgrid = 1;
+		this->mui_ShowGrid = 1;
 	}
 
 	vtkPropCollection* props = this->Renderer->GetViewProps(); //iterate through and set each visibility to 0
@@ -666,7 +669,7 @@ void MeshTools::slotGridToggle()
 		vtkProp *myprop = props->GetNextProp();
 		if (str1.compare(myprop->GetClassName()) == 0)
 		{
-			if (this->mui_showgrid==1)
+			if (this->mui_ShowGrid==1)
 			{
 				myprop->VisibilityOn();
 			}
@@ -678,6 +681,40 @@ void MeshTools::slotGridToggle()
 
 	}
 	
+	this->ui->qvtkWidget->update(); // update main window!
+
+}
+// show or hide the orientation helper actor
+void MeshTools::slotOrientationHelperToggle()
+{
+	if (this->mui_ShowOrientationHelper == 1)
+	{
+		this->mui_ShowOrientationHelper = 0;
+	}
+	else
+	{
+		this->mui_ShowOrientationHelper = 1;
+	}
+
+	
+	//std::string str1("vtkOrientationHelperActor");
+			
+		
+			if (this->mui_ShowOrientationHelper == 1)
+			{
+				
+				this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOn();
+				
+			}
+			else
+			{
+				
+				this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOff();
+			}
+		
+
+	
+
 	this->ui->qvtkWidget->update(); // update main window!
 
 }

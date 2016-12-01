@@ -149,6 +149,7 @@
    <addaction name="actionCameraAbove"/>
    <addaction name="actionCameraBelow"/>
    <addaction name="actionGridToggle"/>
+   <addaction name="actionOrientationHelperToggle"/>
   </widget>
   <action name="actionOpenMesh">
    <property name="enabled">
@@ -277,6 +278,22 @@
    </property>
    <property name="toolTip">
     <string>Grid : show or hide</string>
+   </property>
+  </action>
+  <action name="actionOrientationHelperToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/orientation_helper.gif</normaloff>
+     <normalon>:/Icons/orientation_helper.gif</normalon>:/Icons/orientation_helper.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Orientation helper: show/hide</string>
+   </property>
+   <property name="toolTip">
+    <string>Orientation helper : show or hide</string>
    </property>
   </action>
  </widget>

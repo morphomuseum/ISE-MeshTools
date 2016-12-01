@@ -16,6 +16,7 @@
 #define MeshTools_H
 
 #include "vtkGridActor.h"
+#include "vtkOrientationHelperWidget.h"
 
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkActorCollection.h>
@@ -49,7 +50,11 @@ public:
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
   vtkSmartPointer<vtkGridActor> GridActor;
-  int mui_showgrid;
+
+  vtkOrientationHelperWidget* OrientationHelperWidget; 
+
+  int mui_ShowGrid;
+  int mui_ShowOrientationHelper;
 
 public slots:
 
@@ -61,6 +66,7 @@ public slots:
   virtual void slotCameraAbove();
   virtual void slotCameraBelow();
   virtual void slotGridToggle();
+  virtual void slotOrientationHelperToggle();
 
   virtual void slotExit();
 
