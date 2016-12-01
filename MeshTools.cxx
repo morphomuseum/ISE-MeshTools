@@ -32,8 +32,49 @@
 #include <vtkCellData.h>
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
+#include <vtkInteractorStyleRubberBandPick.h>
+#include <vtkCallbackCommand.h>
+#include <vtkAreaPicker.h>
 #include <vtkLine.h>
+#include <vtkProp3DCollection.h>
 #include <QIcon>
+
+//Select meshes, landmarks and tags ... first try!
+void RubberBandSelect(vtkObject* caller,
+	long unsigned int vtkNotUsed(eventId),
+	void* vtkNotUsed(clientData),
+	void* vtkNotUsed(callData))
+{
+	std::cout << "Pick." << std::endl;
+	vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
+	
+	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
+	//vtkPropCollection* props = areaPicker->GetPrGetProps();
+
+	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		vtkActor* prop = (vtkActor*)props->GetNextProp3D();
+		//std::cout << "Picked prop: " << prop << ", class name:" << prop->GetClassName() << std::endl;
+		std::cout << "Picked prop: " << prop << std::endl;
+		//prop->GetProperty()->SetColor(1, 0, 0);
+		std::cout << "Property: " << prop->GetProperty() << std::endl;
+		/*vtkPropCollection* propcoll;
+		prop->GetActors(propcoll);
+		
+		
+		propcoll->InitTraversal();
+		for (int j = 0; j < propcoll->GetNumberOfItems(); j++)
+		{
+			vtkProp *myprop = propcoll->GetNextProp();
+			//std::cout << "Picked myprop: " << myprop<< std::endl;
+			
+			
+			//myprop->Get
+
+			
+		}*/
+	}
+}
 
 
 
@@ -145,6 +186,32 @@ MeshTools::MeshTools()
 	this->Renderer->AddActor(this->GridActor);
 
 
+	//@@ rubber band selection!
+	
+	 vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
+    vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
+	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
+		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
+	
+	 vtkSmartPointer<vtkCallbackCommand> pickCallback =
+		 vtkSmartPointer<vtkCallbackCommand>::New();
+
+	 pickCallback->SetCallback(RubberBandSelect);
+	 this->AreaPicker =
+		 vtkSmartPointer<vtkAreaPicker>::New();
+
+	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
+ 
+  style->SetCurrentRenderer(this->Renderer);
+  this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
+  this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
+  
+
+
+
+  //@@ end rubber band selection!
+
+
 };
 
 
@@ -152,7 +219,7 @@ MeshTools::MeshTools()
 MeshTools::~MeshTools()
 {
 	// The smart pointers should clean up for up
-
+	//this->OrientationHelperWidget->Delete();
 }
 
 

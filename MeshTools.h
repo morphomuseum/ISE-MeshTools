@@ -19,6 +19,7 @@
 #include "vtkOrientationHelperWidget.h"
 
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
+#include <vtkAreaPicker.h>   
 #include <vtkActorCollection.h>
 #include <vtkRenderer.h>
 #include <vtkImageData.h>
@@ -50,6 +51,8 @@ public:
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
   vtkSmartPointer<vtkGridActor> GridActor;
+  vtkSmartPointer<vtkAreaPicker> AreaPicker;
+
 
   vtkOrientationHelperWidget* OrientationHelperWidget; 
 
@@ -67,8 +70,11 @@ public slots:
   virtual void slotCameraBelow();
   virtual void slotGridToggle();
   virtual void slotOrientationHelperToggle();
-
   virtual void slotExit();
+/*  void RubberBandSelect(vtkObject* caller,
+	  long unsigned int vtkNotUsed(eventId),
+	  void* vtkNotUsed(clientData),
+	  void* vtkNotUsed(callData));*/
 
 protected:
 
