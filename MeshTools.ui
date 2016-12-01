@@ -185,9 +185,6 @@
    </property>
   </action>
   <action name="actionCameraFront">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/camera_front22_2.png</normaloff>
@@ -201,9 +198,6 @@
    </property>
   </action>
   <action name="actionCameraLeft">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/camera_left22_2.png</normaloff>
@@ -217,9 +211,6 @@
    </property>
   </action>
   <action name="actionCameraRight">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/camera_right22_2.png</normaloff>
@@ -233,9 +224,6 @@
    </property>
   </action>
   <action name="actionCameraAbove">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset>
      <normaloff>Icons/camera_above22_2.png</normaloff>
@@ -249,9 +237,6 @@
    </property>
   </action>
   <action name="actionCameraBelow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/camera_below22_2.png</normaloff>
@@ -265,9 +250,6 @@
    </property>
   </action>
   <action name="actionCameraBack">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/camera_back22_2.png</normaloff>

@@ -586,12 +586,8 @@ void MeshTools::slotCameraFront()
 
 	//this->Camera->Modified();
 	this->GridActor->SetGridType(2);
-	this->ui->actionCameraFront->icon().Selected;
-	this->ui->actionCameraBack->icon().Normal;
-	this->ui->actionCameraRight->icon().Normal;
-	this->ui->actionCameraLeft->icon().Normal;
-	this->ui->actionCameraAbove->icon().Normal;
-	this->ui->actionCameraBelow->icon().Normal;
+	this->ui->actionCameraFront->setDisabled(true);
+	//this->ui->actionCameraFront->Set
 	
 
 	this->ui->qvtkWidget->update(); // update main window!
