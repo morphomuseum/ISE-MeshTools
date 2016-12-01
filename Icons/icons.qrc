@@ -4,7 +4,7 @@
     <!-- Typical file operations. -->
     <file>fileopen.png</file>
     <file>filesave.png</file>
-    <file>print.png</file>
+ 
 
     <!-- Help -->
     <file>help.png</file>
@@ -16,5 +16,8 @@
     <file>camera_left22_2.png</file>
     <file>camera_right22_2.png</file>
 	<!-- Grid and orientation helper. -->
+  <file>grid.gif</file>
+  <file>orientation_helper.gif</file>
+
   </qresource>
 </RCC>

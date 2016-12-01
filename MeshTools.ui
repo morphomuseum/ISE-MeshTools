@@ -148,6 +148,7 @@
    <addaction name="actionCameraBack"/>
    <addaction name="actionCameraAbove"/>
    <addaction name="actionCameraBelow"/>
+   <addaction name="actionGridToggle"/>
   </widget>
   <action name="actionOpenMesh">
    <property name="enabled">
@@ -260,6 +261,22 @@
    </property>
    <property name="toolTip">
     <string>Move Camera: view objects from back side</string>
+   </property>
+  </action>
+  <action name="actionGridToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/grid.gif</normaloff>
+     <normalon>:/Icons/grid.gif</normalon>:/Icons/grid.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Grid: show/hide</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid : show or hide</string>
    </property>
   </action>
  </widget>

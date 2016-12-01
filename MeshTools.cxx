@@ -45,6 +45,7 @@ MeshTools::MeshTools()
 {
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
+	this->mui_showgrid = 1;
 
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
@@ -109,6 +110,8 @@ MeshTools::MeshTools()
 	connect(this->ui->actionCameraRight, SIGNAL(triggered()), this, SLOT(slotCameraRight()));
 	connect(this->ui->actionCameraAbove, SIGNAL(triggered()), this, SLOT(slotCameraAbove()));
 	connect(this->ui->actionCameraBelow, SIGNAL(triggered()), this, SLOT(slotCameraBelow()));
+	connect(this->ui->actionGridToggle, SIGNAL(triggered()), this, SLOT(slotGridToggle()));
+	
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
 
@@ -571,6 +574,7 @@ void MeshTools::slotOpenMeshFile()
 }
 
 void MeshTools::slotExit() {
+	//maybe we should save the .ini files!
 	qApp->exit();
 }
 // Action to be taken upon camera front side
@@ -586,9 +590,7 @@ void MeshTools::slotCameraFront()
 
 	//this->Camera->Modified();
 	this->GridActor->SetGridType(2);
-	this->ui->actionCameraFront->setDisabled(true);
-	//this->ui->actionCameraFront->Set
-	
+	//this->ui->actionCameraFront->setDisabled(true);	
 
 	this->ui->qvtkWidget->update(); // update main window!
 }
@@ -598,17 +600,8 @@ void MeshTools::slotCameraBack()
 	this->Camera->SetPosition(-150, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
-	this->ui->actionCameraFront->icon().Normal;
-	this->ui->actionCameraBack->icon().Selected;
-	this->ui->actionCameraRight->icon().Normal;
-	this->ui->actionCameraLeft->icon().Normal;
-	this->ui->actionCameraAbove->icon().Normal;
-	this->ui->actionCameraBelow->icon().Normal;
-
 	
-	//this->Camera->Elevation(180); // around "y" (vertical) viewing axis
-	//this->Camera->Modified();
-	//this->Camera->SetParallelScale(120);
+
 	this->GridActor->SetGridType(2);
 	this->ui->qvtkWidget->update();
 
@@ -619,9 +612,7 @@ void MeshTools::slotCameraLeft()
 	this->Camera->SetPosition(0, 150, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0,0, 1);
-	//this->Camera->SetParallelScale(120);
 	this->GridActor->SetGridType(1);
-	//this->Camera->Modified();
 	this->ui->qvtkWidget->update(); // update main window!
 
 }
@@ -631,7 +622,6 @@ void MeshTools::slotCameraRight()
 	this->Camera->SetPosition(0, -150, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
-	//this->Camera->SetParallelScale(120);
 	this->GridActor->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 }
@@ -652,8 +642,42 @@ void MeshTools::slotCameraAbove()
 	this->Camera->SetPosition(0, 0, 150);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(-1, 0, 0);
-	this->Camera->SetParallelScale(120);
 	this->GridActor->SetGridType(0);
+	this->ui->qvtkWidget->update(); // update main window!
+
+}
+// show or hide grid actor
+void MeshTools::slotGridToggle()
+{
+	if (this->mui_showgrid==1)
+	{
+		this->mui_showgrid = 0;
+	}
+	else
+	{
+		this->mui_showgrid = 1;
+	}
+
+	vtkPropCollection* props = this->Renderer->GetViewProps(); //iterate through and set each visibility to 0
+	props->InitTraversal();
+	std::string str1("vtkGridActor");
+	for (int i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		vtkProp *myprop = props->GetNextProp();
+		if (str1.compare(myprop->GetClassName()) == 0)
+		{
+			if (this->mui_showgrid==1)
+			{
+				myprop->VisibilityOn();
+			}
+			else
+			{
+				myprop->VisibilityOff();
+			}
+		}
+
+	}
+	
 	this->ui->qvtkWidget->update(); // update main window!
 
 }

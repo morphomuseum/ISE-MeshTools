@@ -49,6 +49,7 @@ public:
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
   vtkSmartPointer<vtkGridActor> GridActor;
+  int mui_showgrid;
 
 public slots:
 
@@ -59,6 +60,7 @@ public slots:
   virtual void slotCameraRight();
   virtual void slotCameraAbove();
   virtual void slotCameraBelow();
+  virtual void slotGridToggle();
 
   virtual void slotExit();
 
