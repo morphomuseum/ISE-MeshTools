@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Icons/icons.qrc">
-    <normaloff>:/Icons/help.png</normaloff>:/Icons/help.png</iconset>
+    <normaloff>:/Icons/MeshTools.ico</normaloff>:/Icons/MeshTools.ico</iconset>
   </property>
   <property name="iconSize">
    <size>

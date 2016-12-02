@@ -1,6 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
   <qresource prefix="/Icons">
+  <!-- Application Icon. -->
+ <file>MeshTools.ico</file>
     <!-- Typical file operations. -->
     <file>fileopen.png</file>
     <file>filesave.png</file>
