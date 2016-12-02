@@ -32,7 +32,10 @@
 #include <vtkCellData.h>
 #include <vtkPointData.h>
 #include <vtkSmartPointer.h>
+//
+#include <vtkInteractorStyleTrackballActor.h>
 #include <vtkInteractorStyleRubberBandPick.h>
+#include <vtkInteractorStyleSwitch.h>
 #include <vtkCallbackCommand.h>
 #include <vtkAreaPicker.h>
 #include <vtkLine.h>
@@ -188,11 +191,14 @@ MeshTools::MeshTools()
 
 	//@@ rubber band selection!
 	
-	 vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
-    vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
+	// vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
+    //vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
-	
+	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =
+	//	vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
+	vtkSmartPointer<vtkInteractorStyleSwitch> style =
+		vtkSmartPointer<vtkInteractorStyleSwitch>::New();
 	 vtkSmartPointer<vtkCallbackCommand> pickCallback =
 		 vtkSmartPointer<vtkCallbackCommand>::New();
 
@@ -202,8 +208,8 @@ MeshTools::MeshTools()
 
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
  
-  style->SetCurrentRenderer(this->Renderer);
-  this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
+// style->SetCurrentRenderer(this->Renderer);
+  //this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
 
