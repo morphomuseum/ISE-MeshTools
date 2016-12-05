@@ -1,0 +1,9 @@
+vtk_module(mqComponents
+  GROUPS
+    MeshToolsQt
+  DEPENDS
+    vtkGUISupportQt  
+  EXCLUDE_FROM_WRAPPING
+  TEST_LABELS
+  MESHTOOLS
+)

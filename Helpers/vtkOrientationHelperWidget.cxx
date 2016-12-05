@@ -61,7 +61,7 @@ vtkOrientationHelperWidget::vtkOrientationHelperWidget()
 	this->EventCallbackCommand->SetCallback(vtkOrientationHelperWidget::ProcessEvents);
 
 	this->Observer = vtkOrientationHelperWidgetObserver::New();
-	cout << "I should have created a Helper oberver..." << endl;
+	//cout << "I should have created a Helper oberver..." << endl;
 	this->Observer->OrientationHelperWidget = this;
 
 	this->Tolerance = 7;

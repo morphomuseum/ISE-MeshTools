@@ -5,6 +5,8 @@
 #include "MeshTools.h"
 #include "vtkOrientationHelperActor.h"
 #include "vtkOrientationHelperWidget.h"
+#include "mqMeshToolsMenuBuilders.h"
+
 
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
@@ -91,6 +93,9 @@ MeshTools::MeshTools()
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
 	this->mui_ShowOrientationHelper = 1;
+
+	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
+	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
 
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View

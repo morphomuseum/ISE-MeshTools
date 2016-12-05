@@ -54,11 +54,8 @@ include_directories(
 )
 
 # Set your files and resources here
-#set( Srcs main.cxx MeshTools.cxx vtkOrientationHelperActor.cxx vtkOrientationHelperWidget.cxx)
 
 set( Srcs main.cxx MeshTools.cxx)
-
-#set( Hdrs MeshTools.h vtkOrientationHelperActor.h vtkOrientationHelperWidget.h)
 
 set( Hdrs MeshTools.h )
 
@@ -95,41 +92,21 @@ if(VTK_QT_VERSION VERSION_GREATER "4")
   )
 include_directories ("${PROJECT_SOURCE_DIR}/Helpers")
 add_subdirectory (Helpers) 
-set (EXTRA_LIBRARIES ${EXTRA_LIBRARIES} MeshToolsHelpers)
+
+include_directories ("${PROJECT_SOURCE_DIR}/Qt")
+add_subdirectory (Qt) 
+
+set (EXTRA_LIBRARIES ${EXTRA_LIBRARIES} 
+MeshToolsHelpers
+MeshToolsQt
+)
 
   add_executable(MeshTools MACOSX_BUNDLE
     ${Srcs} ${Hdrs} ${UI_Srcs} ${MOC_Hdrs} ${QRC_Srcs})
   qt5_use_modules(MeshTools Core Gui Widgets)
   target_link_libraries(MeshTools ${VTK_LIBRARIES} ${EXTRA_LIBRARIES} )
 else()
-  find_package(Qt4 REQUIRED)
-  include(${QT_USE_FILE})
-  # Use what VTK built with
-  set(QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "")
-  set(QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "")
-  set(QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "")
-  qt4_wrap_ui(UI_Srcs ${UIs})
-  qt4_wrap_cpp(MOC_Srcs ${MOC_Hdrs} )
-  qt4_add_resources(QRC_Srcs ${QRCs})
 
-  source_group("Resources" FILES
-    ${UIs}
-    ${QRCs}
-    ${EXE_ICON}
-  )
+  message(FATAL_ERROR "Qt 5 required")
 
-  source_group("Generated" FILES
-    ${UI_Srcs}
-    ${QRC_Srcs}
-    ${QRC_Srcs}
-  )
-
-  add_definitions(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
-
-  add_executable(MeshTools MACOSX_BUNDLE
-    ${Srcs} ${Hdrs} ${UI_Srcs} ${MOC_Hdrs} ${QRC_Srcs})
-  target_link_libraries(MeshTools
-    ${QT_LIBRARIES}
-    ${VTK_LIBRARIES}
-  )
 endif()
