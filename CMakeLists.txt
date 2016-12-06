@@ -90,11 +90,17 @@ if(VTK_QT_VERSION VERSION_GREATER "4")
     ${QRC_Srcs}
     ${QRC_Srcs}
   )
+
 include_directories ("${PROJECT_SOURCE_DIR}/Helpers")
 add_subdirectory (Helpers) 
 
 include_directories ("${PROJECT_SOURCE_DIR}/Qt")
 add_subdirectory (Qt) 
+
+include_directories ("${PROJECT_TARGET_DIR}/Qt")
+
+
+
 
 set (EXTRA_LIBRARIES ${EXTRA_LIBRARIES} 
 MeshToolsHelpers

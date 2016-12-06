@@ -5,6 +5,7 @@
 
 ========================================================================*/
 
+#include "mqAboutDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqDesktopServicesReaction.h"
 #include "mqSetName.h"
@@ -90,7 +91,7 @@ void mqMeshToolsMenuBuilders::buildHelpMenu(QMenu& menu)
   
 
   // About
- // new mqAboutDialogReaction(menu.addAction("About...") << pqSetName("actionAbout"));
+  new mqAboutDialogReaction(menu.addAction("About...") << mqSetName("actionAbout"));
 }
 
 //-----------------------------------------------------------------------------
