@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>334</height>
+    <width>500</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,6 +26,16 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
      <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>&lt;a href=\&quot;http://www.morphomuseum.com/meshtools\&quot;&gt;www.morphomuseum.com/meshtools&lt;/a&gt;</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::RichText</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="VersionLabel">
        <property name="text">
         <string>&lt;html&gt;&lt;b&gt;Version: &lt;i&gt;3.x.x&lt;/i&gt;&lt;/b&gt;&lt;/html&gt;</string>
@@ -38,16 +48,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>&lt;a href=\&quot;http://www.morphomuseum.com/meshtools\&quot;&gt;www.morphomuseum.com/meshtools&lt;/a&gt;</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::RichText</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -57,10 +57,20 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QLabel" name="Image">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="RC/mqui.qrc">:/Icons/MeshTools.ico</pixmap>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources>
-  <include location="../pqComponents.qrc"/>
+  <include location="RC/mqui.qrc"/>
  </resources>
  <connections>
   <connection>

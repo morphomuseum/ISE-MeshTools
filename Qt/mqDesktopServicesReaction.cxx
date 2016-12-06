@@ -6,7 +6,7 @@
 
 ========================================================================*/
 #include "mqDesktopServicesReaction.h"
-
+#include "mqCoreUtilities.h"
 
 #include <QDesktopServices>
 #include <QFileInfo>
@@ -39,7 +39,7 @@ bool mqDesktopServicesReaction::openUrl(const QUrl& url)
         .arg(filename);
     // dump to cout for easy copy/paste.
     std::cout << msg.toUtf8().data() << std::endl;
-    //QMessageBox::warning(mqCoreUtilities::mainWidget(), "Missing file", msg, QMessageBox::Ok);
+    QMessageBox::warning(mqCoreUtilities::mainWidget(), "Missing file", msg, QMessageBox::Ok);
     return false;
   }
   if (!QDesktopServices::openUrl(url))

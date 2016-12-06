@@ -8,6 +8,7 @@
 #include "mqAboutDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqDesktopServicesReaction.h"
+
 #include "mqSetName.h"
 
 //#include "ui_mdEditMenuBuilder.h" // no .ui Edit menu file yet

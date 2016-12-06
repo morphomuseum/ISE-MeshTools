@@ -7,9 +7,9 @@
 
 ========================================================================*/
 #include "mqReaction.h"
-
+#include "mqCoreUtilities.h"
 //-----------------------------------------------------------------------------
-//mqReaction::mqReaction(QAction* parentObject, Qt::ConnectionType type, QMainWindow* mainWindow = 0)
+
 mqReaction::mqReaction(QAction* parentObject, Qt::ConnectionType type)
   : Superclass(parentObject)
 {
@@ -18,9 +18,10 @@ mqReaction::mqReaction(QAction* parentObject, Qt::ConnectionType type)
   QObject::connect(parentObject, SIGNAL(triggered(bool)), this, SLOT(onTriggered()), type);
 
   // Deal with master/slave enable/disable
-
-  /*QObject::connect(mainWindow, SIGNAL(updateMasterEnableState(bool)), this,
-    SLOT(updateMasterEnableState(bool)));*/
+  // In Paraview : pqApplicationCore::instance() is called which is a QObject.
+  
+  //QObject::connect(mqApplicationCore::instance(), SIGNAL(updateMasterEnableState(bool)), this,
+    //SLOT(updateMasterEnableState(bool)));
 
   this->IsMaster = true;
 }
