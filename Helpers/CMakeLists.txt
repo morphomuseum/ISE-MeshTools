@@ -1,8 +1,8 @@
 # Set your files and resources here
 SET (Helpers_SRCS
-vtkOrientationHelperActor.cxx vtkGridActor.cxx vtkOrientationHelperWidget.cxx)
+vtkOrientationHelperActor.cxx vtkGridActor.cxx vtkOrientationHelperWidget.cxx )
 
-set( Helpers_HDRS vtkOrientationHelperActor.h vtkGridActor.h vtkOrientationHelperWidget.h  )
+set( Helpers_HDRS vtkOrientationHelperActor.h vtkGridActor.h vtkOrientationHelperWidget.h )
 
 ADD_LIBRARY (MeshToolsHelpers ${Helpers_SRCS} ${Helpers_HDRS})
 

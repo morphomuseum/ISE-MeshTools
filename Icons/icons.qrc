@@ -1,5 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
+  <qresource prefix="/Logos">
+<file>Logo_software.gif</file>
+  </qresource>
   <qresource prefix="/Icons">
   <!-- Application Icon. -->
  <file>MeshTools.ico</file>

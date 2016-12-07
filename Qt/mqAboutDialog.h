@@ -27,10 +27,11 @@ class  mqAboutDialog : public QDialog
 
 public:
   mqAboutDialog(QWidget* Parent);
+  
   ~mqAboutDialog();
 
 protected:
-  
+	void AddClientInformation();
 private:
   Q_DISABLE_COPY(mqAboutDialog)
   Ui::mqAboutDialog* const Ui;

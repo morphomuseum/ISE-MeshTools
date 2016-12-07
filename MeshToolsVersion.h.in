@@ -1,0 +1,2 @@
+// MeshTools Version
+#define MESHTOOLS_VERSION "@MESHTOOLS_VERSION@"

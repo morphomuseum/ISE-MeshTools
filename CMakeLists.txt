@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 2.8.8)
 if(POLICY CMP0020)
   cmake_policy(SET CMP0020 NEW)
@@ -13,6 +14,22 @@ if(POLICY CMP0053)
 endif()
 
 project(MeshTools)
+
+file(STRINGS version.txt version_txt)
+
+set (MESHTOOLS_VERSION ${version_txt})
+
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/MeshToolsVersion.h.in"
+  "${PROJECT_BINARY_DIR}/MeshToolsVersion.h"
+  )
+
+# add the binary tree to the search path for include files
+# so that we will find TutorialConfig.h
+include_directories("${PROJECT_BINARY_DIR}")
 
 find_package(VTK COMPONENTS
   vtkCommonCore
@@ -96,9 +113,6 @@ add_subdirectory (Helpers)
 
 include_directories ("${PROJECT_SOURCE_DIR}/Qt")
 add_subdirectory (Qt) 
-
-include_directories ("${PROJECT_TARGET_DIR}/Qt")
-
 
 
 
