@@ -107,8 +107,9 @@ int main(int argc, char **argv) {
 	//       => Edit flags 1 by 1
 	//       => Get colour of closest vertex for 1 flag or for all flags.
 	//       => Some colours are rendered badly for flags... where does it come from ?
+	// 1.3.3 => Open .ntw file know accepts file names and paths containing spaces... + minor compatibility issues with vtk 7.X.X
 	
-	strcpy (Version,"1.3.2");	
+	strcpy (Version,"1.3.3");	
  
 	printf("Version : %s\n",Version);
 	

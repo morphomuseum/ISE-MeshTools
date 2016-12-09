@@ -9280,7 +9280,8 @@ void MeshTools::Open_NTW_File()
 				while (!feof(filein)) 
 				{		
 
-					sscanf(oneline, "%s\n", param1);
+					sscanf(oneline, "%[^\n]s", param1);
+					//cout << "param1" << param1 << endl;
 					std::string myline = param1;
 
 					std::string FLGext(".flg");
@@ -9412,7 +9413,7 @@ void MeshTools::Open_NTW_File()
 							//length=(int)strlen(oneline);						
 							//strncpy(param1, oneline, length-1);
 							std::string meshname = param1;
-							
+							//cout << "meshname:" << meshname<<endl;
 							std::string STLext(".stl");
 							std::string STLext2(".STL");
 							std::string VTKext(".vtk");

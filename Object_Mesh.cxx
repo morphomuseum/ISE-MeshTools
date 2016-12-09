@@ -1,7 +1,6 @@
 
 #include <math.h>
-#include <vtkMatrix4x4.h>
-#include <vtkMatrix3x3.h>
+
 #include <FL/Fl_Progress.H>
 #include <FL/Fl_Double_Window.H>
 #include <vtkSmartPointer.h>
@@ -28,6 +27,90 @@
 #include <Mmsystem.h >// à enlever car specifique à windows
 #endif
 //#pragma comment (lib, "Ws2_32.lib")
+
+
+inline void vtkMatrix3x3MultiplyPoint(const double elem[9], const double in[3], double out[3])
+{
+	double v1 = in[0];
+	double v2 = in[1];
+	double v3 = in[2];
+
+	out[0] = v1*elem[0] + v2*elem[1] + v3*elem[2];
+	out[1] = v1*elem[3] + v2*elem[4] + v3*elem[5];
+	out[2] = v1*elem[6] + v2*elem[7] + v3*elem[8];
+}
+
+inline void Transpose3x3(const double inElements[9],
+	double outElements[9])
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = i; j < 3; ++j)
+		{
+			double temp = inElements[3 * i + j];
+			outElements[3 * i + j] = inElements[3 * j + i];
+			outElements[3 * j + i] = temp;
+		}
+	}
+}
+
+void MultiplyPoint3x3(const double elements[9],
+	const double in[3], double result[3])
+{
+	::vtkMatrix3x3MultiplyPoint(elements, in, result);
+}
+
+inline void PointMultiply3x3(const double elements[9],
+	const double in[3], double result[3])
+{
+	double newElements[9];
+	::Transpose3x3(elements, newElements);
+	::MultiplyPoint3x3(newElements, in, result);
+}
+
+
+inline void vtkMatrix4x4MultiplyPoint(const double elem[16], const double in[4], double out[4])
+{
+	double v1 = in[0];
+	double v2 = in[1];
+	double v3 = in[2];
+	double v4 = in[3];
+
+	out[0] = v1*elem[0] + v2*elem[1] + v3*elem[2] + v4*elem[3];
+	out[1] = v1*elem[4] + v2*elem[5] + v3*elem[6] + v4*elem[7];
+	out[2] = v1*elem[8] + v2*elem[9] + v3*elem[10] + v4*elem[11];
+	out[3] = v1*elem[12] + v2*elem[13] + v3*elem[14] + v4*elem[15];
+}
+
+inline void Transpose4x4(const double inElements[16],
+	double outElements[16])
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = i; j < 4; j++)
+		{
+			double temp = inElements[4 * i + j];
+			outElements[4 * i + j] = inElements[4 * j + i];
+			outElements[4 * j + i] = temp;
+		}
+	}
+}
+
+inline void MultiplyPoint4x4(const double elements[16],
+	const double in[4], double result[4])
+{
+	::vtkMatrix4x4MultiplyPoint(elements, in, result);
+}
+
+
+inline void PointMultiply4x4(const double elements[16],
+	const double in[4], double result[4])
+{
+	double newElements[16];
+	::Transpose4x4(elements, newElements);
+	::MultiplyPoint4x4(newElements, in, result);
+}
+
 
  void OBJECT_MESH::init()
 {
@@ -3424,8 +3507,8 @@ void OBJECT_MESH::Mesh_DrawObj_Building_list(){
 
 		//liste des normales
 		norms->GetTuple(i, n);
-		vtkMatrix3x3::PointMultiply(M1n, n, n);
-		vtkMatrix3x3::PointMultiply(M2n, n, n);
+		::PointMultiply3x3(M1n, n, n);
+		::PointMultiply3x3(M2n, n, n);
 		ObjectInfoArray[ind + 4] = n[0];
 		ObjectInfoArray[ind + 5] = n[1];
 		ObjectInfoArray[ind + 6] = n[2];
@@ -3433,8 +3516,8 @@ void OBJECT_MESH::Mesh_DrawObj_Building_list(){
 		//liste des points
 		this->GetPoint(i, p);
 		p[3] = 1;
-		vtkMatrix4x4 ::PointMultiply(M1, p, p);
-		vtkMatrix4x4 ::PointMultiply(M2, p, p);
+		::PointMultiply4x4(M1, p, p);
+		 ::PointMultiply4x4(M2, p, p);
 		ObjectInfoArray[ind + 7] = p[0];
 		ObjectInfoArray[ind + 8] = p[1];
 		ObjectInfoArray[ind + 9] = p[2];
@@ -3809,8 +3892,8 @@ void OBJECT_MESH::Mesh_DrawObj_updata(vtkSmartPointer<vtkUnsignedCharArray> colo
 		for (int i = 0; i<N_VERTS; i++){
 			//liste des normales
 			norms->GetTuple(i, n);
-			vtkMatrix3x3::PointMultiply(M1n, n, n);
-			vtkMatrix3x3::PointMultiply(M2n, n, n);
+			::PointMultiply3x3(M1n, n, n);
+			::PointMultiply3x3(M2n, n, n);
 			ObjectInfoArray[ind + 4] = n[0];
 			ObjectInfoArray[ind + 5] = n[1];
 			ObjectInfoArray[ind + 6] = n[2];
@@ -3818,8 +3901,8 @@ void OBJECT_MESH::Mesh_DrawObj_updata(vtkSmartPointer<vtkUnsignedCharArray> colo
 			//liste des points
 			this->GetPoint(i, p);
 			p[3] = 1;
-			vtkMatrix4x4::PointMultiply(M1, p, p);
-			vtkMatrix4x4::PointMultiply(M2, p, p);
+			::PointMultiply4x4(M1, p, p);
+			::PointMultiply4x4(M2, p, p);
 			ObjectInfoArray[ind + 7] = p[0];
 			ObjectInfoArray[ind + 8] = p[1];
 			ObjectInfoArray[ind + 9] = p[2];

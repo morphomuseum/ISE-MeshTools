@@ -31,6 +31,50 @@
 #include <vtkVertexGlyphFilter.h>
 
 
+inline void vtkMatrix4x4MultiplyPoint(const double elem[16], const double in[4], double out[4])
+{
+	double v1 = in[0];
+	double v2 = in[1];
+	double v3 = in[2];
+	double v4 = in[3];
+
+	out[0] = v1*elem[0] + v2*elem[1] + v3*elem[2] + v4*elem[3];
+	out[1] = v1*elem[4] + v2*elem[5] + v3*elem[6] + v4*elem[7];
+	out[2] = v1*elem[8] + v2*elem[9] + v3*elem[10] + v4*elem[11];
+	out[3] = v1*elem[12] + v2*elem[13] + v3*elem[14] + v4*elem[15];
+}
+
+inline void Transpose(const double inElements[16],
+	double outElements[16])
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = i; j < 4; j++)
+		{
+			double temp = inElements[4 * i + j];
+			outElements[4 * i + j] = inElements[4 * j + i];
+			outElements[4 * j + i] = temp;
+		}
+	}
+}
+
+inline void MultiplyPoint(const double elements[16],
+	const double in[4], double result[4])
+{
+	::vtkMatrix4x4MultiplyPoint(elements, in, result);
+}
+
+
+inline void PointMultiply(const double elements[16],
+	const double in[4], double result[4])
+{
+	double newElements[16];
+	::Transpose(elements, newElements);
+	::MultiplyPoint(newElements, in, result);
+}
+
+
+
  ///si trop de parametre faire une structure icp pour stocker tous les parametres-----> idée!
 ICP::ICP(OBJECT_MESH* SourceData, OBJECT_MESH* TargetData, CONTAINER_MESH Cont_Mesh, vtkFloatArray*loaded_parameter_list, vtkFloatArray* tabOfParameters, vtkFloatArray* tab_loadsave_parameter, vtkFloatArray *tabDisplay, int modeTransformation, bool existColor, bool bool_onlyMatching)
 {
@@ -1871,13 +1915,13 @@ void ICP::Draw_matching(){
 					
 				if (i % display_dec == 0){
 					list_landmarks_source->GetPoint(i, sourceP);
-					vtkMatrix4x4::PointMultiply(M1s, sourceP, sourceP);
-					vtkMatrix4x4::PointMultiply(M2s, sourceP, sourceP);
+					::PointMultiply(M1s, sourceP, sourceP);
+					::PointMultiply(M2s, sourceP, sourceP);
 
 
 					list_landmarks_target->GetPoint(i, targetP);
-					vtkMatrix4x4::PointMultiply(M1t, targetP, targetP);
-					vtkMatrix4x4::PointMultiply(M2t, targetP, targetP);
+					::PointMultiply(M1t, targetP, targetP);
+					::PointMultiply(M2t, targetP, targetP);
 
 					glBegin(GL_LINES); 
 					glColor3fv(vect_matching_color);
