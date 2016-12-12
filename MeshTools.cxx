@@ -42,6 +42,9 @@
 #include <vtkAreaPicker.h>
 #include <vtkLine.h>
 #include <vtkProp3DCollection.h>
+
+#include <QTemporaryFile>
+#include <QSettings>
 #include <QIcon>
 
 //Select meshes, landmarks and tags ... first try!
@@ -93,6 +96,18 @@ MeshTools::MeshTools()
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
 	this->mui_ShowOrientationHelper = 1;
+
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
+	cout<<".ini file path"<<  settings.fileName().toStdString()<<endl;
+	settings.beginGroup("display_options");
+	this->mui_ShowGrid = settings.value("ShowGrid", "1").toInt();
+	this->mui_ShowOrientationHelper= settings.value("ShowOrientationHelper", "1").toInt();
+	settings.endGroup();
+	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
+	
+	
+
+		
 
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
@@ -218,7 +233,8 @@ MeshTools::MeshTools()
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
 
-
+  this->SetGridVisibility();
+  this->SetOrientationHelperVisibility();
 
   //@@ end rubber band selection!
 
@@ -229,12 +245,25 @@ MeshTools::MeshTools()
 
 MeshTools::~MeshTools()
 {
+	saveSettings();
+	
 	// The smart pointers should clean up for up
 	//this->OrientationHelperWidget->Delete();
 }
 
 
-
+void MeshTools::saveSettings()
+{
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
+	//cout<<"try save settings:" << m_sSettingsFile.toStdString();
+	settings.beginGroup("display_options");
+	settings.setValue("ShowGrid", this->mui_ShowGrid);
+	settings.setValue("ShowOrientationHelper", this->mui_ShowOrientationHelper);
+	settings.endGroup();	
+	
+	
+	cout << "end save settings" << endl;
+}
 
 
 //On ajoute un indice au nom si le nom existe déjà.
@@ -727,6 +756,32 @@ void MeshTools::slotCameraAbove()
 	this->ui->qvtkWidget->update(); // update main window!
 
 }
+
+void MeshTools::SetGridVisibility()
+{
+vtkPropCollection* props = this->Renderer->GetViewProps(); //iterate through and set each visibility to 0
+props->InitTraversal();
+std::string str1("vtkGridActor");
+for (int i = 0; i < props->GetNumberOfItems(); i++)
+{
+	vtkProp *myprop = props->GetNextProp();
+	if (str1.compare(myprop->GetClassName()) == 0)
+	{
+		if (this->mui_ShowGrid == 1)
+		{
+			myprop->VisibilityOn();
+		}
+		else
+		{
+			myprop->VisibilityOff();
+		}
+	}
+
+}
+
+this->ui->qvtkWidget->update(); // update main window!
+}
+
 // show or hide grid actor
 void MeshTools::slotGridToggle()
 {
@@ -738,29 +793,24 @@ void MeshTools::slotGridToggle()
 	{
 		this->mui_ShowGrid = 1;
 	}
-
-	vtkPropCollection* props = this->Renderer->GetViewProps(); //iterate through and set each visibility to 0
-	props->InitTraversal();
-	std::string str1("vtkGridActor");
-	for (int i = 0; i < props->GetNumberOfItems(); i++)
-	{
-		vtkProp *myprop = props->GetNextProp();
-		if (str1.compare(myprop->GetClassName()) == 0)
-		{
-			if (this->mui_ShowGrid==1)
-			{
-				myprop->VisibilityOn();
-			}
-			else
-			{
-				myprop->VisibilityOff();
-			}
-		}
-
-	}
+	this->SetGridVisibility();
 	
-	this->ui->qvtkWidget->update(); // update main window!
 
+}
+
+void MeshTools::SetOrientationHelperVisibility()
+{
+
+	//std::string str1("vtkOrientationHelperActor");
+	if (this->mui_ShowOrientationHelper == 1)
+	{
+		this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOn();
+	}
+	else
+	{
+		this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOff();
+	}
+	this->ui->qvtkWidget->update(); // update main window!
 }
 // show or hide the orientation helper actor
 void MeshTools::slotOrientationHelperToggle()
@@ -773,26 +823,5 @@ void MeshTools::slotOrientationHelperToggle()
 	{
 		this->mui_ShowOrientationHelper = 1;
 	}
-
-	
-	//std::string str1("vtkOrientationHelperActor");
-			
-		
-			if (this->mui_ShowOrientationHelper == 1)
-			{
-				
-				this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOn();
-				
-			}
-			else
-			{
-				
-				this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOff();
-			}
-		
-
-	
-
-	this->ui->qvtkWidget->update(); // update main window!
-
+	this->SetOrientationHelperVisibility();	
 }

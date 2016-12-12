@@ -47,6 +47,7 @@ public:
   MeshTools();
   ~MeshTools();
   
+  
   vtkSmartPointer<vtkActorCollection> ActorCollection;
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
@@ -81,7 +82,9 @@ protected:
 protected slots:
 
 private:
-	
+	void SetGridVisibility();
+	void SetOrientationHelperVisibility();
+	void saveSettings();
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();
 	void GetGlobalCenterOfMass(double center[3]);

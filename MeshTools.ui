@@ -270,9 +270,6 @@
    </property>
   </action>
   <action name="actionGridToggle">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/grid.gif</normaloff>
@@ -286,9 +283,6 @@
    </property>
   </action>
   <action name="actionOrientationHelperToggle">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/orientation_helper.gif</normaloff>
