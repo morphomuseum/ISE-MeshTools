@@ -138,6 +138,10 @@ public:
 
 
 	// Description:
+
+	vtkSetMacro(OutlineMode, int);
+	vtkGetMacro(OutlineMode, int);
+
 	// Enable/disable drawing the axis labels.
 	vtkSetMacro(AxisLabels, int);
 	vtkGetMacro(AxisLabels, int);
@@ -162,7 +166,7 @@ protected:
 	vtkGridActor();
 	~vtkGridActor();
 
-
+	
 	vtkActor          *GridLines;
 	vtkActor          *GridOutline;
 
@@ -185,6 +189,7 @@ protected:
 	vtkCaptionActor2D *SecondAxisLabel2;
 
 
+	int OutlineMode; // 0; outline orange // 1 outline cyan
 	int                AxisLabels;
 	int                GridType; // 0: xy, z=0; 1: xz, y=0; 2: yz, x=0
 	double		     GridSize; // number of squares in each quadrant

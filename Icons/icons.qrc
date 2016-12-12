@@ -24,5 +24,7 @@
   <file>grid.gif</file>
   <file>orientation_helper.gif</file>
 
+ <file>move_cam.gif</file>
+
   </qresource>
 </RCC>

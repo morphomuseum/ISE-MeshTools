@@ -102,6 +102,7 @@ MeshTools::MeshTools()
 	settings.beginGroup("display_options");
 	this->mui_ShowGrid = settings.value("ShowGrid", "1").toInt();
 	this->mui_ShowOrientationHelper= settings.value("ShowOrientationHelper", "1").toInt();
+	this->mui_CameraCentreOfMassAtOrigin = settings.value("CameraCentreOfMassAtOrigin", "1").toInt();
 	settings.endGroup();
 	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
 	
@@ -178,6 +179,7 @@ MeshTools::MeshTools()
 	connect(this->ui->actionCameraBelow, SIGNAL(triggered()), this, SLOT(slotCameraBelow()));
 	connect(this->ui->actionGridToggle, SIGNAL(triggered()), this, SLOT(slotGridToggle()));
 	connect(this->ui->actionOrientationHelperToggle, SIGNAL(triggered()), this, SLOT(slotOrientationHelperToggle()));
+	connect(this->ui->actionCameraCentreOfMassToggle, SIGNAL(triggered()), this, SLOT(slotCameraCentreOfMassToggle()));
 	
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
@@ -259,6 +261,7 @@ void MeshTools::saveSettings()
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->mui_ShowGrid);
 	settings.setValue("ShowOrientationHelper", this->mui_ShowOrientationHelper);
+	settings.value("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
 	settings.endGroup();	
 	
 	
@@ -323,7 +326,10 @@ void MeshTools::GetGlobalCenterOfMass(double center[3])
 		center[2] /= globalvn;
 
 	}
-	this->GridActor->SetGridOrigin(center);
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		this->GridActor->SetGridOrigin(center);
+	}
 
 
 }
@@ -557,31 +563,37 @@ void MeshTools::slotOpenMeshFile()
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
 
-			double globalcenterofmass[3];
-			this->GetGlobalCenterOfMass(globalcenterofmass);
-			cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
-
+			
 			//double BoundingBoxLength = MyPolyData->GetLength();
-			double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
-			cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+			this->ReplaceCamera();
 
-			double campos[3];
-			this->Camera->GetPosition(campos);
-			double camfocalpoint[3];
-			this->Camera->GetFocalPoint(camfocalpoint);
-			double camscale = this->Camera->GetParallelScale();
+			/*if (this->mui_CameraCentreOfMassAtOrigin == 0)
+			{
+				double globalcenterofmass[3];
+				this->GetGlobalCenterOfMass(globalcenterofmass);
+				cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
 
-			double movex, movey, movez;
-			movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
-			movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
-			movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
-			this->Camera->SetPosition
-				(globalcenterofmass[0] + movex,
-					globalcenterofmass[1] + movey,
-					globalcenterofmass[2] + movez);
-			//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
-			this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
-			this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+				double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
+				cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+
+				double campos[3];
+				this->Camera->GetPosition(campos);
+				double camfocalpoint[3];
+				this->Camera->GetFocalPoint(camfocalpoint);
+				double camscale = this->Camera->GetParallelScale();
+
+				double movex, movey, movez;
+				movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
+				movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
+				movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
+				this->Camera->SetPosition
+					(globalcenterofmass[0] + movex,
+						globalcenterofmass[1] + movey,
+						globalcenterofmass[2] + movez);
+				//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
+				this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
+				this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+			}*/
 			//this->Camera->ParallelProjectionOn();
 
 
@@ -682,6 +694,36 @@ void MeshTools::slotOpenMeshFile()
 	actor->GetProperty()->SetColor(0.5, 1, 0.5);
 	actor->GetProperty()->SetOpacity(0.5);*/
 }
+void MeshTools::ReplaceCamera()
+{
+	double globalcenterofmass[3];
+	this->GetGlobalCenterOfMass(globalcenterofmass);
+	cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
+
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
+		cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+
+		double campos[3];
+		this->Camera->GetPosition(campos);
+		double camfocalpoint[3];
+		this->Camera->GetFocalPoint(camfocalpoint);
+		double camscale = this->Camera->GetParallelScale();
+
+		double movex, movey, movez;
+		movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
+		movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
+		movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
+		this->Camera->SetPosition
+			(globalcenterofmass[0] + movex,
+				globalcenterofmass[1] + movey,
+				globalcenterofmass[2] + movez);
+		//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
+		this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
+		this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+	}
+}
 
 void MeshTools::slotExit() {
 	//maybe we should save the .ini files!
@@ -696,22 +738,33 @@ void MeshTools::slotCameraFront()
 	this->Camera->SetPosition(150, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
-	//this->Camera->SetParallelScale(120);
-
-	//this->Camera->Modified();
+	//this->ReplaceCamera();
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	
 	this->GridActor->SetGridType(2);
-	//this->ui->actionCameraFront->setDisabled(true);	
+	
 
 	this->ui->qvtkWidget->update(); // update main window!
 }
 // Action to be taken upon camera back side
 void MeshTools::slotCameraBack()
 {
+	//this->ReplaceCamera();
 	this->Camera->SetPosition(-150, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
-	
-
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->GridActor->SetGridType(2);
 	this->ui->qvtkWidget->update();
 
@@ -719,9 +772,17 @@ void MeshTools::slotCameraBack()
 // Action to be taken upon camera left side
 void MeshTools::slotCameraLeft()
 {
+	//this->ReplaceCamera();
 	this->Camera->SetPosition(0, 150, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0,0, 1);
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->GridActor->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -729,19 +790,35 @@ void MeshTools::slotCameraLeft()
 // Action to be taken upon camera right side
 void MeshTools::slotCameraRight()
 {
+	//this->ReplaceCamera();
 	this->Camera->SetPosition(0, -150, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->GridActor->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 }
 // Action to be taken upon camera underneath side
 void MeshTools::slotCameraBelow()
 {
+	//this->ReplaceCamera();
 	this->Camera->SetPosition(0, 0, -150);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(1, 0, 0);
 	this->Camera->SetParallelScale(120);
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->GridActor->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -749,9 +826,17 @@ void MeshTools::slotCameraBelow()
 // Action to be taken upon camera upper side
 void MeshTools::slotCameraAbove()
 {
+	//this->ReplaceCamera();
 	this->Camera->SetPosition(0, 0, 150);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(-1, 0, 0);
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		double globalcenterofmass[3];
+		this->GetGlobalCenterOfMass(globalcenterofmass);
+		this->GridActor->SetGridOrigin(globalcenterofmass);
+	}
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->GridActor->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -824,4 +909,17 @@ void MeshTools::slotOrientationHelperToggle()
 		this->mui_ShowOrientationHelper = 1;
 	}
 	this->SetOrientationHelperVisibility();	
+}
+void MeshTools::slotCameraCentreOfMassToggle()
+
+{
+	if (this->mui_CameraCentreOfMassAtOrigin == 1)
+	{
+		this->mui_CameraCentreOfMassAtOrigin = 0;
+	}
+	else
+	{
+		this->mui_CameraCentreOfMassAtOrigin = 1;
+	}
+	
 }

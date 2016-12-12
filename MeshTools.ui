@@ -155,6 +155,7 @@
    <addaction name="actionCameraBelow"/>
    <addaction name="actionGridToggle"/>
    <addaction name="actionOrientationHelperToggle"/>
+   <addaction name="actionCameraCentreOfMassToggle"/>
   </widget>
   <action name="actionOpenMesh">
    <property name="enabled">
@@ -293,6 +294,19 @@
    </property>
    <property name="toolTip">
     <string>Orientation helper : show or hide</string>
+   </property>
+  </action>
+  <action name="actionCameraCentreOfMassToggle">
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/move_cam.gif</normaloff>
+     <normalon>:/Icons/move_cam.gif</normalon>:/Icons/move_cam.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Camera mode: toggle</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle camera : centered at (x,y,z) = (0,0,0) / or at the centre of mass of all opened objects</string>
    </property>
   </action>
  </widget>

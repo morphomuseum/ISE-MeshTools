@@ -59,6 +59,7 @@ public:
 
   int mui_ShowGrid;
   int mui_ShowOrientationHelper;
+  int mui_CameraCentreOfMassAtOrigin;
 
 public slots:
 
@@ -71,6 +72,7 @@ public slots:
   virtual void slotCameraBelow();
   virtual void slotGridToggle();
   virtual void slotOrientationHelperToggle();
+  virtual void slotCameraCentreOfMassToggle();
   virtual void slotExit();
 /*  void RubberBandSelect(vtkObject* caller,
 	  long unsigned int vtkNotUsed(eventId),
@@ -82,6 +84,7 @@ protected:
 protected slots:
 
 private:
+	void ReplaceCamera();
 	void SetGridVisibility();
 	void SetOrientationHelperVisibility();
 	void saveSettings();

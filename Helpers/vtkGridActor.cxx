@@ -38,6 +38,7 @@ vtkStandardNewMacro(vtkGridActor);
 //----------------------------------------------------------------------------
 vtkGridActor::vtkGridActor()
 {
+	this->OutlineMode = 0;
 	this->AxisLabels = 1;
 	this->GridType = 0;
 	this->GridSize = 10; // by default 10 squares in each grid quadrant
@@ -792,6 +793,9 @@ void vtkGridActor::CreateGridLines()
 void vtkGridActor::CreateGridOutline()
 {
 
+	//OutlineMode : 0 => orange
+	//OutlineMode : 1 => cyan
+
 	// GridType : 0 : xy this->GridType (z=0)
 	// GridType : 1 : xz this->GridType (y=0)
 	// GridType : 2 : yz this->GridType (x=0)
@@ -1046,12 +1050,29 @@ void vtkGridActor::CreateGridOutline()
 
 
 	// Create six colors - one for each line
-	unsigned char red[3] = { 255, 0, 0 };
+	/*unsigned char red[3] = { 255, 0, 0 };
 	unsigned char green[3] = { 0, 255, 0 };
 	unsigned char blue[3] = { 0, 0, 255 };
 	unsigned char yellow[3] = { 255, 255, 0 };
 	unsigned char cyan[3] = { 0, 255, 255 };
-	unsigned char fuschia[3] = { 255, 0, 255 };
+	unsigned char fuschia[3] = { 255, 0, 255 };*/
+	unsigned char outline_color[3] = { 125, 125, 125 };
+	if (this->OutlineMode == 0)
+	{
+		outline_color[0] = 255;
+		outline_color[1] = 127;
+		outline_color[2] = 0;
+
+		
+	}
+	else
+	{
+		outline_color[0] = 0;
+		outline_color[1] = 255;
+		outline_color[2] = 255;
+	}
+	
+	
 
 	// Create a vtkUnsignedCharArray container and store the colors in it
 	vtkSmartPointer<vtkUnsignedCharArray> colors =
@@ -1064,21 +1085,29 @@ void vtkGridActor::CreateGridOutline()
 		for (int i = 0; i < 3; i++)
 		{
 #if VTK_MINOR_VERSION >= 1
-			colors->InsertNextTypedTuple(green);
-			colors->InsertNextTypedTuple(cyan);
+			/*colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(cyan);*/
+			colors->InsertNextTypedTuple(outline_color);
+			colors->InsertNextTypedTuple(outline_color);
 #else
-			colors->InsertNextTupleValue(green);
-			colors->InsertNextTupleValue(cyan);
+			//colors->InsertNextTupleValue(green);
+			//colors->InsertNextTupleValue(cyan);
+			colors->InsertNextTupleValue(outline_color);
+			colors->InsertNextTupleValue(outline_color);
 #endif
 		}
 		for (int i = 0; i < 3; i++)
 		{
 #if VTK_MINOR_VERSION >= 1
-			colors->InsertNextTypedTuple(red);
-			colors->InsertNextTypedTuple(yellow);
+			/*colors->InsertNextTypedTuple(red);
+			colors->InsertNextTypedTuple(yellow);*/
+			colors->InsertNextTypedTuple(outline_color);
+			colors->InsertNextTypedTuple(outline_color);
 #else
-			colors->InsertNextTupleValue(red);
-			colors->InsertNextTupleValue(yellow);
+			/*colors->InsertNextTupleValue(red);
+			colors->InsertNextTupleValue(yellow);*/
+			colors->InsertNextTupleValue(outline_color);
+			colors->InsertNextTupleValue(outline_color);
 #endif
 
 		}
@@ -1088,11 +1117,15 @@ void vtkGridActor::CreateGridOutline()
 		for (int i = 0; i < 3; i++)
 		{
 #if VTK_MINOR_VERSION >= 1
-			colors->InsertNextTypedTuple(blue);
-			colors->InsertNextTypedTuple(fuschia);
+			/*colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(fuschia);*/
+			colors->InsertNextTypedTuple(outline_color);
+			colors->InsertNextTypedTuple(outline_color);
 #else
-			colors->InsertNextTupleValue(blue);
-			colors->InsertNextTupleValue(fuschia);
+			/*colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(fuschia);*/
+			colors->InsertNextTupleValue(outline_color);
+			colors->InsertNextTupleValue(outline_color);
 #endif
 
 		}
@@ -1101,11 +1134,15 @@ void vtkGridActor::CreateGridOutline()
 			for (int i = 0; i < 3; i++)
 			{
 #if VTK_MINOR_VERSION >= 1
-				colors->InsertNextTypedTuple(red);
-				colors->InsertNextTypedTuple(yellow);
+				/*colors->InsertNextTypedTuple(red);
+				colors->InsertNextTypedTuple(yellow);*/
+				colors->InsertNextTypedTuple(outline_color);
+				colors->InsertNextTypedTuple(outline_color);
 #else
-				colors->InsertNextTupleValue(red);
-				colors->InsertNextTupleValue(yellow);
+				/*colors->InsertNextTupleValue(red);
+				colors->InsertNextTupleValue(yellow);*/
+				colors->InsertNextTupleValue(outline_color);
+				colors->InsertNextTupleValue(outline_color);
 #endif
 
 			}
@@ -1117,21 +1154,29 @@ void vtkGridActor::CreateGridOutline()
 		for (int i = 0; i < 3; i++)
 		{
 #if VTK_MINOR_VERSION >= 1
-			colors->InsertNextTypedTuple(blue);
-			colors->InsertNextTypedTuple(fuschia);
+			/*colors->InsertNextTypedTuple(blue);
+			colors->InsertNextTypedTuple(fuschia);*/
+			colors->InsertNextTypedTuple(outline_color);
+			colors->InsertNextTypedTuple(outline_color);
 #else
-			colors->InsertNextTupleValue(blue);
-			colors->InsertNextTupleValue(fuschia);
+			/*colors->InsertNextTupleValue(blue);
+			colors->InsertNextTupleValue(fuschia);*/
+			colors->InsertNextTupleValue(outline_color);
+			colors->InsertNextTupleValue(outline_color);
 #endif
 		}
 		for (int i = 0; i < 3; i++)
 		{
 #if VTK_MINOR_VERSION >= 1
-			colors->InsertNextTypedTuple(green);
-			colors->InsertNextTypedTuple(cyan);
+			/*colors->InsertNextTypedTuple(green);
+			colors->InsertNextTypedTuple(cyan);*/
+			colors->InsertNextTypedTuple(outline_color);
+			colors->InsertNextTypedTuple(outline_color);
 #else
-			colors->InsertNextTupleValue(green);
-			colors->InsertNextTupleValue(cyan);
+			/*colors->InsertNextTupleValue(green);
+			colors->InsertNextTupleValue(cyan);*/
+			colors->InsertNextTupleValue(outline_color);
+			colors->InsertNextTupleValue(outline_color);
 #endif
 
 		}
