@@ -125,7 +125,7 @@ MeshTools::MeshTools()
 
 
 	// Place the table view in the designer form
-	this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
+	//this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
 
 
 
