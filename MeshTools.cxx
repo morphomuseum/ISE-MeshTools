@@ -106,7 +106,11 @@ MeshTools::MeshTools()
 	settings.endGroup();
 	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
 	cout << "centre of mass at origin="<<this->mui_CameraCentreOfMassAtOrigin << endl;
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
 	
+		this->ui->actionCameraCentreOfMassToggle->setChecked(true);
+	}
 
 		
 
@@ -262,7 +266,7 @@ void MeshTools::saveSettings()
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->mui_ShowGrid);
 	settings.setValue("ShowOrientationHelper", this->mui_ShowOrientationHelper);
-	settings.value("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
+	settings.setValue("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
 	settings.endGroup();	
 	
 	
@@ -702,11 +706,16 @@ void MeshTools::ReplaceCameraAndGrid()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	cout << "Center of mass of all opened mesh is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
+	//cout << "Center of mass of all opened meshes is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
 
 	
 	double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
-	cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+	//cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+	if (GlobalBoundingBoxLength  == std::numeric_limits<double>::infinity())
+	{
+		GlobalBoundingBoxLength = 120;
+	}
+	//cout << "New Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
 
 	double campos[3];
 	this->Camera->GetPosition(campos);

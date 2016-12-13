@@ -297,10 +297,13 @@
    </property>
   </action>
   <action name="actionCameraCentreOfMassToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="Icons/icons.qrc">
      <normaloff>:/Icons/move_cam.gif</normaloff>
-     <normalon>:/Icons/move_cam.gif</normalon>:/Icons/move_cam.gif</iconset>
+     <normalon>:/Icons/move_cam2.gif</normalon>:/Icons/move_cam.gif</iconset>
    </property>
    <property name="text">
     <string>Camera mode: toggle</string>
