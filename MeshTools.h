@@ -84,9 +84,10 @@ protected:
 protected slots:
 
 private:
-	void ReplaceCamera();
+	void ReplaceCameraAndGrid();
 	void SetGridVisibility();
 	void SetOrientationHelperVisibility();
+	
 	void saveSettings();
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();

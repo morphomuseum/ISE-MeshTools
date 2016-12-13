@@ -1059,17 +1059,19 @@ void vtkGridActor::CreateGridOutline()
 	unsigned char outline_color[3] = { 125, 125, 125 };
 	if (this->OutlineMode == 0)
 	{
-		outline_color[0] = 255;
+		
+		outline_color[0] = 0;
 		outline_color[1] = 127;
-		outline_color[2] = 0;
-
+		outline_color[2] = 255;
 		
 	}
 	else
 	{
-		outline_color[0] = 0;
-		outline_color[1] = 255;
-		outline_color[2] = 255;
+		
+		outline_color[0] = 255;
+		outline_color[1] = 127;
+		outline_color[2] = 0;
+
 	}
 	
 	
