@@ -59,17 +59,21 @@ void RubberBandSelect(vtkObject* caller,
 	
 	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
 	//vtkPropCollection* props = areaPicker->GetPrGetProps();
-
+	//props->PrintSelf(cout, vtkIndent(2));
+	props->InitTraversal();
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
+		vtkActor *myActor;
 		vtkProp3D *myprop3D = props->GetNextProp3D();
 		vtkProp *prop = vtkProp::SafeDownCast(myprop3D);
+		myActor = vtkActor::SafeDownCast(myprop3D);
 		std::cout << "Picked prop: " <<  std::endl;
+		myActor->PrintSelf(cout, vtkIndent(2));
 		//vtkActorCollection *myactors;
 		//myprop3D->GetActors(myactors);
 		//vtkActor *firstActor = myactors->GetNextActor();
 
-		//std::cout << "Picked prop: " << prop << ", class name:" << prop->GetClassName() << std::endl;
+		std::cout << "Actor prop:  class name:" << myActor->GetClassName() << std::endl;
 		//std::cout << "Picked Actor: " << firstActor->GetClassName()<< std::endl;
 		//prop->GetProperty()->SetColor(1, 0, 0);
 		
