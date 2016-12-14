@@ -62,11 +62,17 @@ void RubberBandSelect(vtkObject* caller,
 
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
-		vtkActor* prop = (vtkActor*)props->GetNextProp3D();
+		vtkProp3D *myprop3D = props->GetNextProp3D();
+		vtkProp *prop = vtkProp::SafeDownCast(myprop3D);
+		std::cout << "Picked prop: " <<  std::endl;
+		//vtkActorCollection *myactors;
+		//myprop3D->GetActors(myactors);
+		//vtkActor *firstActor = myactors->GetNextActor();
+
 		//std::cout << "Picked prop: " << prop << ", class name:" << prop->GetClassName() << std::endl;
-		std::cout << "Picked prop: " << prop << std::endl;
+		//std::cout << "Picked Actor: " << firstActor->GetClassName()<< std::endl;
 		//prop->GetProperty()->SetColor(1, 0, 0);
-		std::cout << "Property: " << prop->GetProperty() << std::endl;
+		
 		/*vtkPropCollection* propcoll;
 		prop->GetActors(propcoll);
 		
@@ -229,14 +235,14 @@ MeshTools::MeshTools()
 
 	//@@ rubber band selection!
 	
-	// vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
-    //vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
+	 vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
+    vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =
 	//	vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
-	vtkSmartPointer<vtkInteractorStyleSwitch> style =
-		vtkSmartPointer<vtkInteractorStyleSwitch>::New();
+	//vtkSmartPointer<vtkInteractorStyleSwitch> style =
+	//	vtkSmartPointer<vtkInteractorStyleSwitch>::New();
 	 vtkSmartPointer<vtkCallbackCommand> pickCallback =
 		 vtkSmartPointer<vtkCallbackCommand>::New();
 
@@ -247,7 +253,7 @@ MeshTools::MeshTools()
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
  
 // style->SetCurrentRenderer(this->Renderer);
-  //this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
+  this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
 
