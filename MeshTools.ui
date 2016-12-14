@@ -39,22 +39,22 @@
     </property>
     <item row="0" column="0">
      <widget class="QVTKWidget" name="qvtkWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>1</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>300</height>
-         </size>
-        </property>
-       </widget>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>300</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
-  </widget>  
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -110,6 +110,7 @@
    <addaction name="actionGridToggle"/>
    <addaction name="actionOrientationHelperToggle"/>
    <addaction name="actionCameraCentreOfMassToggle"/>
+   <addaction name="actionCameraOrthoPerspectiveToggle"/>
   </widget>
   <action name="actionOpenMesh">
    <property name="enabled">
@@ -264,6 +265,22 @@
    </property>
    <property name="toolTip">
     <string>Toggle camera : centered at (x,y,z) = (0,0,0) / or at the centre of mass of all opened objects</string>
+   </property>
+  </action>
+  <action name="actionCameraOrthoPerspectiveToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/camera_ortho.gif</normaloff>
+     <normalon>:/Icons/camera_persp.gif</normalon>:/Icons/camera_ortho.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Camera projection mode: toggle</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle camera : orthonormal or perspective projection</string>
    </property>
   </action>
  </widget>

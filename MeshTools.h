@@ -60,7 +60,7 @@ public:
   int mui_ShowGrid;
   int mui_ShowOrientationHelper;
   int mui_CameraCentreOfMassAtOrigin;
-
+  int mui_CameraOrtho;
 public slots:
 
   virtual void slotOpenMeshFile();
@@ -73,6 +73,7 @@ public slots:
   virtual void slotGridToggle();
   virtual void slotOrientationHelperToggle();
   virtual void slotCameraCentreOfMassToggle();
+  virtual void slotCameraOrthoPerspectiveToggle();
   virtual void slotExit();
 /*  void RubberBandSelect(vtkObject* caller,
 	  long unsigned int vtkNotUsed(eventId),
@@ -85,6 +86,9 @@ protected slots:
 
 private:
 	void ReplaceCameraAndGrid();
+	void ResetCameraOrthoPerspective();
+	void DollyCameraForParallelScale();
+	void DollyCameraForPerspectiveMode();
 	void SetGridVisibility();
 	void SetOrientationHelperVisibility();
 	

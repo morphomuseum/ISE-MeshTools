@@ -12,6 +12,7 @@
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkActor.h>
+#include <vtkMath.h>
 #include <vtkCamera.h>
 #include <vtkCenterOfMass.h>
 #include <vtkProperty.h>
@@ -96,6 +97,7 @@ MeshTools::MeshTools()
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
 	this->mui_ShowOrientationHelper = 1;
+	this->mui_CameraOrtho = 1;
 
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	cout<<".ini file path"<<  settings.fileName().toStdString()<<endl;
@@ -103,6 +105,8 @@ MeshTools::MeshTools()
 	this->mui_ShowGrid = settings.value("ShowGrid", "1").toInt();
 	this->mui_ShowOrientationHelper= settings.value("ShowOrientationHelper", "1").toInt();
 	this->mui_CameraCentreOfMassAtOrigin = settings.value("CameraCentreOfMassAtOrigin", "1").toInt();
+	this->mui_CameraOrtho= settings.value("CameraOrtho", "1").toInt();
+
 	settings.endGroup();
 	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
 	cout << "centre of mass at origin="<<this->mui_CameraCentreOfMassAtOrigin << endl;
@@ -112,7 +116,12 @@ MeshTools::MeshTools()
 		this->ui->actionCameraCentreOfMassToggle->setChecked(true);
 	}
 
-		
+	if (this->mui_CameraOrtho == 0)
+	{
+
+		this->ui->actionCameraOrthoPerspectiveToggle->setChecked(true);
+	}
+
 
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
@@ -147,8 +156,8 @@ MeshTools::MeshTools()
 
 	this->Camera = this->Renderer->GetActiveCamera();
 
-
-	this->Camera->SetPosition(150, 0, 0);
+	// 448/120 seems to be a good ratio!!! 3.73
+	this->Camera->SetPosition(448, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
 	//double *viewup;
@@ -158,8 +167,9 @@ MeshTools::MeshTools()
 	this->Camera->Roll(90); // around "x" (horizontal) viewing axis
 	this->Camera->Elevation(180); // around "y" (vertical) viewing axis
 	*/
-	this->Camera->SetParallelScale(120);
-	this->Camera->ParallelProjectionOn();
+	this->Camera->SetParallelScale(120); 
+	this->ResetCameraOrthoPerspective();
+	//this->Camera->ParallelProjectionOn();
 
 
 
@@ -184,7 +194,8 @@ MeshTools::MeshTools()
 	connect(this->ui->actionGridToggle, SIGNAL(triggered()), this, SLOT(slotGridToggle()));
 	connect(this->ui->actionOrientationHelperToggle, SIGNAL(triggered()), this, SLOT(slotOrientationHelperToggle()));
 	connect(this->ui->actionCameraCentreOfMassToggle, SIGNAL(triggered()), this, SLOT(slotCameraCentreOfMassToggle()));
-	
+	connect(this->ui->actionCameraOrthoPerspectiveToggle, SIGNAL(triggered()), this, SLOT(slotCameraOrthoPerspectiveToggle()));
+
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
 
@@ -267,6 +278,7 @@ void MeshTools::saveSettings()
 	settings.setValue("ShowGrid", this->mui_ShowGrid);
 	settings.setValue("ShowOrientationHelper", this->mui_ShowOrientationHelper);
 	settings.setValue("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
+	settings.setValue("CameraOrtho", this->mui_CameraOrtho);
 	settings.endGroup();	
 	
 	
@@ -757,7 +769,7 @@ void MeshTools::slotCameraFront()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(camdist+ cameracentre[0], cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -781,7 +793,7 @@ void MeshTools::slotCameraBack()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(-camdist + cameracentre[0], cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -801,7 +813,7 @@ void MeshTools::slotCameraLeft()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition( cameracentre[0], camdist+cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 
@@ -822,7 +834,7 @@ void MeshTools::slotCameraRight()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0], -camdist + cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -841,7 +853,7 @@ void MeshTools::slotCameraBelow()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0], cameracentre[1], -camdist+cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(1, 0, 0);
@@ -862,7 +874,7 @@ void MeshTools::slotCameraAbove()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 1.5*this->Camera->GetParallelScale();
+	double camdist = 3.73*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0],  cameracentre[1], camdist+cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 
@@ -956,4 +968,110 @@ void MeshTools::slotCameraCentreOfMassToggle()
 	}
 
 	this->ReplaceCameraAndGrid();
+}
+void MeshTools::slotCameraOrthoPerspectiveToggle()
+
+{
+	if (this->mui_CameraOrtho == 1)
+	{
+		this->mui_CameraOrtho = 0;
+	}
+	else
+	{
+		this->mui_CameraOrtho = 1;
+	}
+
+	this->ResetCameraOrthoPerspective();
+}
+void MeshTools::ResetCameraOrthoPerspective()
+{
+	if (this->mui_CameraOrtho == 1)
+	{
+		this->Camera->SetParallelProjection(true);
+		this->DollyCameraForParallelScale();
+	}
+	else
+	{
+		
+		this->Camera->SetParallelProjection(false);
+		this->DollyCameraForPerspectiveMode();
+		
+		
+	}
+	cout << "Parallel scale"<<this->Camera->GetParallelScale()<<endl;
+	double dist = 0;
+
+	
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+	this->Camera->GetPosition(campos);
+	cout << "Camera Position:" << campos[0] <<","<<campos[1]<<","<<campos[2]<< endl;
+	this->Camera->GetFocalPoint(foc);
+	cout << "Camera Position:" << foc[0] << "," << foc[1] << "," << foc[2] << endl;
+	dist = sqrt(pow((campos[0]-foc[0]),2)+ pow((campos[1] - foc[1]), 2)+ pow((campos[2] - foc[2]), 2));
+	cout << "Distance between camera and focal point:" << dist << endl;
+	
+	cout << "Camera viewing angle:" << this->Camera->GetViewAngle() << endl;
+
+	this->ui->qvtkWidget->update(); // update main window!
+}
+/*
+In perspective mode, "zoom" (dolly) in/out changes the position of the camera
+("dolly" functions of vtkInteractorStyleTrackballCamera.cxx and of vtkInteractorStyleJoystickCamera )
+Beware : no real "Zoom" function is applied in these styles!!!!
+=> before I create  MeshTools' own interactor styles, camera's parallel scale (=ortho "zoom") should 
+be updated when switching from "perspective" to "ortho" to keep track of that change... 
+=> Once these styles are created, this function should be removed!
+
+*/
+void MeshTools::DollyCameraForParallelScale()
+{
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+	
+	this->Camera->GetPosition(campos);
+	this->Camera->GetFocalPoint(foc);	
+	double dist = sqrt(vtkMath::Distance2BetweenPoints(campos, foc));
+	//double dist = sqrt(pow((campos[0] - foc[0]), 2) + pow((campos[1] - foc[1]), 2) + pow((campos[2] - foc[2]), 2));
+	double newparallelscale = dist / 3.73;
+	this->Camera->SetParallelScale(newparallelscale);
+	
+}
+
+/*
+In parallel mode, "zoom" (dolly) in/out does not change the position of the camera
+("dolly" functions of vtkInteractorStyleTrackballCamera.cxx and of vtkInteractorStyleJoystickCamera )
+Beware : no real "Zoom" function is applied in these styles!!!!
+=> before I create  MeshTools' own interactor styles, camera's position in perspective mode should
+be updated when switching from "ortho" to "perspective" to keep track of that change...
+=> Once these styles are created, this function should be removed!
+
+*/
+void MeshTools::DollyCameraForPerspectiveMode()
+{
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+	double dispvector[3];
+	double multiply[3]{ 3.73,3.73,3.73};;
+	this->Camera->GetPosition(campos);
+	this->Camera->GetFocalPoint(foc);
+
+	cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
+
+	vtkMath::Subtract(campos, foc, dispvector);		
+	cout<<"Disp Vector:" << dispvector[0] << ","<<dispvector[1] << "," << dispvector[2] << endl;
+	vtkMath::Normalize(dispvector);
+	cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+	double newdist = 3.73 *this->Camera->GetParallelScale();
+	cout << "New dist:" << newdist << endl;
+	vtkMath::MultiplyScalar(dispvector, newdist);
+	cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+	double newpos[3]={ 0,0,0 }; 
+	vtkMath::Add(foc, dispvector, newpos);
+	cout << "New pos:" << newpos[0] << "," << newpos[1] << "," << newpos[2] << endl;
+
+	this->Camera->SetPosition(newpos);
+	
+
+
 }

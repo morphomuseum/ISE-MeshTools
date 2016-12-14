@@ -26,5 +26,7 @@
 
  <file>move_cam.gif</file>
  <file>move_cam2.gif</file>
+ <file>camera_ortho.gif</file>
+ <file>camera_persp.gif</file>
   </qresource>
 </RCC>
