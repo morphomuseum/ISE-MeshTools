@@ -6,7 +6,7 @@
 #include "vtkOrientationHelperActor.h"
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
-
+#include "vtkMTActor.h"
 
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
@@ -167,7 +167,9 @@ MeshTools::MeshTools()
 	this->Camera = this->Renderer->GetActiveCamera();
 
 	// 448/120 seems to be a good ratio!!! 3.73
-	this->Camera->SetPosition(448, 0, 0);
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+
+	this->Camera->SetPosition(120* multfactor, 0, 0);
 	this->Camera->SetFocalPoint(0, 0, 0);
 	this->Camera->SetViewUp(0, 0, 1);
 	//double *viewup;
@@ -583,9 +585,11 @@ void MeshTools::slotOpenMeshFile()
 			VTK_CREATE(vtkPolyDataMapper, mapper);
 			mapper->ImmediateModeRenderingOn();
 			mapper->SetInputData(MyPolyData);
-			VTK_CREATE(vtkActor, actor);
+			//VTK_CREATE(vtkActor, actor);
+			VTK_CREATE(vtkMTActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
 			actor->GetProperty()->SetOpacity(0.5);
+			actor->SetSelected(0);
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
@@ -779,7 +783,9 @@ void MeshTools::slotCameraFront()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(camdist+ cameracentre[0], cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -803,7 +809,9 @@ void MeshTools::slotCameraBack()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(-camdist + cameracentre[0], cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -823,7 +831,9 @@ void MeshTools::slotCameraLeft()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition( cameracentre[0], camdist+cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 
@@ -844,7 +854,9 @@ void MeshTools::slotCameraRight()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0], -camdist + cameracentre[1], cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(0, 0, 1);
@@ -863,7 +875,9 @@ void MeshTools::slotCameraBelow()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0], cameracentre[1], -camdist+cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 	this->Camera->SetViewUp(1, 0, 0);
@@ -884,7 +898,9 @@ void MeshTools::slotCameraAbove()
 	{
 		this->GetGlobalCenterOfMass(cameracentre);
 	}
-	double camdist = 3.73*this->Camera->GetParallelScale();
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	// = 3.73 when viewing angle = 30°
+	double camdist = multfactor*this->Camera->GetParallelScale();
 	this->Camera->SetPosition(cameracentre[0],  cameracentre[1], camdist+cameracentre[2]);
 	this->Camera->SetFocalPoint(cameracentre);
 
@@ -1008,20 +1024,20 @@ void MeshTools::ResetCameraOrthoPerspective()
 		
 		
 	}
-	cout << "Parallel scale"<<this->Camera->GetParallelScale()<<endl;
+	//cout << "Parallel scale"<<this->Camera->GetParallelScale()<<endl;
 	double dist = 0;
 
 	
 	double campos[3] = { 0,0,0 };
 	double foc[3] = { 0,0,0 };
 	this->Camera->GetPosition(campos);
-	cout << "Camera Position:" << campos[0] <<","<<campos[1]<<","<<campos[2]<< endl;
+	//cout << "Camera Position:" << campos[0] <<","<<campos[1]<<","<<campos[2]<< endl;
 	this->Camera->GetFocalPoint(foc);
-	cout << "Camera Position:" << foc[0] << "," << foc[1] << "," << foc[2] << endl;
+	//cout << "Camera Position:" << foc[0] << "," << foc[1] << "," << foc[2] << endl;
 	dist = sqrt(pow((campos[0]-foc[0]),2)+ pow((campos[1] - foc[1]), 2)+ pow((campos[2] - foc[2]), 2));
-	cout << "Distance between camera and focal point:" << dist << endl;
+	//cout << "Distance between camera and focal point:" << dist << endl;
 	
-	cout << "Camera viewing angle:" << this->Camera->GetViewAngle() << endl;
+	//cout << "Camera viewing angle:" << this->Camera->GetViewAngle() << endl;
 
 	this->ui->qvtkWidget->update(); // update main window!
 }
@@ -1043,7 +1059,9 @@ void MeshTools::DollyCameraForParallelScale()
 	this->Camera->GetFocalPoint(foc);	
 	double dist = sqrt(vtkMath::Distance2BetweenPoints(campos, foc));
 	//double dist = sqrt(pow((campos[0] - foc[0]), 2) + pow((campos[1] - foc[1]), 2) + pow((campos[2] - foc[2]), 2));
-	double newparallelscale = dist / 3.73;
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+
+	double newparallelscale = dist / multfactor;
 	this->Camera->SetParallelScale(newparallelscale);
 	
 }
@@ -1062,17 +1080,21 @@ void MeshTools::DollyCameraForPerspectiveMode()
 	double campos[3] = { 0,0,0 };
 	double foc[3] = { 0,0,0 };
 	double dispvector[3];
-	double multiply[3]{ 3.73,3.73,3.73};;
 	this->Camera->GetPosition(campos);
 	this->Camera->GetFocalPoint(foc);
-
+	double multfactor = 3.73; // at 30° vtk : angle = 2*atan((h/2)/d). 
+	// then 2*d  =12/tan(viewangle/2) 
+	multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	cout << "DollyCameraForPerspectiveMode" << endl;
+	cout << "multfactor" << multfactor << endl;
 	cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
 
 	vtkMath::Subtract(campos, foc, dispvector);		
 	cout<<"Disp Vector:" << dispvector[0] << ","<<dispvector[1] << "," << dispvector[2] << endl;
 	vtkMath::Normalize(dispvector);
 	cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
-	double newdist = 3.73 *this->Camera->GetParallelScale();
+	
+	double newdist = multfactor*this->Camera->GetParallelScale();
 	cout << "New dist:" << newdist << endl;
 	vtkMath::MultiplyScalar(dispvector, newdist);
 	cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
