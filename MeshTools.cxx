@@ -12,6 +12,7 @@
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkActor.h>
+#include <vtkOpenGLActor.h>
 #include <vtkMath.h>
 #include <vtkCamera.h>
 #include <vtkCenterOfMass.h>
@@ -586,10 +587,11 @@ void MeshTools::slotOpenMeshFile()
 			mapper->ImmediateModeRenderingOn();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			VTK_CREATE(vtkMTActor, actor);
+			//VTK_CREATE(vtkMTActor, actor);
+			VTK_CREATE(vtkOpenGLActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
 			actor->GetProperty()->SetOpacity(0.5);
-			actor->SetSelected(0);
+			//actor->SetSelected(0);
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
