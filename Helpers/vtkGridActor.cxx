@@ -69,8 +69,8 @@ vtkGridActor::vtkGridActor()
 	this->GridOutline = vtkActor::New();
 
 
-	GridLines->GetProperty()->SetOpacity(0.5);
-	GridOutline->GetProperty()->SetLineWidth(5);
+	GridLines->GetProperty()->SetOpacity(1);
+	GridOutline->GetProperty()->SetLineWidth(3);
 	// instanciate grid outilne!
 	/*this->CreateGridLines();
 	this->CreateGridOutline();

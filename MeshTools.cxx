@@ -64,35 +64,24 @@ void RubberBandSelect(vtkObject* caller,
 	props->InitTraversal();
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
-		vtkActor *myActor;
+		vtkMTActor *myActor;
 		vtkProp3D *myprop3D = props->GetNextProp3D();
-		vtkProp *prop = vtkProp::SafeDownCast(myprop3D);
-		myActor = vtkActor::SafeDownCast(myprop3D);
-		std::cout << "Picked prop: " <<  std::endl;
-		myActor->PrintSelf(cout, vtkIndent(2));
-		//vtkActorCollection *myactors;
-		//myprop3D->GetActors(myactors);
-		//vtkActor *firstActor = myactors->GetNextActor();
-
+		myActor = vtkMTActor::SafeDownCast(myprop3D);
+	//	myActor->PrintSelf(cout, vtkIndent(2));
+		
 		std::cout << "Actor prop:  class name:" << myActor->GetClassName() << std::endl;
-		//std::cout << "Picked Actor: " << firstActor->GetClassName()<< std::endl;
-		//prop->GetProperty()->SetColor(1, 0, 0);
-		
-		/*vtkPropCollection* propcoll;
-		prop->GetActors(propcoll);
-		
-		
-		propcoll->InitTraversal();
-		for (int j = 0; j < propcoll->GetNumberOfItems(); j++)
+		if (myActor->GetSelected() == 0)
 		{
-			vtkProp *myprop = propcoll->GetNextProp();
-			//std::cout << "Picked myprop: " << myprop<< std::endl;
-			
-			
-			//myprop->Get
-
-			
-		}*/
+			myActor->SetSelected(1);
+			myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+			myActor->GetProperty()->SetOpacity(1);
+		}
+		else
+		{
+			myActor->SetSelected(0);
+			myActor->GetProperty()->SetColor(0.5, 0, 0.5);
+			myActor->GetProperty()->SetOpacity(0.5);
+		}
 	}
 }
 
@@ -236,6 +225,7 @@ MeshTools::MeshTools()
 
 	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
 	this->GridActor->SetGridType(2);
+	
 	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	this->Renderer->AddActor(this->GridActor);
 
@@ -587,11 +577,11 @@ void MeshTools::slotOpenMeshFile()
 			mapper->ImmediateModeRenderingOn();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			//VTK_CREATE(vtkMTActor, actor);
-			VTK_CREATE(vtkOpenGLActor, actor);
+			VTK_CREATE(vtkMTActor, actor);
+			//VTK_CREATE(vtkOpenGLActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
 			actor->GetProperty()->SetOpacity(0.5);
-			//actor->SetSelected(0);
+			actor->SetSelected(0);
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
