@@ -25,13 +25,15 @@
 
 vtkStandardNewMacro(vtkInteractorStyleMT);
 
-#define VTKISRBP_ORIENT 0
-#define VTKISRBP_SELECT 1
-
+#define VTKISMT_ORIENT 0
+#define VTKISMT_SELECT 1
+#define VTKISMT_CTRPLRELEASE 0
+#define VTKISMT_CTRLPRESSED 1
 //--------------------------------------------------------------------------
 vtkInteractorStyleMT::vtkInteractorStyleMT()
 {
-  this->CurrentMode = VTKISRBP_ORIENT;
+  this->CurrentMode = VTKISMT_ORIENT;
+  this->CtrlPressed = VTKISMT_CTRPLRELEASE;
   this->StartPosition[0] = this->StartPosition[1] = 0;
   this->EndPosition[0] = this->EndPosition[1] = 0;
   this->Moving = 0;
@@ -47,9 +49,24 @@ vtkInteractorStyleMT::~vtkInteractorStyleMT()
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::StartSelect()
 {
-  this->CurrentMode = VTKISRBP_SELECT;
-}
+	this->CurrentMode = VTKISMT_SELECT;
 
+}
+//--------------------------------------------------------------------------
+  void vtkInteractorStyleMT::OnKeyPress()
+  {
+	// Get the keypress
+	vtkRenderWindowInteractor *rwi = this->Interactor;
+	std::string key = rwi->GetKeySym();
+	
+	// Output the key that was pressed
+	//std::cout << "Pressed " << key << std::endl;
+	
+
+
+	// Forward events
+	vtkInteractorStyleTrackballCamera::OnKeyPress();
+}
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::OnChar()
 {
@@ -58,13 +75,13 @@ void vtkInteractorStyleMT::OnChar()
     case 'r':
     case 'R':
       //r toggles the rubber band selection mode for mouse button 1
-      if (this->CurrentMode == VTKISRBP_ORIENT)
+      if (this->CurrentMode == VTKISMT_ORIENT)
       {
-        this->CurrentMode = VTKISRBP_SELECT;
+        this->CurrentMode = VTKISMT_SELECT;
       }
       else
       {
-        this->CurrentMode = VTKISRBP_ORIENT;
+        this->CurrentMode = VTKISMT_ORIENT;
       }
       break;
     case 'p' :
@@ -115,12 +132,12 @@ void vtkInteractorStyleMT::RubberStart()
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::OnRightButtonDown()
 {
-	this->CurrentMode = VTKISRBP_SELECT;
+	this->CurrentMode = VTKISMT_SELECT;
 	this->RubberStart();
 }
 void vtkInteractorStyleMT::OnLeftButtonDown()
 {
-  if (this->CurrentMode != VTKISRBP_SELECT)
+  if (this->CurrentMode != VTKISMT_SELECT)
   {
     //if not in rubber band mode, let the parent class handle it
     this->Superclass::OnLeftButtonDown();
@@ -135,7 +152,7 @@ void vtkInteractorStyleMT::OnLeftButtonDown()
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::OnMouseMove()
 {
-  if (this->CurrentMode != VTKISRBP_SELECT)
+  if (this->CurrentMode != VTKISMT_SELECT)
   {
     //if not in rubber band mode,  let the parent class handle it
     this->Superclass::OnMouseMove();
@@ -189,7 +206,7 @@ void vtkInteractorStyleMT::OnRightButtonUp()
 {
 	
 
-	if (this->CurrentMode != VTKISRBP_SELECT)
+	if (this->CurrentMode != VTKISMT_SELECT)
 	{
 		//if not in rubber band mode,  let the parent class handle it
 		this->Superclass::OnRightButtonUp();
@@ -197,12 +214,12 @@ void vtkInteractorStyleMT::OnRightButtonUp()
 	}
 	this->RubberStop();
 	
-	this->CurrentMode = VTKISRBP_ORIENT;
+	this->CurrentMode = VTKISMT_ORIENT;
 }
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::OnLeftButtonUp()
 {
-  if (this->CurrentMode != VTKISRBP_SELECT)
+  if (this->CurrentMode != VTKISMT_SELECT)
   {
     //if not in rubber band mode,  let the parent class handle it
     this->Superclass::OnLeftButtonUp();

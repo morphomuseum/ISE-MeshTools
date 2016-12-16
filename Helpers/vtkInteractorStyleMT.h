@@ -43,7 +43,8 @@ public:
   virtual void OnChar();
   virtual void RubberStart();
   virtual void RubberStop();
-
+  virtual void OnKeyPress();
+  
   //@}
 
 protected:
@@ -61,7 +62,7 @@ protected:
   vtkUnsignedCharArray *PixelArray;
 
   int CurrentMode;
-
+  int CtrlPressed;
 private:
   vtkInteractorStyleMT(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
   void operator=(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
