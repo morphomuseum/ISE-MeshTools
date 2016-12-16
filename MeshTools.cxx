@@ -7,6 +7,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
+#include "vtkInteractorStyleMT.h"
 
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
@@ -232,8 +233,8 @@ MeshTools::MeshTools()
 
 	//@@ rubber band selection!
 	
-	 vtkSmartPointer<vtkInteractorStyleRubberBandPick> style =
-    vtkSmartPointer<vtkInteractorStyleRubberBandPick>::New();
+	 vtkSmartPointer<vtkInteractorStyleMT> style =
+    vtkSmartPointer<vtkInteractorStyleMT>::New();
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =
@@ -569,17 +570,49 @@ void MeshTools::slotOpenMeshFile()
 			}
 			// to change... 
 			newname = CheckingName(newname, 0);
+			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
+			{
+				MyPolyData->GetPointData()->SetScalars(NULL);
+				cout << "found RGB colours! "<<endl;
+			}
+			/*
+			vtkSmartPointer<vtkUnsignedCharArray> newcolors =
+			vtkSmartPointer<vtkUnsignedCharArray>::New();
+			newcolors->SetNumberOfComponents(4);
+			newcolors->SetNumberOfTuples(numpoints);
+			//ici init_RGB ou RGB_i
+			if ((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB") != NULL) {
+			newcolors->DeepCopy((vtkUnsignedCharArray*)MyObj->GetPointData()->GetScalars("RGB"));
 
+			for (int i = 0; i < numpoints; i++)
+			{
+			if (i < 100)
+			{
+			cout << newcolors->GetComponent(i, 0) << "," << newcolors->GetComponent(i, 1)
+			<< "," << newcolors->GetComponent(i, 2) << std::endl;
+			}
+			//newcolors->SetComponent(i, 3, 255.);
 
+			}
+
+			cout << "found RGB colours: ";
+			newcolors->SetName("Init_RGB");
+			My_Obj->GetPointData()->AddArray(newcolors);
+			}
+			
+			*/
 
 			// Mapper
 			VTK_CREATE(vtkPolyDataMapper, mapper);
 			mapper->ImmediateModeRenderingOn();
+			//mapper->SetColorModeToDirectScalars();
+			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
 			VTK_CREATE(vtkMTActor, actor);
 			//VTK_CREATE(vtkOpenGLActor, actor);
 			actor->GetProperty()->SetColor(0.5, 1, 0.5);
+			
 			actor->GetProperty()->SetOpacity(0.5);
 			actor->SetSelected(0);
 			actor->SetMapper(mapper);
