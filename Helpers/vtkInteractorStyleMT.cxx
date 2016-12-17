@@ -27,13 +27,13 @@ vtkStandardNewMacro(vtkInteractorStyleMT);
 
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
-#define VTKISMT_CTRPLRELEASE 0
-#define VTKISMT_CTRLPRESSED 1
+#define CTRL_RELEASED 0
+#define CTRL_PRESSED 1
 //--------------------------------------------------------------------------
 vtkInteractorStyleMT::vtkInteractorStyleMT()
 {
   this->CurrentMode = VTKISMT_ORIENT;
-  this->CtrlPressed = VTKISMT_CTRPLRELEASE;
+  this->Ctrl = CTRL_RELEASED;
   this->StartPosition[0] = this->StartPosition[1] = 0;
   this->EndPosition[0] = this->EndPosition[1] = 0;
   this->Moving = 0;
@@ -61,12 +61,34 @@ void vtkInteractorStyleMT::StartSelect()
 	
 	// Output the key that was pressed
 	//std::cout << "Pressed " << key << std::endl;
-	
+	if (key.compare("Control_L") == 0)
+	{
+		this->Ctrl = CTRL_PRESSED;
+		std::cout << key<< "Pressed" << '\n';
+	}
 
 
 	// Forward events
 	vtkInteractorStyleTrackballCamera::OnKeyPress();
 }
+  void vtkInteractorStyleMT::OnKeyRelease()
+  {
+	  // Get the keypress
+	  vtkRenderWindowInteractor *rwi = this->Interactor;
+	  std::string key = rwi->GetKeySym();
+
+	  // Output the key that was pressed
+	  //std::cout << "Pressed " << key << std::endl;
+	  if (key.compare("Control_L") == 0)
+	  {
+		  this->Ctrl = CTRL_RELEASED;
+		  std::cout << key << "Released" << '\n';
+	  }
+
+
+	  // Forward events
+	  vtkInteractorStyleTrackballCamera::OnKeyRelease();
+  }
 //--------------------------------------------------------------------------
 void vtkInteractorStyleMT::OnChar()
 {

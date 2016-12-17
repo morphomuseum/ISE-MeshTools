@@ -40,11 +40,13 @@ public:
   virtual void OnLeftButtonUp();
   virtual void OnRightButtonDown();
   virtual void OnRightButtonUp();
+  virtual void OnMiddleButtonDown();
+  virtual void OnMiddleButtonUp();
   virtual void OnChar();
   virtual void RubberStart();
   virtual void RubberStop();
   virtual void OnKeyPress();
-  
+  virtual void OnKeyRelease();
   //@}
 
 protected:
@@ -62,7 +64,7 @@ protected:
   vtkUnsignedCharArray *PixelArray;
 
   int CurrentMode;
-  int CtrlPressed;
+  int Ctrl;
 private:
   vtkInteractorStyleMT(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
   void operator=(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
