@@ -235,6 +235,7 @@ MeshTools::MeshTools()
 	
 	 vtkSmartPointer<vtkInteractorStyleMT> style =
     vtkSmartPointer<vtkInteractorStyleMT>::New();
+	 style->SetActorCollection(this->ActorCollection);
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =

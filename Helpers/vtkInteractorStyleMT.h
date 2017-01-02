@@ -18,7 +18,8 @@
 #ifndef vtkInteractorStyleMT_h
 #define vtkInteractorStyleMT_h
 
-#include "vtkInteractorStyleTrackballCamera.h"
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkSmartPointer.h>
 
 class vtkUnsignedCharArray;
 
@@ -49,7 +50,13 @@ public:
   virtual void OnKeyRelease();
   //@}
 
+  virtual void RotateActors();
+  virtual void SpinActors();
+  virtual void PanActors();
+  virtual void DollyActors();
+  void SetActorCollection(vtkSmartPointer<vtkActorCollection>ActColl);
 protected:
+  
   vtkInteractorStyleMT();
   ~vtkInteractorStyleMT();
 
@@ -65,9 +72,18 @@ protected:
 
   int CurrentMode;
   int Ctrl;
+  //vtkProp3D *InteractionProp;
+  vtkSmartPointer<vtkActorCollection> ActorCollection;
 private:
-  vtkInteractorStyleMT(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
+#if VTK_MINOR_VERSION >= 1
+	vtkInteractorStyleMT(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
+	void operator=(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
+#else
+	vtkInteractorStyleMT(const vtkInteractorStyleMT&);  // Not implemented
+	void operator=(const vtkInteractorStyleMT&);  // Not implemented
+#endif
+
+  
 };
 
 #endif
