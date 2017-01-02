@@ -20,6 +20,7 @@
 
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkSmartPointer.h>
+#include <vtkActorCollection.h>
 
 class vtkUnsignedCharArray;
 
