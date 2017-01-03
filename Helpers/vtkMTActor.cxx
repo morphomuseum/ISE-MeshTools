@@ -18,6 +18,7 @@ vtkStandardNewMacro(vtkMTActor);
 vtkMTActor::vtkMTActor()
 {
 	this->Selected = 1;
+	this->Changed = 0;
 	
 }
 

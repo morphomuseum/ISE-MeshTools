@@ -15,20 +15,20 @@
 =========================================================================*/
 
 
-#ifndef vtkInteractorStyleMT_h
-#define vtkInteractorStyleMT_h
-
+#ifndef vtkMTInteractorStyle_h
+#define vtkMTInteractorStyle_h
+#include "vtkMTActorCollection.h"
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkSmartPointer.h>
-#include <vtkActorCollection.h>
+
 
 class vtkUnsignedCharArray;
 
-class  vtkInteractorStyleMT : public vtkInteractorStyleTrackballCamera
+class  vtkMTInteractorStyle : public vtkInteractorStyleTrackballCamera
 {
 public:
-  static vtkInteractorStyleMT *New();
-  vtkTypeMacro(vtkInteractorStyleMT, vtkInteractorStyleTrackballCamera);
+  static vtkMTInteractorStyle *New();
+  vtkTypeMacro(vtkMTInteractorStyle, vtkInteractorStyleTrackballCamera);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   void StartSelect();
@@ -54,12 +54,18 @@ public:
   virtual void RotateActors();
   virtual void SpinActors();
   virtual void PanActors();
-  virtual void DollyActors();
-  void SetActorCollection(vtkSmartPointer<vtkActorCollection>ActColl);
+  
+  void SetActorCollection(vtkSmartPointer<vtkMTActorCollection>ActColl);
 protected:
   
-  vtkInteractorStyleMT();
-  ~vtkInteractorStyleMT();
+  vtkMTInteractorStyle();
+  ~vtkMTInteractorStyle();
+
+  void Prop3DTransform(vtkProp3D *prop3D,
+	  double *boxCenter,
+	  int NumRotation,
+	  double **rotate,
+	  double *scale);
 
   virtual void Pick();
   void RedrawRubberBand();
@@ -74,14 +80,14 @@ protected:
   int CurrentMode;
   int Ctrl;
   //vtkProp3D *InteractionProp;
-  vtkSmartPointer<vtkActorCollection> ActorCollection;
+  vtkSmartPointer<vtkMTActorCollection> ActorCollection;
 private:
 #if VTK_MINOR_VERSION >= 1
-	vtkInteractorStyleMT(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
-	void operator=(const vtkInteractorStyleMT&) VTK_DELETE_FUNCTION;
+	vtkMTInteractorStyle(const vtkMTInteractorStyle&) VTK_DELETE_FUNCTION;
+	void operator=(const vtkMTInteractorStyle&) VTK_DELETE_FUNCTION;
 #else
-	vtkInteractorStyleMT(const vtkInteractorStyleMT&);  // Not implemented
-	void operator=(const vtkInteractorStyleMT&);  // Not implemented
+	vtkMTInteractorStyle(const vtkMTInteractorStyle&);  // Not implemented
+	void operator=(const vtkMTInteractorStyle&);  // Not implemented
 #endif
 
   

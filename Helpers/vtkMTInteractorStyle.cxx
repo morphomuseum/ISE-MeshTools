@@ -12,8 +12,10 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkInteractorStyleMT.h"
+#include "vtkMTInteractorStyle.h"
+#include "vtkMTActor.h"
 
+#include <vtkTransform.h>
 #include <vtkCamera.h>
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
@@ -28,7 +30,7 @@
 #include <vtkCallbackCommand.h>
 #include <vtkSmartPointer.h>
 
-vtkStandardNewMacro(vtkInteractorStyleMT);
+vtkStandardNewMacro(vtkMTInteractorStyle);
 
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
@@ -36,7 +38,7 @@ vtkStandardNewMacro(vtkInteractorStyleMT);
 #define CTRL_PRESSED 1
 //--------------------------------------------------------------------------
 
-vtkInteractorStyleMT::vtkInteractorStyleMT()
+vtkMTInteractorStyle::vtkMTInteractorStyle()
 {
 	this->CurrentMode = VTKISMT_ORIENT;
 	this->Ctrl = CTRL_RELEASED;
@@ -44,28 +46,28 @@ vtkInteractorStyleMT::vtkInteractorStyleMT()
 	this->EndPosition[0] = this->EndPosition[1] = 0;
 	this->Moving = 0;
 	this->PixelArray = vtkUnsignedCharArray::New();
-	this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
+	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 }
 
-void vtkInteractorStyleMT::SetActorCollection(vtkSmartPointer<vtkActorCollection> ActColl)
+void vtkMTInteractorStyle::SetActorCollection(vtkSmartPointer<vtkMTActorCollection> ActColl)
 {
 	this->ActorCollection = ActColl;
 }
 
 //--------------------------------------------------------------------------
-vtkInteractorStyleMT::~vtkInteractorStyleMT()
+vtkMTInteractorStyle::~vtkMTInteractorStyle()
 {
   this->PixelArray->Delete();
 }
 
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::StartSelect()
+void vtkMTInteractorStyle::StartSelect()
 {
 	this->CurrentMode = VTKISMT_SELECT;
 
 }
 //--------------------------------------------------------------------------
-  void vtkInteractorStyleMT::OnKeyPress()
+  void vtkMTInteractorStyle::OnKeyPress()
   {
 	// Get the keypress
 	vtkRenderWindowInteractor *rwi = this->Interactor;
@@ -76,14 +78,14 @@ void vtkInteractorStyleMT::StartSelect()
 	if (key.compare("Control_L") == 0)
 	{
 		this->Ctrl = CTRL_PRESSED;
-		std::cout << key<< "Pressed" << '\n';
+		//std::cout << key<< "Pressed" << '\n';
 	}
 
 
 	// Forward events
 	vtkInteractorStyleTrackballCamera::OnKeyPress();
 }
-  void vtkInteractorStyleMT::OnKeyRelease()
+  void vtkMTInteractorStyle::OnKeyRelease()
   {
 	  // Get the keypress
 	  vtkRenderWindowInteractor *rwi = this->Interactor;
@@ -94,7 +96,7 @@ void vtkInteractorStyleMT::StartSelect()
 	  if (key.compare("Control_L") == 0)
 	  {
 		  this->Ctrl = CTRL_RELEASED;
-		  std::cout << key << "Released" << '\n';
+		 // std::cout << key << "Released" << '\n';
 	  }
 
 
@@ -102,7 +104,7 @@ void vtkInteractorStyleMT::StartSelect()
 	  vtkInteractorStyleTrackballCamera::OnKeyRelease();
   }
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::OnChar()
+void vtkMTInteractorStyle::OnChar()
 {
   switch (this->Interactor->GetKeyCode())
   {
@@ -136,7 +138,7 @@ void vtkInteractorStyleMT::OnChar()
   }
 }
 
-void vtkInteractorStyleMT::RubberStart()
+void vtkMTInteractorStyle::RubberStart()
 {
 	if (!this->Interactor)
 	{
@@ -164,12 +166,32 @@ void vtkInteractorStyleMT::RubberStart()
 	this->FindPokedRenderer(this->StartPosition[0], this->StartPosition[1]);
 }
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::OnRightButtonDown()
+void vtkMTInteractorStyle::OnRightButtonDown()
 {
-	this->CurrentMode = VTKISMT_SELECT;
-	this->RubberStart();
+	
+	if (this->Ctrl != CTRL_PRESSED)
+	{
+		this->CurrentMode = VTKISMT_SELECT;
+		this->RubberStart();
+	}
+	else
+	{
+		int x = this->Interactor->GetEventPosition()[0];
+		int y = this->Interactor->GetEventPosition()[1];
+
+		this->FindPokedRenderer(x, y);
+		if (this->CurrentRenderer == NULL)
+		{
+			return;
+		}
+
+		this->GrabFocus(this->EventCallbackCommand);
+		this->StartSpin();
+	}
+
+	
 }
-void vtkInteractorStyleMT::OnLeftButtonDown()
+void vtkMTInteractorStyle::OnLeftButtonDown()
 {
   if (this->CurrentMode != VTKISMT_SELECT)
   {
@@ -194,8 +216,8 @@ void vtkInteractorStyleMT::OnLeftButtonDown()
 
 		  this->GrabFocus(this->EventCallbackCommand);
 		 
-		  cout << "StartSpin CTRL" << endl;
-		  this->StartSpin();
+		  //cout << "Start Rotate CTRL" << endl;
+		  this->StartRotate();
 		 
 
 	  }
@@ -208,7 +230,7 @@ void vtkInteractorStyleMT::OnLeftButtonDown()
 
 
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::OnMouseMove()
+void vtkMTInteractorStyle::OnMouseMove()
 {
   if (this->CurrentMode != VTKISMT_SELECT )
   {
@@ -227,6 +249,7 @@ void vtkInteractorStyleMT::OnMouseMove()
 		  {
 		  case VTKIS_ROTATE:
 			  this->FindPokedRenderer(x, y);
+			  //cout << "RotateActors is called" << endl;
 			  this->RotateActors();
 			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
 			  break;
@@ -235,13 +258,7 @@ void vtkInteractorStyleMT::OnMouseMove()
 			  this->FindPokedRenderer(x, y);
 			  this->PanActors();
 			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
-			  break;
-
-		  case VTKIS_DOLLY:
-			  this->FindPokedRenderer(x, y);
-			  this->DollyActors();
-			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
-			  break;
+			  break;		  
 
 		  case VTKIS_SPIN:
 			  this->FindPokedRenderer(x, y);
@@ -282,7 +299,7 @@ void vtkInteractorStyleMT::OnMouseMove()
   this->RedrawRubberBand();
 }
 
-void vtkInteractorStyleMT::RubberStop()
+void vtkMTInteractorStyle::RubberStop()
 {
 	if (!this->Interactor || !this->Moving)
 	{
@@ -298,22 +315,48 @@ if ((this->StartPosition[0] != this->EndPosition[0])
 this->Moving = 0;
 }
 
-void vtkInteractorStyleMT::OnRightButtonUp()
-{
-	
-
+void vtkMTInteractorStyle::OnRightButtonUp()
+{	
 	if (this->CurrentMode != VTKISMT_SELECT)
 	{
+		
+		if (this->Ctrl != CTRL_PRESSED)
+		{
+			//if not in rubber band mode,  let the parent class handle it
+			this->Superclass::OnRightButtonUp();
+		}
+		else
+		{
+			switch (this->State)
+			{
+			case VTKIS_PAN:
+				this->EndPan();
+				break;
+
+			case VTKIS_SPIN:
+				this->EndSpin();
+				break;
+
+			case VTKIS_ROTATE:
+				//cout << "End rotate" << endl;
+				this->EndRotate();
+				break;
+			}
+
+			if (this->Interactor)
+			{
+				this->ReleaseFocus();
+			}
+		}
 		//if not in rubber band mode,  let the parent class handle it
-		this->Superclass::OnRightButtonUp();
+		
 		return;
 	}
-	this->RubberStop();
-	
+	this->RubberStop();	
 	this->CurrentMode = VTKISMT_ORIENT;
 }
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::OnLeftButtonUp()
+void vtkMTInteractorStyle::OnLeftButtonUp()
 {
   if (this->CurrentMode != VTKISMT_SELECT)
   {
@@ -335,6 +378,7 @@ void vtkInteractorStyleMT::OnLeftButtonUp()
 		  break;
 
 	  case VTKIS_ROTATE:
+		  //cout << "End rotate" << endl;
 		  this->EndRotate();
 		  break;
 	  }
@@ -350,7 +394,7 @@ void vtkInteractorStyleMT::OnLeftButtonUp()
 
 }
 
-void vtkInteractorStyleMT::OnMiddleButtonDown()
+void vtkMTInteractorStyle::OnMiddleButtonDown()
 {
 	if (this->Ctrl != CTRL_PRESSED)
 	{
@@ -365,54 +409,63 @@ void vtkInteractorStyleMT::OnMiddleButtonDown()
 		this->FindPokedRenderer(x, y);
 		//this->FindPickedActor(x, y);
 		if (this->CurrentRenderer == NULL 
-			//|| this->InteractionProp == NULL
+			|| this->ActorCollection == NULL
 			)
 		{
 			return;
 		}
 
 		this->GrabFocus(this->EventCallbackCommand);
-		if (this->Interactor->GetControlKey())
-		{
-			this->StartDolly();
-		}
-		else
-		{
-			this->StartPan();
-		}
+		
+		this->StartPan();
+		
 	}
 }
 
 //----------------------------------------------------------------------------
-void vtkInteractorStyleMT::OnMiddleButtonUp()
+void vtkMTInteractorStyle::OnMiddleButtonUp()
 {
-	if (this->Ctrl != CTRL_PRESSED)
+	if (this->CurrentMode != VTKISMT_SELECT)
 	{
+
+		if (this->Ctrl != CTRL_PRESSED)
+		{
+			//if not in rubber band mode,  let the parent class handle it
+			this->Superclass::OnMiddleButtonUp();
+		}
+		else
+		{
+			switch (this->State)
+			{
+			case VTKIS_PAN:
+				this->EndPan();
+				break;
+
+			case VTKIS_SPIN:
+				this->EndSpin();
+				break;
+
+			case VTKIS_ROTATE:
+				//cout << "End rotate" << endl;
+				this->EndRotate();
+				break;
+			}
+
+			if (this->Interactor)
+			{
+				this->ReleaseFocus();
+			}
+		}
 		//if not in rubber band mode,  let the parent class handle it
-		this->Superclass::OnMiddleButtonUp();
-	}
-	else
-	{
-		switch (this->State)
-		{
-		case VTKIS_DOLLY:
-			this->EndDolly();
-			break;
 
-		case VTKIS_PAN:
-			this->EndPan();
-			break;
-		}
-
-		if (this->Interactor)
-		{
-			this->ReleaseFocus();
-		}
+		return;
 	}
+
+		
 }
 
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::RedrawRubberBand()
+void vtkMTInteractorStyle::RedrawRubberBand()
 {
   //update the rubber band on the screen
   int *size = this->Interactor->GetRenderWindow()->GetSize();
@@ -470,7 +523,7 @@ void vtkInteractorStyleMT::RedrawRubberBand()
 }
 
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::Pick()
+void vtkMTInteractorStyle::Pick()
 {
   //find rubber band lower left, upper right and center
   double rbcenter[3];
@@ -542,7 +595,7 @@ void vtkInteractorStyleMT::Pick()
 }
 
 
-void vtkInteractorStyleMT::RotateActors()
+void vtkMTInteractorStyle::RotateActors()
 {
 	if (this->CurrentRenderer == NULL 
 		|| this->ActorCollection == NULL
@@ -556,10 +609,21 @@ void vtkInteractorStyleMT::RotateActors()
 
 	// First get the origin of the assembly
 	/*double *obj_center = this->InteractionProp->GetCenter();*/
-	double obj_center[3] = { 0,0, 0 };
-	double boundRadius = 10;
+	double *rot_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
+	double boundRadius = this->ActorCollection->GetBoundingBoxLengthOfSelectedActors();
+	//cout << "Bound Radius: " << boundRadius << endl;
+	if (boundRadius == std::numeric_limits<double>::infinity())
+	{
+		boundRadius = 60;
+	}
+	else
+	{
+		boundRadius *= 0.5;
+	}
 	// GetLength gets the length of the diagonal of the bounding box
 	/*double boundRadius = this->InteractionProp->GetLength() * 0.5;*/
+
 
 	// Get the view up and view right vectors
 	double view_up[3], view_look[3], view_right[3];
@@ -575,14 +639,14 @@ void vtkInteractorStyleMT::RotateActors()
 	// Get the furtherest point from object position+origin
 	double outsidept[3];
 
-	outsidept[0] = obj_center[0] + view_right[0] * boundRadius;
-	outsidept[1] = obj_center[1] + view_right[1] * boundRadius;
-	outsidept[2] = obj_center[2] + view_right[2] * boundRadius;
+	outsidept[0] = rot_center[0] + view_right[0] * boundRadius;
+	outsidept[1] = rot_center[1] + view_right[1] * boundRadius;
+	outsidept[2] = rot_center[2] + view_right[2] * boundRadius;
 
 	// Convert them to display coord
 	double disp_obj_center[3];
 
-	this->ComputeWorldToDisplay(obj_center[0], obj_center[1], obj_center[2],
+	this->ComputeWorldToDisplay(rot_center[0], rot_center[1], rot_center[2],
 		disp_obj_center);
 
 	this->ComputeWorldToDisplay(outsidept[0], outsidept[1], outsidept[2],
@@ -624,12 +688,34 @@ void vtkInteractorStyleMT::RotateActors()
 		rotate[1][2] = view_right[1];
 		rotate[1][3] = view_right[2];
 
+		this->ActorCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				//cout << "Apply prop3Dtransform" << endl;
+				for (vtkIdType j = 0; j < 2; j++)
+				{
+					for (vtkIdType k = 0; k < 4; k++)
+					{
+						//cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
 
-		/*this->Prop3DTransform(this->InteractionProp,
-			obj_center,
-			2,
-			rotate,
-			scale);*/
+					}
+				}
+				
+				//cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
+				
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				myActor->SetChanged(1);
+			}
+		}
+		
 
 		delete[] rotate[0];
 		delete[] rotate[1];
@@ -645,7 +731,7 @@ void vtkInteractorStyleMT::RotateActors()
 }
 
 //----------------------------------------------------------------------------
-void vtkInteractorStyleMT::SpinActors()
+void vtkMTInteractorStyle::SpinActors()
 {
 	if (this->CurrentRenderer == NULL 
 		|| this->ActorCollection == NULL
@@ -659,8 +745,8 @@ void vtkInteractorStyleMT::SpinActors()
 
 	// Get the axis to rotate around = vector from eye to origin
 
-	/*double *obj_center = this->InteractionProp->GetCenter();*/
-	double obj_center[3] = { 0,0, 0 };
+	double *spin_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	//double obj_center[3] = { 0,0, 0 };
 	
 	double motion_vector[3];
 	double view_point[3];
@@ -675,15 +761,15 @@ void vtkInteractorStyleMT::SpinActors()
 	{
 		// Perspective projection, get vector from eye to center of actor
 		cam->GetPosition(view_point);
-		motion_vector[0] = view_point[0] - obj_center[0];
-		motion_vector[1] = view_point[1] - obj_center[1];
-		motion_vector[2] = view_point[2] - obj_center[2];
+		motion_vector[0] = view_point[0] - spin_center[0];
+		motion_vector[1] = view_point[1] - spin_center[1];
+		motion_vector[2] = view_point[2] - spin_center[2];
 		vtkMath::Normalize(motion_vector);
 	}
 
 	double disp_obj_center[3];
 
-	this->ComputeWorldToDisplay(obj_center[0], obj_center[1], obj_center[2],
+	this->ComputeWorldToDisplay(spin_center[0], spin_center[1], spin_center[2],
 		disp_obj_center);
 
 	double newAngle =
@@ -705,11 +791,23 @@ void vtkInteractorStyleMT::SpinActors()
 	rotate[0][2] = motion_vector[1];
 	rotate[0][3] = motion_vector[2];
 
-	/*this->Prop3DTransform(this->InteractionProp,
-		obj_center,
-		1,
-		rotate,
-		scale);*/
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor= vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			myActor->SetChanged(1);
+		}
+		
+	}
+	
 
 	delete[] rotate[0];
 	delete[] rotate;
@@ -723,7 +821,7 @@ void vtkInteractorStyleMT::SpinActors()
 }
 
 //----------------------------------------------------------------------------
-void vtkInteractorStyleMT::PanActors()
+void vtkMTInteractorStyle::PanActors()
 {
 	if (this->CurrentRenderer == NULL 
 		|| this->ActorCollection == NULL)
@@ -735,13 +833,13 @@ void vtkInteractorStyleMT::PanActors()
 
 	// Use initial center as the origin from which to pan
 
-	/*double *obj_center = this->InteractionProp->GetCenter();*/
+	double *pan_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
 
 	double disp_obj_center[3], new_pick_point[4];
 	double old_pick_point[4], motion_vector[3];
 
-/*	this->ComputeWorldToDisplay(obj_center[0], obj_center[1], obj_center[2],
-		disp_obj_center);*/
+	this->ComputeWorldToDisplay(pan_center[0], pan_center[1], pan_center[2],
+		disp_obj_center);
 
 	this->ComputeDisplayToWorld(rwi->GetEventPosition()[0],
 		rwi->GetEventPosition()[1],
@@ -757,21 +855,33 @@ void vtkInteractorStyleMT::PanActors()
 	motion_vector[1] = new_pick_point[1] - old_pick_point[1];
 	motion_vector[2] = new_pick_point[2] - old_pick_point[2];
 
-	/*if (this->InteractionProp->GetUserMatrix() != NULL)
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
-		vtkTransform *t = vtkTransform::New();
-		t->PostMultiply();
-		t->SetMatrix(this->InteractionProp->GetUserMatrix());
-		t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
-		this->InteractionProp->GetUserMatrix()->DeepCopy(t->GetMatrix());
-		t->Delete();
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			myActor->SetChanged(1);
+		}
 	}
-	else
-	{
-		this->InteractionProp->AddPosition(motion_vector[0],
-			motion_vector[1],
-			motion_vector[2]);
-	}*/
+
+	
 
 	if (this->AutoAdjustCameraClippingRange)
 	{
@@ -781,60 +891,67 @@ void vtkInteractorStyleMT::PanActors()
 	rwi->Render();
 }
 
-//----------------------------------------------------------------------------
-void vtkInteractorStyleMT::DollyActors()
-{
-	if (this->CurrentRenderer == NULL 
-		|| this->ActorCollection== NULL)
-	{
-		return;
-	}
 
-	vtkRenderWindowInteractor *rwi = this->Interactor;
-	vtkCamera *cam = this->CurrentRenderer->GetActiveCamera();
-
-	double view_point[3], view_focus[3];
-	double motion_vector[3];
-
-	cam->GetPosition(view_point);
-	cam->GetFocalPoint(view_focus);
-
-	double *center = this->CurrentRenderer->GetCenter();
-
-	int dy = rwi->GetEventPosition()[1] - rwi->GetLastEventPosition()[1];
-	double yf = dy / center[1] * this->MotionFactor;
-	double dollyFactor = pow(1.1, yf);
-
-	dollyFactor -= 1.0;
-	motion_vector[0] = (view_point[0] - view_focus[0]) * dollyFactor;
-	motion_vector[1] = (view_point[1] - view_focus[1]) * dollyFactor;
-	motion_vector[2] = (view_point[2] - view_focus[2]) * dollyFactor;
-
-	/*if (this->InteractionProp->GetUserMatrix() != NULL)
-	{
-		vtkTransform *t = vtkTransform::New();
-		t->PostMultiply();
-		t->SetMatrix(this->InteractionProp->GetUserMatrix());
-		t->Translate(motion_vector[0], motion_vector[1],
-			motion_vector[2]);
-		this->InteractionProp->GetUserMatrix()->DeepCopy(t->GetMatrix());
-		t->Delete();
-	}
-	else
-	{
-		this->InteractionProp->AddPosition(motion_vector);
-	}*/
-
-	if (this->AutoAdjustCameraClippingRange)
-	{
-		this->CurrentRenderer->ResetCameraClippingRange();
-	}
-
-	rwi->Render();
-}
 
 //--------------------------------------------------------------------------
-void vtkInteractorStyleMT::PrintSelf(ostream& os, vtkIndent indent)
+void vtkMTInteractorStyle::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
+}
+void vtkMTInteractorStyle::Prop3DTransform(vtkProp3D *prop3D,
+	double *boxCenter,
+	int numRotation,
+	double **rotate,
+	double *scale)
+{
+	vtkMatrix4x4 *oldMatrix = vtkMatrix4x4::New();
+	prop3D->GetMatrix(oldMatrix);
+
+	double orig[3];
+	prop3D->GetOrigin(orig);
+
+	vtkTransform *newTransform = vtkTransform::New();
+	newTransform->PostMultiply();
+	if (prop3D->GetUserMatrix() != NULL)
+	{
+		newTransform->SetMatrix(prop3D->GetUserMatrix());
+	}
+	else
+	{
+		newTransform->SetMatrix(oldMatrix);
+	}
+
+	newTransform->Translate(-(boxCenter[0]), -(boxCenter[1]), -(boxCenter[2]));
+
+	for (int i = 0; i < numRotation; i++)
+	{
+		newTransform->RotateWXYZ(rotate[i][0], rotate[i][1],
+			rotate[i][2], rotate[i][3]);
+	}
+
+	if ((scale[0] * scale[1] * scale[2]) != 0.0)
+	{
+		newTransform->Scale(scale[0], scale[1], scale[2]);
+	}
+
+	newTransform->Translate(boxCenter[0], boxCenter[1], boxCenter[2]);
+
+	// now try to get the composit of translate, rotate, and scale
+	newTransform->Translate(-(orig[0]), -(orig[1]), -(orig[2]));
+	newTransform->PreMultiply();
+	newTransform->Translate(orig[0], orig[1], orig[2]);
+
+	if (prop3D->GetUserMatrix() != NULL)
+	{
+		// apply new transform to prop3D
+		newTransform->GetMatrix(prop3D->GetUserMatrix());
+	}
+	else
+	{
+		prop3D->SetPosition(newTransform->GetPosition());
+		prop3D->SetScale(newTransform->GetScale());
+		prop3D->SetOrientation(newTransform->GetOrientation());
+	}
+	oldMatrix->Delete();
+	newTransform->Delete();
 }

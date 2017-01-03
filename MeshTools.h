@@ -17,10 +17,11 @@
 
 #include "vtkGridActor.h"
 #include "vtkOrientationHelperWidget.h"
+#include "vtkMTActorCollection.h"
 
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkAreaPicker.h>   
-#include <vtkActorCollection.h>
+
 #include <vtkRenderer.h>
 #include <vtkImageData.h>
 #include <vtkCamera.h>
@@ -48,7 +49,7 @@ public:
   ~MeshTools();
   
   
-  vtkSmartPointer<vtkActorCollection> ActorCollection;
+  vtkSmartPointer<vtkMTActorCollection> ActorCollection;
   vtkSmartPointer<vtkRenderer> Renderer;
   vtkSmartPointer<vtkCamera> Camera;
   vtkSmartPointer<vtkGridActor> GridActor;
@@ -95,7 +96,7 @@ private:
 	void saveSettings();
 	void UpdateRenderer();
 	double GetGlobalBoundingBoxLength();
-	void GetGlobalCenterOfMass(double center[3]);
+	
 	std::string CheckingName(std::string name_obj, int cpt_name);
 
   vtkSmartPointer<vtkQtTableView>         TableView;

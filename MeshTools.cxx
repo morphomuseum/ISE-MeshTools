@@ -7,7 +7,8 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
-#include "vtkInteractorStyleMT.h"
+#include "vtkMTInteractorStyle.h"
+#include "vtkMTActorCollection.h"
 
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
@@ -63,6 +64,7 @@ void RubberBandSelect(vtkObject* caller,
 	//vtkPropCollection* props = areaPicker->GetPrGetProps();
 	//props->PrintSelf(cout, vtkIndent(2));
 	props->InitTraversal();
+	
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		vtkMTActor *myActor;
@@ -73,12 +75,14 @@ void RubberBandSelect(vtkObject* caller,
 		std::cout << "Actor prop:  class name:" << myActor->GetClassName() << std::endl;
 		if (myActor->GetSelected() == 0)
 		{
+			myActor->SetChanged(1);
 			myActor->SetSelected(1);
 			myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
 			myActor->GetProperty()->SetOpacity(1);
 		}
 		else
 		{
+			myActor->SetChanged(1);
 			myActor->SetSelected(0);
 			myActor->GetProperty()->SetColor(0.5, 0, 0.5);
 			myActor->GetProperty()->SetOpacity(0.5);
@@ -130,7 +134,7 @@ MeshTools::MeshTools()
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
-	this->ActorCollection = vtkSmartPointer<vtkActorCollection>::New();
+	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
 
 
@@ -233,8 +237,8 @@ MeshTools::MeshTools()
 
 	//@@ rubber band selection!
 	
-	 vtkSmartPointer<vtkInteractorStyleMT> style =
-    vtkSmartPointer<vtkInteractorStyleMT>::New();
+	 vtkSmartPointer<vtkMTInteractorStyle> style =
+    vtkSmartPointer<vtkMTInteractorStyle>::New();
 	 style->SetActorCollection(this->ActorCollection);
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
@@ -312,49 +316,7 @@ void MeshTools::UpdateRenderer()
 	//}
 }
 
-//Get BoundingBoxLenght of all actors in this->ActorCollection
-void MeshTools::GetGlobalCenterOfMass(double center[3])
-{
-	//double globalcm[3];
-	center[0] = 0;
-	center[1] = 0;
-	center[2] = 0;
 
-	vtkIdType globalvn = 0;
-	vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
-		vtkSmartPointer<vtkCenterOfMass>::New();
-	this->ActorCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
-	{
-		vtkActor* actor = this->ActorCollection->GetNextActor();
-
-		centerOfMassFilter->SetInputData(actor->GetMapper()->GetInput());
-		centerOfMassFilter->SetUseScalarsAsWeights(false);
-		double acenter[3];
-		centerOfMassFilter->Update();
-		centerOfMassFilter->GetCenter(acenter);
-		vtkIdType vertnum = actor->GetMapper()->GetInput()->GetNumberOfPoints();
-		center[0] += acenter[0] * vertnum;
-		center[1] += acenter[1] * vertnum;
-		center[2] += acenter[2] * vertnum;
-		globalvn += vertnum;
-		cout << "Total VN = " << globalvn << endl;
-	}
-	cout << "Result: Total VN = " << globalvn << endl;
-	if (globalvn > 0)
-	{
-		center[0] /= globalvn;
-		center[1] /= globalvn;
-		center[2] /= globalvn;
-
-	}
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
-	{
-		this->GridActor->SetGridOrigin(center);
-	}
-
-
-}
 double MeshTools::GetGlobalBoundingBoxLength()
 {
 	double largestbounds[6];
@@ -619,7 +581,7 @@ void MeshTools::slotOpenMeshFile()
 			actor->SetMapper(mapper);
 			this->Renderer->AddActor(actor);
 			this->ActorCollection->AddItem(actor);
-
+			this->ActorCollection->SetChanged(1);
 			
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->ReplaceCameraAndGrid();
@@ -756,9 +718,11 @@ void MeshTools::ReplaceCameraAndGrid()
 	double cameracentre[3] = { 0,0,0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
+		
 	}
-	//cout << "Center of mass of all opened meshes is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
+	cout << "Center of mass of all opened meshes is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
 
 	
 	double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
@@ -807,7 +771,8 @@ void MeshTools::slotCameraFront()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
@@ -833,7 +798,8 @@ void MeshTools::slotCameraBack()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);		
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
@@ -855,7 +821,8 @@ void MeshTools::slotCameraLeft()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
@@ -878,7 +845,8 @@ void MeshTools::slotCameraRight()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
@@ -899,7 +867,8 @@ void MeshTools::slotCameraBelow()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
@@ -922,7 +891,8 @@ void MeshTools::slotCameraAbove()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->GetGlobalCenterOfMass(cameracentre);
+		this->ActorCollection->GetCenterOfMass(cameracentre);
+		this->GridActor->SetGridOrigin(cameracentre);
 	}
 	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°

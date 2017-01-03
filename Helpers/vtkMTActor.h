@@ -30,6 +30,9 @@ public:
 	vtkGetMacro(Selected, int);
 	vtkBooleanMacro(Selected, int);
 
+	vtkSetMacro(Changed, int);
+	vtkGetMacro(Changed, int);
+	vtkBooleanMacro(Changed, int);
 
 	// Actual actor render method.
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
@@ -42,6 +45,8 @@ protected:
 	~vtkMTActor();
 
 	int Selected;
+	int Changed; // used by MTActorCollection class to recompute global center of mass and center of mass
+	//of selected objects etc... 
 
 	
 
