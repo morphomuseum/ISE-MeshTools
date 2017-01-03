@@ -13,6 +13,8 @@
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
+#include <vtkLookupTable.h>
+#include <vtkBandedPolyDataContourFilter.h>
 #include <vtkActor.h>
 #include <vtkOpenGLActor.h>
 #include <vtkMath.h>
@@ -73,6 +75,7 @@ void RubberBandSelect(vtkObject* caller,
 	//	myActor->PrintSelf(cout, vtkIndent(2));
 		
 		std::cout << "Actor prop:  class name:" << myActor->GetClassName() << std::endl;
+
 		if (myActor->GetSelected() == 0)
 		{
 			myActor->SetChanged(1);
@@ -537,6 +540,39 @@ void MeshTools::slotOpenMeshFile()
 			
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->ReplaceCameraAndGrid();
+
+			double bounds[6];
+			MyPolyData->GetBounds(bounds);
+			vtkSmartPointer<vtkElevationFilter> elevation =
+				vtkSmartPointer<vtkElevationFilter>::New();
+			elevation->SetInputData(MyPolyData);
+			elevation->SetLowPoint(0, bounds[2], 0);
+			elevation->SetHighPoint(0, bounds[3], 0);
+			elevation->Update();
+			vtkSmartPointer<vtkBandedPolyDataContourFilter> bcf =
+				vtkSmartPointer<vtkBandedPolyDataContourFilter>::New();
+			bcf->SetInputConnection(elevation->GetOutputPort());
+			bcf->SetScalarModeToValue();
+			bcf->GenerateContourEdgesOn();
+			bcf->GenerateValues(7, elevation->GetScalarRange());
+
+			bcf->Update();
+
+			vtkSmartPointer<vtkPolyDataMapper> contourLineMapper =
+				vtkSmartPointer<vtkPolyDataMapper>::New();
+			contourLineMapper->SetInputData(bcf->GetContourEdgesOutput());
+			cout<<"Number of contours:"<< bcf->GetNumberOfContours();
+			
+			contourLineMapper->SetScalarRange(elevation->GetScalarRange());
+			contourLineMapper->SetResolveCoincidentTopologyToPolygonOffset();
+			contourLineMapper->Update();
+			
+			vtkSmartPointer<vtkMTActor> contourLineActor =
+				vtkSmartPointer<vtkMTActor>::New();
+			contourLineActor->SetMapper(contourLineMapper);
+			contourLineActor->GetProperty()->SetColor(0.5, 0.5, 1.0);
+			this->Renderer->AddActor(contourLineActor);
+
 
 			/*if (this->mui_CameraCentreOfMassAtOrigin == 0)
 			{
