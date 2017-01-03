@@ -95,7 +95,7 @@ private:
 	
 	void saveSettings();
 	void UpdateRenderer();
-	double GetGlobalBoundingBoxLength();
+	
 	
 	std::string CheckingName(std::string name_obj, int cpt_name);
 

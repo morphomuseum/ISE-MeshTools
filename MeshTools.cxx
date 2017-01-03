@@ -317,55 +317,7 @@ void MeshTools::UpdateRenderer()
 }
 
 
-double MeshTools::GetGlobalBoundingBoxLength()
-{
-	double largestbounds[6];
-	largestbounds[0] = DBL_MAX; 
-	largestbounds[1] = -DBL_MAX;
-	largestbounds[2] = DBL_MAX;
-	largestbounds[3] = -DBL_MAX;
-	largestbounds[4] = DBL_MAX;
-	largestbounds[5] = -DBL_MAX;
 
-	this->ActorCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
-	{
-		vtkActor* actor = this->ActorCollection->GetNextActor();
-		if (i == 0) { actor->GetBounds(largestbounds); }
-		else
-		{
-			double bounds[6];
-			actor->GetBounds(bounds);
-			if (bounds[0] < largestbounds[0]) { largestbounds[0] = bounds[0]; }
-			if (bounds[1] > largestbounds[1]) { largestbounds[1] = bounds[1]; }
-			if (bounds[2] < largestbounds[2]) { largestbounds[2] = bounds[2]; }
-			if (bounds[3] > largestbounds[3]) { largestbounds[3] = bounds[3]; }
-			if (bounds[4] < largestbounds[4]) { largestbounds[4] = bounds[4]; }
-			if (bounds[5] > largestbounds[5]) { largestbounds[5] = bounds[5]; }
-
-		}
-
-	}
-	double A[3];//min
-	double B[3];//max
-
-	A[0] = largestbounds[0];
-	A[1] = largestbounds[2];
-	A[2] = largestbounds[4];
-	B[0] = largestbounds[1];
-	B[1] = largestbounds[3];
-	B[2] = largestbounds[5];
-	//cout << "A:" << A[0] << "," << A[1] << "," << A[2] << endl;
-	//cout << "B:" << B[0] << "," << B[1] << "," << B[2] << endl;
-	double diag[3];
-	diag[0] = B[0] - A[0];
-	diag[1] = B[1] - A[1];
-	diag[2] = B[2] - A[2];
-	double lengthxyz = sqrt((diag[0])*(diag[0]) + (diag[1])*(diag[1]) + (diag[2])*(diag[2]));
-
-	return lengthxyz;
-
-}
 
 // Action to be taken upon file open
 void MeshTools::slotOpenMeshFile()
@@ -725,7 +677,7 @@ void MeshTools::ReplaceCameraAndGrid()
 	cout << "Center of mass of all opened meshes is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
 
 	
-	double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
+	double GlobalBoundingBoxLength = this->ActorCollection->GetBoundingBoxLength();
 	//cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
 	if (GlobalBoundingBoxLength  == std::numeric_limits<double>::infinity())
 	{
