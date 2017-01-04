@@ -138,6 +138,37 @@ void vtkMTInteractorStyle::OnChar()
   }
 }
 
+void vtkMTInteractorStyle::Dolly(double factor)
+{
+	if (this->CurrentRenderer == NULL)
+	{
+		return;
+	}
+
+	vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+	if (camera->GetParallelProjection())
+	{
+		camera->SetParallelScale(camera->GetParallelScale() / factor);
+		cout << "Dolly camera parallell" << endl;
+		camera->Dolly(factor);
+	}
+	else
+	{
+		camera->Dolly(factor);
+		
+	}
+	if (this->AutoAdjustCameraClippingRange)
+	{
+		this->CurrentRenderer->ResetCameraClippingRange();
+	}
+
+	if (this->Interactor->GetLightFollowCamera())
+	{
+		this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
+	}
+
+	this->Interactor->Render();
+}
 void vtkMTInteractorStyle::RubberStart()
 {
 	if (!this->Interactor)

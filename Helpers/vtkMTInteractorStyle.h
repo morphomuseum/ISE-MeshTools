@@ -54,13 +54,14 @@ public:
   virtual void RotateActors();
   virtual void SpinActors();
   virtual void PanActors();
-  
+
+
   void SetActorCollection(vtkSmartPointer<vtkMTActorCollection>ActColl);
 protected:
   
   vtkMTInteractorStyle();
   ~vtkMTInteractorStyle();
-
+  virtual void Dolly(double factor);
   void Prop3DTransform(vtkProp3D *prop3D,
 	  double *boxCenter,
 	  int NumRotation,

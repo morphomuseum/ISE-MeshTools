@@ -539,7 +539,7 @@ void MeshTools::slotOpenMeshFile()
 			this->ActorCollection->SetChanged(1);
 			
 			//double BoundingBoxLength = MyPolyData->GetLength();
-			this->ReplaceCameraAndGrid();
+			this->AdjustCameraAndGrid();
 
 			double bounds[6];
 			MyPolyData->GetBounds(bounds);
@@ -701,50 +701,108 @@ void MeshTools::slotOpenMeshFile()
 	actor->GetProperty()->SetColor(0.5, 1, 0.5);
 	actor->GetProperty()->SetOpacity(0.5);*/
 }
-void MeshTools::ReplaceCameraAndGrid()
+
+// problème
+// aujourd'hui, c'est cette seule fonction qui est appelée lorsqu'on ouvre un nouveau maillage
+// et lorsqu'on change entre "camera
+
+//Called to ajust camera and grid positions (distance etc...) after opening a new mesh.
+void MeshTools::AdjustCameraAndGrid()
 {
-	double cameracentre[3] = { 0,0,0 };
+	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
-		
-	}
-	cout << "Center of mass of all opened meshes is " << cameracentre[0] << " " << cameracentre[1] << " " << cameracentre[2] << endl;
+		this->ActorCollection->GetCenterOfMass(newcamerafocalpoint);
+		this->GridActor->SetGridOrigin(newcamerafocalpoint);
 
-	
+
+	}
+	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;
+
+	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	double GlobalBoundingBoxLength = this->ActorCollection->GetBoundingBoxLength();
-	//cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
-	if (GlobalBoundingBoxLength  == std::numeric_limits<double>::infinity())
+	if (GlobalBoundingBoxLength == std::numeric_limits<double>::infinity() || GlobalBoundingBoxLength == 0)
 	{
 		GlobalBoundingBoxLength = 120;
 	}
-	//cout << "New Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
 
-	double campos[3];
-	this->Camera->GetPosition(campos);
-	double camfocalpoint[3];
-	this->Camera->GetFocalPoint(camfocalpoint);
-	double camscale = this->Camera->GetParallelScale();
+	double oldcampos[3];
+	double newcampos[3];
+	this->Camera->GetPosition(oldcampos);
+	double oldcamerafocalpoint[3];
+	this->Camera->GetFocalPoint(oldcamerafocalpoint);
+
+	double dispvector[3];
+	
+	vtkMath::Subtract(oldcampos, oldcamerafocalpoint, dispvector);
+	vtkMath::Normalize(dispvector);
+	double newdist = multfactor*GlobalBoundingBoxLength;
+	vtkMath::MultiplyScalar(dispvector, newdist);
+	
+	vtkMath::Add(newcamerafocalpoint, dispvector, newcampos);
+
+	this->Camera->SetPosition(newcampos);
+	this->Camera->SetFocalPoint(newcamerafocalpoint);
+
+	// now adjust if necessary..
+	if (this->mui_CameraOrtho == 1)
+	{
+		this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+		this->Renderer->ResetCameraClippingRange();
+	}
+
+
+	// I don't like this... 
+
+	/*double camscale = this->Camera->GetParallelScale();
 
 	double movex, movey, movez;
-		movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
-		movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
-		movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
-		this->Camera->SetPosition
-			(cameracentre[0] + movex,
-				cameracentre[1] + movey,
-				cameracentre[2] + movez);
-		//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
-	this->Camera->SetFocalPoint(cameracentre[0], cameracentre[1], cameracentre[2]);
-	this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+	movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
+	movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
+	movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
+	this->Camera->SetPosition
+	(camerafocalpoint[0] + movex,
+	camerafocalpoint[1] + movey,
+	camerafocalpoint[2] + movez);
 
-		int gridtype = this->GridActor->GetGridType();
-		this->GridActor->SetGridOrigin(cameracentre);
-		this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-		this->GridActor->SetGridType(gridtype);
-		this->ui->qvtkWidget->update();
+	this->Camera->SetFocalPoint(camerafocalpoint[0], camerafocalpoint[1], camerafocalpoint[2]);
+	this->Camera->SetParallelScale(GlobalBoundingBoxLength);*/
 
+	//int gridtype = this->GridActor->GetGridType();
+
+	this->ui->qvtkWidget->update();
+
+
+}
+//Called to repplace camera and grid positions when switching from "orange grid mode" to "blue grid mode"
+//= when camera focalpoint and grid center are changed between 0,0,0 and COM of all opened meshes.
+void MeshTools::ReplaceCameraAndGrid()
+{
+	double newcamerafocalpoint[3] = { 0,0,0 };
+	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	{
+		this->ActorCollection->GetCenterOfMass(newcamerafocalpoint);				
+	}
+	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;			
+
+	double oldcampos[3];
+	double newcampos[3];
+	this->Camera->GetPosition(oldcampos);
+	double oldcamerafocalpoint[3];
+	this->Camera->GetFocalPoint(oldcamerafocalpoint);
+
+	double dispvector[3];
+	vtkMath::Subtract(newcamerafocalpoint, oldcamerafocalpoint, dispvector);
+	vtkMath::Add(oldcampos, dispvector, newcampos);	
+	this->Camera->SetPosition(newcampos);
+	this->Camera->SetFocalPoint(newcamerafocalpoint);
+
+	this->GridActor->SetGridOrigin(newcamerafocalpoint);
+	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	//this->GridActor->SetGridType(gridtype);	
+	this->ui->qvtkWidget->update();
+		
+		
 }
 
 void MeshTools::slotExit() {
@@ -920,6 +978,7 @@ for (int i = 0; i < props->GetNumberOfItems(); i++)
 }
 
 this->ui->qvtkWidget->update(); // update main window!
+
 }
 
 // show or hide grid actor

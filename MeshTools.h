@@ -87,6 +87,7 @@ protected slots:
 
 private:
 	void ReplaceCameraAndGrid();
+	void AdjustCameraAndGrid();
 	void ResetCameraOrthoPerspective();
 	void DollyCameraForParallelScale();
 	void DollyCameraForPerspectiveMode();
