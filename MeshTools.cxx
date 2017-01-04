@@ -540,7 +540,7 @@ void MeshTools::slotOpenMeshFile()
 			
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->AdjustCameraAndGrid();
-
+			/*
 			double bounds[6];
 			MyPolyData->GetBounds(bounds);
 			vtkSmartPointer<vtkElevationFilter> elevation =
@@ -554,13 +554,15 @@ void MeshTools::slotOpenMeshFile()
 			bcf->SetInputConnection(elevation->GetOutputPort());
 			bcf->SetScalarModeToValue();
 			bcf->GenerateContourEdgesOn();
-			bcf->GenerateValues(7, elevation->GetScalarRange());
+			
+			bcf->GenerateValues(10, elevation->GetScalarRange());
 
 			bcf->Update();
-
+			//bcf->GetNumberOfContours();
 			vtkSmartPointer<vtkPolyDataMapper> contourLineMapper =
 				vtkSmartPointer<vtkPolyDataMapper>::New();
 			contourLineMapper->SetInputData(bcf->GetContourEdgesOutput());
+			
 			cout<<"Number of contours:"<< bcf->GetNumberOfContours();
 			
 			contourLineMapper->SetScalarRange(elevation->GetScalarRange());
@@ -573,7 +575,16 @@ void MeshTools::slotOpenMeshFile()
 			contourLineActor->GetProperty()->SetColor(0.5, 0.5, 1.0);
 			this->Renderer->AddActor(contourLineActor);
 
-
+			vtkSmartPointer<vtkPolyDataMapper> mapper2 =
+				vtkSmartPointer<vtkPolyDataMapper>::New();
+			mapper2->SetInputConnection(bcf->GetOutputPort());
+			mapper2->SetScalarModeToUseCellData();
+			//mapper2->SetScalarRange(0, 1);
+			vtkSmartPointer<vtkMTActor> actor2=
+				vtkSmartPointer<vtkMTActor>::New();
+			actor2->SetMapper(mapper2);
+			this->Renderer->AddActor(actor2);
+			*/
 			/*if (this->mui_CameraCentreOfMassAtOrigin == 0)
 			{
 				double globalcenterofmass[3];
@@ -750,26 +761,7 @@ void MeshTools::AdjustCameraAndGrid()
 		this->Camera->SetParallelScale(GlobalBoundingBoxLength);
 		this->Renderer->ResetCameraClippingRange();
 	}
-
-
-	// I don't like this... 
-
-	/*double camscale = this->Camera->GetParallelScale();
-
-	double movex, movey, movez;
-	movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
-	movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
-	movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
-	this->Camera->SetPosition
-	(camerafocalpoint[0] + movex,
-	camerafocalpoint[1] + movey,
-	camerafocalpoint[2] + movez);
-
-	this->Camera->SetFocalPoint(camerafocalpoint[0], camerafocalpoint[1], camerafocalpoint[2]);
-	this->Camera->SetParallelScale(GlobalBoundingBoxLength);*/
-
-	//int gridtype = this->GridActor->GetGridType();
-
+	
 	this->ui->qvtkWidget->update();
 
 

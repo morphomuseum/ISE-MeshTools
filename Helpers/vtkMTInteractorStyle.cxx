@@ -15,6 +15,7 @@
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActor.h"
 
+#include <vtkProperty.h>
 #include <vtkTransform.h>
 #include <vtkCamera.h>
 #include <vtkMath.h>
@@ -80,7 +81,58 @@ void vtkMTInteractorStyle::StartSelect()
 		this->Ctrl = CTRL_PRESSED;
 		//std::cout << key<< "Pressed" << '\n';
 	}
+	//cout << this->Interactor->GetKeyCode() << endl;
+	//cout << rwi->GetKeySym() << endl;
+	if (key.compare("a") == 0)
+	{		
+			//cout << "a pressed!" << endl;
+			if (this->Ctrl == CTRL_PRESSED)
+			{
+				//cout << "a and CTRL pressed!" << endl;
+				this->ActorCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+				{
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+						myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+						myActor->GetProperty()->SetOpacity(1);
+					}
 
+
+				}
+				vtkRenderWindowInteractor *rwi = this->Interactor;
+				rwi->Render();
+			}
+			
+
+	}
+	if (key.compare("d") == 0)
+		{
+			if (this->Ctrl == CTRL_PRESSED)
+			{
+				vtkRenderWindowInteractor *rwi = this->Interactor;
+				this->ActorCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+				{
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+					if (myActor->GetSelected() == 1)
+					{
+						myActor->SetSelected(0);
+						myActor->SetChanged(1);
+						myActor->GetProperty()->SetColor(0.5, 0.5, 0.0);
+						myActor->GetProperty()->SetOpacity(1);
+					}
+
+
+				}
+				rwi->Render();
+			}
+			
+	}
+	
 
 	// Forward events
 	vtkInteractorStyleTrackballCamera::OnKeyPress();
@@ -108,18 +160,21 @@ void vtkMTInteractorStyle::OnChar()
 {
   switch (this->Interactor->GetKeyCode())
   {
+	
     case 'r':
     case 'R':
-      //r toggles the rubber band selection mode for mouse button 1
-      if (this->CurrentMode == VTKISMT_ORIENT)
-      {
-        this->CurrentMode = VTKISMT_SELECT;
-      }
-      else
-      {
-        this->CurrentMode = VTKISMT_ORIENT;
-      }
-      break;
+	{
+		//r toggles the rubber band selection mode for mouse button 1
+		if (this->CurrentMode == VTKISMT_ORIENT)
+		{
+			this->CurrentMode = VTKISMT_SELECT;
+		}
+		else
+		{
+			this->CurrentMode = VTKISMT_ORIENT;
+		}
+		break;
+	}
     case 'p' :
     case 'P' :
     {
@@ -149,7 +204,7 @@ void vtkMTInteractorStyle::Dolly(double factor)
 	if (camera->GetParallelProjection())
 	{
 		camera->SetParallelScale(camera->GetParallelScale() / factor);
-		cout << "Dolly camera parallell" << endl;
+		//cout << "Dolly camera parallell" << endl;
 		camera->Dolly(factor);
 	}
 	else
@@ -641,7 +696,7 @@ void vtkMTInteractorStyle::RotateActors()
 	// First get the origin of the assembly
 	/*double *obj_center = this->InteractionProp->GetCenter();*/
 	double *rot_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
-	cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
+	//cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
 	double boundRadius = this->ActorCollection->GetBoundingBoxLengthOfSelectedActors();
 	//cout << "Bound Radius: " << boundRadius << endl;
 	if (boundRadius == std::numeric_limits<double>::infinity())
