@@ -14,14 +14,9 @@ vtkStandardNewMacro(vtkMTActor);
 
 
 
-int vtkMTActor::getTestInt()
-{
-	return vtkMTActor::testint;
-}
 //----------------------------------------------------------------------------
 vtkMTActor::vtkMTActor()
 {
-	vtkMTActor::testint = 0;
 	this->Selected = 1;
 	this->Changed = 0;
 	

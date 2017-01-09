@@ -19,7 +19,7 @@ class  vtkMTActor : public vtkOpenGLActor
 {
 public:
 	static vtkMTActor *New();
-	static int getTestInt();
+	
 	vtkTypeMacro(vtkMTActor, vtkOpenGLActor);
 	void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -55,7 +55,7 @@ protected:
 private:
 	vtkMTActor(const vtkMTActor&);  // Not implemented.
 	void operator=(const vtkMTActor&);  // Not implemented.
-	static int testint;
+	
 };
 
 #endif
