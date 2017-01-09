@@ -44,10 +44,10 @@ class MeshTools : public QMainWindow
 
 public:
 
+ 
   // Constructor/Destructor
   MeshTools();
   ~MeshTools();
-  
   
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
   vtkSmartPointer<vtkRenderer> Renderer;
@@ -63,7 +63,9 @@ public:
   int mui_CameraCentreOfMassAtOrigin;
   int mui_CameraOrtho;
 public slots:
-
+  //static  MeshTools* Instance;
+ // static MeshTools* instance();
+ // static int getTestInt();
   virtual void slotOpenMeshFile();
   virtual void slotCameraFront();
   virtual void slotCameraBack();
@@ -76,6 +78,9 @@ public slots:
   virtual void slotCameraCentreOfMassToggle();
   virtual void slotCameraOrthoPerspectiveToggle();
   virtual void slotExit();
+ // int GetUndoCount();
+//  void SetUndoCount(int Count);
+
 /*  void RubberBandSelect(vtkObject* caller,
 	  long unsigned int vtkNotUsed(eventId),
 	  void* vtkNotUsed(clientData),
@@ -84,7 +89,7 @@ public slots:
 protected:
 
 protected slots:
-
+	
 private:
 	void ReplaceCameraAndGrid();
 	void AdjustCameraAndGrid();
@@ -96,10 +101,11 @@ private:
 	
 	void saveSettings();
 	void UpdateRenderer();
+	//int UndoCount;
 	
-	
+	//static int testint;
 	std::string CheckingName(std::string name_obj, int cpt_name);
-
+	
   vtkSmartPointer<vtkQtTableView>         TableView;
 
   // Designer form

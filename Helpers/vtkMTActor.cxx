@@ -10,13 +10,18 @@ Module:    vtkMTActor.cxx
 #include <vtkRenderer.h>
 #include <vtkProperty.h>
 #include <vtkTexture.h>
-//vtkAbstractObjectFactoryNewMacro(vtkMTActor);
 vtkStandardNewMacro(vtkMTActor);
 
 
+
+int vtkMTActor::getTestInt()
+{
+	return vtkMTActor::testint;
+}
 //----------------------------------------------------------------------------
 vtkMTActor::vtkMTActor()
 {
+	vtkMTActor::testint = 0;
 	this->Selected = 1;
 	this->Changed = 0;
 	

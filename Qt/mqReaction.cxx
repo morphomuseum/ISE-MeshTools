@@ -20,8 +20,8 @@ mqReaction::mqReaction(QAction* parentObject, Qt::ConnectionType type)
   // Deal with master/slave enable/disable
   // In Paraview : pqApplicationCore::instance() is called which is a QObject.
   
-  //QObject::connect(mqApplicationCore::instance(), SIGNAL(updateMasterEnableState(bool)), this,
-    //SLOT(updateMasterEnableState(bool)));
+ // QObject::connect(mtApplicationCore::instance(), SIGNAL(updateMasterEnableState(bool)), this,
+  // SLOT(updateMasterEnableState(bool)));
 
   this->IsMaster = true;
 }

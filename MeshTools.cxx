@@ -9,7 +9,9 @@
 #include "vtkMTActor.h"
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActorCollection.h"
-
+//#include "vtkUndoStack.h"
+//#include "vtkUndoSet.h"
+//#include "vtkUndoElement.h"
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -53,6 +55,19 @@
 #include <QSettings>
 #include <QIcon>
 
+//-----------------------------------------------------------------------------
+//MeshTools* MeshTools::Instance = 0;
+
+//-----------------------------------------------------------------------------
+/*MeshTools* MeshTools::instance()
+{
+	return MeshTools::Instance;
+}
+int MeshTools::getTestInt()
+{
+	return MeshTools::testint;
+}*/
+
 //Select meshes, landmarks and tags ... first try!
 void RubberBandSelect(vtkObject* caller,
 	long unsigned int vtkNotUsed(eventId),
@@ -70,6 +85,7 @@ void RubberBandSelect(vtkObject* caller,
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		vtkMTActor *myActor;
+		
 		vtkProp3D *myprop3D = props->GetNextProp3D();
 		myActor = vtkMTActor::SafeDownCast(myprop3D);
 	//	myActor->PrintSelf(cout, vtkIndent(2));
@@ -101,6 +117,59 @@ void RubberBandSelect(vtkObject* caller,
 // Constructor
 MeshTools::MeshTools()
 {
+	//MeshTools::testint = 10;
+	//MeshTools::Instance = this;
+	//this->SetUndoCount(0);
+	//vtkUndoStack* undoStack = vtkUndoStack::New();
+	//vtkUndoSet* undoSet = vtkUndoSet::New();
+	//vtkUndoElement* undoElement = vtkUndoElement::New();
+	//undoStack->Push("Test", undoSet);
+
+	/*
+	vtkSMSession* session = vtkSMSession::New();
+  vtkSMSessionProxyManager* pxm = session->GetSessionProxyManager();
+
+  vtkSMProxy* sphere = pxm->NewProxy("sources", "SphereSource");
+  sphere->UpdateVTKObjects();
+  QVERIFY(sphere != NULL);
+  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 0.5);
+
+  vtkSMUndoStack* undoStack = vtkSMUndoStack::New();
+  vtkUndoSet* undoSet = vtkUndoSet::New();
+  vtkSMRemoteObjectUpdateUndoElement* undoElement = vtkSMRemoteObjectUpdateUndoElement::New();
+  undoElement->SetSession(session);
+
+  vtkSMMessage before;
+  before.CopyFrom(*sphere->GetFullState());
+  vtkSMPropertyHelper(sphere, "Radius").Set(1.2);
+  sphere->UpdateVTKObjects();
+  vtkSMMessage after;
+  after.CopyFrom(*sphere->GetFullState());
+  undoElement->SetUndoRedoState(&before, &after);
+
+  undoSet->AddElement(undoElement);
+  undoElement->Delete();
+  undoStack->Push("ChangeRadius", undoSet);
+  undoSet->Delete();
+
+  QVERIFY(static_cast<bool>(undoStack->CanUndo()) == true);
+  undoStack->Undo();
+  QVERIFY(static_cast<bool>(undoStack->CanUndo()) == false);
+  sphere->UpdateVTKObjects();
+  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 0.5);
+
+  QVERIFY(static_cast<bool>(undoStack->CanRedo()) == true);
+  undoStack->Redo();
+  sphere->UpdateVTKObjects();
+  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 1.2);
+  QVERIFY(static_cast<bool>(undoStack->CanRedo()) == false);
+
+  undoStack->Delete();
+
+  sphere->Delete();
+  session->Delete();
+	*/
+
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
@@ -275,12 +344,26 @@ MeshTools::MeshTools()
 
 MeshTools::~MeshTools()
 {
+	/*if (MeshTools::Instance == this)
+	{
+		MeshTools::Instance = 0;
+	}*/
 	saveSettings();
 	
 	// The smart pointers should clean up for up
 	//this->OrientationHelperWidget->Delete();
 }
 
+/*void MeshTools::SetUndoCount(int Count)
+{
+	this->UndoCount = Count;
+
+}
+int MeshTools::GetUndoCount()
+{
+	return this->UndoCount;
+
+}*/
 
 void MeshTools::saveSettings()
 {
