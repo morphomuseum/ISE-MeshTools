@@ -15,16 +15,16 @@
 #ifndef MeshTools_H
 #define MeshTools_H
 
-#include "vtkGridActor.h"
-#include "vtkOrientationHelperWidget.h"
-#include "vtkMTActorCollection.h"
+#include "vtkMeshToolsCore.h"
+
+
 
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkAreaPicker.h>   
 
 #include <vtkRenderer.h>
 #include <vtkImageData.h>
-#include <vtkCamera.h>
+
 #include <vtkStructuredGrid.h>
 #include <vtkCaptionActor2D.h>
 #include <QMainWindow>
@@ -49,10 +49,8 @@ public:
   MeshTools();
   ~MeshTools();
   
-  vtkSmartPointer<vtkMTActorCollection> ActorCollection;
-  vtkSmartPointer<vtkRenderer> Renderer;
-  vtkSmartPointer<vtkCamera> Camera;
-  vtkSmartPointer<vtkGridActor> GridActor;
+  vtkSmartPointer<vtkMeshToolsCore> MeshToolsCore;
+  
   vtkSmartPointer<vtkAreaPicker> AreaPicker;
 
 

@@ -16,7 +16,7 @@
 
 #include <vtkCollection.h>
 #include <vtkCollectionIterator.h>
-#include "vtkObjectFactory.h"
+#include <vtkObjectFactory.h>
 //#include "vtkPVXMLElement.h"
 #include "vtkUndoElement.h"
 

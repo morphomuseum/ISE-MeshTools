@@ -50,7 +50,9 @@ void vtkUndoStack::Push(const char* label, vtkUndoSet* changeSet)
 {
   this->Internal->RedoStack.clear();
   
-  int Count = 2;//MeshTools::instance()->GetUndoCount()+1;
+  //int Count = 2;//MeshTools::instance()->GetUndoCount()+1;
+  int Count = vtkMeshToolsCore::instance()->getUndoCount() + 1;
+
   while (this->Internal->UndoStack.size() >= static_cast<unsigned int>(this->StackDepth) &&
     this->StackDepth > 0)
   {
@@ -58,6 +60,7 @@ void vtkUndoStack::Push(const char* label, vtkUndoSet* changeSet)
     this->InvokeEvent(vtkUndoStack::UndoSetRemovedEvent);
   }
   this->Internal->UndoStack.push_back(vtkUndoStackInternal::Element(label, changeSet, Count));
+  vtkMeshToolsCore::instance()->setUndoCount(Count);
   this->Modified();
 }
 

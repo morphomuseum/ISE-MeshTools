@@ -38,8 +38,8 @@
 #ifndef vtkUndoStack_h
 #define vtkUndoStack_h
 
-#include "MeshTools.h"
 
+#include "vtkMeshToolsCore.h"
 #include <vtkObject.h>
 class vtkUndoStackInternal;
 class vtkUndoSet;

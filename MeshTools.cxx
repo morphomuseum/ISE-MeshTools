@@ -7,6 +7,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
+#include "vtkMeshToolsCore.h"
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActorCollection.h"
 //#include "vtkUndoStack.h"
@@ -117,59 +118,8 @@ void RubberBandSelect(vtkObject* caller,
 // Constructor
 MeshTools::MeshTools()
 {
-	//MeshTools::testint = 10;
-	//MeshTools::Instance = this;
-	//this->SetUndoCount(0);
+	
 	//vtkUndoStack* undoStack = vtkUndoStack::New();
-	//vtkUndoSet* undoSet = vtkUndoSet::New();
-	//vtkUndoElement* undoElement = vtkUndoElement::New();
-	//undoStack->Push("Test", undoSet);
-
-	/*
-	vtkSMSession* session = vtkSMSession::New();
-  vtkSMSessionProxyManager* pxm = session->GetSessionProxyManager();
-
-  vtkSMProxy* sphere = pxm->NewProxy("sources", "SphereSource");
-  sphere->UpdateVTKObjects();
-  QVERIFY(sphere != NULL);
-  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 0.5);
-
-  vtkSMUndoStack* undoStack = vtkSMUndoStack::New();
-  vtkUndoSet* undoSet = vtkUndoSet::New();
-  vtkSMRemoteObjectUpdateUndoElement* undoElement = vtkSMRemoteObjectUpdateUndoElement::New();
-  undoElement->SetSession(session);
-
-  vtkSMMessage before;
-  before.CopyFrom(*sphere->GetFullState());
-  vtkSMPropertyHelper(sphere, "Radius").Set(1.2);
-  sphere->UpdateVTKObjects();
-  vtkSMMessage after;
-  after.CopyFrom(*sphere->GetFullState());
-  undoElement->SetUndoRedoState(&before, &after);
-
-  undoSet->AddElement(undoElement);
-  undoElement->Delete();
-  undoStack->Push("ChangeRadius", undoSet);
-  undoSet->Delete();
-
-  QVERIFY(static_cast<bool>(undoStack->CanUndo()) == true);
-  undoStack->Undo();
-  QVERIFY(static_cast<bool>(undoStack->CanUndo()) == false);
-  sphere->UpdateVTKObjects();
-  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 0.5);
-
-  QVERIFY(static_cast<bool>(undoStack->CanRedo()) == true);
-  undoStack->Redo();
-  sphere->UpdateVTKObjects();
-  QCOMPARE(vtkSMPropertyHelper(sphere, "Radius").GetAsDouble(), 1.2);
-  QVERIFY(static_cast<bool>(undoStack->CanRedo()) == false);
-
-  undoStack->Delete();
-
-  sphere->Delete();
-  session->Delete();
-	*/
-
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
@@ -206,8 +156,9 @@ MeshTools::MeshTools()
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
-	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
-	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
+	this->MeshToolsCore = vtkSmartPointer<vtkMeshToolsCore>::New();
+
+	
 
 
 	// Place the table view in the designer form
@@ -219,36 +170,33 @@ MeshTools::MeshTools()
 	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
 
 
-	this->Renderer->SetUseDepthPeeling(1);
-	this->Renderer->SetMaximumNumberOfPeels(100);
-	this->Renderer->SetOcclusionRatio(0.1);
 
 
 	// VTK/Qt wedded
 
 
-	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->Renderer);
+	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->MeshToolsCore->getRenderer());
 
-	//cout<< "Peeling was used:"<< this->Renderer->GetLastRenderingUsedDepthPeeling();
+	//cout<< "Peeling was used:"<< this->MeshToolsCore->getRenderer()->GetLastRenderingUsedDepthPeeling();
 
-	this->Camera = this->Renderer->GetActiveCamera();
+	
 
 	// 448/120 seems to be a good ratio!!! 3.73
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 
-	this->Camera->SetPosition(120* multfactor, 0, 0);
-	this->Camera->SetFocalPoint(0, 0, 0);
-	this->Camera->SetViewUp(0, 0, 1);
+	this->MeshToolsCore->getCamera()->SetPosition(120* multfactor, 0, 0);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(0, 0, 0);
+	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	//double *viewup;
-	//viewup= this->Camera->GetViewUp();
+	//viewup= this->MeshToolsCore->getCamera()->GetViewUp();
 	//cout << "Initial view up:" << viewup[0] << "," << viewup[1] << "," << viewup[2] << endl;
-	/*this->Camera->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
-	this->Camera->Roll(90); // around "x" (horizontal) viewing axis
-	this->Camera->Elevation(180); // around "y" (vertical) viewing axis
+	/*this->MeshToolsCore->getCamera()->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
+	this->MeshToolsCore->getCamera()->Roll(90); // around "x" (horizontal) viewing axis
+	this->MeshToolsCore->getCamera()->Elevation(180); // around "y" (vertical) viewing axis
 	*/
-	this->Camera->SetParallelScale(120); 
+	this->MeshToolsCore->getCamera()->SetParallelScale(120); 
 	this->ResetCameraOrthoPerspective();
-	//this->Camera->ParallelProjectionOn();
+	//this->MeshToolsCore->getCamera()->ParallelProjectionOn();
 
 
 
@@ -289,7 +237,7 @@ MeshTools::MeshTools()
 
 	this->OrientationHelperWidget->SetOutlineColor(0.9300, 0.5700, 0.1300);
 	this->OrientationHelperWidget->SetOrientationMarker(axes);
-	this->OrientationHelperWidget->SetDefaultRenderer(this->Renderer);
+	this->OrientationHelperWidget->SetDefaultRenderer(this->MeshToolsCore->getRenderer());
 	this->OrientationHelperWidget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
 	this->OrientationHelperWidget->SetViewport(0.0, 0.0, 0.2, 0.2);
 	this->OrientationHelperWidget->SetEnabled(1);
@@ -300,18 +248,15 @@ MeshTools::MeshTools()
 	myorigin[1] = 0;
 	myorigin[2] = 0;
 
-	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
-	this->GridActor->SetGridType(2);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->Renderer->AddActor(this->GridActor);
 
 
 	//@@ rubber band selection!
 	
 	 vtkSmartPointer<vtkMTInteractorStyle> style =
     vtkSmartPointer<vtkMTInteractorStyle>::New();
-	 style->SetActorCollection(this->ActorCollection);
+	 style->SetActorCollection(this->MeshToolsCore->getActorCollection());
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =
@@ -327,7 +272,7 @@ MeshTools::MeshTools()
 
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
  
-// style->SetCurrentRenderer(this->Renderer);
+// style->SetCurrentRenderer(this->MeshToolsCore->getRenderer());
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
@@ -394,11 +339,11 @@ std::string  MeshTools::CheckingName(std::string name_obj, int cpt_name) {
 void MeshTools::UpdateRenderer()
 {
 	//remove all actors.
-	//this->Renderer->RemoveAllViewProps();
-	//for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	//this->MeshToolsCore->getRenderer()->RemoveAllViewProps();
+	//for (vtkIdType i = 0; i < this->MeshToolsCore->getActorCollection()->GetNumberOfItems(); i++)
 	//{
-	//vtkActor* actor = this->ActorCollection->GetLastActor();				
-	//this->Renderer->AddActor(actor);
+	//vtkActor* actor = this->MeshToolsCore->getActorCollection()->GetLastActor();				
+	//this->MeshToolsCore->getRenderer()->AddActor(actor);
 	//}
 }
 
@@ -617,9 +562,9 @@ void MeshTools::slotOpenMeshFile()
 			actor->GetProperty()->SetOpacity(0.5);
 			actor->SetSelected(0);
 			actor->SetMapper(mapper);
-			this->Renderer->AddActor(actor);
-			this->ActorCollection->AddItem(actor);
-			this->ActorCollection->SetChanged(1);
+			this->MeshToolsCore->getRenderer()->AddActor(actor);
+			this->MeshToolsCore->getActorCollection()->AddItem(actor);
+			this->MeshToolsCore->getActorCollection()->SetChanged(1);
 			
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->AdjustCameraAndGrid();
@@ -656,7 +601,7 @@ void MeshTools::slotOpenMeshFile()
 				vtkSmartPointer<vtkMTActor>::New();
 			contourLineActor->SetMapper(contourLineMapper);
 			contourLineActor->GetProperty()->SetColor(0.5, 0.5, 1.0);
-			this->Renderer->AddActor(contourLineActor);
+			this->MeshToolsCore->getRenderer()->AddActor(contourLineActor);
 
 			vtkSmartPointer<vtkPolyDataMapper> mapper2 =
 				vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -666,7 +611,7 @@ void MeshTools::slotOpenMeshFile()
 			vtkSmartPointer<vtkMTActor> actor2=
 				vtkSmartPointer<vtkMTActor>::New();
 			actor2->SetMapper(mapper2);
-			this->Renderer->AddActor(actor2);
+			this->MeshToolsCore->getRenderer()->AddActor(actor2);
 			*/
 			/*if (this->mui_CameraCentreOfMassAtOrigin == 0)
 			{
@@ -678,24 +623,24 @@ void MeshTools::slotOpenMeshFile()
 				cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
 
 				double campos[3];
-				this->Camera->GetPosition(campos);
+				this->MeshToolsCore->getCamera()->GetPosition(campos);
 				double camfocalpoint[3];
-				this->Camera->GetFocalPoint(camfocalpoint);
-				double camscale = this->Camera->GetParallelScale();
+				this->MeshToolsCore->getCamera()->GetFocalPoint(camfocalpoint);
+				double camscale = this->MeshToolsCore->getCamera()->GetParallelScale();
 
 				double movex, movey, movez;
 				movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
 				movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
 				movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
-				this->Camera->SetPosition
+				this->MeshToolsCore->getCamera()->SetPosition
 					(globalcenterofmass[0] + movex,
 						globalcenterofmass[1] + movey,
 						globalcenterofmass[2] + movez);
-				//this->Camera->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
-				this->Camera->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
-				this->Camera->SetParallelScale(GlobalBoundingBoxLength);
+				//this->MeshToolsCore->getCamera()->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
+				this->MeshToolsCore->getCamera()->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
+				this->MeshToolsCore->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
 			}*/
-			//this->Camera->ParallelProjectionOn();
+			//this->MeshToolsCore->getCamera()->ParallelProjectionOn();
 
 
 			//this->UpdateRenderer();
@@ -806,15 +751,15 @@ void MeshTools::AdjustCameraAndGrid()
 	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(newcamerafocalpoint);
-		this->GridActor->SetGridOrigin(newcamerafocalpoint);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
 
 
 	}
 	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;
 
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
-	double GlobalBoundingBoxLength = this->ActorCollection->GetBoundingBoxLength();
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double GlobalBoundingBoxLength = this->MeshToolsCore->getActorCollection()->GetBoundingBoxLength();
 	if (GlobalBoundingBoxLength == std::numeric_limits<double>::infinity() || GlobalBoundingBoxLength == 0)
 	{
 		GlobalBoundingBoxLength = 120;
@@ -822,9 +767,9 @@ void MeshTools::AdjustCameraAndGrid()
 
 	double oldcampos[3];
 	double newcampos[3];
-	this->Camera->GetPosition(oldcampos);
+	this->MeshToolsCore->getCamera()->GetPosition(oldcampos);
 	double oldcamerafocalpoint[3];
-	this->Camera->GetFocalPoint(oldcamerafocalpoint);
+	this->MeshToolsCore->getCamera()->GetFocalPoint(oldcamerafocalpoint);
 
 	double dispvector[3];
 	
@@ -835,14 +780,14 @@ void MeshTools::AdjustCameraAndGrid()
 	
 	vtkMath::Add(newcamerafocalpoint, dispvector, newcampos);
 
-	this->Camera->SetPosition(newcampos);
-	this->Camera->SetFocalPoint(newcamerafocalpoint);
+	this->MeshToolsCore->getCamera()->SetPosition(newcampos);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(newcamerafocalpoint);
 
 	// now adjust if necessary..
 	if (this->mui_CameraOrtho == 1)
 	{
-		this->Camera->SetParallelScale(GlobalBoundingBoxLength);
-		this->Renderer->ResetCameraClippingRange();
+		this->MeshToolsCore->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
+		this->MeshToolsCore->getRenderer()->ResetCameraClippingRange();
 	}
 	
 	this->ui->qvtkWidget->update();
@@ -856,25 +801,25 @@ void MeshTools::ReplaceCameraAndGrid()
 	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(newcamerafocalpoint);				
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);				
 	}
 	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;			
 
 	double oldcampos[3];
 	double newcampos[3];
-	this->Camera->GetPosition(oldcampos);
+	this->MeshToolsCore->getCamera()->GetPosition(oldcampos);
 	double oldcamerafocalpoint[3];
-	this->Camera->GetFocalPoint(oldcamerafocalpoint);
+	this->MeshToolsCore->getCamera()->GetFocalPoint(oldcamerafocalpoint);
 
 	double dispvector[3];
 	vtkMath::Subtract(newcamerafocalpoint, oldcamerafocalpoint, dispvector);
 	vtkMath::Add(oldcampos, dispvector, newcampos);	
-	this->Camera->SetPosition(newcampos);
-	this->Camera->SetFocalPoint(newcamerafocalpoint);
+	this->MeshToolsCore->getCamera()->SetPosition(newcampos);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(newcamerafocalpoint);
 
-	this->GridActor->SetGridOrigin(newcamerafocalpoint);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	//this->GridActor->SetGridType(gridtype);	
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	//this->MeshToolsCore->getGridActor()->SetGridType(gridtype);	
 	this->ui->qvtkWidget->update();
 		
 		
@@ -892,21 +837,21 @@ void MeshTools::slotCameraFront()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition(camdist+ cameracentre[0], cameracentre[1], cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
-	this->Camera->SetViewUp(0, 0, 1);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition(camdist+ cameracentre[0], cameracentre[1], cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
+	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	//this->ReplaceCamera();
 	
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
 	
-	this->GridActor->SetGridType(2);
+	this->MeshToolsCore->getGridActor()->SetGridType(2);
 	
 
 	this->ui->qvtkWidget->update(); // update main window!
@@ -919,18 +864,18 @@ void MeshTools::slotCameraBack()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);		
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);		
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition(-camdist + cameracentre[0], cameracentre[1], cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
-	this->Camera->SetViewUp(0, 0, 1);
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->GridActor->SetGridType(2);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition(-camdist + cameracentre[0], cameracentre[1], cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
+	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridType(2);
 	this->ui->qvtkWidget->update();
 
 }
@@ -942,19 +887,19 @@ void MeshTools::slotCameraLeft()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition( cameracentre[0], camdist+cameracentre[1], cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition( cameracentre[0], camdist+cameracentre[1], cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
 
-	this->Camera->SetViewUp(0,0, 1);
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->GridActor->SetGridType(1);
+	this->MeshToolsCore->getCamera()->SetViewUp(0,0, 1);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 
 }
@@ -966,19 +911,19 @@ void MeshTools::slotCameraRight()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition(cameracentre[0], -camdist + cameracentre[1], cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
-	this->Camera->SetViewUp(0, 0, 1);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition(cameracentre[0], -camdist + cameracentre[1], cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
+	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->GridActor->SetGridType(1);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 }
 // Action to be taken upon camera underneath side
@@ -988,19 +933,19 @@ void MeshTools::slotCameraBelow()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition(cameracentre[0], cameracentre[1], -camdist+cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
-	this->Camera->SetViewUp(1, 0, 0);
-	//this->Camera->SetParallelScale(120);
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->GridActor->SetGridType(0);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition(cameracentre[0], cameracentre[1], -camdist+cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
+	this->MeshToolsCore->getCamera()->SetViewUp(1, 0, 0);
+	//this->MeshToolsCore->getCamera()->SetParallelScale(120);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
 }
@@ -1012,27 +957,27 @@ void MeshTools::slotCameraAbove()
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->mui_CameraCentreOfMassAtOrigin == 0)
 	{
-		this->ActorCollection->GetCenterOfMass(cameracentre);
-		this->GridActor->SetGridOrigin(cameracentre);
+		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
+		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
 	}
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	// = 3.73 when viewing angle = 30°
-	double camdist = multfactor*this->Camera->GetParallelScale();
-	this->Camera->SetPosition(cameracentre[0],  cameracentre[1], camdist+cameracentre[2]);
-	this->Camera->SetFocalPoint(cameracentre);
+	double camdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
+	this->MeshToolsCore->getCamera()->SetPosition(cameracentre[0],  cameracentre[1], camdist+cameracentre[2]);
+	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
 
 
-	this->Camera->SetViewUp(-1, 0, 0);
-	this->GridActor->SetGridOrigin(cameracentre);
-	this->GridActor->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
-	this->GridActor->SetGridType(0);
+	this->MeshToolsCore->getCamera()->SetViewUp(-1, 0, 0);
+	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
 }
 
 void MeshTools::SetGridVisibility()
 {
-vtkPropCollection* props = this->Renderer->GetViewProps(); //iterate through and set each visibility to 0
+vtkPropCollection* props = this->MeshToolsCore->getRenderer()->GetViewProps(); //iterate through and set each visibility to 0
 props->InitTraversal();
 std::string str1("vtkGridActor");
 for (int i = 0; i < props->GetNumberOfItems(); i++)
@@ -1131,31 +1076,31 @@ void MeshTools::ResetCameraOrthoPerspective()
 {
 	if (this->mui_CameraOrtho == 1)
 	{
-		this->Camera->SetParallelProjection(true);
+		this->MeshToolsCore->getCamera()->SetParallelProjection(true);
 		this->DollyCameraForParallelScale();
 	}
 	else
 	{
 		
-		this->Camera->SetParallelProjection(false);
+		this->MeshToolsCore->getCamera()->SetParallelProjection(false);
 		this->DollyCameraForPerspectiveMode();
 		
 		
 	}
-	//cout << "Parallel scale"<<this->Camera->GetParallelScale()<<endl;
+	//cout << "Parallel scale"<<this->MeshToolsCore->getCamera()->GetParallelScale()<<endl;
 	double dist = 0;
 
 	
 	double campos[3] = { 0,0,0 };
 	double foc[3] = { 0,0,0 };
-	this->Camera->GetPosition(campos);
+	this->MeshToolsCore->getCamera()->GetPosition(campos);
 	//cout << "Camera Position:" << campos[0] <<","<<campos[1]<<","<<campos[2]<< endl;
-	this->Camera->GetFocalPoint(foc);
+	this->MeshToolsCore->getCamera()->GetFocalPoint(foc);
 	//cout << "Camera Position:" << foc[0] << "," << foc[1] << "," << foc[2] << endl;
 	dist = sqrt(pow((campos[0]-foc[0]),2)+ pow((campos[1] - foc[1]), 2)+ pow((campos[2] - foc[2]), 2));
 	//cout << "Distance between camera and focal point:" << dist << endl;
 	
-	//cout << "Camera viewing angle:" << this->Camera->GetViewAngle() << endl;
+	//cout << "Camera viewing angle:" << this->MeshToolsCore->getCamera()->GetViewAngle() << endl;
 
 	this->ui->qvtkWidget->update(); // update main window!
 }
@@ -1173,14 +1118,14 @@ void MeshTools::DollyCameraForParallelScale()
 	double campos[3] = { 0,0,0 };
 	double foc[3] = { 0,0,0 };
 	
-	this->Camera->GetPosition(campos);
-	this->Camera->GetFocalPoint(foc);	
+	this->MeshToolsCore->getCamera()->GetPosition(campos);
+	this->MeshToolsCore->getCamera()->GetFocalPoint(foc);	
 	double dist = sqrt(vtkMath::Distance2BetweenPoints(campos, foc));
 	//double dist = sqrt(pow((campos[0] - foc[0]), 2) + pow((campos[1] - foc[1]), 2) + pow((campos[2] - foc[2]), 2));
-	double multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 
 	double newparallelscale = dist / multfactor;
-	this->Camera->SetParallelScale(newparallelscale);
+	this->MeshToolsCore->getCamera()->SetParallelScale(newparallelscale);
 	
 }
 
@@ -1198,11 +1143,11 @@ void MeshTools::DollyCameraForPerspectiveMode()
 	double campos[3] = { 0,0,0 };
 	double foc[3] = { 0,0,0 };
 	double dispvector[3];
-	this->Camera->GetPosition(campos);
-	this->Camera->GetFocalPoint(foc);
+	this->MeshToolsCore->getCamera()->GetPosition(campos);
+	this->MeshToolsCore->getCamera()->GetFocalPoint(foc);
 	double multfactor = 3.73; // at 30° vtk : angle = 2*atan((h/2)/d). 
 	// then 2*d  =12/tan(viewangle/2) 
-	multfactor = 1 / tan(this->Camera->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	cout << "DollyCameraForPerspectiveMode" << endl;
 	cout << "multfactor" << multfactor << endl;
 	cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
@@ -1212,7 +1157,7 @@ void MeshTools::DollyCameraForPerspectiveMode()
 	vtkMath::Normalize(dispvector);
 	cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
 	
-	double newdist = multfactor*this->Camera->GetParallelScale();
+	double newdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
 	cout << "New dist:" << newdist << endl;
 	vtkMath::MultiplyScalar(dispvector, newdist);
 	cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
@@ -1220,7 +1165,7 @@ void MeshTools::DollyCameraForPerspectiveMode()
 	vtkMath::Add(foc, dispvector, newpos);
 	cout << "New pos:" << newpos[0] << "," << newpos[1] << "," << newpos[2] << endl;
 
-	this->Camera->SetPosition(newpos);
+	this->MeshToolsCore->getCamera()->SetPosition(newpos);
 	
 
 
