@@ -12,28 +12,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/**
- * @class   vtkUndoStack
- * @brief   undo/redo stack.
- *
- * This an undo stack. Each undo/redo-able operation is a vtkUndoSet object.
- * This class fires a vtkCommand::ModifiedEvent when  the undo/redo stack
- * changes.
- *
- * On Undo, vtkUndoSet::Undo is called on the vtkUndoSet at the top of the
- * undo stack and the set is pushed onto the top of the redo stack.
- * On Redo, vtkUndoSet::Redo is called on the vtkUndoSet at the top of the
- * redo stack and the set is pushed onto the top of the undo stack.
- * When a vtkUndoSet is pushed on the undo stack, the redo stack is
- * cleared.
- *
- * Each undo set are assigned user-readable labels providing information about
- * the operation(s) that will be undone/redone.
- *
- * vtkUndoElement, vtkUndoSet and vtkUndoStack form the undo/redo framework core.
- * @sa
- * vtkUndoSet vtkUndoElement
-*/
+
+
 
 #ifndef vtkUndoStack_h
 #define vtkUndoStack_h
@@ -41,8 +21,9 @@
 
 #include "vtkMeshToolsCore.h"
 #include <vtkObject.h>
+#include <vtkSmartPointer.h>
 class vtkUndoStackInternal;
-class vtkUndoSet;
+class vtkUndoStackBuilder;
 
 
 
@@ -50,23 +31,19 @@ class vtkUndoSet;
 class  vtkUndoStack : public vtkObject
 {
 public:
-  enum EventIds
-  {
-	PushUndoSetEvent = 1987,
-	ObjectCreationEvent = 1988,
-    UndoSetRemovedEvent = 1989,
-    UndoSetClearedEvent = 1990
-  };
+ 
 
   static vtkUndoStack* New();
   vtkTypeMacro(vtkUndoStack, vtkObject);
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  int GetGlobalCount();
+  
   /**
    * Push an undo set on the Undo stack. This will clear
    * any sets in the Redo stack.
    */
-  virtual void Push(const char* label, vtkUndoSet* changeSet);
+  virtual void Push(const char* label, int mCount);
 
   /**
    * Returns the label for the set at the given Undo position.
@@ -106,15 +83,6 @@ public:
    */
   int CanRedo() { return (this->GetNumberOfRedoSets() > 0); }
 
-  /**
-   * Get the UndoSet on the top of the Undo stack, if any.
-   */
-  virtual vtkUndoSet* GetNextUndoSet();
-
-  /**
-   * Get the UndoSet on the top of the Redo stack, if any.
-   */
-  virtual vtkUndoSet* GetNextRedoSet();
 
   /**
    * Performs an Undo using the set on the top of the undo stack. The set is poped from
@@ -176,20 +144,86 @@ public:
   vtkSetClampMacro(StackDepth, int, 1, 100);
   vtkGetMacro(StackDepth, int);
 
+  void beginUndoSet(std::string &label);
+  void endUndoSet();
+
 protected:
   vtkUndoStack();
   ~vtkUndoStack();
   //@}
 
   vtkUndoStackInternal* Internal;
+  vtkSmartPointer<vtkUndoStackBuilder> UndoStackBuilder;
   int StackDepth;
 
 private:
   vtkUndoStack(const vtkUndoStack&) ;
   void operator=(const vtkUndoStack&) ;
-
+  int NestedCount;
+  int GlobalCount;
   bool InUndo;
   bool InRedo;
 };
 
+#include "vtkMeshToolsCore.h"
+
+inline int BEGIN_UNDO_SET(std::string & name)
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->beginUndoSet(name);
+		int Count = usStack->GetGlobalCount();
+		return Count;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+inline void END_UNDO_SET()
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->endUndoSet();
+	}
+}
+/*
+inline void CLEAR_UNDO_STACK()
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->clear();
+	}
+}
+
+inline void ADD_UNDO_ELEM(vtkUndoElement* elem)
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->addToActiveUndoSet(elem);
+	}
+}
+
+inline void BEGIN_UNDO_EXCLUDE()
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->beginNonUndoableChanges();
+	}
+}
+
+inline void END_UNDO_EXCLUDE()
+{
+	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->endNonUndoableChanges();
+	}
+}*/
 #endif

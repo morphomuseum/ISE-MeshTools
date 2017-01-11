@@ -17,6 +17,7 @@ vtkStandardNewMacro(vtkMTActor);
 //----------------------------------------------------------------------------
 vtkMTActor::vtkMTActor()
 {
+	this->UndoRedo = new vtkMTActorUndoRedo;
 	this->Selected = 1;
 	this->Changed = 0;
 	
@@ -29,6 +30,27 @@ vtkMTActor::~vtkMTActor()
 
 }
 
+void vtkMTActor::SavePosition(int mCount)
+{
+	cout << "myActor Save Position: redostack clear." << endl;
+	this->UndoRedo->RedoStack.clear();
+
+	//int Count = 2;//MeshTools::instance()->GetUndoCount()+1;
+	int Count = mCount;
+
+	
+	// détruit ce qui est trop vieux dans le vector!
+	//to do!
+	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	this->GetMatrix(Mat);
+	std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
+
+	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
+	SavedMat->DeepCopy(Mat);
+	std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;
+	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, mCount));
+
+}
 //----------------------------------------------------------------------------
 // Shallow copy of an actor.
 void vtkMTActor::ShallowCopy(vtkProp *prop)

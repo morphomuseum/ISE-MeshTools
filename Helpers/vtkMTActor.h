@@ -13,7 +13,29 @@ Module:    vtkMTActor.h
 
 
 #include <vtkOpenGLActor.h>
+#include <vtkMatrix4x4.h>
+#include <vtkSmartPointer.h>
+#include <vtkSmartPointer.h>
+#include <vector>
 
+class vtkMTActorUndoRedo
+{
+public:
+	struct Element
+	{
+		vtkSmartPointer<vtkMatrix4x4> Matrix;
+		int UndoCount;
+		Element(vtkSmartPointer<vtkMatrix4x4> m, int Count)
+		{
+			this->Matrix =m;
+			this->UndoCount = Count;
+
+		}
+	};
+	typedef std::vector<Element> VectorOfElements;
+	VectorOfElements UndoStack;
+	VectorOfElements RedoStack;
+};
 
 class  vtkMTActor : public vtkOpenGLActor
 {
@@ -38,7 +60,7 @@ public:
 	// Actual actor render method.
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
 	
-
+	void SavePosition(int mCount);
 	
 
 protected:
@@ -49,7 +71,7 @@ protected:
 	int Changed; // used by MTActorCollection class to recompute global center of mass and center of mass
 	//of selected objects etc... 
 
-	
+	vtkMTActorUndoRedo* UndoRedo;
 
 
 private:

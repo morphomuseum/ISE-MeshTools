@@ -23,18 +23,13 @@ class vtkUndoStackInternal
 public:
   struct Element
   {
-    std::string Label;
-    vtkSmartPointer<vtkUndoSet> UndoSet;
+    std::string Label;    
 	int UndoCount;
-    Element(const char* label, vtkUndoSet* set, int Count)
+    Element(const char* label, int Count)
     {
 	 this->UndoCount = Count;
-      this->Label = label;
-      this->UndoSet = vtkSmartPointer<vtkUndoSet>::New();
-      for (int i = 0, nb = set->GetNumberOfElements(); i < nb; i++)
-      {
-        this->UndoSet->AddElement(set->GetElement(i));
-      }
+     this->Label = label;
+     
     }
   };
   typedef std::vector<Element> VectorOfElements;

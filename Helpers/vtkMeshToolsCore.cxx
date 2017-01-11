@@ -7,6 +7,7 @@
 =========================================================================*/
 #include "vtkMeshToolsCore.h"
 #include <vtkObjectFactory.h>
+#include "vtkMTActor.h"
 #include <vtkRenderer.h>
 #include "vtkUndoStack.h"
 #include "vtkUndoSet.h"
@@ -27,9 +28,10 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 
 	vtkMeshToolsCore::Instance = this;
 
-	this->UndoCount = 0;
+	
 	//this->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
 	vtkUndoStack* undoStack = vtkUndoStack::New();
+	this->setUndoStack(undoStack);
 	//this->mUndoStack = undoStack;
 	//MeshTools::testint = 10;
 	//MeshTools::Instance = this;
@@ -95,6 +97,57 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	this->GridActor->SetGridType(2);	
 	this->Renderer->AddActor(this->GridActor);
 }
+void vtkMeshToolsCore::Undo()
+{
+	// a Set is only a label (action) and an id
+	//vtkUndoSet *MyUndoSet = this->UndoStack->GetNextUndoSet();
+	//this->ActorCollection->Undo(MySet);
+	cout << "Root Undo!" << endl;
+	this->UndoStack->Undo(); // removes the next undo set.. 
+
+}
+void vtkMeshToolsCore::Undo(int Count)
+{
+	cout << "Undo(" <<Count<<")"<< endl;
+	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		cout << "MyActor undo!" << endl;
+		//myActor->Undo(Count);		
+	}
+}
+void vtkMeshToolsCore::Redo()
+{
+	cout << "Root Redo!" << endl;
+	this->UndoStack->Redo(); // removes the next undo set.. 
+}
+
+void vtkMeshToolsCore::Redo(int Count)
+{
+	cout << "Redo(" << Count << ")" << endl;
+	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		cout << "MyActor Redo!" << endl;
+		//myActor->Redo(Count);
+	}
+}
+void vtkMeshToolsCore::setUndoStack(vtkUndoStack* stack)
+{
+	if (stack != this->UndoStack)
+	{
+		this->UndoStack = stack;
+		/*if (stack)
+		{
+			stack->setParent(this);
+		}*/
+		//emit this->undoStackChanged(stack);
+	}
+}
 
 //-----------------------------------------------------------------------------
 vtkMeshToolsCore::~vtkMeshToolsCore()
@@ -110,18 +163,12 @@ vtkMeshToolsCore::~vtkMeshToolsCore()
 	return this->UndoStack;
 }*/
 
-/*vtkUndoStack* vtkMeshToolsCore::getUndoStack()
+vtkUndoStack* vtkMeshToolsCore::getUndoStack()
 {
 return this->UndoStack;
-}*/
-int vtkMeshToolsCore::getUndoCount()
-{
-	return this->UndoCount;
 }
-void vtkMeshToolsCore::setUndoCount(int Count)
-{
-	this->UndoCount = Count;
-}
+
+
 vtkSmartPointer<vtkMTActorCollection> vtkMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;

@@ -13,6 +13,7 @@
 
 =========================================================================*/
 #include "vtkUndoStack.h"
+#include "vtkUndoStackBuilder.h"
 
 #include "vtkUndoStackInternal.h"
 
@@ -28,39 +29,78 @@ vtkUndoStack::vtkUndoStack()
   this->InUndo = false;
   this->InRedo = false;
   this->StackDepth = 10;
+  this->NestedCount = 0;
+  this->GlobalCount = 0;
+  this->UndoStackBuilder = vtkSmartPointer<vtkUndoStackBuilder>::New();
+  this->UndoStackBuilder->SetUndoStack(this);
 }
 
 //-----------------------------------------------------------------------------
 vtkUndoStack::~vtkUndoStack()
 {
   delete this->Internal;
+  
 }
 
 //-----------------------------------------------------------------------------
 void vtkUndoStack::Clear()
 {
   this->Internal->UndoStack.clear();
-  this->Internal->RedoStack.clear();
-  this->InvokeEvent(vtkUndoStack::UndoSetClearedEvent);
+  this->Internal->RedoStack.clear();  
   this->Modified();
 }
 
+int vtkUndoStack::GetGlobalCount()
+{
+	return this->GlobalCount;
+}
+void vtkUndoStack::beginUndoSet(std::string &label)
+{
+	this->GlobalCount++;
+	
+	if (this->NestedCount == 0)
+	{
+		this->UndoStackBuilder->Begin(label.c_str(), this->GlobalCount);
+	}
+
+	this->NestedCount++;
+}
+
 //-----------------------------------------------------------------------------
-void vtkUndoStack::Push(const char* label, vtkUndoSet* changeSet)
+void vtkUndoStack::endUndoSet()
+{
+	if (this->NestedCount == 0)
+	{
+		cout << "endUndoSet called without a beginUndoSet." << endl;
+		return;
+	}
+
+	this->NestedCount--;
+	if (this->NestedCount == 0)
+	{
+		this->UndoStackBuilder->EndAndPushToStack();
+	}
+	
+}
+
+//-----------------------------------------------------------------------------
+void vtkUndoStack::Push(const char* label, int mCount)
 {
   this->Internal->RedoStack.clear();
   
   //int Count = 2;//MeshTools::instance()->GetUndoCount()+1;
-  int Count = vtkMeshToolsCore::instance()->getUndoCount() + 1;
+  int Count = mCount;
 
+  // détruit ce qui est trop vieux dans le vector!
   while (this->Internal->UndoStack.size() >= static_cast<unsigned int>(this->StackDepth) &&
     this->StackDepth > 0)
   {
     this->Internal->UndoStack.erase(this->Internal->UndoStack.begin());
-    this->InvokeEvent(vtkUndoStack::UndoSetRemovedEvent);
+	// to do : récupérer l'ID et faire un appel pour virer dans les objets les choses correspondant à ces ids!
+    
   }
-  this->Internal->UndoStack.push_back(vtkUndoStackInternal::Element(label, changeSet, Count));
-  vtkMeshToolsCore::instance()->setUndoCount(Count);
+  this->Internal->UndoStack.push_back(vtkUndoStackInternal::Element(label, Count));
+  
   this->Modified();
 }
 
@@ -101,13 +141,17 @@ const char* vtkUndoStack::GetRedoSetLabel(unsigned int position)
 //-----------------------------------------------------------------------------
 int vtkUndoStack::Undo()
 {
+	cout << "Inside vtkUndoStack Undo" << endl;
   if (this->Internal->UndoStack.empty())
   {
     return 0;
   }
   this->InUndo = true;
   this->InvokeEvent(vtkCommand::StartEvent);
-  int status = this->Internal->UndoStack.back().UndoSet.GetPointer()->Undo();
+  //int status = this->Internal->UndoStack.back().UndoSet.GetPointer()->Undo();
+  int status = 1;
+  // récupérer le count de this->Internal->UndoStack.back() et son label
+  // ici : faire l'appel global à undo de ce count là!!
   if (status)
   {
     this->PopUndoStack();
@@ -126,7 +170,10 @@ int vtkUndoStack::Redo()
   }
   this->InRedo = true;
   this->InvokeEvent(vtkCommand::StartEvent);
-  int status = this->Internal->RedoStack.back().UndoSet.GetPointer()->Redo();
+  //int status = this->Internal->RedoStack.back().UndoSet.GetPointer()->Redo();
+  int status = 1;
+  // récupérer le count de this->Internal->UndoStack.back() et son label
+  // ici : faire l'appel global à redo de ce count là!!
   if (status)
   {
     this->PopRedoStack();
@@ -160,25 +207,7 @@ void vtkUndoStack::PopRedoStack()
   this->Modified();
 }
 
-//-----------------------------------------------------------------------------
-vtkUndoSet* vtkUndoStack::GetNextUndoSet()
-{
-  if (!this->CanUndo())
-  {
-    return NULL;
-  }
-  return this->Internal->UndoStack.back().UndoSet.GetPointer();
-}
 
-//-----------------------------------------------------------------------------
-vtkUndoSet* vtkUndoStack::GetNextRedoSet()
-{
-  if (!this->CanRedo())
-  {
-    return NULL;
-  }
-  return this->Internal->RedoStack.back().UndoSet.GetPointer();
-}
 
 //-----------------------------------------------------------------------------
 void vtkUndoStack::PrintSelf(ostream& os, vtkIndent indent)

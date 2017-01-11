@@ -17,12 +17,14 @@
 #include "vtkOrientationHelperWidget.h"
 #include "vtkMTActorCollection.h"
 #include "vtkGridActor.h"
-#include "vtkUndoStack.h"
+//#include "vtkUndoStack.h" => for some reason the ompilation fails if this header is included
 //#include "vtkUndoStackInternal.h"
 
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>    
 #include <vtkCamera.h>
+// 
+class vtkUndoStack;
 
 class  vtkMeshToolsCore : public vtkObject
 {
@@ -37,12 +39,17 @@ public:
   vtkSmartPointer<vtkRenderer> getRenderer();
   vtkSmartPointer<vtkCamera> getCamera();
   vtkSmartPointer<vtkGridActor> getGridActor();
+  void Redo(); // calls the undoStack Redo function
+  void Undo(); // callse the undoStack Undo function
   
-  int getUndoCount();
-  //vtkSmartPointer<vtkUndoStack> getUndoStack();
-  //vtkUndoStack* getUndoStack();
+  void Redo(int Count); // send redo message to the concerned elements (actors mostly!)
+  void Undo(int Count); // send undo message to the concerned elements (actors!)
 
-  void setUndoCount(int Count);
+  //vtkSmartPointer<vtkUndoStack> getUndoStack();
+  vtkUndoStack* getUndoStack();
+  void setUndoStack(vtkUndoStack* stack);
+  vtkUndoStack* getUndoStack() const { return this->UndoStack; }
+  
 protected:
 	vtkMeshToolsCore();
 	~vtkMeshToolsCore();
@@ -52,9 +59,9 @@ protected:
 	vtkSmartPointer<vtkRenderer> Renderer;
 	vtkSmartPointer<vtkCamera> Camera;
 	vtkSmartPointer<vtkGridActor> GridActor;
-	
+	vtkUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
-	int UndoCount;
+	
 	
 
 private:

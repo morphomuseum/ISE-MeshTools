@@ -14,6 +14,8 @@
 =========================================================================*/
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActor.h"
+#include "vtkUndoStack.h"
+#include "vtkMeshToolsCore.h"
 
 #include <vtkProperty.h>
 #include <vtkTransform.h>
@@ -48,6 +50,8 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 	this->Moving = 0;
 	this->PixelArray = vtkUnsignedCharArray::New();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorsPositionsSaved = 0;
+	this->NumberOfSelectedActors = 0;
 }
 
 void vtkMTInteractorStyle::SetActorCollection(vtkSmartPointer<vtkMTActorCollection> ActColl)
@@ -132,7 +136,27 @@ void vtkMTInteractorStyle::StartSelect()
 			}
 			
 	}
-	
+	if (key.compare("z") == 0)
+	{
+		if (this->Ctrl == CTRL_PRESSED)
+		{
+			cout << "CTRL-Z detected!" << endl;
+			vtkMeshToolsCore::instance()->Undo();
+			rwi->Render();
+		}
+
+	}
+	if (key.compare("y") == 0)
+	{
+
+		if (this->Ctrl == CTRL_PRESSED)
+		{
+			cout << "CTRL-Y detected!" << endl;
+			vtkMeshToolsCore::instance()->Redo();
+			rwi->Render();
+		}
+
+	}
 
 	// Forward events
 	vtkInteractorStyleTrackballCamera::OnKeyPress();
@@ -272,6 +296,7 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 		}
 
 		this->GrabFocus(this->EventCallbackCommand);
+		this->NumberOfSelectedActors = this->getNumberOfSelectedActors();
 		this->StartSpin();
 	}
 
@@ -303,6 +328,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 		  this->GrabFocus(this->EventCallbackCommand);
 		 
 		  //cout << "Start Rotate CTRL" << endl;
+		  this->NumberOfSelectedActors = this->getNumberOfSelectedActors();
 		  this->StartRotate();
 		 
 
@@ -314,7 +340,56 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
   
 }
 
+int vtkMTInteractorStyle::getNumberOfSelectedActors()
+{
+	this->ActorCollection->InitTraversal();
+	int cpt = 0;
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+		
+	}
+	return cpt;
+}
+
+void vtkMTInteractorStyle::SaveSelectedActorsPositions()
+{
+	std::string action;
+	switch (this->State)
+	{
+	case VTKIS_ROTATE:	
+		action = "Rotate selected actors";
+		break;
+	case VTKIS_PAN:		
+		action = "Translate selected actors";
+		break;
+	case VTKIS_SPIN:		
+		action = "Spin selected actors";
+		break;
+	}
+	
+	int Count = BEGIN_UNDO_SET(action);
+	cout << action.c_str() << endl;
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			cout << "Call myActor Save Position" << endl;
+			myActor->SavePosition(Count);
+		}
+	}
+	//vtkMeshToolsCore::instance()->getUndoStack()->
+	this->ActorsPositionsSaved = 1;
+	END_UNDO_SET();
+
+}
 //--------------------------------------------------------------------------
 void vtkMTInteractorStyle::OnMouseMove()
 {
@@ -327,6 +402,12 @@ void vtkMTInteractorStyle::OnMouseMove()
 	  }
 	  else
 	  {
+		  if (this->NumberOfSelectedActors>0 && this->ActorsPositionsSaved == 0)
+		  {
+			  cout << "Start moving actors for real!" << endl;
+			  this->SaveSelectedActorsPositions();
+			  cout << "We should increment the GLOBAL undo stack number now!";
+		  }
 		  //copied from Trackball Actor
 		  int x = this->Interactor->GetEventPosition()[0];
 		  int y = this->Interactor->GetEventPosition()[1];
@@ -413,6 +494,7 @@ void vtkMTInteractorStyle::OnRightButtonUp()
 		}
 		else
 		{
+			this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
 			switch (this->State)
 			{
 			case VTKIS_PAN:
@@ -453,6 +535,7 @@ void vtkMTInteractorStyle::OnLeftButtonUp()
 	  }
 	else
 	{
+		this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
 	  switch (this->State)
 	  {
 	  case VTKIS_PAN:
@@ -502,7 +585,7 @@ void vtkMTInteractorStyle::OnMiddleButtonDown()
 		}
 
 		this->GrabFocus(this->EventCallbackCommand);
-		
+		this->NumberOfSelectedActors = this->getNumberOfSelectedActors();
 		this->StartPan();
 		
 	}
@@ -521,6 +604,7 @@ void vtkMTInteractorStyle::OnMiddleButtonUp()
 		}
 		else
 		{
+			this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
 			switch (this->State)
 			{
 			case VTKIS_PAN:

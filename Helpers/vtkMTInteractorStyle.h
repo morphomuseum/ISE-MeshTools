@@ -50,7 +50,7 @@ public:
   virtual void OnKeyPress();
   virtual void OnKeyRelease();
   //@}
-
+  //virtual void SaveSelectedActorPositions();
   virtual void RotateActors();
   virtual void SpinActors();
   virtual void PanActors();
@@ -75,7 +75,10 @@ protected:
   int EndPosition[2];
 
   int Moving;
-
+  int ActorsPositionsSaved;
+  void SaveSelectedActorsPositions();
+  int NumberOfSelectedActors;
+  int getNumberOfSelectedActors();
   vtkUnsignedCharArray *PixelArray;
 
   int CurrentMode;
