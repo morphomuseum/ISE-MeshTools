@@ -37,14 +37,14 @@ vtkMTActor::~vtkMTActor()
 void vtkMTActor::Undo(int mCount)
 {
 
-	cout << "Inside actor Undo" << endl;
+	//cout << "Inside actor Undo" << endl;
 	if (this->UndoRedo->UndoStack.empty())
 	{
 		return;
 	}
 	if (mCount == this->UndoRedo->UndoStack.back().UndoCount)
 	{
-		cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
+		//cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
 		// ici : faire l'appel global à undo de ce count là!!  
 		this->PopUndoStack();
 	}
@@ -55,14 +55,17 @@ void vtkMTActor::Undo(int mCount)
 }
 void vtkMTActor::Redo(int mCount)
 {
-	cout << "Inside actor Undo" << endl;
-	if (this->UndoRedo->UndoStack.empty())
+	//cout << "Inside actor Undo, try to undo " <<mCount<< endl;
+	if (this->UndoRedo->RedoStack.empty())
 	{
+		cout << "Redo Stack empty!" << endl;
 		return;
 	}
+	//cout << "Youngest redo count= " << this->UndoRedo->RedoStack.back().UndoCount<< endl;
+
 	if (mCount == this->UndoRedo->RedoStack.back().UndoCount)
 	{
-		cout << "Redo actor event " << this->UndoRedo->RedoStack.back().UndoCount << endl;
+		//cout << "Redo actor event " << this->UndoRedo->RedoStack.back().UndoCount << endl;
 		// ici : faire l'appel global à undo de ce count là!!  
 		this->PopRedoStack();
 	}
