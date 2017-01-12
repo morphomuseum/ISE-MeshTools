@@ -61,7 +61,12 @@ public:
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
 	
 	void SavePosition(int mCount);
-	
+	void Redo(int mCount); // Try to redo (if exists) "mCount" event
+	void Erase(int mCount); // Try to erase (if exists) "mCount" event
+	void Undo(int mCount); // Try to undo (if exists) "mCount" event
+	void PopUndoStack();
+	void PopRedoStack();
+
 
 protected:
 	vtkMTActor();

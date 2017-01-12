@@ -286,6 +286,7 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 	}
 	else
 	{
+		this->ActorsPositionsSaved = 0;//allow to save position
 		int x = this->Interactor->GetEventPosition()[0];
 		int y = this->Interactor->GetEventPosition()[1];
 
@@ -314,7 +315,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 	  }
 	  else
 	  {
-
+		  this->ActorsPositionsSaved = 0;//allow to save position
 		  int x = this->Interactor->GetEventPosition()[0];
 		  int y = this->Interactor->GetEventPosition()[1];
 
@@ -359,35 +360,44 @@ int vtkMTInteractorStyle::getNumberOfSelectedActors()
 
 void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 {
-	std::string action;
-	switch (this->State)
+	if (this->ActorsPositionsSaved == 0)
 	{
-	case VTKIS_ROTATE:	
-		action = "Rotate selected actors";
-		break;
-	case VTKIS_PAN:		
-		action = "Translate selected actors";
-		break;
-	case VTKIS_SPIN:		
-		action = "Spin selected actors";
-		break;
-	}
-	
-	int Count = BEGIN_UNDO_SET(action);
-	cout << action.c_str() << endl;
-	this->ActorCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
-	{
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		if (myActor->GetSelected() == 1)
+		std::string action = "Action!";
+		//cout << "State = " << this->State << endl;
+		switch (this->State)
 		{
-			cout << "Call myActor Save Position" << endl;
-			myActor->SavePosition(Count);
+		case VTKIS_ROTATE:
+			action = "Rotate selected actors";
+			//cout << "VTK_IS_ROTATE: action=" << action.c_str() << endl;
+			break;
+		case VTKIS_PAN:
+			action = "Translate selected actors";
+			//cout << "VTK_IS_PAN: action=" << action.c_str() << endl;
+			break;
+		case VTKIS_SPIN:
+			action = "Spin selected actors";
+			//cout << "VTK_IS_SPIN: action=" << action.c_str() << endl;
+			break;
 		}
+
+		int Count = BEGIN_UNDO_SET(action);
+
+		//cout << action.c_str() << endl;
+		this->ActorCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				//cout << "Call myActor Save Position" << endl;
+				myActor->SavePosition(Count);
+			}
+		}
+		//vtkMeshToolsCore::instance()->getUndoStack()->
+		
+		END_UNDO_SET();
+		this->ActorsPositionsSaved = 1;
 	}
-	//vtkMeshToolsCore::instance()->getUndoStack()->
-	this->ActorsPositionsSaved = 1;
-	END_UNDO_SET();
 
 }
 //--------------------------------------------------------------------------
@@ -402,33 +412,36 @@ void vtkMTInteractorStyle::OnMouseMove()
 	  }
 	  else
 	  {
-		  if (this->NumberOfSelectedActors>0 && this->ActorsPositionsSaved == 0)
-		  {
-			  cout << "Start moving actors for real!" << endl;
-			  this->SaveSelectedActorsPositions();
-			  cout << "We should increment the GLOBAL undo stack number now!";
-		  }
+		 
 		  //copied from Trackball Actor
 		  int x = this->Interactor->GetEventPosition()[0];
 		  int y = this->Interactor->GetEventPosition()[1];
-
+		  //should be only once!
+		  if (this->NumberOfSelectedActors>0 )
+		  {
+			  
+			  this->SaveSelectedActorsPositions();
+			  // cout << "We should increment the GLOBAL undo stack number now!";
+		  }
 		  switch (this->State)
 		  {
 		  case VTKIS_ROTATE:
 			  this->FindPokedRenderer(x, y);
-			  //cout << "RotateActors is called" << endl;
+			  //cout << "ROTATE" << endl;
 			  this->RotateActors();
 			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
 			  break;
 
 		  case VTKIS_PAN:
 			  this->FindPokedRenderer(x, y);
+			  //cout << "PAN" << endl;
 			  this->PanActors();
 			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
 			  break;		  
 
 		  case VTKIS_SPIN:
 			  this->FindPokedRenderer(x, y);
+			  //cout << "SPIN" << endl;
 			  this->SpinActors();
 			  this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
 			  break;
@@ -494,7 +507,7 @@ void vtkMTInteractorStyle::OnRightButtonUp()
 		}
 		else
 		{
-			this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
+			 // we allow to resave the positions later!
 			switch (this->State)
 			{
 			case VTKIS_PAN:
@@ -535,7 +548,6 @@ void vtkMTInteractorStyle::OnLeftButtonUp()
 	  }
 	else
 	{
-		this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
 	  switch (this->State)
 	  {
 	  case VTKIS_PAN:
@@ -572,6 +584,8 @@ void vtkMTInteractorStyle::OnMiddleButtonDown()
 	}
 	else
 	{
+		
+		this->ActorsPositionsSaved = 0;//allow to save position
 		int x = this->Interactor->GetEventPosition()[0];
 		int y = this->Interactor->GetEventPosition()[1];
 
@@ -604,7 +618,6 @@ void vtkMTInteractorStyle::OnMiddleButtonUp()
 		}
 		else
 		{
-			this->ActorsPositionsSaved = 0; // we allow to resave the positions later!
 			switch (this->State)
 			{
 			case VTKIS_PAN:

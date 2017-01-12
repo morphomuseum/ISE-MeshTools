@@ -115,7 +115,7 @@ void vtkMeshToolsCore::Undo(int Count)
 	{
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		cout << "MyActor undo!" << endl;
-		//myActor->Undo(Count);		
+		myActor->Undo(Count);		
 	}
 }
 void vtkMeshToolsCore::Redo()
@@ -133,7 +133,19 @@ void vtkMeshToolsCore::Redo(int Count)
 	{
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		cout << "MyActor Redo!" << endl;
-		//myActor->Redo(Count);
+		myActor->Redo(Count);
+	}
+}
+void vtkMeshToolsCore::Erase(int Count)
+{
+	//cout << "Erase(" << Count << ")" << endl;
+	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		//cout << "MyActor Erase!" << endl;
+		myActor->Erase(Count);
 	}
 }
 void vtkMeshToolsCore::setUndoStack(vtkUndoStack* stack)

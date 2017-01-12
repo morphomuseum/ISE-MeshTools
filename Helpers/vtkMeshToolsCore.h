@@ -43,6 +43,7 @@ public:
   void Undo(); // callse the undoStack Undo function
   
   void Redo(int Count); // send redo message to the concerned elements (actors mostly!)
+  void Erase(int Count); // erase action number Count (in actors!)
   void Undo(int Count); // send undo message to the concerned elements (actors!)
 
   //vtkSmartPointer<vtkUndoStack> getUndoStack();

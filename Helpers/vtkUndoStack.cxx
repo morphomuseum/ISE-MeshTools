@@ -28,7 +28,7 @@ vtkUndoStack::vtkUndoStack()
   this->Internal = new vtkUndoStackInternal;
   this->InUndo = false;
   this->InRedo = false;
-  this->StackDepth = 10;
+  this->StackDepth = 5;
   this->NestedCount = 0;
   this->GlobalCount = 0;
   this->UndoStackBuilder = vtkSmartPointer<vtkUndoStackBuilder>::New();
@@ -95,7 +95,12 @@ void vtkUndoStack::Push(const char* label, int mCount)
   while (this->Internal->UndoStack.size() >= static_cast<unsigned int>(this->StackDepth) &&
     this->StackDepth > 0)
   {
-    this->Internal->UndoStack.erase(this->Internal->UndoStack.begin());
+	  
+	 int Count = this->Internal->UndoStack.front().UndoCount;	  
+	 cout << "ERASE COUNT " << Count << endl;
+	 vtkMeshToolsCore::instance()->Erase(Count);
+	 this->Internal->UndoStack.erase(this->Internal->UndoStack.begin());
+
 	// to do : récupérer l'ID et faire un appel pour virer dans les objets les choses correspondant à ces ids!
     
   }
@@ -141,24 +146,22 @@ const char* vtkUndoStack::GetRedoSetLabel(unsigned int position)
 //-----------------------------------------------------------------------------
 int vtkUndoStack::Undo()
 {
-	cout << "Inside vtkUndoStack Undo" << endl;
+  cout << "Inside vtkUndoStack Undo" << endl;
   if (this->Internal->UndoStack.empty())
   {
     return 0;
   }
   this->InUndo = true;
-  this->InvokeEvent(vtkCommand::StartEvent);
+  //this->InvokeEvent(vtkCommand::StartEvent);
   //int status = this->Internal->UndoStack.back().UndoSet.GetPointer()->Undo();
-  int status = 1;
-  // récupérer le count de this->Internal->UndoStack.back() et son label
-  // ici : faire l'appel global à undo de ce count là!!
-  if (status)
-  {
-    this->PopUndoStack();
-  }
+  cout << "Undo " << this->Internal->UndoStack.back().UndoCount << ": "<< this->Internal->UndoStack.back().Label.c_str() << endl;
+  // ici : faire l'appel global à undo de ce count là!!  
+  vtkMeshToolsCore::instance()->Undo(this->Internal->UndoStack.back().UndoCount);
+  this->PopUndoStack();
+  
   this->InvokeEvent(vtkCommand::EndEvent);
   this->InUndo = false;
-  return status;
+  return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -171,16 +174,15 @@ int vtkUndoStack::Redo()
   this->InRedo = true;
   this->InvokeEvent(vtkCommand::StartEvent);
   //int status = this->Internal->RedoStack.back().UndoSet.GetPointer()->Redo();
-  int status = 1;
-  // récupérer le count de this->Internal->UndoStack.back() et son label
+  
+  // récupérer le count de this->Internal->RedoStack.back() et son label
   // ici : faire l'appel global à redo de ce count là!!
-  if (status)
-  {
-    this->PopRedoStack();
-  }
+  vtkMeshToolsCore::instance()->Redo(this->Internal->RedoStack.back().UndoCount);
+  this->PopRedoStack();
+  
   this->InvokeEvent(vtkCommand::EndEvent);
   this->InRedo = false;
-  return status;
+  return 1;
 }
 
 //-----------------------------------------------------------------------------
