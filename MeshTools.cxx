@@ -97,15 +97,15 @@ void RubberBandSelect(vtkObject* caller,
 		{
 			myActor->SetChanged(1);
 			myActor->SetSelected(1);
-			myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
-			myActor->GetProperty()->SetOpacity(1);
+			//myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+			//myActor->GetProperty()->SetOpacity(1);
 		}
 		else
 		{
 			myActor->SetChanged(1);
 			myActor->SetSelected(0);
-			myActor->GetProperty()->SetColor(0.5, 0, 0.5);
-			myActor->GetProperty()->SetOpacity(0.5);
+			//myActor->GetProperty()->SetColor(0.5, 0, 0.5);
+			//myActor->GetProperty()->SetOpacity(0.5);
 		}
 	}
 }
@@ -123,6 +123,11 @@ MeshTools::MeshTools()
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
 	this->mui_ShowGrid = 1;
+	this->mui_MeshColor[0]=1;
+	this->mui_MeshColor[1] = 0.5;
+	this->mui_MeshColor[2] = 0;
+	this->mui_MeshColor[3] = 0.75;
+	
 	this->mui_ShowOrientationHelper = 1;
 	this->mui_CameraOrtho = 1;
 
@@ -133,7 +138,10 @@ MeshTools::MeshTools()
 	this->mui_ShowOrientationHelper= settings.value("ShowOrientationHelper", "1").toInt();
 	this->mui_CameraCentreOfMassAtOrigin = settings.value("CameraCentreOfMassAtOrigin", "1").toInt();
 	this->mui_CameraOrtho= settings.value("CameraOrtho", "1").toInt();
-
+	this->mui_MeshColor[0] = settings.value("MeshRed", "1").toDouble();
+	this->mui_MeshColor[1] = settings.value("MeshGreen", "0").toDouble();
+	this->mui_MeshColor[2] = settings.value("MeshBlue", "0").toDouble();
+	this->mui_MeshColor[3] = settings.value("MeshAlpha", "0.75").toDouble();
 	settings.endGroup();
 	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
 	cout << "centre of mass at origin="<<this->mui_CameraCentreOfMassAtOrigin << endl;
@@ -320,8 +328,13 @@ void MeshTools::saveSettings()
 	settings.setValue("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
 	settings.setValue("CameraOrtho", this->mui_CameraOrtho);
 	settings.endGroup();	
-	
-	
+
+	settings.beginGroup("mesh_settings");
+	settings.setValue("MeshRed", this->mui_MeshColor[0]);
+	settings.setValue("MeshGreen", this->mui_MeshColor[1]);
+	settings.setValue("MeshBlue", this->mui_MeshColor[2]);
+	settings.setValue("MeshAlpha", this->mui_MeshColor[3]);
+	settings.endGroup();
 	cout << "end save settings" << endl;
 }
 
@@ -557,9 +570,9 @@ void MeshTools::slotOpenMeshFile()
 			//VTK_CREATE(vtkActor, actor);
 			VTK_CREATE(vtkMTActor, actor);
 			//VTK_CREATE(vtkOpenGLActor, actor);
-			actor->GetProperty()->SetColor(0.5, 1, 0.5);
-			
-			actor->GetProperty()->SetOpacity(0.5);
+			actor->SetmColor(this->mui_MeshColor);
+			//actor->GetProperty()->SetColor(this->mui_MeshColor[0], this->mui_MeshColor[1], this->mui_MeshColor[2]);
+			//actor->GetProperty()->SetOpacity(this->mui_MeshColor[3]);
 			actor->SetSelected(0);
 			actor->SetMapper(mapper);
 			this->MeshToolsCore->getRenderer()->AddActor(actor);

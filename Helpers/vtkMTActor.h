@@ -49,7 +49,7 @@ public:
 	// Description:
 	void ShallowCopy(vtkProp *prop);
 
-	vtkSetMacro(Selected, int);
+	//vtkSetMacro(Selected, int);
 	vtkGetMacro(Selected, int);
 	vtkBooleanMacro(Selected, int);
 
@@ -57,9 +57,12 @@ public:
 	vtkGetMacro(Changed, int);
 	vtkBooleanMacro(Changed, int);
 
+	vtkSetVector4Macro(mColor, double);
+	vtkGetVector4Macro(mColor, double);
+
 	// Actual actor render method.
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
-	
+	void SetSelected(int selected);
 	void SavePosition(int mCount);
 	void Redo(int mCount); // Try to redo (if exists) "mCount" event
 	void Erase(int mCount); // Try to erase (if exists) "mCount" event
@@ -75,7 +78,7 @@ protected:
 	int Selected;
 	int Changed; // used by MTActorCollection class to recompute global center of mass and center of mass
 	//of selected objects etc... 
-
+	double mColor[4]; // mesh "uniform" color (no vertex coloring) and transparency.
 	vtkMTActorUndoRedo* UndoRedo;
 
 

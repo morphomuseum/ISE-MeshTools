@@ -60,6 +60,7 @@ public:
   int mui_ShowOrientationHelper;
   int mui_CameraCentreOfMassAtOrigin;
   int mui_CameraOrtho;
+  double mui_MeshColor[4];
 public slots:
   //static  MeshTools* Instance;
  // static MeshTools* instance();

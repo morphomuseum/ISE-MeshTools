@@ -33,7 +33,24 @@ vtkMTActor::~vtkMTActor()
 	
 
 }
-
+void vtkMTActor::SetSelected(int selected)
+{
+	this->Selected = selected;
+	if (selected == 1)
+	{
+		this->GetProperty()->SetColor(0.5, 0.5, 0.5);
+		this->GetProperty()->SetOpacity(this->mColor[3]);
+		if (this->mColor[3] < 0.75)
+		{
+			this->GetProperty()->SetOpacity(0.75);
+		}
+	}
+	else
+	{
+		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
+		this->GetProperty()->SetOpacity(this->mColor[3]);
+	}
+}
 void vtkMTActor::Undo(int mCount)
 {
 
