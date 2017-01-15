@@ -177,8 +177,10 @@ MeshTools::MeshTools()
 	this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
 	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
 
-
-
+	//this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
+	//this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
+	//this->ui->qvtkWidget->GetRenderWindow()->StereoRenderOn();
+	
 
 	// VTK/Qt wedded
 
