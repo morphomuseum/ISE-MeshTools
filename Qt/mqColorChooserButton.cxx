@@ -50,6 +50,7 @@ mqColorChooserButton::mqColorChooserButton(QWidget* p)
   this->IconRadiusHeightRatio = 0.75;
   this->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
   this->connect(this, SIGNAL(clicked()), SLOT(chooseColor()));
+  
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +58,7 @@ QColor mqColorChooserButton::chosenColor() const
 {
   QColor color;
   color.setRgbF(this->Color[0], this->Color[1], this->Color[2], this->Color[3]);
-
-  return color;
+   return color;
 }
 
 //-----------------------------------------------------------------------------
@@ -166,6 +166,8 @@ void mqColorChooserButton::chooseColor()
   }
 
   this->setChosenColor(QColorDialog::getColor(this->chosenColor(), this, "Select Color", opts));
+  emit colorChosen();
+
 }
 
 //-----------------------------------------------------------------------------

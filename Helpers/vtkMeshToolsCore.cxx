@@ -134,6 +134,37 @@ void vtkMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 		}
 	}
 }
+
+void vtkMeshToolsCore::Setmui_MeshColor(double c1, double c2, double c3, double c4)
+{
+	double c[4];
+	c[0] = c1;
+	c[1] = c2;
+	c[2] = c3;
+	c[3] = c4;
+	
+
+	this->Setmui_MeshColor(c);
+}
+void vtkMeshToolsCore::Setmui_MeshColor(double c[4])
+{
+	this->mui_MeshColor[0] = c[0];
+	this->mui_MeshColor[1] = c[1];
+	this->mui_MeshColor[2] = c[3];
+	this->mui_MeshColor[3] = c[4];
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected()==1)
+		{
+			
+			//myActor->SetmColor(this->mui_MeshColor);
+			//myActor->SetSelected(0);
+		}
+	}
+}
+
 void vtkMeshToolsCore::Setmui_BackGroundColor(double bg1, double bg2, double bg3)
 {
 	double background[3];
@@ -149,6 +180,7 @@ void vtkMeshToolsCore::Setmui_BackGroundColor(double background[3])
 	this->mui_BackGroundColor[1] = background[1];
 	this->mui_BackGroundColor[2] = background[2];
 	this->Renderer->SetBackground(background);
+	//this->RenderWindow->Render();
 }
 void vtkMeshToolsCore::Setmui_BackGroundColor2(double bg1, double bg2, double bg3)
 {
@@ -165,6 +197,7 @@ void vtkMeshToolsCore::Setmui_BackGroundColor2(double background[3])
 	this->mui_BackGroundColor2[1] = background[1];
 	this->mui_BackGroundColor2[2] = background[2];
 	this->Renderer->SetBackground2(background);
+	//this->RenderWindow->Render();
 }
 
 void vtkMeshToolsCore::Undo()

@@ -30,6 +30,11 @@ public:
   
   ~mqColorDialog();
 
+  public slots:
+  virtual void slotMeshColorChanged();
+  virtual void slotBackGroundColorChanged();
+  virtual void slotBackGroundColorChanged2();
+
 protected:
 	
 private:

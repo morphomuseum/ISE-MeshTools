@@ -121,6 +121,9 @@ public slots:
   * show a dialog to choose the color
   */
   virtual void chooseColor();
+signals:
+
+  void colorChosen();
 
 protected:
   /**

@@ -48,7 +48,7 @@ public:
 	vtkGetMacro(mui_CameraOrtho, int);
 
 
-	vtkSetVector4Macro(mui_MeshColor, double);
+	//vtkSetVector4Macro(mui_MeshColor, double);
 	vtkGetVector4Macro(mui_MeshColor, double);
 
 	//vtkSetVector3Macro(mui_BackGroundColor, double);
@@ -56,6 +56,10 @@ public:
 
 	//vtkSetVector3Macro(mui_BackGroundColor2, double);
 	vtkGetVector3Macro(mui_BackGroundColor2, double);
+
+	void Setmui_MeshColor(double c1, double c2, double c3, double c4);
+	void Setmui_MeshColor(double c[3]);
+	
 
 	void Setmui_BackGroundColor(double bg1, double bg2, double bg3);
 	void Setmui_BackGroundColor(double background[3]);
