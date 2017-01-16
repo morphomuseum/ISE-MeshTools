@@ -28,5 +28,6 @@
  <file>move_cam2.gif</file>
  <file>camera_ortho.gif</file>
  <file>camera_persp.gif</file>
+ <file>renderer_anaglyph.gif</file>
   </qresource>
 </RCC>

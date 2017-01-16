@@ -23,16 +23,54 @@
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>    
 #include <vtkCamera.h>
+#include <vtkRenderWindow.h>
 // 
 class vtkUndoStack;
 
 class  vtkMeshToolsCore : public vtkObject
 {
 public:
+	vtkSetMacro(mui_ShowGrid, int);
+	vtkGetMacro(mui_ShowGrid, int);
+	
+	//vtkSetMacro(mui_Anaglyph, int);
+	void Setmui_Anaglyph(int anaglyph);
+	vtkGetMacro(mui_Anaglyph, int);
+
+
+	vtkSetMacro(mui_ShowOrientationHelper, int);
+	vtkGetMacro(mui_ShowOrientationHelper, int);
+	
+	vtkSetMacro(mui_CameraCentreOfMassAtOrigin, int);
+	vtkGetMacro(mui_CameraCentreOfMassAtOrigin, int);
+
+	vtkSetMacro(mui_CameraOrtho, int);
+	vtkGetMacro(mui_CameraOrtho, int);
+
+
+	vtkSetVector4Macro(mui_MeshColor, double);
+	vtkGetVector4Macro(mui_MeshColor, double);
+
+	//vtkSetVector3Macro(mui_BackGroundColor, double);
+	vtkGetVector3Macro(mui_BackGroundColor, double);
+
+	//vtkSetVector3Macro(mui_BackGroundColor2, double);
+	vtkGetVector3Macro(mui_BackGroundColor2, double);
+
+	void Setmui_BackGroundColor(double bg1, double bg2, double bg3);
+	void Setmui_BackGroundColor(double background[3]);
+	void Setmui_BackGroundColor2(double bg1, double bg2, double bg3);
+	void Setmui_BackGroundColor2(double background[3]);
   static vtkMeshToolsCore* New();
   static vtkMeshToolsCore* instance();
   vtkTypeMacro(vtkMeshToolsCore, vtkObject);
   void PrintSelf(ostream& os, vtkIndent indent);
+
+  //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
+  void SetRenderWindow(vtkRenderWindow *renwin)
+  {
+	  this->RenderWindow = renwin;
+  }
 
   vtkSmartPointer<vtkMTActorCollection> getActorCollection();
   //vtkMTActorCollection* getActorCollection();
@@ -58,11 +96,20 @@ protected:
 	vtkSmartPointer<vtkMTActorCollection> ActorCollection;
 	//vtkMTActorCollection *ActorCollection;
 	vtkSmartPointer<vtkRenderer> Renderer;
+	//vtkSmartPointer<vtkRenderWindow> RenderWindow;
+	vtkRenderWindow* RenderWindow;
 	vtkSmartPointer<vtkCamera> Camera;
 	vtkSmartPointer<vtkGridActor> GridActor;
 	vtkUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
-	
+	int mui_ShowGrid;
+	int mui_Anaglyph;
+	int mui_ShowOrientationHelper;
+	int mui_CameraCentreOfMassAtOrigin;
+	int mui_CameraOrtho;
+	double mui_MeshColor[4];
+	double mui_BackGroundColor[3];
+	double mui_BackGroundColor2[3];
 	
 
 private:

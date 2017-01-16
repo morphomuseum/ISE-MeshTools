@@ -6,6 +6,7 @@
 ========================================================================*/
 
 #include "mqAboutDialogReaction.h"
+#include "mqColorDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqDesktopServicesReaction.h"
 
@@ -52,13 +53,15 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
 //void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu, QMainWindow* mainWindow = 0)
 void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
 {
+	// About
+
   QString objectName = menu.objectName();
  /* Ui::pqEditMenuBuilder ui;
   ui.setupUi(&menu);*/ // no ui file yet
 
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
-
+  new mqColorDialogReaction(menu.addAction("Edit olor options.") << mqSetName("actionColor"));
   //new pqUndoRedoReaction(ui.actionEditUndo, true);
   //new pqUndoRedoReaction(ui.actionEditRedo, false);
   //new pqCameraUndoRedoReaction(ui.actionEditCameraUndo, true);

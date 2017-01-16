@@ -78,7 +78,13 @@
      <string>Help</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -111,6 +117,7 @@
    <addaction name="actionOrientationHelperToggle"/>
    <addaction name="actionCameraCentreOfMassToggle"/>
    <addaction name="actionCameraOrthoPerspectiveToggle"/>
+   <addaction name="actionRendererAnaglyphToggle"/>
   </widget>
   <action name="actionOpenMesh">
    <property name="enabled">
@@ -281,6 +288,22 @@
    </property>
    <property name="toolTip">
     <string>Toggle camera : orthonormal or perspective projection</string>
+   </property>
+  </action>
+  <action name="actionRendererAnaglyphToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Icons/icons.qrc">
+     <normaloff>:/Icons/renderer_anaglyph.gif</normaloff>
+     <normalon>:/Icons/renderer_anaglyph.gif</normalon>:/Icons/renderer_anaglyph.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Anaglyph : toggle</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle renderer : normal or anaglyph (red-blue)</string>
    </property>
   </action>
  </widget>

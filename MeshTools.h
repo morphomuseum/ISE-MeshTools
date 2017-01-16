@@ -56,11 +56,7 @@ public:
 
   vtkOrientationHelperWidget* OrientationHelperWidget; 
 
-  int mui_ShowGrid;
-  int mui_ShowOrientationHelper;
-  int mui_CameraCentreOfMassAtOrigin;
-  int mui_CameraOrtho;
-  double mui_MeshColor[4];
+  
 public slots:
   //static  MeshTools* Instance;
  // static MeshTools* instance();
@@ -76,6 +72,7 @@ public slots:
   virtual void slotOrientationHelperToggle();
   virtual void slotCameraCentreOfMassToggle();
   virtual void slotCameraOrthoPerspectiveToggle();
+  virtual void slotRendererAnaglyphToggle();
   virtual void slotExit();
  // int GetUndoCount();
 //  void SetUndoCount(int Count);

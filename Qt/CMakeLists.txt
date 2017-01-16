@@ -13,6 +13,13 @@ set (Qt_SRCS
   mqSetName.h
   mqMeshToolsMenuBuilders.cxx
   mqMeshToolsMenuBuilders.h
+  mqColorChooserButton.cxx
+  mqColorChooserButton.h
+  mqColorDialogReaction.h
+  mqColorDialogReaction.cxx
+  mqColorDialog.cxx
+  mqColorDialog.h
+
 )
 
 set (Qt_MOC_HDRS
@@ -20,7 +27,7 @@ set (Qt_MOC_HDRS
   mqAboutDialog.h
 )
 
-set (Qt_UIs mqAboutDialog.ui )
+set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui)
 
 
 
@@ -43,8 +50,14 @@ qt5_wrap_ui(QtUI_Srcs ${Qt_UIs})
 #for some reason, otherwise wrapped ui related .h files are not read
 include_directories ("${PROJECT_BINARY_DIR}/Qt")
 
+include_directories ("${PROJECT_SOURCE_DIR}/Helpers")
+
+
+
 ADD_LIBRARY (MeshToolsQt ${Qt_SRCS} ${QtUI_Srcs} ${Qt_UIs}   
-  
+ 
+
+ 
 #${Qt_HDRS}
 )
 

@@ -118,53 +118,65 @@ void RubberBandSelect(vtkObject* caller,
 // Constructor
 MeshTools::MeshTools()
 {
-	
+	this->MeshToolsCore = vtkSmartPointer<vtkMeshToolsCore>::New();
 	//vtkUndoStack* undoStack = vtkUndoStack::New();
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);
-	this->mui_ShowGrid = 1;
-	this->mui_MeshColor[0]=1;
-	this->mui_MeshColor[1] = 0.5;
-	this->mui_MeshColor[2] = 0;
-	this->mui_MeshColor[3] = 0.75;
 	
-	this->mui_ShowOrientationHelper = 1;
-	this->mui_CameraOrtho = 1;
 
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	cout<<".ini file path"<<  settings.fileName().toStdString()<<endl;
 	settings.beginGroup("display_options");
-	this->mui_ShowGrid = settings.value("ShowGrid", "1").toInt();
-	this->mui_ShowOrientationHelper= settings.value("ShowOrientationHelper", "1").toInt();
-	this->mui_CameraCentreOfMassAtOrigin = settings.value("CameraCentreOfMassAtOrigin", "1").toInt();
-	this->mui_CameraOrtho= settings.value("CameraOrtho", "1").toInt();
-	this->mui_MeshColor[0] = settings.value("MeshRed", "1").toDouble();
-	this->mui_MeshColor[1] = settings.value("MeshGreen", "0").toDouble();
-	this->mui_MeshColor[2] = settings.value("MeshBlue", "0").toDouble();
-	this->mui_MeshColor[3] = settings.value("MeshAlpha", "0.75").toDouble();
+	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", "1").toInt());
+	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", "1").toInt());
+	this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(settings.value("CameraCentreOfMassAtOrigin", "1").toInt());
+	this->MeshToolsCore->Setmui_CameraOrtho(settings.value("CameraOrtho", "1").toInt());
 	settings.endGroup();
-	cout << this->mui_ShowGrid << "," << this->mui_ShowOrientationHelper << endl;
-	cout << "centre of mass at origin="<<this->mui_CameraCentreOfMassAtOrigin << endl;
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	settings.beginGroup("color_settings");
+	this->MeshToolsCore->Setmui_MeshColor(
+	settings.value("MeshRed", "1").toDouble(),
+	settings.value("MeshGreen", "1").toDouble(),
+	settings.value("MeshBlue", "0").toDouble(),
+	settings.value("MeshAlpha", "0.75").toDouble()
+		);
+	this->MeshToolsCore->Setmui_BackGroundColor(
+		settings.value("BackGroundRed", "0.5").toDouble(),
+		settings.value("BackGroundGreen", "0.5").toDouble(),
+		settings.value("BackGroundBlue", "1").toDouble()		
+		);
+
+	this->MeshToolsCore->Setmui_BackGroundColor2(
+		settings.value("BackGroundRed2", "0").toDouble(),
+		settings.value("BackGroundGreen2", "0").toDouble(),
+		settings.value("BackGroundBlue2", "0").toDouble()
+		);
+	settings.endGroup();
+
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 	
 		this->ui->actionCameraCentreOfMassToggle->setChecked(true);
 	}
 
-	if (this->mui_CameraOrtho == 0)
+	if (this->MeshToolsCore->Getmui_CameraOrtho() == 0)
 	{
 
 		this->ui->actionCameraOrthoPerspectiveToggle->setChecked(true);
 	}
 
+	
+
+	
+
 
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
+	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
 
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
-	this->MeshToolsCore = vtkSmartPointer<vtkMeshToolsCore>::New();
+	
 
 	
 
@@ -172,13 +184,24 @@ MeshTools::MeshTools()
 	// Place the table view in the designer form
 	//this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
 
+	this->MeshToolsCore->SetRenderWindow(this->ui->qvtkWidget->GetRenderWindow());
 
 
 	this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
 	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
+	
+	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
+	this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
+	settings.beginGroup("renderer_settings");
+	this->MeshToolsCore->Setmui_Anaglyph(settings.value("Anaglyph", "0").toInt());
+	settings.endGroup();
+	if (this->MeshToolsCore->Getmui_Anaglyph() == 1)
+	{
 
-	//this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
-	//this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
+		this->ui->actionRendererAnaglyphToggle->setChecked(true);
+	}
+	
+
 	//this->ui->qvtkWidget->GetRenderWindow()->StereoRenderOn();
 	
 
@@ -186,7 +209,11 @@ MeshTools::MeshTools()
 
 
 	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->MeshToolsCore->getRenderer());
-
+	this->MeshToolsCore->getRenderer()->GradientBackgroundOn();
+	
+	this->MeshToolsCore->getRenderer()->SetBackground(this->MeshToolsCore->Getmui_BackGroundColor());
+	this->MeshToolsCore->getRenderer()->SetBackground2(this->MeshToolsCore->Getmui_BackGroundColor2());
+	//actor->SetmColor(this->MeshToolsCore->Getmui_MeshColor());
 	//cout<< "Peeling was used:"<< this->MeshToolsCore->getRenderer()->GetLastRenderingUsedDepthPeeling();
 
 	
@@ -229,6 +256,7 @@ MeshTools::MeshTools()
 	connect(this->ui->actionCameraAbove, SIGNAL(triggered()), this, SLOT(slotCameraAbove()));
 	connect(this->ui->actionCameraBelow, SIGNAL(triggered()), this, SLOT(slotCameraBelow()));
 	connect(this->ui->actionGridToggle, SIGNAL(triggered()), this, SLOT(slotGridToggle()));
+	connect(this->ui->actionRendererAnaglyphToggle, SIGNAL(triggered()), this, SLOT(slotRendererAnaglyphToggle()));
 	connect(this->ui->actionOrientationHelperToggle, SIGNAL(triggered()), this, SLOT(slotOrientationHelperToggle()));
 	connect(this->ui->actionCameraCentreOfMassToggle, SIGNAL(triggered()), this, SLOT(slotCameraCentreOfMassToggle()));
 	connect(this->ui->actionCameraOrthoPerspectiveToggle, SIGNAL(triggered()), this, SLOT(slotCameraOrthoPerspectiveToggle()));
@@ -258,7 +286,7 @@ MeshTools::MeshTools()
 	myorigin[1] = 0;
 	myorigin[2] = 0;
 
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	
 
 
@@ -325,17 +353,30 @@ void MeshTools::saveSettings()
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	//cout<<"try save settings:" << m_sSettingsFile.toStdString();
 	settings.beginGroup("display_options");
-	settings.setValue("ShowGrid", this->mui_ShowGrid);
-	settings.setValue("ShowOrientationHelper", this->mui_ShowOrientationHelper);
-	settings.setValue("CameraCentreOfMassAtOrigin", this->mui_CameraCentreOfMassAtOrigin);
-	settings.setValue("CameraOrtho", this->mui_CameraOrtho);
+	settings.setValue("ShowGrid", this->MeshToolsCore->Getmui_ShowGrid());
+	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());
+	settings.setValue("CameraCentreOfMassAtOrigin", this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
+	settings.setValue("CameraOrtho", this->MeshToolsCore->Getmui_CameraOrtho());
 	settings.endGroup();	
 
-	settings.beginGroup("mesh_settings");
-	settings.setValue("MeshRed", this->mui_MeshColor[0]);
-	settings.setValue("MeshGreen", this->mui_MeshColor[1]);
-	settings.setValue("MeshBlue", this->mui_MeshColor[2]);
-	settings.setValue("MeshAlpha", this->mui_MeshColor[3]);
+	settings.beginGroup("color_settings");
+	settings.setValue("BackGroundRed", this->MeshToolsCore->Getmui_BackGroundColor()[0]);
+	settings.setValue("BackGroundGreen", this->MeshToolsCore->Getmui_BackGroundColor()[1]);
+	settings.setValue("BackGroundBlue", this->MeshToolsCore->Getmui_BackGroundColor()[2]);
+
+	settings.setValue("BackGroundRed2", this->MeshToolsCore->Getmui_BackGroundColor2()[0]);
+	settings.setValue("BackGroundGreen2", this->MeshToolsCore->Getmui_BackGroundColor2()[1]);
+	settings.setValue("BackGroundBlue2", this->MeshToolsCore->Getmui_BackGroundColor2()[2]);
+
+
+	settings.setValue("MeshRed", this->MeshToolsCore->Getmui_MeshColor()[0]);
+	settings.setValue("MeshGreen", this->MeshToolsCore->Getmui_MeshColor()[1]);
+	settings.setValue("MeshBlue", this->MeshToolsCore->Getmui_MeshColor()[2]);
+	settings.setValue("MeshAlpha", this->MeshToolsCore->Getmui_MeshColor()[3]);
+	settings.endGroup();
+	
+	settings.beginGroup("renderer_settings");
+	settings.setValue("Anaglyph", this->MeshToolsCore->Getmui_Anaglyph());	
 	settings.endGroup();
 	cout << "end save settings" << endl;
 }
@@ -572,9 +613,9 @@ void MeshTools::slotOpenMeshFile()
 			//VTK_CREATE(vtkActor, actor);
 			VTK_CREATE(vtkMTActor, actor);
 			//VTK_CREATE(vtkOpenGLActor, actor);
-			actor->SetmColor(this->mui_MeshColor);
-			//actor->GetProperty()->SetColor(this->mui_MeshColor[0], this->mui_MeshColor[1], this->mui_MeshColor[2]);
-			//actor->GetProperty()->SetOpacity(this->mui_MeshColor[3]);
+			actor->SetmColor(this->MeshToolsCore->Getmui_MeshColor());
+			//actor->GetProperty()->SetColor(this->MeshToolsCore->Getmui_MeshColor()[0], this->MeshToolsCore->Getmui_MeshColor()[1], this->MeshToolsCore->Getmui_MeshColor()[2]);
+			//actor->GetProperty()->SetOpacity(this->MeshToolsCore->Getmui_MeshColor()[3]);
 			actor->SetSelected(0);
 			actor->SetMapper(mapper);
 			this->MeshToolsCore->getRenderer()->AddActor(actor);
@@ -628,7 +669,7 @@ void MeshTools::slotOpenMeshFile()
 			actor2->SetMapper(mapper2);
 			this->MeshToolsCore->getRenderer()->AddActor(actor2);
 			*/
-			/*if (this->mui_CameraCentreOfMassAtOrigin == 0)
+			/*if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 			{
 				double globalcenterofmass[3];
 				this->GetGlobalCenterOfMass(globalcenterofmass);
@@ -764,7 +805,7 @@ void MeshTools::slotOpenMeshFile()
 void MeshTools::AdjustCameraAndGrid()
 {
 	double newcamerafocalpoint[3] = { 0,0,0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
@@ -799,7 +840,7 @@ void MeshTools::AdjustCameraAndGrid()
 	this->MeshToolsCore->getCamera()->SetFocalPoint(newcamerafocalpoint);
 
 	// now adjust if necessary..
-	if (this->mui_CameraOrtho == 1)
+	if (this->MeshToolsCore->Getmui_CameraOrtho() == 1)
 	{
 		this->MeshToolsCore->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
 		this->MeshToolsCore->getRenderer()->ResetCameraClippingRange();
@@ -814,7 +855,7 @@ void MeshTools::AdjustCameraAndGrid()
 void MeshTools::ReplaceCameraAndGrid()
 {
 	double newcamerafocalpoint[3] = { 0,0,0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);				
 	}
@@ -833,7 +874,7 @@ void MeshTools::ReplaceCameraAndGrid()
 	this->MeshToolsCore->getCamera()->SetFocalPoint(newcamerafocalpoint);
 
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	//this->MeshToolsCore->getGridActor()->SetGridType(gridtype);	
 	this->ui->qvtkWidget->update();
 		
@@ -848,9 +889,9 @@ void MeshTools::slotExit() {
 void MeshTools::slotCameraFront()
 {
 	
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -864,7 +905,7 @@ void MeshTools::slotCameraFront()
 	//this->ReplaceCamera();
 	
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	
 	this->MeshToolsCore->getGridActor()->SetGridType(2);
 	
@@ -874,10 +915,10 @@ void MeshTools::slotCameraFront()
 // Action to be taken upon camera back side
 void MeshTools::slotCameraBack()
 {
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	//this->ReplaceCamera();
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);		
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -889,7 +930,7 @@ void MeshTools::slotCameraBack()
 	this->MeshToolsCore->getCamera()->SetFocalPoint(cameracentre);
 	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	this->MeshToolsCore->getGridActor()->SetGridType(2);
 	this->ui->qvtkWidget->update();
 
@@ -897,10 +938,10 @@ void MeshTools::slotCameraBack()
 // Action to be taken upon camera left side
 void MeshTools::slotCameraLeft()
 {
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	//this->ReplaceCamera
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -913,7 +954,7 @@ void MeshTools::slotCameraLeft()
 
 	this->MeshToolsCore->getCamera()->SetViewUp(0,0, 1);
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	this->MeshToolsCore->getGridActor()->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -921,10 +962,10 @@ void MeshTools::slotCameraLeft()
 // Action to be taken upon camera right side
 void MeshTools::slotCameraRight()
 {
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	//this->ReplaceCamera();
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -937,16 +978,16 @@ void MeshTools::slotCameraRight()
 	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	this->MeshToolsCore->getGridActor()->SetGridType(1);
 	this->ui->qvtkWidget->update(); // update main window!
 }
 // Action to be taken upon camera underneath side
 void MeshTools::slotCameraBelow()
 {
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -959,7 +1000,7 @@ void MeshTools::slotCameraBelow()
 	this->MeshToolsCore->getCamera()->SetViewUp(1, 0, 0);
 	//this->MeshToolsCore->getCamera()->SetParallelScale(120);
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	this->MeshToolsCore->getGridActor()->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -967,10 +1008,10 @@ void MeshTools::slotCameraBelow()
 // Action to be taken upon camera upper side
 void MeshTools::slotCameraAbove()
 {
-	cout << "this->mui_CameraCentreOfMassAtOrigin=" << this->mui_CameraCentreOfMassAtOrigin << endl;
+	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	//this->ReplaceCamera();
 	double cameracentre[3] = { 0, 0, 0 };
-	if (this->mui_CameraCentreOfMassAtOrigin == 0)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(cameracentre);
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
@@ -984,7 +1025,7 @@ void MeshTools::slotCameraAbove()
 
 	this->MeshToolsCore->getCamera()->SetViewUp(-1, 0, 0);
 	this->MeshToolsCore->getGridActor()->SetGridOrigin(cameracentre);
-	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->mui_CameraCentreOfMassAtOrigin);
+	this->MeshToolsCore->getGridActor()->SetOutlineMode(this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	this->MeshToolsCore->getGridActor()->SetGridType(0);
 	this->ui->qvtkWidget->update(); // update main window!
 
@@ -1000,7 +1041,7 @@ for (int i = 0; i < props->GetNumberOfItems(); i++)
 	vtkProp *myprop = props->GetNextProp();
 	if (str1.compare(myprop->GetClassName()) == 0)
 	{
-		if (this->mui_ShowGrid == 1)
+		if (this->MeshToolsCore->Getmui_ShowGrid() == 1)
 		{
 			myprop->VisibilityOn();
 		}
@@ -1019,16 +1060,29 @@ this->ui->qvtkWidget->update(); // update main window!
 // show or hide grid actor
 void MeshTools::slotGridToggle()
 {
-	if (this->mui_ShowGrid==1)
+	if (this->MeshToolsCore->Getmui_ShowGrid()==1)
 	{
-		this->mui_ShowGrid = 0;
+		this->MeshToolsCore->Setmui_ShowGrid(0);
 	}
 	else
 	{
-		this->mui_ShowGrid = 1;
+		this->MeshToolsCore->Setmui_ShowGrid(1);
 	}
 	this->SetGridVisibility();
 	
+
+}
+void MeshTools::slotRendererAnaglyphToggle()
+{
+	if (this->MeshToolsCore->Getmui_Anaglyph() == 1)
+	{
+		this->MeshToolsCore->Setmui_Anaglyph(0);
+	}
+	else
+	{
+		this->MeshToolsCore->Setmui_Anaglyph(1);
+	}
+
 
 }
 
@@ -1036,7 +1090,7 @@ void MeshTools::SetOrientationHelperVisibility()
 {
 
 	//std::string str1("vtkOrientationHelperActor");
-	if (this->mui_ShowOrientationHelper == 1)
+	if (this->MeshToolsCore->Getmui_ShowOrientationHelper() == 1)
 	{
 		this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOn();
 	}
@@ -1049,26 +1103,26 @@ void MeshTools::SetOrientationHelperVisibility()
 // show or hide the orientation helper actor
 void MeshTools::slotOrientationHelperToggle()
 {
-	if (this->mui_ShowOrientationHelper == 1)
+	if (this->MeshToolsCore->Getmui_ShowOrientationHelper() == 1)
 	{
-		this->mui_ShowOrientationHelper = 0;
+		this->MeshToolsCore->Setmui_ShowOrientationHelper(0);
 	}
 	else
 	{
-		this->mui_ShowOrientationHelper = 1;
+		this->MeshToolsCore->Setmui_ShowOrientationHelper(1);
 	}
 	this->SetOrientationHelperVisibility();	
 }
 void MeshTools::slotCameraCentreOfMassToggle()
 
 {
-	if (this->mui_CameraCentreOfMassAtOrigin == 1)
+	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 1)
 	{
-		this->mui_CameraCentreOfMassAtOrigin = 0;
+		this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(0);
 	}
 	else
 	{
-		this->mui_CameraCentreOfMassAtOrigin = 1;
+		this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(1);
 	}
 
 	this->ReplaceCameraAndGrid();
@@ -1076,20 +1130,21 @@ void MeshTools::slotCameraCentreOfMassToggle()
 void MeshTools::slotCameraOrthoPerspectiveToggle()
 
 {
-	if (this->mui_CameraOrtho == 1)
+	if (this->MeshToolsCore->Getmui_CameraOrtho() == 1)
 	{
-		this->mui_CameraOrtho = 0;
+		this->MeshToolsCore->Setmui_CameraOrtho(0);
 	}
 	else
 	{
-		this->mui_CameraOrtho = 1;
+		this->MeshToolsCore->Setmui_CameraOrtho(1);
+		
 	}
 
 	this->ResetCameraOrthoPerspective();
 }
 void MeshTools::ResetCameraOrthoPerspective()
 {
-	if (this->mui_CameraOrtho == 1)
+	if (this->MeshToolsCore->Getmui_CameraOrtho() == 1)
 	{
 		this->MeshToolsCore->getCamera()->SetParallelProjection(true);
 		this->DollyCameraForParallelScale();

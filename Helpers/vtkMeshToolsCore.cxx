@@ -9,6 +9,7 @@
 #include <vtkObjectFactory.h>
 #include "vtkMTActor.h"
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include "vtkUndoStack.h"
 #include "vtkUndoSet.h"
 #include "vtkUndoElement.h"
@@ -27,7 +28,23 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 {
 
 	vtkMeshToolsCore::Instance = this;
+	this->mui_Anaglyph = 0;
+	this->mui_ShowGrid = 1;
+	this->mui_MeshColor[0] = 1;
+	this->mui_MeshColor[1] = 0.5;
+	this->mui_MeshColor[2] = 0;
+	this->mui_MeshColor[3] = 0.75;
 
+	this->mui_BackGroundColor2[0] = 0;
+	this->mui_BackGroundColor2[1] = 0;
+	this->mui_BackGroundColor2[2] = 0;
+
+	this->mui_BackGroundColor[0] = 0.5;
+	this->mui_BackGroundColor[1] = 0.5;
+	this->mui_BackGroundColor[2] = 1;
+
+	this->mui_ShowOrientationHelper = 1;
+	this->mui_CameraOrtho = 1;
 	
 	//this->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
 	vtkUndoStack* undoStack = vtkUndoStack::New();
@@ -85,6 +102,8 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	sphere->Delete();
 	session->Delete();
 	*/
+	//this->RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+	this->RenderWindow = NULL;
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	//this->ActorCollection = vtkMTActorCollection::New();
 	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -97,6 +116,57 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	this->GridActor->SetGridType(2);	
 	this->Renderer->AddActor(this->GridActor);
 }
+
+void vtkMeshToolsCore::Setmui_Anaglyph(int anaglyph)
+{
+	this->mui_Anaglyph = anaglyph;
+	if (this->RenderWindow != NULL)
+	{
+		if (anaglyph == 1)
+		{
+			this->RenderWindow->StereoRenderOn();
+			this->RenderWindow->Render();
+		}
+		else
+		{
+			this->RenderWindow->StereoRenderOff();
+			this->RenderWindow->Render();
+		}
+	}
+}
+void vtkMeshToolsCore::Setmui_BackGroundColor(double bg1, double bg2, double bg3)
+{
+	double background[3];
+	background[0] = bg1;
+	background[1] = bg2;
+	background[2] = bg3;
+
+	this->Setmui_BackGroundColor(background);
+}
+void vtkMeshToolsCore::Setmui_BackGroundColor(double background[3])
+{
+	this->mui_BackGroundColor[0] = background[0];
+	this->mui_BackGroundColor[1] = background[1];
+	this->mui_BackGroundColor[2] = background[2];
+	this->Renderer->SetBackground(background);
+}
+void vtkMeshToolsCore::Setmui_BackGroundColor2(double bg1, double bg2, double bg3)
+{
+	double background[3];
+	background[0] = bg1;
+	background[1] = bg2;
+	background[2] = bg3;
+
+	this->Setmui_BackGroundColor2(background);
+}
+void vtkMeshToolsCore::Setmui_BackGroundColor2(double background[3])
+{
+	this->mui_BackGroundColor2[0] = background[0];
+	this->mui_BackGroundColor2[1] = background[1];
+	this->mui_BackGroundColor2[2] = background[2];
+	this->Renderer->SetBackground2(background);
+}
+
 void vtkMeshToolsCore::Undo()
 {
 	// a Set is only a label (action) and an id
