@@ -48,6 +48,7 @@ void vtkMTActor::SetSelected(int selected)
 	else
 	{
 		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
+		//cout << "mColor[3](alpha) =" << this->mColor[3] << endl;
 		this->GetProperty()->SetOpacity(this->mColor[3]);
 	}
 }

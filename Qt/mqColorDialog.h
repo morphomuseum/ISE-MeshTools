@@ -19,7 +19,7 @@ class mqColorDialog;
 
 /**
 * mqColorDialog is the Color dialog used by MeshTools.
-* It sets mesh default color and background color
+* It sets mesh default color and background colors
 */
 class  mqColorDialog : public QDialog
 {
@@ -34,6 +34,7 @@ public:
   virtual void slotMeshColorChanged();
   virtual void slotBackGroundColorChanged();
   virtual void slotBackGroundColorChanged2();
+  virtual void slotReinitializeColors();
 
 protected:
 	

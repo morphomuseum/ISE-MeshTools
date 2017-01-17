@@ -127,28 +127,64 @@ MeshTools::MeshTools()
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	cout<<".ini file path"<<  settings.fileName().toStdString()<<endl;
 	settings.beginGroup("display_options");
-	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", "1").toInt());
-	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", "1").toInt());
-	this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(settings.value("CameraCentreOfMassAtOrigin", "1").toInt());
-	this->MeshToolsCore->Setmui_CameraOrtho(settings.value("CameraOrtho", "1").toInt());
+	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
+		this->MeshToolsCore->Getmui_DefaultShowGrid()
+		).toInt());
+	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", 
+		this->MeshToolsCore->Getmui_DefaultShowOrientationHelper()
+		).toInt());
+	this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(settings.value("CameraCentreOfMassAtOrigin", 
+		this->MeshToolsCore->Getmui_DefaultCameraCentreOfMassAtOrigin()
+		).toInt());
+	this->MeshToolsCore->Setmui_CameraOrtho(settings.value("CameraOrtho", 
+		this->MeshToolsCore->Getmui_DefaultCameraOrtho()
+		).toInt());
 	settings.endGroup();
 	settings.beginGroup("color_settings");
+	double defaultMeshColor[4];
+	double defaultBackGroundColor[3];
+	double defaultBackGroundColor2[3];
+
+	this->MeshToolsCore->Getmui_DefaultMeshColor(defaultMeshColor);
+	this->MeshToolsCore->Getmui_DefaultBackGroundColor(defaultBackGroundColor);
+	this->MeshToolsCore->Getmui_DefaultBackGroundColor2(defaultBackGroundColor2);
+	//cout << "defaultMeshColor[3]=" << defaultMeshColor[3] << endl;
 	this->MeshToolsCore->Setmui_MeshColor(
-	settings.value("MeshRed", "1").toDouble(),
-	settings.value("MeshGreen", "1").toDouble(),
-	settings.value("MeshBlue", "0").toDouble(),
-	settings.value("MeshAlpha", "0.75").toDouble()
+	settings.value("MeshRed", 
+		defaultMeshColor[0]
+		).toDouble(),
+	settings.value("MeshGreen", 
+		defaultMeshColor[1]
+		).toDouble(),
+	settings.value("MeshBlue", 
+		defaultMeshColor[2]
+		).toDouble(),
+	settings.value("MeshAlpha", 
+		defaultMeshColor[3]
+		).toDouble()
 		);
 	this->MeshToolsCore->Setmui_BackGroundColor(
-		settings.value("BackGroundRed", "0.5").toDouble(),
-		settings.value("BackGroundGreen", "0.5").toDouble(),
-		settings.value("BackGroundBlue", "1").toDouble()		
+		settings.value("BackGroundRed", 
+			defaultBackGroundColor[0]
+			).toDouble(),
+		settings.value("BackGroundGreen", 
+			defaultBackGroundColor[1]
+			).toDouble(),
+		settings.value("BackGroundBlue", 
+			defaultBackGroundColor[2]
+			).toDouble()		
 		);
 
 	this->MeshToolsCore->Setmui_BackGroundColor2(
-		settings.value("BackGroundRed2", "0").toDouble(),
-		settings.value("BackGroundGreen2", "0").toDouble(),
-		settings.value("BackGroundBlue2", "0").toDouble()
+		settings.value("BackGroundRed2", 
+			defaultBackGroundColor2[0]
+			).toDouble(),
+		settings.value("BackGroundGreen2", 
+			defaultBackGroundColor2[1]
+			).toDouble(),
+		settings.value("BackGroundBlue2",
+			defaultBackGroundColor2[2]
+			).toDouble()
 		);
 	settings.endGroup();
 

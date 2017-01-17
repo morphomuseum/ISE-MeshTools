@@ -61,7 +61,7 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
 
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
-  new mqColorDialogReaction(menu.addAction("Edit olor options.") << mqSetName("actionColor"));
+  new mqColorDialogReaction(menu.addAction("Edit color options") << mqSetName("actionColor"));
   //new pqUndoRedoReaction(ui.actionEditUndo, true);
   //new pqUndoRedoReaction(ui.actionEditRedo, false);
   //new pqCameraUndoRedoReaction(ui.actionEditCameraUndo, true);

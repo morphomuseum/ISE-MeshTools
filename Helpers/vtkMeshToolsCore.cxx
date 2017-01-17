@@ -28,24 +28,25 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 {
 
 	vtkMeshToolsCore::Instance = this;
-	this->mui_Anaglyph = 0;
-	this->mui_ShowGrid = 1;
-	this->mui_MeshColor[0] = 1;
-	this->mui_MeshColor[1] = 0.5;
-	this->mui_MeshColor[2] = 0;
-	this->mui_MeshColor[3] = 0.75;
-
-	this->mui_BackGroundColor2[0] = 0;
-	this->mui_BackGroundColor2[1] = 0;
-	this->mui_BackGroundColor2[2] = 0;
-
-	this->mui_BackGroundColor[0] = 0.5;
-	this->mui_BackGroundColor[1] = 0.5;
-	this->mui_BackGroundColor[2] = 1;
-
-	this->mui_ShowOrientationHelper = 1;
-	this->mui_CameraOrtho = 1;
+	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
+	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
 	
+	this->mui_MeshColor[0] = this->mui_DefaultMeshColor[0] = 0.631373;
+	this->mui_MeshColor[1] = this->mui_DefaultMeshColor[1] = 0.572549;
+	this->mui_MeshColor[2] = this->mui_DefaultMeshColor[2] = 0.372549;
+	this->mui_MeshColor[3] = this->mui_DefaultMeshColor[3] = 1;
+	cout << "mui_DefaultMeshColor[3] (alpha)=" << mui_DefaultMeshColor[3] << endl;
+	this->mui_BackGroundColor2[0] = this->mui_DefaultBackGroundColor2[0] = 0;
+	this->mui_BackGroundColor2[1] = this->mui_DefaultBackGroundColor2[1] = 0;
+	this->mui_BackGroundColor2[2] = this->mui_DefaultBackGroundColor2[2] = 0;
+
+	this->mui_BackGroundColor[0] = this->mui_DefaultBackGroundColor[0] = 0.5;
+	this->mui_BackGroundColor[1] = this->mui_DefaultBackGroundColor[1] = 0.5;
+	this->mui_BackGroundColor[2] = this->mui_DefaultBackGroundColor[2] = 1;
+
+	this->mui_ShowOrientationHelper = this->mui_DefaultShowOrientationHelper = 1;
+	this->mui_CameraOrtho = this->mui_DefaultCameraOrtho = 1;
+	this->mui_CameraCentreOfMassAtOrigin = this->mui_DefaultCameraCentreOfMassAtOrigin = 0;
 	//this->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
 	vtkUndoStack* undoStack = vtkUndoStack::New();
 	this->setUndoStack(undoStack);
@@ -116,7 +117,10 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	this->GridActor->SetGridType(2);	
 	this->Renderer->AddActor(this->GridActor);
 }
-
+void vtkMeshToolsCore::Render()
+{
+	this->RenderWindow->Render();
+}
 void vtkMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 {
 	this->mui_Anaglyph = anaglyph;
@@ -150,8 +154,9 @@ void vtkMeshToolsCore::Setmui_MeshColor(double c[4])
 {
 	this->mui_MeshColor[0] = c[0];
 	this->mui_MeshColor[1] = c[1];
-	this->mui_MeshColor[2] = c[3];
-	this->mui_MeshColor[3] = c[4];
+	this->mui_MeshColor[2] = c[2];
+	this->mui_MeshColor[3] = c[3];
+	//cout << "Core: this->mui_MeshColor[3]="<<this->mui_MeshColor[3] << endl;
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{

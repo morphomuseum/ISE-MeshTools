@@ -32,30 +32,36 @@ class  vtkMeshToolsCore : public vtkObject
 public:
 	vtkSetMacro(mui_ShowGrid, int);
 	vtkGetMacro(mui_ShowGrid, int);
-	
+	vtkGetMacro(mui_DefaultShowGrid, int);
 	//vtkSetMacro(mui_Anaglyph, int);
 	void Setmui_Anaglyph(int anaglyph);
 	vtkGetMacro(mui_Anaglyph, int);
+	vtkGetMacro(mui_DefaultAnaglyph, int);
 
 
 	vtkSetMacro(mui_ShowOrientationHelper, int);
 	vtkGetMacro(mui_ShowOrientationHelper, int);
-	
+	vtkGetMacro(mui_DefaultShowOrientationHelper, int);
+
 	vtkSetMacro(mui_CameraCentreOfMassAtOrigin, int);
 	vtkGetMacro(mui_CameraCentreOfMassAtOrigin, int);
+	vtkGetMacro(mui_DefaultCameraCentreOfMassAtOrigin, int);
 
 	vtkSetMacro(mui_CameraOrtho, int);
 	vtkGetMacro(mui_CameraOrtho, int);
+	vtkGetMacro(mui_DefaultCameraOrtho, int);
 
 
 	//vtkSetVector4Macro(mui_MeshColor, double);
 	vtkGetVector4Macro(mui_MeshColor, double);
+	vtkGetVector4Macro(mui_DefaultMeshColor, double);
 
 	//vtkSetVector3Macro(mui_BackGroundColor, double);
 	vtkGetVector3Macro(mui_BackGroundColor, double);
-
+	vtkGetVector3Macro(mui_DefaultBackGroundColor, double);
 	//vtkSetVector3Macro(mui_BackGroundColor2, double);
 	vtkGetVector3Macro(mui_BackGroundColor2, double);
+	vtkGetVector3Macro(mui_DefaultBackGroundColor2, double);
 
 	void Setmui_MeshColor(double c1, double c2, double c3, double c4);
 	void Setmui_MeshColor(double c[3]);
@@ -83,7 +89,7 @@ public:
   vtkSmartPointer<vtkGridActor> getGridActor();
   void Redo(); // calls the undoStack Redo function
   void Undo(); // callse the undoStack Undo function
-  
+  void Render(); // called when something has changed and the app needs to redraw
   void Redo(int Count); // send redo message to the concerned elements (actors mostly!)
   void Erase(int Count); // erase action number Count (in actors!)
   void Undo(int Count); // send undo message to the concerned elements (actors!)
@@ -111,9 +117,20 @@ protected:
 	int mui_ShowOrientationHelper;
 	int mui_CameraCentreOfMassAtOrigin;
 	int mui_CameraOrtho;
+
+	int mui_DefaultShowGrid;
+	int mui_DefaultAnaglyph;
+	int mui_DefaultShowOrientationHelper;
+	int mui_DefaultCameraCentreOfMassAtOrigin;
+	int mui_DefaultCameraOrtho;
+
 	double mui_MeshColor[4];
 	double mui_BackGroundColor[3];
 	double mui_BackGroundColor2[3];
+
+	double mui_DefaultMeshColor[4];
+	double mui_DefaultBackGroundColor[3];
+	double mui_DefaultBackGroundColor2[3];
 	
 
 private:
