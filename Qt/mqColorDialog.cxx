@@ -137,7 +137,7 @@ void mqColorDialog::slotBackGroundColorChanged2()
 	QColor myBGColor2 = this->Ui->backgroundColorButton2->chosenColor();
 	double bgcolor2[3];
 	myBGColor2.getRgbF(&bgcolor2[0], &bgcolor2[1], &bgcolor2[2]);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor(bgcolor2);
+	vtkMeshToolsCore::instance()->Setmui_BackGroundColor2(bgcolor2);
 	vtkMeshToolsCore::instance()->Render();
 	cout << "Background color 2 changed!" << endl;
 }

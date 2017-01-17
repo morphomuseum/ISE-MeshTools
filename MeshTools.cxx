@@ -208,7 +208,7 @@ MeshTools::MeshTools()
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
 	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
-
+	mqMeshToolsMenuBuilders::buildToolbars(*this);
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();

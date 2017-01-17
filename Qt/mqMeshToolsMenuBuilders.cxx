@@ -8,6 +8,7 @@
 #include "mqAboutDialogReaction.h"
 #include "mqColorDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
+#include "mqMainControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
 
 #include "mqSetName.h"
@@ -99,4 +100,15 @@ void mqMeshToolsMenuBuilders::buildHelpMenu(QMenu& menu)
 }
 
 //-----------------------------------------------------------------------------
+void mqMeshToolsMenuBuilders::buildToolbars(QMainWindow& mainWindow)
+{
+	QToolBar* mainToolBar = new mqMainControlsToolbar(&mainWindow)
+		<< mqSetName("MainControlsToolbar");
+	mainToolBar->layout()->setSpacing(0);
+	mainWindow.addToolBar(Qt::TopToolBarArea, mainToolBar);
+
+	
+
+
+}
 

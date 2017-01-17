@@ -19,6 +19,9 @@ class QMainWindow;
 class mqMeshToolsMenuBuilders
 {
 public:
+
+
+	
   /**
   * Builds standard File menu.
   */
@@ -37,6 +40,10 @@ public:
   //static void buildHelpMenu(QMenu& menu, QMainWindow* mainWindow = 0);
   static void buildHelpMenu(QMenu& menu);
 
+  /**
+  * Builds and adds all standard MeshTools toolbars.
+  */
+  static void buildToolbars(QMainWindow& mainWindow);
   
 };
 

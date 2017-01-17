@@ -29,5 +29,8 @@
  <file>camera_ortho.gif</file>
  <file>camera_persp.gif</file>
  <file>renderer_anaglyph.gif</file>
+ <file>undo.gif</file>
+ <file>redo.gif</file>
+
   </qresource>
 </RCC>

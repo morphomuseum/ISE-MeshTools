@@ -19,6 +19,10 @@ set (Qt_SRCS
   mqColorDialogReaction.cxx
   mqColorDialog.cxx
   mqColorDialog.h
+  mqUndoRedoReaction.h
+  mqUndoRedoReaction.cxx
+  mqMainControlsToolbar.h
+  mqMainControlsToolbar.cxx
 
 )
 
@@ -27,7 +31,7 @@ set (Qt_MOC_HDRS
   mqAboutDialog.h
 )
 
-set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui)
+set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqMainControlsToolbar.ui)
 
 
 

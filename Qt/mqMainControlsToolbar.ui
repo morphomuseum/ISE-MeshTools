@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mqMainControlsToolbar</class>
+ <widget class="QToolBar" name="mqMainControlsToolbar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>138</width>
+    <height>34</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Main Controls</string>
+  </property>
+  <property name="orientation">
+   <enum>Qt::Horizontal</enum>
+  </property>
+  <action name="actionOpenData">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Icons/fileopen.png</normaloff>../Icons/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="statusTip">
+    <string>Open</string>
+   </property>
+   <property name="PV_MUST_BE_MASTER_TO_SHOW" stdset="0">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSaveData">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Icons/filesave.png</normaloff>../Icons/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Data...</string>
+   </property>
+   <property name="PV_MUST_BE_MASTER_TO_SHOW" stdset="0">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Icons/Undo.gif</normaloff>../Icons/Undo.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Icons/Redo.gif</normaloff>../Icons/Redo.gif</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <addaction name="actionOpenData"/>
+  <addaction name="actionSaveData"/>
+  <addaction name="separator"/>
+  <addaction name="actionUndo"/>
+  <addaction name="actionRedo"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
