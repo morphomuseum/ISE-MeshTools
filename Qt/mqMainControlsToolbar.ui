@@ -18,8 +18,8 @@
   </property>
   <action name="actionOpenData">
    <property name="icon">
-    <iconset>
-     <normaloff>../Icons/fileopen.png</normaloff>../Icons/fileopen.png</iconset>
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/fileopen.png</normaloff>:/Icons/fileopen.png</iconset>
    </property>
    <property name="text">
     <string>Open...</string>
@@ -33,8 +33,8 @@
   </action>
   <action name="actionSaveData">
    <property name="icon">
-    <iconset>
-     <normaloff>../Icons/filesave.png</normaloff>../Icons/filesave.png</iconset>
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/filesave.png</normaloff>:/Icons/filesave.png</iconset>
    </property>
    <property name="text">
     <string>Save Data...</string>
@@ -45,8 +45,8 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset>
-     <normaloff>../Icons/Undo.gif</normaloff>../Icons/Undo.gif</iconset>
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/undo.gif</normaloff>:/Icons/undo.gif</iconset>
    </property>
    <property name="text">
     <string>&amp;Undo</string>
@@ -54,8 +54,8 @@
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset>
-     <normaloff>../Icons/Redo.gif</normaloff>../Icons/Redo.gif</iconset>
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/redo.gif</normaloff>:/Icons/redo.gif</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
@@ -67,6 +67,8 @@
   <addaction name="actionUndo"/>
   <addaction name="actionRedo"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Icons/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

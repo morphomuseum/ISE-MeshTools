@@ -21,6 +21,8 @@ set (Qt_SRCS
   mqColorDialog.h
   mqUndoRedoReaction.h
   mqUndoRedoReaction.cxx
+  mqUndoStack.h
+  mqUndoStack.cxx
   mqMainControlsToolbar.h
   mqMainControlsToolbar.cxx
 
@@ -33,22 +35,26 @@ set (Qt_MOC_HDRS
 
 set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqMainControlsToolbar.ui)
 
+set( Qt_RCs ../Icons/icons.qrc )
 
 
 # We have ui files, this will bring in the macro: qt5_wrap_ui
 find_package(Qt5 COMPONENTS Widgets REQUIRED QUIET)
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 qt5_wrap_ui(QtUI_Srcs ${Qt_UIs})
-#qt5_add_resources(QRC_Srcs ${Qt_SRCS} )
+qt5_add_resources(QRC_Srcs ${Qt_RCS} )
 
 
  source_group("Resources" FILES
     ${Qt_UIs}
+    ${Qt_RCs}
     
   )
 
   source_group("Generated" FILES
     ${QtUI_Srcs}   
+    ${QRC_Srcs}   
+
    
   )
 #for some reason, otherwise wrapped ui related .h files are not read
