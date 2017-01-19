@@ -167,7 +167,7 @@ private:
 
 #include "vtkMeshToolsCore.h"
 
-inline int BEGIN_UNDO_SET(std::string & name)
+/*inline int BEGIN_UNDO_SET(std::string & name)
 {
 	vtkUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
 	if (usStack)
@@ -189,7 +189,7 @@ inline void END_UNDO_SET()
 	{
 		usStack->endUndoSet();
 	}
-}
+}*/
 /*
 inline void CLEAR_UNDO_STACK()
 {

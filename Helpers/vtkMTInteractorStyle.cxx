@@ -14,7 +14,7 @@
 =========================================================================*/
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActor.h"
-#include "vtkUndoStack.h"
+#include "mqUndoStack.h"
 #include "vtkMeshToolsCore.h"
 
 #include <vtkProperty.h>
@@ -389,7 +389,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				//cout << "Call myActor Save Position" << endl;
+				cout << "Call myActor Save Position with count"<<Count << endl;
 				myActor->SavePosition(Count);
 			}
 		}

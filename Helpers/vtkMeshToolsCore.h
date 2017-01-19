@@ -25,7 +25,7 @@
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 // 
-class vtkUndoStack;
+class mqUndoStack;
 
 class  vtkMeshToolsCore : public vtkObject
 {
@@ -95,9 +95,9 @@ public:
   void Undo(int Count); // send undo message to the concerned elements (actors!)
 
   //vtkSmartPointer<vtkUndoStack> getUndoStack();
-  vtkUndoStack* getUndoStack();
-  void setUndoStack(vtkUndoStack* stack);
-  vtkUndoStack* getUndoStack() const { return this->UndoStack; }
+  mqUndoStack* getUndoStack();
+  void setUndoStack(mqUndoStack* stack);
+  mqUndoStack* getUndoStack() const { return this->UndoStack; }
   
 protected:
 	vtkMeshToolsCore();
@@ -110,7 +110,8 @@ protected:
 	vtkRenderWindow* RenderWindow;
 	vtkSmartPointer<vtkCamera> Camera;
 	vtkSmartPointer<vtkGridActor> GridActor;
-	vtkUndoStack* UndoStack;
+	//vtkUndoStack* UndoStack;
+	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
 	int mui_ShowGrid;
 	int mui_Anaglyph;

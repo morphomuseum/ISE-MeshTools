@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "vtkMeshToolsCore.h"
 //@@TODO
-//#include "mqUndoStack.h"
+#include "mqUndoStack.h"
 
 //-----------------------------------------------------------------------------
 mqUndoRedoReaction::mqUndoRedoReaction(QAction* parentObject, bool _undo)

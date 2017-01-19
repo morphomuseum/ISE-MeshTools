@@ -32,27 +32,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef mqUndoStack_h
 #define mqUndoStack_h
 
-#include "vtkMeshToolsCore.h"
+
 #include <QObject>
 
 class vtkUndoStack;
-class vtkUndoStackBuilder;
+
 
 class mqUndoStack : public QObject
 {
   Q_OBJECT
 public:
-  /**
-  * If no \c builder is provided a default vtkSMUndoStackBuilder object
-  * will be created.
-  */
-  mqUndoStack(vtkUndoStackBuilder* builder = 0, QObject* parent = NULL);
-  virtual ~pqUndoStack();
+  
+  mqUndoStack(QObject* parent = NULL);
+  virtual ~mqUndoStack();
 
   /**
   * returns if it's possible to undo.
   */
   bool canUndo();
+  int GetGlobalCount();
 
   /**
   * returns if it's possible to redo.
@@ -69,23 +67,15 @@ public:
   */
   const QString redoLabel();
 
-  /**
-  * Get the status of the IgnoreAllChanges flag on the
-  * stack builder.
-  */
-  bool ignoreAllChanges() const;
+  
 
   
 
-  /**
-  * Get the UndoStackBuilder that is used with that UndoStack
-  */
-  vtkSMUndoStackBuilder* GetUndoStackBuilder();
-
+  
  
 
 public slots:
-  void beginUndoSet(QString label);
+void beginUndoSet(std::string &label);
   void endUndoSet();
 
   /**
@@ -131,6 +121,31 @@ private:
 };
 
 #include "vtkMeshToolsCore.h"
+
+inline int BEGIN_UNDO_SET(std::string & name)
+{
+	mqUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->beginUndoSet(name);
+		int Count = usStack->GetGlobalCount();
+		return Count;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+inline void END_UNDO_SET()
+{
+	mqUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	if (usStack)
+	{
+		usStack->endUndoSet();
+	}
+}
+
 /*
 inline void BEGIN_UNDO_SET(const QString& name)
 {

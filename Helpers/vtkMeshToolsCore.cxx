@@ -13,6 +13,7 @@
 #include "vtkUndoStack.h"
 #include "vtkUndoSet.h"
 #include "vtkUndoElement.h"
+#include "mqUndoStack.h"
 
 vtkStandardNewMacro(vtkMeshToolsCore);
 //-----------------------------------------------------------------------------
@@ -48,7 +49,7 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	this->mui_CameraOrtho = this->mui_DefaultCameraOrtho = 1;
 	this->mui_CameraCentreOfMassAtOrigin = this->mui_DefaultCameraCentreOfMassAtOrigin = 0;
 	//this->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
-	vtkUndoStack* undoStack = vtkUndoStack::New();
+	mqUndoStack* undoStack = new mqUndoStack();
 	this->setUndoStack(undoStack);
 	//this->mUndoStack = undoStack;
 	//MeshTools::testint = 10;
@@ -211,7 +212,7 @@ void vtkMeshToolsCore::Undo()
 	//vtkUndoSet *MyUndoSet = this->UndoStack->GetNextUndoSet();
 	//this->ActorCollection->Undo(MySet);
 	cout << "Root Undo!" << endl;
-	this->UndoStack->Undo(); // removes the next undo set.. 
+	this->UndoStack->undo(); // removes the next undo set.. 
 
 }
 void vtkMeshToolsCore::Undo(int Count)
@@ -229,7 +230,7 @@ void vtkMeshToolsCore::Undo(int Count)
 void vtkMeshToolsCore::Redo()
 {
 	cout << "Root Redo!" << endl;
-	this->UndoStack->Redo(); // removes the next undo set.. 
+	this->UndoStack->redo(); // removes the next undo set.. 
 }
 
 void vtkMeshToolsCore::Redo(int Count)
@@ -256,7 +257,7 @@ void vtkMeshToolsCore::Erase(int Count)
 		myActor->Erase(Count);
 	}
 }
-void vtkMeshToolsCore::setUndoStack(vtkUndoStack* stack)
+void vtkMeshToolsCore::setUndoStack(mqUndoStack* stack)
 {
 	if (stack != this->UndoStack)
 	{
@@ -283,7 +284,7 @@ vtkMeshToolsCore::~vtkMeshToolsCore()
 	return this->UndoStack;
 }*/
 
-vtkUndoStack* vtkMeshToolsCore::getUndoStack()
+mqUndoStack* vtkMeshToolsCore::getUndoStack()
 {
 return this->UndoStack;
 }

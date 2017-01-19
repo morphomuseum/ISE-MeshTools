@@ -29,12 +29,11 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "pqUndoStack.h"
+#include "mqUndoStack.h"
 
 #include "vtkMeshToolsCore.h"
 
 #include "vtkUndoStack.h"
-#include "vtkUndoStackBuilder.h"
 #include <vtkEventQtSlotConnect.h>
 #include <QPointer>
 #include <QtDebug>
@@ -45,32 +44,19 @@ class mqUndoStack::mqImplementation
 public:
   mqImplementation() { this->NestedCount = 0; }
   vtkSmartPointer<vtkUndoStack> UndoStack;
-  vtkSmartPointer<vtkUndoStackBuilder> UndoStackBuilder;
   vtkSmartPointer<vtkEventQtSlotConnect> VTKConnector;
-   QList<bool> IgnoreAllChangesStack;
+  
   int NestedCount;
 };
 
 //-----------------------------------------------------------------------------
-pqUndoStack::pqUndoStack(vtkUndoStackBuilder* builder, QObject* _parent /*=null*/)
+mqUndoStack::mqUndoStack( QObject* _parent /*=null*/)
   : QObject(_parent)
 {
   this->Implementation = new mqImplementation();
   this->Implementation->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
 
-  if (builder)
-  {
-    this->Implementation->UndoStackBuilder = builder;
-  }
-  else
-  {
-    // create default builder.
-    builder = vtkUndoStackBuilder::New();
-    this->Implementation->UndoStackBuilder = builder;
-    builder->Delete();
-  }
-
-  builder->SetUndoStack(this->Implementation->UndoStack);
+ 
 
   this->Implementation->VTKConnector = vtkSmartPointer<vtkEventQtSlotConnect>::New();
   this->Implementation->VTKConnector->Connect(this->Implementation->UndoStack,
@@ -83,11 +69,6 @@ mqUndoStack::~mqUndoStack()
   delete this->Implementation;
 }
 
-//-----------------------------------------------------------------------------
-vtkUndoStackBuilder* mqUndoStack::GetUndoStackBuilder()
-{
-  return this->Implementation->UndoStackBuilder;
-}
 
 //-----------------------------------------------------------------------------
 bool mqUndoStack::canUndo()
@@ -145,12 +126,19 @@ void mqUndoStack::onStackChanged()
   emit this->redoLabelChanged(redo_label);
 }
 
+int mqUndoStack::GetGlobalCount()
+{
+	
+		return this->Implementation->UndoStack->GetGlobalCount();
+	
+	
+}
 //-----------------------------------------------------------------------------
-void mqUndoStack::beginUndoSet(QString label)
+void mqUndoStack::beginUndoSet(std::string &label)
 {
   if (this->Implementation->NestedCount == 0)
   {
-    this->Implementation->UndoStackBuilder->Begin(label.toLatin1().data());
+    this->Implementation->UndoStack->beginUndoSet(label);
   }
 
   this->Implementation->NestedCount++;
@@ -168,18 +156,20 @@ void mqUndoStack::endUndoSet()
   this->Implementation->NestedCount--;
   if (this->Implementation->NestedCount == 0)
   {
-    this->Implementation->UndoStackBuilder->EndAndPushToStack();
+    this->Implementation->UndoStack->endUndoSet();
   }
 }
 
 //-----------------------------------------------------------------------------
 void mqUndoStack::undo()
 {
+  cout << "mqUndoStack undo call!" << endl;
   this->Implementation->UndoStack->Undo();
 
 //  vtkMeshToolsCore::instance()->render();
 
   emit this->undone();
+  cout << "end mqUndoStack undo call!" << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -194,17 +184,9 @@ void mqUndoStack::redo()
 
 
 //-----------------------------------------------------------------------------
-void pqUndoStack::clear()
+void mqUndoStack::clear()
 {
-  this->Implementation->UndoStack->Clear();
-  this->Implementation->UndoStackBuilder->Clear();
-  this->Implementation->IgnoreAllChangesStack.clear();
+  this->Implementation->UndoStack->Clear();  
+  
 }
 
-
-
-//-----------------------------------------------------------------------------
-bool mqUndoStack::ignoreAllChanges() const
-{
-	return this->Implementation->UndoStackBuilder->GetIgnoreAllChanges();
-}
