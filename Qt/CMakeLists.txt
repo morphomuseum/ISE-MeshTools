@@ -25,6 +25,9 @@ set (Qt_SRCS
   mqUndoStack.cxx
   mqMainControlsToolbar.h
   mqMainControlsToolbar.cxx
+  mqMeshToolsCore.h
+  mqMeshToolsCore.cxx
+
 
 )
 

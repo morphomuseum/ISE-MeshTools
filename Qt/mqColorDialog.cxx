@@ -9,7 +9,7 @@
 #include "mqColorDialog.h"
 #include "ui_mqColorDialog.h"
 #include "MeshToolsVersion.h"
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 
 
 #include <GL/glew.h>
@@ -51,9 +51,9 @@ mqColorDialog::mqColorDialog(QWidget* Parent)
   double backgroundcolor[3];
   double backgroundcolor2[3];
   this->Ui->meshColorButton->setShowAlphaChannel(true);
-  vtkMeshToolsCore::instance()->Getmui_MeshColor(meshcolor);
-  vtkMeshToolsCore::instance()->Getmui_BackGroundColor(backgroundcolor);
-  vtkMeshToolsCore::instance()->Getmui_BackGroundColor2(backgroundcolor2);
+  mqMeshToolsCore::instance()->Getmui_MeshColor(meshcolor);
+  mqMeshToolsCore::instance()->Getmui_BackGroundColor(backgroundcolor);
+  mqMeshToolsCore::instance()->Getmui_BackGroundColor2(backgroundcolor2);
   myColor.setRedF(meshcolor[0]);
   myColor.setGreenF(meshcolor[1]);
   myColor.setBlueF(meshcolor[2]);
@@ -106,9 +106,9 @@ mqColorDialog::~mqColorDialog()
 	//cout << "meshcolor[2]=" << meshcolor[2] << endl;
 	//cout << "Color dialog closes : meshcolor[3]=" << meshcolor[3] << endl;
 
-	vtkMeshToolsCore::instance()->Setmui_MeshColor(meshcolor);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor(bgcolor);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor2(bgcolor2);
+	mqMeshToolsCore::instance()->Setmui_MeshColor(meshcolor);
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor(bgcolor);
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor2(bgcolor2);
 	
   delete this->Ui;
 }
@@ -119,8 +119,8 @@ void mqColorDialog::slotMeshColorChanged()
 	double meshcolor[4];
 	myColor.getRgbF(&meshcolor[0], &meshcolor[1], &meshcolor[2], &meshcolor[3]);
 		
-	vtkMeshToolsCore::instance()->Setmui_MeshColor(meshcolor);	
-	vtkMeshToolsCore::instance()->Render();
+	mqMeshToolsCore::instance()->Setmui_MeshColor(meshcolor);	
+	mqMeshToolsCore::instance()->Render();
 	cout << "Mesh color changed!" << endl;
 }
 void mqColorDialog::slotBackGroundColorChanged()
@@ -128,8 +128,8 @@ void mqColorDialog::slotBackGroundColorChanged()
 	QColor myBGColor = this->Ui->backgroundColorButton->chosenColor();
 	double bgcolor[3];
 	myBGColor.getRgbF(&bgcolor[0], &bgcolor[1], &bgcolor[2]);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor(bgcolor);	
-	vtkMeshToolsCore::instance()->Render();
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor(bgcolor);	
+	mqMeshToolsCore::instance()->Render();
 	cout << "Background color changed!" << endl;
 }
 void mqColorDialog::slotBackGroundColorChanged2()
@@ -137,8 +137,8 @@ void mqColorDialog::slotBackGroundColorChanged2()
 	QColor myBGColor2 = this->Ui->backgroundColorButton2->chosenColor();
 	double bgcolor2[3];
 	myBGColor2.getRgbF(&bgcolor2[0], &bgcolor2[1], &bgcolor2[2]);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor2(bgcolor2);
-	vtkMeshToolsCore::instance()->Render();
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor2(bgcolor2);
+	mqMeshToolsCore::instance()->Render();
 	cout << "Background color 2 changed!" << endl;
 }
 void mqColorDialog::slotReinitializeColors()
@@ -150,13 +150,13 @@ void mqColorDialog::slotReinitializeColors()
 	double defaultBackGroundColor[3];
 	double defaultBackGroundColor2[3];
 	
-	vtkMeshToolsCore::instance()->Getmui_DefaultMeshColor(defaultMeshColor);
-	vtkMeshToolsCore::instance()->Getmui_DefaultBackGroundColor(defaultBackGroundColor);
-	vtkMeshToolsCore::instance()->Getmui_DefaultBackGroundColor2(defaultBackGroundColor2);
+	mqMeshToolsCore::instance()->Getmui_DefaultMeshColor(defaultMeshColor);
+	mqMeshToolsCore::instance()->Getmui_DefaultBackGroundColor(defaultBackGroundColor);
+	mqMeshToolsCore::instance()->Getmui_DefaultBackGroundColor2(defaultBackGroundColor2);
 
-	vtkMeshToolsCore::instance()->Setmui_MeshColor(defaultMeshColor);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor(defaultBackGroundColor);
-	vtkMeshToolsCore::instance()->Setmui_BackGroundColor2(defaultBackGroundColor2);
+	mqMeshToolsCore::instance()->Setmui_MeshColor(defaultMeshColor);
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor(defaultBackGroundColor);
+	mqMeshToolsCore::instance()->Setmui_BackGroundColor2(defaultBackGroundColor2);
 
 	myDefaultMeshColor.setRedF(defaultMeshColor[0]);
 	myDefaultMeshColor.setGreenF(defaultMeshColor[1]);
@@ -175,7 +175,7 @@ void mqColorDialog::slotReinitializeColors()
 	this->Ui->meshColorButton->setChosenColor(myDefaultMeshColor);	
 	this->Ui->backgroundColorButton->setChosenColor(myDefaultBGColor);	
 	this->Ui->backgroundColorButton2->setChosenColor(myDefaultBGColor2);
-	vtkMeshToolsCore::instance()->Render();
+	mqMeshToolsCore::instance()->Render();
 	
 }
 //-----------------------------------------------------------------------------

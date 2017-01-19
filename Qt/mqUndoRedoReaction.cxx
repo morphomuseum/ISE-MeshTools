@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ========================================================================*/
 #include "mqUndoRedoReaction.h"
 
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 //@@TODO
 #include "mqUndoStack.h"
 

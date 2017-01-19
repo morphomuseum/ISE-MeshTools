@@ -15,7 +15,7 @@
 #ifndef MeshTools_H
 #define MeshTools_H
 
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 
 
 
@@ -49,7 +49,7 @@ public:
   MeshTools();
   ~MeshTools();
   
-  vtkSmartPointer<vtkMeshToolsCore> MeshToolsCore;
+  mqMeshToolsCore* MeshToolsCore;
   
   vtkSmartPointer<vtkAreaPicker> AreaPicker;
 

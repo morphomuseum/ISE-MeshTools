@@ -5,30 +5,30 @@
 
 
 =========================================================================*/
-#include "vtkMeshToolsCore.h"
-#include <vtkObjectFactory.h>
+#include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include "vtkUndoStack.h"
-#include "vtkUndoSet.h"
-#include "vtkUndoElement.h"
+
+
 #include "mqUndoStack.h"
 
-vtkStandardNewMacro(vtkMeshToolsCore);
-//-----------------------------------------------------------------------------
-vtkMeshToolsCore* vtkMeshToolsCore::Instance = 0;
 
 //-----------------------------------------------------------------------------
-vtkMeshToolsCore* vtkMeshToolsCore::instance()
+mqMeshToolsCore* mqMeshToolsCore::Instance = 0;
+
+//-----------------------------------------------------------------------------
+mqMeshToolsCore* mqMeshToolsCore::instance()
 {
-	return vtkMeshToolsCore::Instance;
+	return mqMeshToolsCore::Instance;
 }
 
-vtkMeshToolsCore::vtkMeshToolsCore()
+
+
+mqMeshToolsCore::mqMeshToolsCore()
 {
 
-	vtkMeshToolsCore::Instance = this;
+	mqMeshToolsCore::Instance = this;
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
 	
@@ -118,11 +118,34 @@ vtkMeshToolsCore::vtkMeshToolsCore()
 	this->GridActor->SetGridType(2);	
 	this->Renderer->AddActor(this->GridActor);
 }
-void vtkMeshToolsCore::Render()
+
+
+
+void mqMeshToolsCore::Render()
 {
 	this->RenderWindow->Render();
 }
-void vtkMeshToolsCore::Setmui_Anaglyph(int anaglyph)
+
+void mqMeshToolsCore::Setmui_ShowOrientationHelper(int orientationHelper) { this->mui_ShowOrientationHelper = orientationHelper; }
+int mqMeshToolsCore::Getmui_DefaultShowOrientationHelper() { return this->mui_DefaultShowOrientationHelper; }
+int mqMeshToolsCore::Getmui_ShowOrientationHelper() { return this->mui_ShowOrientationHelper; }
+
+void mqMeshToolsCore::Setmui_CameraCentreOfMassAtOrigin(int comao) { this->mui_CameraCentreOfMassAtOrigin = comao; }
+int mqMeshToolsCore::Getmui_DefaultCameraCentreOfMassAtOrigin() { return this->mui_DefaultCameraCentreOfMassAtOrigin; }
+int mqMeshToolsCore::Getmui_CameraCentreOfMassAtOrigin() { return this->mui_CameraCentreOfMassAtOrigin; }
+
+
+void mqMeshToolsCore::Setmui_CameraOrtho(int ortho) { this->mui_CameraOrtho = ortho; }
+int mqMeshToolsCore::Getmui_DefaultCameraOrtho() { return this->mui_DefaultCameraOrtho; }
+int mqMeshToolsCore::Getmui_CameraOrtho() { return this->mui_CameraOrtho; }
+
+void mqMeshToolsCore::Setmui_ShowGrid(int showgrid) { this->mui_ShowGrid = showgrid; }
+int mqMeshToolsCore::Getmui_ShowGrid() { return this->mui_ShowGrid; }
+int mqMeshToolsCore::Getmui_DefaultShowGrid() { return this->mui_DefaultShowGrid; };
+
+int mqMeshToolsCore::Getmui_DefaultAnaglyph() { return this->mui_DefaultAnaglyph; }
+int mqMeshToolsCore::Getmui_Anaglyph() { return this->mui_Anaglyph; }
+void mqMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 {
 	this->mui_Anaglyph = anaglyph;
 	if (this->RenderWindow != NULL)
@@ -140,7 +163,30 @@ void vtkMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 	}
 }
 
-void vtkMeshToolsCore::Setmui_MeshColor(double c1, double c2, double c3, double c4)
+
+
+
+double* mqMeshToolsCore::Getmui_MeshColor() { return this->mui_MeshColor; }
+void mqMeshToolsCore::Getmui_MeshColor(double c[4])
+{
+	double *co = this->Getmui_MeshColor();
+
+	c[0] = co[0];
+	c[1] = co[1];
+	c[2] = co[2];
+	c[3] = co[3];
+}
+double* mqMeshToolsCore::Getmui_DefaultMeshColor() { return this->mui_DefaultMeshColor; }
+void mqMeshToolsCore::Getmui_DefaultMeshColor(double c[4])
+{
+	double *co = this->Getmui_DefaultMeshColor();
+
+	c[0] = co[0];
+	c[1] = co[1];
+	c[2] = co[2];
+	c[3] = co[3];
+}
+void mqMeshToolsCore::Setmui_MeshColor(double c1, double c2, double c3, double c4)
 {
 	double c[4];
 	c[0] = c1;
@@ -151,7 +197,7 @@ void vtkMeshToolsCore::Setmui_MeshColor(double c1, double c2, double c3, double 
 
 	this->Setmui_MeshColor(c);
 }
-void vtkMeshToolsCore::Setmui_MeshColor(double c[4])
+void mqMeshToolsCore::Setmui_MeshColor(double c[4])
 {
 	this->mui_MeshColor[0] = c[0];
 	this->mui_MeshColor[1] = c[1];
@@ -171,7 +217,34 @@ void vtkMeshToolsCore::Setmui_MeshColor(double c[4])
 	}
 }
 
-void vtkMeshToolsCore::Setmui_BackGroundColor(double bg1, double bg2, double bg3)
+
+double* mqMeshToolsCore::Getmui_BackGroundColor() { return this->mui_BackGroundColor; }
+void mqMeshToolsCore::Getmui_BackGroundColor(double bg[3])
+{
+	double *bgr = this->Getmui_BackGroundColor();
+
+	bg[0] = bgr[0];
+	bg[1] = bgr[1];
+	bg[2] = bgr[2];
+	
+}
+
+
+double* mqMeshToolsCore::Getmui_DefaultBackGroundColor() { return this->mui_DefaultBackGroundColor; }
+void mqMeshToolsCore::Getmui_DefaultBackGroundColor(double bg[3])
+{
+	double *bgr = this->Getmui_DefaultBackGroundColor();
+
+	bg[0] = bgr[0];
+	bg[1] = bgr[1];
+	bg[2] = bgr[2];
+
+}
+
+
+double* Getmui_DefaultBackGroundColor();
+void Getmui_DefaultBackGroundColor(double bg[3]);
+void mqMeshToolsCore::Setmui_BackGroundColor(double bg1, double bg2, double bg3)
 {
 	double background[3];
 	background[0] = bg1;
@@ -180,7 +253,7 @@ void vtkMeshToolsCore::Setmui_BackGroundColor(double bg1, double bg2, double bg3
 
 	this->Setmui_BackGroundColor(background);
 }
-void vtkMeshToolsCore::Setmui_BackGroundColor(double background[3])
+void mqMeshToolsCore::Setmui_BackGroundColor(double background[3])
 {
 	this->mui_BackGroundColor[0] = background[0];
 	this->mui_BackGroundColor[1] = background[1];
@@ -188,7 +261,31 @@ void vtkMeshToolsCore::Setmui_BackGroundColor(double background[3])
 	this->Renderer->SetBackground(background);
 	//this->RenderWindow->Render();
 }
-void vtkMeshToolsCore::Setmui_BackGroundColor2(double bg1, double bg2, double bg3)
+
+double* mqMeshToolsCore::Getmui_BackGroundColor2() { return this->mui_BackGroundColor2; }
+void mqMeshToolsCore::Getmui_BackGroundColor2(double bg[3])
+{
+	double *bgr = this->Getmui_BackGroundColor2();
+
+	bg[0] = bgr[0];
+	bg[1] = bgr[1];
+	bg[2] = bgr[2];
+
+}
+
+
+double* mqMeshToolsCore::Getmui_DefaultBackGroundColor2() { return this->mui_DefaultBackGroundColor2; }
+void mqMeshToolsCore::Getmui_DefaultBackGroundColor2(double bg[3])
+{
+	double *bgr = this->Getmui_DefaultBackGroundColor2();
+
+	bg[0] = bgr[0];
+	bg[1] = bgr[1];
+	bg[2] = bgr[2];
+
+}
+
+void mqMeshToolsCore::Setmui_BackGroundColor2(double bg1, double bg2, double bg3)
 {
 	double background[3];
 	background[0] = bg1;
@@ -197,7 +294,7 @@ void vtkMeshToolsCore::Setmui_BackGroundColor2(double bg1, double bg2, double bg
 
 	this->Setmui_BackGroundColor2(background);
 }
-void vtkMeshToolsCore::Setmui_BackGroundColor2(double background[3])
+void mqMeshToolsCore::Setmui_BackGroundColor2(double background[3])
 {
 	this->mui_BackGroundColor2[0] = background[0];
 	this->mui_BackGroundColor2[1] = background[1];
@@ -206,7 +303,7 @@ void vtkMeshToolsCore::Setmui_BackGroundColor2(double background[3])
 	//this->RenderWindow->Render();
 }
 
-void vtkMeshToolsCore::Undo()
+void mqMeshToolsCore::Undo()
 {
 	// a Set is only a label (action) and an id
 	//vtkUndoSet *MyUndoSet = this->UndoStack->GetNextUndoSet();
@@ -215,7 +312,7 @@ void vtkMeshToolsCore::Undo()
 	this->UndoStack->undo(); // removes the next undo set.. 
 
 }
-void vtkMeshToolsCore::Undo(int Count)
+void mqMeshToolsCore::Undo(int Count)
 {
 	cout << "Undo(" <<Count<<")"<< endl;
 	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
@@ -227,13 +324,13 @@ void vtkMeshToolsCore::Undo(int Count)
 		myActor->Undo(Count);		
 	}
 }
-void vtkMeshToolsCore::Redo()
+void mqMeshToolsCore::Redo()
 {
 	cout << "Root Redo!" << endl;
 	this->UndoStack->redo(); // removes the next undo set.. 
 }
 
-void vtkMeshToolsCore::Redo(int Count)
+void mqMeshToolsCore::Redo(int Count)
 {
 	cout << "Redo(" << Count << ")" << endl;
 	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
@@ -245,7 +342,7 @@ void vtkMeshToolsCore::Redo(int Count)
 		myActor->Redo(Count);
 	}
 }
-void vtkMeshToolsCore::Erase(int Count)
+void mqMeshToolsCore::Erase(int Count)
 {
 	//cout << "Erase(" << Count << ")" << endl;
 	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
@@ -257,7 +354,7 @@ void vtkMeshToolsCore::Erase(int Count)
 		myActor->Erase(Count);
 	}
 }
-void vtkMeshToolsCore::setUndoStack(mqUndoStack* stack)
+void mqMeshToolsCore::setUndoStack(mqUndoStack* stack)
 {
 	if (stack != this->UndoStack)
 	{
@@ -271,50 +368,45 @@ void vtkMeshToolsCore::setUndoStack(mqUndoStack* stack)
 }
 
 //-----------------------------------------------------------------------------
-vtkMeshToolsCore::~vtkMeshToolsCore()
+mqMeshToolsCore::~mqMeshToolsCore()
 {
 	//this->ActorCollection->Delete();
-	if (vtkMeshToolsCore::Instance == this)
+	if (mqMeshToolsCore::Instance == this)
 	{
-		vtkMeshToolsCore::Instance = 0;
+		mqMeshToolsCore::Instance = 0;
 	}
 }
-/*vtkSmartPointer<vtkUndoStack> vtkMeshToolsCore::getUndoStack()
+/*vtkSmartPointer<vtkUndoStack> mqMeshToolsCore::getUndoStack()
 {
 	return this->UndoStack;
 }*/
 
-mqUndoStack* vtkMeshToolsCore::getUndoStack()
+mqUndoStack* mqMeshToolsCore::getUndoStack()
 {
 return this->UndoStack;
 }
 
 
-vtkSmartPointer<vtkMTActorCollection> vtkMeshToolsCore::getActorCollection()
+vtkSmartPointer<vtkMTActorCollection> mqMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;
 }
 /*
-vtkMTActorCollection* vtkMeshToolsCore::getActorCollection()
+vtkMTActorCollection* mqMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;
 }*/
 
-vtkSmartPointer<vtkRenderer> vtkMeshToolsCore::getRenderer()
+vtkSmartPointer<vtkRenderer> mqMeshToolsCore::getRenderer()
 {
 	return this->Renderer;
 }
-vtkSmartPointer<vtkCamera> vtkMeshToolsCore::getCamera()
+vtkSmartPointer<vtkCamera> mqMeshToolsCore::getCamera()
 {
 	return this->Camera;
 }
-vtkSmartPointer<vtkGridActor> vtkMeshToolsCore::getGridActor()
+vtkSmartPointer<vtkGridActor> mqMeshToolsCore::getGridActor()
 {
 	return this->GridActor;
 }
 
-//-----------------------------------------------------------------------------
-void vtkMeshToolsCore::PrintSelf(ostream& os, vtkIndent indent)
-{
-  this->Superclass::PrintSelf(os, indent);
-}

@@ -16,7 +16,7 @@
 #include "vtkUndoStackBuilder.h"
 
 #include "vtkUndoStackInternal.h"
-
+#include "mqMeshToolsCore.h"
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 
@@ -98,7 +98,7 @@ void vtkUndoStack::Push(const char* label, int mCount)
 	  
 	 int Count = this->Internal->UndoStack.front().UndoCount;	  
 	 cout << "ERASE COUNT " << Count << endl;
-	 vtkMeshToolsCore::instance()->Erase(Count);
+	 mqMeshToolsCore::instance()->Erase(Count);
 	 this->Internal->UndoStack.erase(this->Internal->UndoStack.begin());
 
 	// to do : récupérer l'ID et faire un appel pour virer dans les objets les choses correspondant à ces ids!
@@ -156,7 +156,7 @@ int vtkUndoStack::Undo()
   //int status = this->Internal->UndoStack.back().UndoSet.GetPointer()->Undo();
   cout << "Undo " << this->Internal->UndoStack.back().UndoCount << ": "<< this->Internal->UndoStack.back().Label.c_str() << endl;
   // ici : faire l'appel global à undo de ce count là!!  
-  vtkMeshToolsCore::instance()->Undo(this->Internal->UndoStack.back().UndoCount);
+  mqMeshToolsCore::instance()->Undo(this->Internal->UndoStack.back().UndoCount);
   this->PopUndoStack();
   
   this->InvokeEvent(vtkCommand::EndEvent);
@@ -177,7 +177,7 @@ int vtkUndoStack::Redo()
   
   // récupérer le count de this->Internal->RedoStack.back() et son label
   // ici : faire l'appel global à redo de ce count là!!
-  vtkMeshToolsCore::instance()->Redo(this->Internal->RedoStack.back().UndoCount);
+  mqMeshToolsCore::instance()->Redo(this->Internal->RedoStack.back().UndoCount);
   this->PopRedoStack();
   
   this->InvokeEvent(vtkCommand::EndEvent);

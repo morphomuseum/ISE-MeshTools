@@ -15,7 +15,7 @@
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActor.h"
 #include "mqUndoStack.h"
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 
 #include <vtkProperty.h>
 #include <vtkTransform.h>
@@ -141,7 +141,7 @@ void vtkMTInteractorStyle::StartSelect()
 		if (this->Ctrl == CTRL_PRESSED)
 		{
 			cout << "CTRL-Z detected!" << endl;
-			vtkMeshToolsCore::instance()->Undo();
+			mqMeshToolsCore::instance()->Undo();
 			rwi->Render();
 		}
 
@@ -152,7 +152,7 @@ void vtkMTInteractorStyle::StartSelect()
 		if (this->Ctrl == CTRL_PRESSED)
 		{
 			cout << "CTRL-Y detected!" << endl;
-			vtkMeshToolsCore::instance()->Redo();
+			mqMeshToolsCore::instance()->Redo();
 			rwi->Render();
 		}
 

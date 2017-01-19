@@ -7,7 +7,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActorCollection.h"
 //#include "vtkUndoStack.h"
@@ -118,7 +118,7 @@ void RubberBandSelect(vtkObject* caller,
 // Constructor
 MeshTools::MeshTools()
 {
-	this->MeshToolsCore = vtkSmartPointer<vtkMeshToolsCore>::New();
+	this->MeshToolsCore =  new mqMeshToolsCore();
 	//vtkUndoStack* undoStack = vtkUndoStack::New();
 	this->ui = new Ui_MeshTools;
 	this->ui->setupUi(this);

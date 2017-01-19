@@ -120,11 +120,11 @@ private:
   mqImplementation* Implementation;
 };
 
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 
 inline int BEGIN_UNDO_SET(std::string & name)
 {
-	mqUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	mqUndoStack* usStack = mqMeshToolsCore::instance()->getUndoStack();
 	if (usStack)
 	{
 		usStack->beginUndoSet(name);
@@ -139,7 +139,7 @@ inline int BEGIN_UNDO_SET(std::string & name)
 
 inline void END_UNDO_SET()
 {
-	mqUndoStack* usStack = vtkMeshToolsCore::instance()->getUndoStack();
+	mqUndoStack* usStack = mqMeshToolsCore::instance()->getUndoStack();
 	if (usStack)
 	{
 		usStack->endUndoSet();

@@ -19,7 +19,7 @@
 #define vtkUndoStack_h
 
 
-#include "vtkMeshToolsCore.h"
+
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>
 class vtkUndoStackInternal;
@@ -165,7 +165,7 @@ private:
   bool InRedo;
 };
 
-#include "vtkMeshToolsCore.h"
+
 
 /*inline int BEGIN_UNDO_SET(std::string & name)
 {

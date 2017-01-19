@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
 #include "mqUndoStack.h"
 
-#include "vtkMeshToolsCore.h"
+#include "mqMeshToolsCore.h"
 
 #include "vtkUndoStack.h"
 #include <vtkEventQtSlotConnect.h>
