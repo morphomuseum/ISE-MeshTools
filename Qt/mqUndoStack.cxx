@@ -108,6 +108,7 @@ void mqUndoStack::onStackChanged()
   bool can_redo = false;
   QString undo_label;
   QString redo_label;
+  cout << "on stack changed!" << endl;
   if (this->Implementation->UndoStack->CanUndo())
   {
     can_undo = true;

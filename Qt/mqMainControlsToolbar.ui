@@ -46,7 +46,7 @@
   <action name="actionUndo">
    <property name="icon">
     <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/Icons/undo.gif</normaloff>:/Icons/undo.gif</iconset>
+     <normaloff>:/Icons/undo.png</normaloff>:/Icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Undo</string>
@@ -55,7 +55,7 @@
   <action name="actionRedo">
    <property name="icon">
     <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/Icons/redo.gif</normaloff>:/Icons/redo.gif</iconset>
+     <normaloff>:/Icons/redo.png</normaloff>:/Icons/redo.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
