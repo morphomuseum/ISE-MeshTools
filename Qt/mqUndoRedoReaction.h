@@ -71,7 +71,7 @@ protected slots:
   void enable(bool);
   void setLabel(const QString& label);
   //@@TODO
-  //void setUndoStack(mqUndoStack*);
+  void setUndoStack(mqUndoStack*);
 
 protected:
   /**

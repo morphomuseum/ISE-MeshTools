@@ -166,7 +166,7 @@ void mqUndoStack::undo()
   cout << "mqUndoStack undo call!" << endl;
   this->Implementation->UndoStack->Undo();
 
-//  vtkMeshToolsCore::instance()->render();
+ mqMeshToolsCore::instance()->Render();
 
   emit this->undone();
   cout << "end mqUndoStack undo call!" << endl;
@@ -176,8 +176,8 @@ void mqUndoStack::undo()
 void mqUndoStack::redo()
 {
   this->Implementation->UndoStack->Redo();
+  mqMeshToolsCore::instance()->Render();
  
-  // vtkMeshToolsCore::instance()->render();
 
   emit this->redone();
 }

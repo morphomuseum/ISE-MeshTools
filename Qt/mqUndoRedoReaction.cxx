@@ -42,21 +42,21 @@ mqUndoRedoReaction::mqUndoRedoReaction(QAction* parentObject, bool _undo)
   this->Undo = _undo;
   this->enable(false);
   //@@TODO
-  /*mqUndoStack* stack = vtkMeshToolsCore::instance()->getUndoStack();
+  mqUndoStack* stack = mqMeshToolsCore::instance()->getUndoStack();
   if (!stack)
   {
-    QObject::connect(vtkMeshToolsCore::instance(), SIGNAL(undoStackChanged(mqUndoStack*)), this,
+    QObject::connect(mqMeshToolsCore::instance(), SIGNAL(undoStackChanged(mqUndoStack*)), this,
       SLOT(setUndoStack(mqUndoStack*)));
   }
   else
   {
     this->setUndoStack(stack);
-  }*/
+  }
 }
 
 //@@TODO
 //-----------------------------------------------------------------------------
-/*void mqUndoRedoReaction::setUndoStack(mqUndoStack* stack)
+void mqUndoRedoReaction::setUndoStack(mqUndoStack* stack)
 {
   if (this->Undo)
   {
@@ -70,42 +70,42 @@ mqUndoRedoReaction::mqUndoRedoReaction(QAction* parentObject, bool _undo)
     QObject::connect(
       stack, SIGNAL(redoLabelChanged(const QString&)), this, SLOT(setLabel(const QString&)));
   }
-}*/
+}
 
 //-----------------------------------------------------------------------------
 void mqUndoRedoReaction::undo()
 {
 	//@@TODO
-  /*mqUndoStack* stack = vtkMeshToolsCore::instance()->getUndoStack();
+  mqUndoStack* stack = mqMeshToolsCore::instance()->getUndoStack();
   if (!stack)
   {
     qCritical("No application wide undo stack.");
     return;
   }
-  stack->undo();*/
+  stack->undo();
 }
 
 //-----------------------------------------------------------------------------
 void mqUndoRedoReaction::redo()
 {
-  /*mqUndoStack* stack = vtkMeshToolsCore::instance()->getUndoStack();
+  mqUndoStack* stack = mqMeshToolsCore::instance()->getUndoStack();
   if (!stack)
   {
     qCritical("No application wide undo stack.");
     return;
   }
-  stack->redo();*/
+  stack->redo();
 }
 //-----------------------------------------------------------------------------
 void mqUndoRedoReaction::clear()
 {
-  /*mqUndoStack* stack = vtkMeshToolsCore::instance()->getUndoStack();
+  mqUndoStack* stack = mqMeshToolsCore::instance()->getUndoStack();
   if (!stack)
   {
     qCritical("No application wide undo stack.");
     return;
   }
-  stack->clear();*/
+  stack->clear();
 }
 
 //-----------------------------------------------------------------------------
