@@ -8,6 +8,7 @@
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
 #include "mqMeshToolsCore.h"
+#include "mqUndoStack.h"
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActorCollection.h"
 //#include "vtkUndoStack.h"
@@ -81,8 +82,22 @@ void RubberBandSelect(vtkObject* caller,
 	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
 	//vtkPropCollection* props = areaPicker->GetPrGetProps();
 	//props->PrintSelf(cout, vtkIndent(2));
-	props->InitTraversal();
 	
+	std::string action = "Rubber band actor selection-unselection";
+	int something_to_store = 0;
+	if (props->GetNumberOfItems() > 0) { something_to_store = 1; }
+	props->InitTraversal();
+	int Count = 0;
+
+	if (something_to_store == 1)
+	{
+		Count = BEGIN_UNDO_SET(action);
+	}
+	
+			
+		
+	
+	props->InitTraversal();
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		vtkMTActor *myActor;
@@ -95,6 +110,7 @@ void RubberBandSelect(vtkObject* caller,
 
 		if (myActor->GetSelected() == 0)
 		{
+			myActor->SaveState(Count);
 			myActor->SetChanged(1);
 			myActor->SetSelected(1);
 			//myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
@@ -102,11 +118,16 @@ void RubberBandSelect(vtkObject* caller,
 		}
 		else
 		{
+			myActor->SaveState(Count);
 			myActor->SetChanged(1);
 			myActor->SetSelected(0);
 			//myActor->GetProperty()->SetColor(0.5, 0, 0.5);
 			//myActor->GetProperty()->SetOpacity(0.5);
 		}
+	}
+	if (something_to_store == 1)
+	{
+		END_UNDO_SET();
 	}
 }
 

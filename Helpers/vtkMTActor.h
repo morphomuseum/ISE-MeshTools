@@ -24,12 +24,18 @@ public:
 	struct Element
 	{
 		vtkSmartPointer<vtkMatrix4x4> Matrix;
+		double Color[4];
+		int Selected;
 		int UndoCount;
-		Element(vtkSmartPointer<vtkMatrix4x4> m, int Count)
+		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int Count)
 		{
 			this->Matrix =m;
 			this->UndoCount = Count;
-
+			this->Color[0] = c[0];
+			this->Color[1] = c[1];
+			this->Color[2] = c[2];
+			this->Color[3] = c[3];
+			this->Selected = selected;
 		}
 	};
 	typedef std::vector<Element> VectorOfElements;
@@ -63,7 +69,7 @@ public:
 	// Actual actor render method.
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
 	void SetSelected(int selected);
-	void SavePosition(int mCount);
+	void SaveState(int mCount);
 	void Redo(int mCount); // Try to redo (if exists) "mCount" event
 	void Erase(int mCount); // Try to erase (if exists) "mCount" event
 	void Undo(int mCount); // Try to undo (if exists) "mCount" event

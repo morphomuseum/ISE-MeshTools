@@ -90,8 +90,21 @@ void vtkMTInteractorStyle::StartSelect()
 	if (key.compare("a") == 0)
 	{		
 			//cout << "a pressed!" << endl;
+
 			if (this->Ctrl == CTRL_PRESSED)
 			{
+				std::string action = "Select all actors";
+				int Count = BEGIN_UNDO_SET(action);
+				this->ActorCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+				{
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
+				END_UNDO_SET();
 				//cout << "a and CTRL pressed!" << endl;
 				this->ActorCollection->InitTraversal();
 				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -101,8 +114,7 @@ void vtkMTInteractorStyle::StartSelect()
 					{
 						myActor->SetSelected(1);
 						myActor->SetChanged(1);
-						myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
-						myActor->GetProperty()->SetOpacity(1);
+						
 					}
 
 
@@ -117,6 +129,18 @@ void vtkMTInteractorStyle::StartSelect()
 		{
 			if (this->Ctrl == CTRL_PRESSED)
 			{
+				std::string action = "Unselect all actors";
+				int Count = BEGIN_UNDO_SET(action);
+				this->ActorCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+				{
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+					if (myActor->GetSelected() == 1)
+					{
+						myActor->SaveState(Count);
+					}
+				}
+				END_UNDO_SET();
 				vtkRenderWindowInteractor *rwi = this->Interactor;
 				this->ActorCollection->InitTraversal();
 				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -126,8 +150,7 @@ void vtkMTInteractorStyle::StartSelect()
 					{
 						myActor->SetSelected(0);
 						myActor->SetChanged(1);
-						myActor->GetProperty()->SetColor(0.5, 0.5, 0.0);
-						myActor->GetProperty()->SetOpacity(1);
+						
 					}
 
 
@@ -390,7 +413,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			if (myActor->GetSelected() == 1)
 			{
 				cout << "Call myActor Save Position with count"<<Count << endl;
-				myActor->SavePosition(Count);
+				myActor->SaveState(Count);
 			}
 		}
 		//vtkMeshToolsCore::instance()->getUndoStack()->

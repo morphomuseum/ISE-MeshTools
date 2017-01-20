@@ -131,7 +131,22 @@ void vtkMTActor::PopUndoStack()
 
 	this->GetMatrix(Mat);
 	std::cout << "Real Matrix: " << endl << *Mat << std::endl;
-	this->UndoRedo->RedoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, this->UndoRedo->UndoStack.back().UndoCount));
+
+	
+	
+	double myCurrentColor[4];
+	int mCurrentSelected = this->Selected;
+	myCurrentColor[0] = this->mColor[0];
+	myCurrentColor[1] = this->mColor[1];
+	myCurrentColor[2] = this->mColor[2];
+	myCurrentColor[3] = this->mColor[3];
+	this->mColor[0] = this->UndoRedo->UndoStack.back().Color[0];
+	this->mColor[1] = this->UndoRedo->UndoStack.back().Color[1];
+	this->mColor[2] = this->UndoRedo->UndoStack.back().Color[2];
+	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
+	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
+	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
+	this->UndoRedo->RedoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->UndoStack.back().UndoCount));
 	this->UndoRedo->UndoStack.pop_back();
 	this->Modified();
 }
@@ -156,12 +171,24 @@ void vtkMTActor::PopRedoStack()
 	prop3D->SetOrientation(newTransform->GetOrientation());
 	newTransform->Delete();
 
-	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, this->UndoRedo->RedoStack.back().UndoCount));
+	double myCurrentColor[4];
+	int mCurrentSelected = this->Selected;
+	myCurrentColor[0] = this->mColor[0];
+	myCurrentColor[1] = this->mColor[1];
+	myCurrentColor[2] = this->mColor[2];
+	myCurrentColor[3] = this->mColor[3];
+	this->mColor[0] = this->UndoRedo->RedoStack.back().Color[0];
+	this->mColor[1] = this->UndoRedo->RedoStack.back().Color[1];
+	this->mColor[2] = this->UndoRedo->RedoStack.back().Color[2];
+	this->mColor[3] = this->UndoRedo->RedoStack.back().Color[3];
+	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
+	cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
+	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->RedoStack.back().UndoCount));
 	this->UndoRedo->RedoStack.pop_back();
 	this->Modified();
 }
 
-void vtkMTActor::SavePosition(int mCount)
+void vtkMTActor::SaveState(int mCount)
 {
 	//cout << "myActor Save Position: redostack clear." << endl;
 	this->UndoRedo->RedoStack.clear();
@@ -174,12 +201,18 @@ void vtkMTActor::SavePosition(int mCount)
 	//to do!
 	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
 	this->GetMatrix(Mat);
+	double myColor[4];
+	int mSelected = this->Selected;
+	myColor[0] = this->mColor[0];
+	myColor[1] = this->mColor[1];
+	myColor[2] = this->mColor[2];
+	myColor[3] = this->mColor[3];
 	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
 
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	//std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;
-	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, mCount));
+	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myColor, mSelected, mCount));
 
 }
 //----------------------------------------------------------------------------
