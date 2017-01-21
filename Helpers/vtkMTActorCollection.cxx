@@ -77,13 +77,15 @@ void vtkMTActorCollection::DeleteSelectedActors()
 		vtkSmartPointer<vtkActorCollection> undocoll = vtkSmartPointer<vtkActorCollection>::New();
 		std::string action = "Delete selected actors";
 		int mCount = BEGIN_UNDO_SET(action);
-		this->InitTraversal();
+		
 		int done = 0;
 		while (!done)
 		{
+			
 			if (this->GetNumberOfItems() == 0) { done = 1; }
 			else
 			{
+				this->InitTraversal();
 				int found = 0;
 				for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 				{
