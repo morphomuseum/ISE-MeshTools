@@ -106,9 +106,11 @@ mqMeshToolsCore::mqMeshToolsCore()
 	*/
 	//this->RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
 	this->RenderWindow = NULL;
-	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
-	//this->ActorCollection = vtkMTActorCollection::New();
 	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
+	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->SetRenderer(this->Renderer);
+	//this->ActorCollection = vtkMTActorCollection::New();
+	
 
 	this->Renderer->SetUseDepthPeeling(1);
 	this->Renderer->SetMaximumNumberOfPeels(100);
@@ -323,6 +325,7 @@ void mqMeshToolsCore::Undo(int Count)
 		cout << "MyActor undo!" << endl;
 		myActor->Undo(Count);		
 	}
+	this->ActorCollection->Undo(Count);
 }
 void mqMeshToolsCore::Redo()
 {
@@ -341,6 +344,7 @@ void mqMeshToolsCore::Redo(int Count)
 		cout << "MyActor Redo!" << endl;
 		myActor->Redo(Count);
 	}
+	this->ActorCollection->Redo(Count);
 }
 void mqMeshToolsCore::Erase(int Count)
 {
@@ -353,6 +357,7 @@ void mqMeshToolsCore::Erase(int Count)
 		//cout << "MyActor Erase!" << endl;
 		myActor->Erase(Count);
 	}
+	this->ActorCollection->Erase(Count);
 }
 void mqMeshToolsCore::setUndoStack(mqUndoStack* stack)
 {

@@ -77,6 +77,7 @@ protected:
   int Moving;
   int ActorsPositionsSaved;
   void SaveSelectedActorsPositions();
+  void DeleteSelectedActors();
   int NumberOfSelectedActors;
   int getNumberOfSelectedActors();
   vtkUnsignedCharArray *PixelArray;

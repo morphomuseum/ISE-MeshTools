@@ -675,7 +675,8 @@ void MeshTools::slotOpenMeshFile()
 			//actor->GetProperty()->SetOpacity(this->MeshToolsCore->Getmui_MeshColor()[3]);
 			actor->SetSelected(0);
 			actor->SetMapper(mapper);
-			this->MeshToolsCore->getRenderer()->AddActor(actor);
+			//Now the add actor to renderer is managed inside the collection
+			//this->MeshToolsCore->getRenderer()->AddActor(actor);
 			this->MeshToolsCore->getActorCollection()->AddItem(actor);
 			this->MeshToolsCore->getActorCollection()->SetChanged(1);
 			

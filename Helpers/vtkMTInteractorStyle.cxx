@@ -79,7 +79,7 @@ void vtkMTInteractorStyle::StartSelect()
 	std::string key = rwi->GetKeySym();
 	
 	// Output the key that was pressed
-	//std::cout << "Pressed " << key << std::endl;
+	
 	if (key.compare("Control_L") == 0)
 	{
 		this->Ctrl = CTRL_PRESSED;
@@ -87,6 +87,12 @@ void vtkMTInteractorStyle::StartSelect()
 	}
 	//cout << this->Interactor->GetKeyCode() << endl;
 	//cout << rwi->GetKeySym() << endl;
+	if (key.compare("Delete") == 0)
+	{
+		std::cout << "Pressed " << key << std::endl;
+		this->DeleteSelectedActors();
+		
+	}
 	if (key.compare("a") == 0)
 	{		
 			//cout << "a pressed!" << endl;
@@ -364,6 +370,11 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
   
 }
 
+void vtkMTInteractorStyle::DeleteSelectedActors()
+{
+	this->ActorCollection->DeleteSelectedActors();
+	this->Interactor->Render();
+}
 int vtkMTInteractorStyle::getNumberOfSelectedActors()
 {
 	this->ActorCollection->InitTraversal();

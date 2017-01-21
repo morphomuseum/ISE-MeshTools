@@ -21,6 +21,9 @@ Module:    vtkMTActorCollection.cxx
 #include <vtkDataSet.h>
 #include <vtkMapper.h>
 
+#include "mqUndoStack.h"
+#include "mqMeshToolsCore.h"
+
 vtkStandardNewMacro(vtkMTActorCollection);
 
 
@@ -28,6 +31,8 @@ vtkStandardNewMacro(vtkMTActorCollection);
 vtkMTActorCollection::vtkMTActorCollection()
 {
 	//this->Selected = 1;
+	this->Renderer = NULL;
+	this->UndoRedo = new vtkMTCollectionUndoRedo;
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
@@ -44,15 +49,155 @@ vtkMTActorCollection::vtkMTActorCollection()
 vtkMTActorCollection::~vtkMTActorCollection()
 {
 	
-
+	this->UndoRedo->RedoStack.clear();
+	this->UndoRedo->UndoStack.clear();
+	delete this->UndoRedo;
 }
-
+void vtkMTActorCollection::AddItem(vtkActor *a)
+{
+	this->Superclass::AddItem(a);
+	this->Renderer->AddActor(a);
+}
 void vtkMTActorCollection::ApplyProperties(vtkProperty *p)
 {
 	this->Superclass::ApplyProperties(p);
 	
 }
+void vtkMTActorCollection::DeleteSelectedActors()
+{
+	int anychange = 0;
+	this->InitTraversal();
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
+		if (myActor->GetSelected() == 1) { anychange = 1; }
+	}
+	if (anychange == 1)
+	{
+		vtkSmartPointer<vtkActorCollection> undocoll = vtkSmartPointer<vtkActorCollection>::New();
+		std::string action = "Delete selected actors";
+		int mCount = BEGIN_UNDO_SET(action);
+		this->InitTraversal();
+		int done = 0;
+		while (!done)
+		{
+			if (this->GetNumberOfItems() == 0) { done = 1; }
+			else
+			{
+				int found = 0;
+				for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+				{
+					
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
+					if (!found && myActor->GetSelected() == 1) {
+						undocoll->AddItem(myActor);
+						this->RemoveItem(myActor);
+						this->Renderer->RemoveActor(myActor);
+						found = 1;
+					}
 
+				}
+				if (found == 0) { done = 1; }
+			}
+		}
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll, mCount));
+		END_UNDO_SET();
+		this->Changed = 1;
+	}
+	
+
+
+} //delete all selected actors
+void vtkMTActorCollection::Redo(int mCount) {
+	//cout << "Inside actor Undo, try to undo " <<mCount<< endl;
+	if (this->UndoRedo->RedoStack.empty())
+	{
+		cout << "Redo Stack empty!" << endl;
+		return;
+	}
+	//cout << "Youngest redo count= " << this->UndoRedo->RedoStack.back().UndoCount<< endl;
+
+	if (mCount == this->UndoRedo->RedoStack.back().UndoCount)
+	{
+		//cout << "Redo actor event " << this->UndoRedo->RedoStack.back().UndoCount << endl;
+		// ici : faire l'appel global à undo de ce count là!!  
+		this->PopRedoStack();
+	}
+
+} // Try to redo (if exists) "mCount" event
+void vtkMTActorCollection::Erase(int mCount) {
+
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+	int oldestCount = this->UndoRedo->UndoStack.front().UndoCount;
+	if (oldestCount <= mCount)
+	{
+		//cout << "ERASE actor event " << oldestCount << endl;
+		this->UndoRedo->UndoStack.erase(this->UndoRedo->UndoStack.begin());
+	}
+} // Try to erase (if exists) "mCount" event
+void vtkMTActorCollection::Undo(int mCount) 
+{
+	cout << "Inside MTActorCollection Undo" << endl;
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+	if (mCount == this->UndoRedo->UndoStack.back().UndoCount)
+	{
+		cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
+		this->PopUndoStack();
+	}
+
+} // Try to undo (if exists) "mCount" event
+void vtkMTActorCollection::PopUndoStack() {
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+
+	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->UndoStack.back().Collection;
+	ActColl->InitTraversal();
+	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		this->AddItem(myActor);
+		this->Renderer->AddActor(myActor);
+		this->Changed = 1;
+	}
+
+
+	
+	this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl,  this->UndoRedo->UndoStack.back().UndoCount));
+	this->UndoRedo->UndoStack.pop_back();
+	this->Modified();
+
+}
+void vtkMTActorCollection::PopRedoStack() {
+	if (this->UndoRedo->RedoStack.empty())
+	{
+		return;
+	}
+
+	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->RedoStack.back().Collection;
+	ActColl->InitTraversal();
+	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		this->RemoveItem(myActor);
+		this->Renderer->RemoveActor(myActor);
+		this->Changed = 1;
+	}
+
+
+
+	this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->RedoStack.back().UndoCount));
+	this->UndoRedo->RedoStack.pop_back();
+	this->Modified();
+
+}
 int vtkMTActorCollection::ActorChanged()
 {
 	int anychange = 0;
