@@ -7,6 +7,7 @@
 =========================================================================*/
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
+
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
@@ -118,7 +119,15 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->Camera = this->Renderer->GetActiveCamera();
 	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
 	this->GridActor->SetGridType(2);	
+
+	/*this->LMActor->SetLMType(0);
+	this->LMActor->SetLMBodyType(0);
+	this->LMActor->SetLMSize(10);
+	this->LMActor->SetLMOrigin(0,1,1);*/
+
+	
 	this->Renderer->AddActor(this->GridActor);
+	
 }
 
 

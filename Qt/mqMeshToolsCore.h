@@ -18,6 +18,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "vtkMTActorCollection.h"
 #include "vtkGridActor.h"
+#include "vtkLMActor.h"
 //#include "vtkUndoStack.h" => for some reason the ompilation fails if this header is included
 //#include "vtkUndoStackInternal.h"
 
@@ -126,6 +127,7 @@ protected:
 	vtkRenderWindow* RenderWindow;
 	vtkSmartPointer<vtkCamera> Camera;
 	vtkSmartPointer<vtkGridActor> GridActor;
+	vtkSmartPointer<vtkLMActor> LMActor;
 	//vtkUndoStack* UndoStack;
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;

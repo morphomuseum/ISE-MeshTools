@@ -1111,6 +1111,7 @@ for (int i = 0; i < props->GetNumberOfItems(); i++)
 
 }
 
+
 this->ui->qvtkWidget->update(); // update main window!
 
 }

@@ -138,7 +138,7 @@ void vtkGridActor::ShallowCopy(vtkProp *prop)
 		this->SetSecondAxisLabelText2(a->GetSecondAxisLabelText2());
 		this->SetGridOrigin(a->GetGridOrigin());
 		this->SetGridSpacing(a->GetGridSpacing());
-		this->SetGridSpacing(a->GetGridSize());
+		this->SetGridSize(a->GetGridSize());
 		this->SetGridType(a->GetGridType());
 
 	}

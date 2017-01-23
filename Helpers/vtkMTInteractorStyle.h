@@ -84,6 +84,7 @@ protected:
 
   int CurrentMode;
   int Ctrl;
+  int L;
   //vtkProp3D *InteractionProp;
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
 private:

@@ -14,9 +14,12 @@
 =========================================================================*/
 #include "vtkMTInteractorStyle.h"
 #include "vtkMTActor.h"
+#include "vtkLMActor.h"
 #include "mqUndoStack.h"
 #include "mqMeshToolsCore.h"
 
+
+#include <vtkIndent.h>
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 #include <vtkCamera.h>
@@ -32,18 +35,24 @@
 #include <vtkAreaPicker.h>
 #include <vtkCallbackCommand.h>
 #include <vtkSmartPointer.h>
-
+#include <vtkPropPicker.h>
+#include <vtkCellPicker.h>
+#include <vtkSphereSource.h>
+#include <vtkPolyDataMapper.h>
 vtkStandardNewMacro(vtkMTInteractorStyle);
 
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
 #define CTRL_RELEASED 0
 #define CTRL_PRESSED 1
+#define L_PRESSED 2
+#define L_RELEASED 3
 //--------------------------------------------------------------------------
 
 vtkMTInteractorStyle::vtkMTInteractorStyle()
 {
 	this->CurrentMode = VTKISMT_ORIENT;
+	this->L = L_RELEASED;
 	this->Ctrl = CTRL_RELEASED;
 	this->StartPosition[0] = this->StartPosition[1] = 0;
 	this->EndPosition[0] = this->EndPosition[1] = 0;
@@ -79,7 +88,11 @@ void vtkMTInteractorStyle::StartSelect()
 	std::string key = rwi->GetKeySym();
 	
 	// Output the key that was pressed
-	
+	if (key.compare("l") == 0)
+	{
+		//cout << "l pressed" << endl;
+		this->L = L_PRESSED;
+	}
 	if (key.compare("Control_L") == 0)
 	{
 		this->Ctrl = CTRL_PRESSED;
@@ -203,7 +216,11 @@ void vtkMTInteractorStyle::StartSelect()
 		  this->Ctrl = CTRL_RELEASED;
 		 // std::cout << key << "Released" << '\n';
 	  }
-
+	  if (key.compare("l") == 0)
+	  {
+		  this->L = L_RELEASED;
+		  // std::cout << key << "Released" << '\n';
+	  }
 
 	  // Forward events
 	  vtkInteractorStyleTrackballCamera::OnKeyRelease();
@@ -340,7 +357,80 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 	  //this->Interactor->GetControlKey()
 	  if (this->Ctrl != CTRL_PRESSED)
 	  {
-		  this->Superclass::OnLeftButtonDown();
+		  if (this->L==L_PRESSED)
+		  { 
+		  
+			  //int* clickPos = this->GetInteractor()->GetEventPosition();
+			  int x = this->Interactor->GetEventPosition()[0];
+			  int y = this->Interactor->GetEventPosition()[1];
+			  std::cout << "Clicked at "
+				  << x << " " << y   << std::endl;
+			  if (this->CurrentRenderer != NULL)
+			  {
+				  std::cout << "Current renderer:" << this->CurrentRenderer << endl;
+				  // Pick from this location.
+				 /* vtkSmartPointer<vtkPropPicker>  picker =
+					  vtkSmartPointer<vtkPropPicker>::New();*/
+				
+				  vtkSmartPointer<vtkCellPicker> picker =
+					  vtkSmartPointer<vtkCellPicker>::New();
+
+				  picker->Pick(x, y, 0, this->CurrentRenderer);
+
+
+				 
+				  double* pos = picker->GetPickPosition();
+				  std::cout << "Pick position (world coordinates) is: "
+					  << pos[0] << " " << pos[1]
+					  << " " << pos[2] << std::endl;
+				  double* norm = picker->GetPickNormal();
+				  std::cout << "Pick normal : "
+					  << norm[0] << " " << norm[1]
+					  << " " << norm[2] << std::endl;
+
+				  std::cout << "Picked actor: " << picker->GetActor() << std::endl;
+				  if (picker->GetActor() == NULL) { cout << "Picked Null actor" << endl; }
+				  else
+				  {
+					  //Create a LMActor
+					  vtkSmartPointer<vtkLMActor> myLM =
+						  vtkSmartPointer<vtkLMActor>::New();
+					  myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+					  myLM->SetLMSize(0.1);
+					  myLM->SetLMType(1);
+					  myLM->SetLMNumber(10);
+					  myLM->SetLMBodyType(0);
+					  //Create a sphere
+					 /* vtkSmartPointer<vtkSphereSource> sphereSource =
+						  vtkSmartPointer<vtkSphereSource>::New();
+					  sphereSource->SetCenter(pos[0], pos[1], pos[2]);
+					  sphereSource->SetRadius(0.1);
+					  sphereSource->Update();
+					  //Create a mapper and actor
+					  vtkSmartPointer<vtkPolyDataMapper> mapper =
+						  vtkSmartPointer<vtkPolyDataMapper>::New();
+					  mapper->SetInputData(sphereSource->GetOutput());
+					  mapper->Update();
+					  vtkSmartPointer<vtkActor> actor =
+						  vtkSmartPointer<vtkActor>::New();
+					  actor->SetMapper(mapper);*/
+			
+					  
+					  myLM->PrintSelf(cout, vtkIndent(1));
+
+					  this->CurrentRenderer->AddActor(myLM);
+					  this->Interactor->Render();
+				  }
+
+			  }
+			  //this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetDefaultRenderer()->AddActor(actor);
+			
+		  
+		  }
+		  else
+		  {
+			  this->Superclass::OnLeftButtonDown();
+		  }
 	  }
 	  else
 	  {

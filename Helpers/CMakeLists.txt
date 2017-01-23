@@ -3,6 +3,7 @@ SET (Helpers_SRCS
 vtkOrientationHelperActor.cxx 
 vtkGridActor.cxx 
 vtkMTActor.cxx 
+vtkLMActor.cxx 
 vtkMTActorCollection.cxx 
 vtkOrientationHelperWidget.cxx 
 vtkMTInteractorStyle.cxx 
@@ -13,6 +14,7 @@ vtkUndoStackBuilder.cxx
 set( Helpers_HDRS 
 vtkOrientationHelperActor.h 
 vtkMTActor.h 
+vtkLMActor.h 
 vtkMTActorCollection.h 
 vtkGridActor.h 
 vtkOrientationHelperWidget.h 
