@@ -12,7 +12,10 @@ Module:    vtkLMActor.h
 #define vtkLMActor_h
 
 
-#include "vtkActor.h"
+#include <vtkOpenGLActor.h>
+#include <vtkMatrix4x4.h>
+#include <vtkSmartPointer.h>
+#include <vector>
 
 class vtkActor;
 class vtkCaptionActor2D;
@@ -25,7 +28,40 @@ class vtkProperty;
 class vtkRenderer;
 class vtkSphereSource;
 
-class  vtkLMActor : public vtkActor
+class vtkLMActorUndoRedo
+{
+public:
+	struct Element
+	{
+		vtkSmartPointer<vtkMatrix4x4> Matrix;
+		//double Color[4];
+		int Selected;
+		int Number;
+		int Type;
+		int UndoCount;
+		std::string Label;
+		Element(vtkSmartPointer<vtkMatrix4x4> m, 
+//			double c[4], 
+			int selected, int number, int type, std::string label, int Count)
+		{
+			this->Matrix = m;
+			this->Number = number;
+			this->Type = type;
+			this->Label = label;
+			this->UndoCount = Count;
+			/*this->Color[0] = c[0];
+			this->Color[1] = c[1];
+			this->Color[2] = c[2];
+			this->Color[3] = c[3];*/
+			this->Selected = selected;
+		}
+	};
+	typedef std::vector<Element> VectorOfElements;
+	VectorOfElements UndoStack;
+	VectorOfElements RedoStack;
+};
+
+class  vtkLMActor : public  vtkOpenGLActor
 {
 public:
 	static vtkLMActor *New();
@@ -63,16 +99,23 @@ public:
 	// method GetBounds(double bounds[6]) is available from the superclass.)
 	
 	double *GetBounds();
-
+	vtkPolyData *GetSphere() { return this->LMSphere; }
 	void SetLMOrigin(double x, double y, double z);
 	void SetLMOrigin(double origin[3]);
 	void GetLMOrigin(double origin[3]);
 	double * GetLMOrigin();
 
+	void SetLMOrientation(double x, double y, double z);
 	void SetLMOrientation(double orientation[3]);
 	void GetLMOrientation(double orientation[3]);
 	double * GetLMOrientation();
 
+	void SaveState(int mCount);
+	void Redo(int mCount); // Try to redo (if exists) "mCount" event
+	void Erase(int mCount); // Try to erase (if exists) "mCount" event
+	void Undo(int mCount); // Try to undo (if exists) "mCount" event
+	void PopUndoStack();
+	void PopRedoStack();
 	// Description:
 	// Get the actors mtime plus consider its properties and texture if set.
 
@@ -153,7 +196,8 @@ protected:
 	vtkLMActor();
 	~vtkLMActor();
 
-	vtkActor          *LMBody;
+	vtkPolyData *LMSphere;
+	vtkOpenGLActor          *LMBody;
 	void               UpdateProps();
 	char              *LMLabelText;
 	vtkCaptionActor2D *LMLabel;
@@ -168,6 +212,7 @@ protected:
 	double			LMOrigin[3];
 	double			LMOrientation[3];
 	int Selected;
+	vtkLMActorUndoRedo* UndoRedo;
 private:
 	vtkLMActor(const vtkLMActor&);  // Not implemented.
 	void operator=(const vtkLMActor&);  // Not implemented.

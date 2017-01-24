@@ -405,12 +405,15 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  VTK_CREATE(vtkLMActor, myLM);
 					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
 					  myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+					  myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
 					  myLM->SetLMSize(0.1);
 					  myLM->SetLMType(1);
 					  myLM->SetLMNumber(num);
 					  myLM->SetLMBodyType(0);
+
+					 
 					  //Create a sphere
-					 /* vtkSmartPointer<vtkSphereSource> sphereSource =
+					  vtkSmartPointer<vtkSphereSource> sphereSource =
 						  vtkSmartPointer<vtkSphereSource>::New();
 					  sphereSource->SetCenter(pos[0], pos[1], pos[2]);
 					  sphereSource->SetRadius(0.1);
@@ -422,7 +425,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  mapper->Update();
 					  vtkSmartPointer<vtkActor> actor =
 						  vtkSmartPointer<vtkActor>::New();
-					  actor->SetMapper(mapper);*/
+					  myLM->SetMapper(mapper);
 			
 					  
 					  //myLM->PrintSelf(cout, vtkIndent(1));

@@ -8,7 +8,10 @@
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
+#include <vtkSphereSource.h>
+#include <vtkCubeAxesActor.h>
 
+#include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
@@ -114,7 +117,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->LandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->LandmarkCollection->SetRenderer(this->Renderer);
-	//this->ActorCollection = vtkMTActorCollection::New();
+	
 	
 
 	this->Renderer->SetUseDepthPeeling(1);
@@ -124,13 +127,34 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
 	this->GridActor->SetGridType(2);	
 
-	/*this->LMActor->SetLMType(0);
+	this->LMActor = vtkSmartPointer<vtkLMActor>::New();
+	this->LMActor->SetLMType(0);
 	this->LMActor->SetLMBodyType(0);
-	this->LMActor->SetLMSize(10);
-	this->LMActor->SetLMOrigin(0,1,1);*/
-
+	this->LMActor->SetLMSize(3);
+	this->LMActor->SetLMOrigin(10,10,10);
+	//this->Renderer->AddActor(this->LMActor);
 	
 	this->Renderer->AddActor(this->GridActor);
+	/*vtkSmartPointer<vtkSphereSource> sphereSource =
+		vtkSmartPointer<vtkSphereSource>::New();
+	
+	
+	sphereSource->Update();
+
+	// Create a mapper and actor
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputConnection(sphereSource->GetOutputPort());
+
+	vtkSmartPointer<vtkActor> actor =
+		vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);*/
+	
+	/*vtkSmartPointer<vtkCubeAxesActor> cubeaxesactor =
+		vtkSmartPointer<vtkCubeAxesActor>::New();
+	cubeaxesactor->SetCamera(this->Camera);
+	this->Renderer->AddActor(cubeaxesactor);*/
+
 	
 }
 

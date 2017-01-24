@@ -15,7 +15,6 @@ Module:    vtkMTActor.h
 #include <vtkOpenGLActor.h>
 #include <vtkMatrix4x4.h>
 #include <vtkSmartPointer.h>
-#include <vtkSmartPointer.h>
 #include <vector>
 
 class vtkMTActorUndoRedo

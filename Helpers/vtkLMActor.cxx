@@ -32,16 +32,19 @@ vtkStandardNewMacro(vtkLMActor);
 //----------------------------------------------------------------------------
 vtkLMActor::vtkLMActor()
 {
+	this->PickableOn();
+	this->LMSphere =  vtkPolyData::New();
+	this->UndoRedo = new vtkLMActorUndoRedo;
 	this->Selected=0;
-	this->LMDrawLabel = 1;
+	this->LMDrawLabel = 1;//Draws the label
 	this->LMType = 0;	
-	this->SetLMColor();
+	this->SetLMColor(); //Set color according to LMType
 	this->LMBodyType = 0; //sphere by default
-	this->LMSize = 1; // 1mm by default 
-	this->LMNumber = 1;
-	this->LMOrigin[0] = 1;
-	this->LMOrigin[1] = 1;
-	this->LMOrigin[2] = 1;
+	this->LMSize = 0.1; // 0.1mm by default 
+	this->LMNumber = 1; //1
+	this->LMOrigin[0] = 0;
+	this->LMOrigin[1] = 0;
+	this->LMOrigin[2] = 0;
 
 	this->LMOrientation[0] = 1;
 	this->LMOrientation[1] = 0;
@@ -51,7 +54,8 @@ vtkLMActor::vtkLMActor()
 
 
 	this->LMLabel = vtkCaptionActor2D::New();
-	this->LMBody = vtkActor::New();
+	this->LMBody = vtkOpenGLActor::New();
+	this->LMBody->PickableOn();
 	LMBody->GetProperty()->SetOpacity(1);
 	LMBody->GetProperty()->SetLineWidth(3);
 
@@ -64,10 +68,13 @@ vtkLMActor::vtkLMActor()
 //----------------------------------------------------------------------------
 vtkLMActor::~vtkLMActor()
 {
-
+	this->UndoRedo->RedoStack.clear();
+	this->UndoRedo->UndoStack.clear();
+	delete this->UndoRedo;
 	this->LMBody->Delete();
 	this->SetLMLabelText(NULL);
 	this->LMLabel->Delete();
+	this->LMSphere->Delete();
 }
 void vtkLMActor::SetSelected(int selected)
 {
@@ -269,6 +276,12 @@ double *vtkLMActor::GetLMOrigin()
 }
 
 
+void vtkLMActor::SetLMOrientation(double x, double y, double z)
+{
+	double orientation[3] = { x,y,z };
+	
+	this->SetLMOrientation(orientation);
+}
 void vtkLMActor::SetLMOrientation(double orientation[3])
 {
 
@@ -356,14 +369,15 @@ void vtkLMActor::CreateLMBody()
 		sphereSource->SetRadius(1.1*this->LMSize);
 	}
 	sphereSource->Update();
+	this->LMSphere->DeepCopy(sphereSource->GetOutput());
 
 	// Setup the visualization pipeline
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
 	vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	mapper->SetInputData(sphereSource->GetOutput());
 	mapper->Update();
-
-	this->LMBody->SetMapper(mapper);
+	
+	
 
 	double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
 	this->LMBody->GetProperty()->SetColor(color);
@@ -371,10 +385,11 @@ void vtkLMActor::CreateLMBody()
 	
 		
 
-	sphereSource->Update();
+	
 	mapper->Update();
 
-	
+	this->LMBody->PickableOn();
+	this->LMBody->SetMapper(mapper);
 }
 
 //----------------------------------------------------------------------------
@@ -526,6 +541,155 @@ void vtkLMActor::UpdateProps()
 
 }
 
+void vtkLMActor::Undo(int mCount)
+{
+
+	//cout << "Inside actor Undo" << endl;
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+	if (mCount == this->UndoRedo->UndoStack.back().UndoCount)
+	{
+		//cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
+		// ici : faire l'appel global à undo de ce count là!!  
+		this->PopUndoStack();
+	}
+
+
+
+
+}
+void vtkLMActor::Redo(int mCount)
+{
+	//cout << "Inside actor Undo, try to undo " <<mCount<< endl;
+	if (this->UndoRedo->RedoStack.empty())
+	{
+		cout << "Redo Stack empty!" << endl;
+		return;
+	}
+	//cout << "Youngest redo count= " << this->UndoRedo->RedoStack.back().UndoCount<< endl;
+
+	if (mCount == this->UndoRedo->RedoStack.back().UndoCount)
+	{
+		//cout << "Redo actor event " << this->UndoRedo->RedoStack.back().UndoCount << endl;
+		// ici : faire l'appel global à undo de ce count là!!  
+		this->PopRedoStack();
+	}
+}
+void vtkLMActor::Erase(int mCount)
+{
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+	int oldestCount = this->UndoRedo->UndoStack.front().UndoCount;
+	if (oldestCount <= mCount)
+	{
+		//cout << "ERASE actor event " << oldestCount << endl;
+		this->UndoRedo->UndoStack.erase(this->UndoRedo->UndoStack.begin());
+	}
+}
+
+void vtkLMActor::PopUndoStack()
+{
+	if (this->UndoRedo->UndoStack.empty())
+	{
+		return;
+	}
+
+	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	this->GetMatrix(Mat);
+	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
+	SavedMat->DeepCopy(Mat);
+	// Now put undo Matrix inside LM object : 
+	Mat->DeepCopy(this->UndoRedo->UndoStack.back().Matrix);
+
+	std::cout << "Old Matrix: " << endl << *SavedMat << std::endl;
+	std::cout << "New Matrix: " << endl << *Mat << std::endl;
+
+	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
+	vtkTransform *newTransform = vtkTransform::New();
+	newTransform->PostMultiply();
+	newTransform->SetMatrix(Mat);
+	prop3D->SetPosition(newTransform->GetPosition());
+	prop3D->SetScale(newTransform->GetScale());
+	prop3D->SetOrientation(newTransform->GetOrientation());
+	newTransform->Delete();
+
+
+	this->GetMatrix(Mat);
+	
+	int mCurrentSelected = this->Selected;
+	int mCurrentType = this->LMType;
+	int mCurrentNumber = this->LMNumber;
+	std::string mCurrentLabel = this->LMLabelText;
+	this->SetLMType(this->UndoRedo->UndoStack.back().Type);
+	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
+	this->LMNumber = this->UndoRedo->UndoStack.back().Number;
+	this->SetLMLabelText(this->UndoRedo->UndoStack.back().Label.c_str());
+	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
+	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, mCurrentSelected, mCurrentNumber, mCurrentType, mCurrentLabel, this->UndoRedo->UndoStack.back().UndoCount));
+	this->UndoRedo->UndoStack.pop_back();
+	this->Modified();
+}
+void vtkLMActor::PopRedoStack()
+{
+	if (this->UndoRedo->RedoStack.empty())
+	{
+		return;
+	}
+	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	this->GetMatrix(Mat);
+	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
+	SavedMat->DeepCopy(Mat);
+	// Now put redp Matrix inside object : 
+	Mat->DeepCopy(this->UndoRedo->RedoStack.back().Matrix);
+	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
+	vtkTransform *newTransform = vtkTransform::New();
+	newTransform->PostMultiply();
+	newTransform->SetMatrix(Mat);
+	prop3D->SetPosition(newTransform->GetPosition());
+	prop3D->SetScale(newTransform->GetScale());
+	prop3D->SetOrientation(newTransform->GetOrientation());
+	newTransform->Delete();
+
+	int mCurrentSelected = this->Selected;
+	int mCurrentType = this->LMType;
+	int mCurrentNumber = this->LMNumber;
+	std::string mCurrentLabel = this->LMLabelText;
+	this->SetLMType(this->UndoRedo->RedoStack.back().Type);
+	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
+	this->LMNumber = this->UndoRedo->RedoStack.back().Number;
+	this->SetLMLabelText(this->UndoRedo->RedoStack.back().Label.c_str());
+
+	cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, mCurrentSelected, mCurrentNumber, mCurrentType, mCurrentLabel, this->UndoRedo->RedoStack.back().UndoCount));
+	this->UndoRedo->RedoStack.pop_back();
+	this->Modified();
+}
+
+void vtkLMActor::SaveState(int mCount)
+{
+	this->UndoRedo->RedoStack.clear();
+	int Count = mCount;
+
+
+	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	this->GetMatrix(Mat);
+	int mSelected = this->Selected;
+	int mType = this->LMType;
+	int mNumber = this->LMNumber;
+	std::string mLabel = this->LMLabelText;
+
+	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
+
+	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
+	SavedMat->DeepCopy(Mat);
+	//std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat,  mSelected, mNumber, mType, mLabel, mCount));
+
+}
 
 //----------------------------------------------------------------------------
 void vtkLMActor::PrintSelf(ostream& os, vtkIndent indent)

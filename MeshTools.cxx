@@ -78,14 +78,18 @@ void RubberBandSelect(vtkObject* caller,
 {
 	std::cout << "Pick." << std::endl;
 	vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
-	
+	vtkPropCollection *pcoll = areaPicker->GetPickList();
+	pcoll->GetNumberOfItems();
+	cout << "Pcoll Number of items:" << pcoll->GetNumberOfItems() << endl;
+
 	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
-	//vtkPropCollection* props = areaPicker->GetPrGetProps();
+	
 	//props->PrintSelf(cout, vtkIndent(2));
 	
 	std::string action = "Rubber band actor selection-unselection";
 	int something_to_store = 0;
 	if (props->GetNumberOfItems() > 0) { something_to_store = 1; }
+	cout << "Number of items:" << props->GetNumberOfItems()<<endl;
 	props->InitTraversal();
 	int Count = 0;
 
@@ -367,7 +371,7 @@ MeshTools::MeshTools()
 		 vtkSmartPointer<vtkAreaPicker>::New();
 
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
- 
+	
 // style->SetCurrentRenderer(this->MeshToolsCore->getRenderer());
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
