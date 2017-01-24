@@ -17,6 +17,7 @@
 #include <QPointer>
 #include "vtkOrientationHelperWidget.h"
 #include "vtkMTActorCollection.h"
+#include "vtkLMActorCollection.h"
 #include "vtkGridActor.h"
 #include "vtkLMActor.h"
 //#include "vtkUndoStack.h" => for some reason the ompilation fails if this header is included
@@ -98,7 +99,7 @@ public:
   {
 	  this->RenderWindow = renwin;
   }
-
+  vtkSmartPointer<vtkLMActorCollection> getLandmarkCollection();
   vtkSmartPointer<vtkMTActorCollection> getActorCollection();
   //vtkMTActorCollection* getActorCollection();
   vtkSmartPointer<vtkRenderer> getRenderer();
@@ -121,6 +122,7 @@ protected:
 	~mqMeshToolsCore();
 	//vtkUndoStack* mUndoStack;
 	vtkSmartPointer<vtkMTActorCollection> ActorCollection;
+	vtkSmartPointer<vtkLMActorCollection> LandmarkCollection;
 	//vtkMTActorCollection *ActorCollection;
 	vtkSmartPointer<vtkRenderer> Renderer;
 	//vtkSmartPointer<vtkRenderWindow> RenderWindow;

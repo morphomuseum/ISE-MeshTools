@@ -5,6 +5,7 @@ vtkGridActor.cxx
 vtkMTActor.cxx 
 vtkLMActor.cxx 
 vtkMTActorCollection.cxx 
+vtkLMActorCollection.cxx 
 vtkOrientationHelperWidget.cxx 
 vtkMTInteractorStyle.cxx 
 vtkUndoStack.cxx 
@@ -16,6 +17,7 @@ vtkOrientationHelperActor.h
 vtkMTActor.h 
 vtkLMActor.h 
 vtkMTActorCollection.h 
+vtkLMActorCollection.h 
 vtkGridActor.h 
 vtkOrientationHelperWidget.h 
 vtkMTInteractorStyle.h 

@@ -18,6 +18,8 @@
 #ifndef vtkMTInteractorStyle_h
 #define vtkMTInteractorStyle_h
 #include "vtkMTActorCollection.h"
+#include "vtkLMActorCollection.h"
+
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkSmartPointer.h>
 
@@ -57,6 +59,7 @@ public:
 
 
   void SetActorCollection(vtkSmartPointer<vtkMTActorCollection>ActColl);
+  void SetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
 protected:
   
   vtkMTInteractorStyle();
@@ -87,6 +90,7 @@ protected:
   int L;
   //vtkProp3D *InteractionProp;
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
+  vtkSmartPointer<vtkLMActorCollection> LandmarkCollection;
 private:
 #if VTK_MINOR_VERSION >= 1
 	vtkMTInteractorStyle(const vtkMTInteractorStyle&) VTK_DELETE_FUNCTION;

@@ -1,0 +1,138 @@
+/*=========================================================================
+
+Program:   MeshTools
+Module:    vtkMTActorCollection.cxx
+=========================================================================*/
+#include "vtkLMActorCollection.h"
+#include "vtkLMActor.h"
+#include "vtkMTActor.h"
+#include <vtkObjectFactory.h>
+#include <vtkMath.h>
+#include <vtkTransform.h>
+#include <vtkTransformFilter.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkRenderer.h>
+#include <vtkProperty.h>
+#include <vtkCenterOfMass.h>
+#include <vtkSmartPointer.h>
+
+
+#include <vtkDataSet.h>
+#include <vtkMapper.h>
+
+#include "mqUndoStack.h"
+#include "mqMeshToolsCore.h"
+
+vtkStandardNewMacro(vtkLMActorCollection);
+
+
+//----------------------------------------------------------------------------
+vtkLMActorCollection::vtkLMActorCollection()
+{
+	
+}
+
+//----------------------------------------------------------------------------
+vtkLMActorCollection::~vtkLMActorCollection()
+{
+	
+
+}
+void vtkLMActorCollection::AddItem(vtkActor *a)
+{
+	//We only want vtkLMActors in this collection!
+	std::string str1("vtkLMActor");
+	if (str1.compare(a->GetClassName()) == 0)
+	{
+		this->Superclass::AddItem(a);
+		this->Renderer->AddActor(a);
+	}
+}
+
+int vtkLMActorCollection::GetNextLandmarkNumber()
+{
+	//we assume here that landmarks are well ordered in the collection... 
+	//if we have 1 2 3 4 6 7 8, we should return 5
+	// if we have nothing, we should return 1
+	// if we have 1 2 3 4, we should return 5
+	int next = 1;
+	int previous = 1;
+	this->InitTraversal();
+	if (this->GetNumberOfItems() == 0) { return 1; }
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
+		next = myActor->GetLMNumber();
+		if (next - previous > 1) { next = previous + 1; return next; }
+		else
+		{
+			previous = next;			
+		}
+		
+	}
+	next++;
+	return next;
+}
+
+void vtkLMActorCollection::ComputeCenterOfMass()
+{
+	this->centerOfMass[0] = 0;
+	this->centerOfMass[1] = 0;
+	this->centerOfMass[2] = 0;
+	this->centerOfMassOfSelectedActors[0] = 0;
+	this->centerOfMassOfSelectedActors[1] = 0;
+	this->centerOfMassOfSelectedActors[2] = 0;
+
+
+	vtkIdType nLM = this->GetNumberOfItems();
+	vtkIdType nSelectedLM = 0;
+	vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
+		vtkSmartPointer<vtkCenterOfMass>::New();
+	this->InitTraversal();
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
+
+
+		double acenter[3];
+		myActor->GetLMOrigin(acenter);
+		
+		
+		centerOfMass[0] += acenter[0] ;
+		centerOfMass[1] += acenter[1] ;
+		centerOfMass[2] += acenter[2] ;
+		if (myActor->GetSelected() == 1)
+		{
+		
+			centerOfMassOfSelectedActors[0] += acenter[0] ;
+			centerOfMassOfSelectedActors[1] += acenter[1] ;
+			centerOfMassOfSelectedActors[2] += acenter[2] ;
+			nSelectedLM++;
+		}			
+	}	
+	if (nLM > 0)
+	{
+		centerOfMass[0] /= nLM;
+		centerOfMass[1] /= nLM;
+		centerOfMass[2] /= nLM;
+
+	}
+	if (nSelectedLM > 0)
+	{
+		centerOfMassOfSelectedActors[0] /= nSelectedLM;
+		centerOfMassOfSelectedActors[1] /= nSelectedLM;
+		centerOfMassOfSelectedActors[2] /= nSelectedLM;
+	}
+}
+
+
+//----------------------------------------------------------------------------
+void vtkLMActorCollection::PrintSelf(ostream& os, vtkIndent indent)
+{
+	this->Superclass::PrintSelf(os, indent);
+
+	//os << indent << "Selected: "<< this->Selected;
+	
+
+}

@@ -47,6 +47,9 @@ vtkStandardNewMacro(vtkMTInteractorStyle);
 #define CTRL_PRESSED 1
 #define L_PRESSED 2
 #define L_RELEASED 3
+#define VTK_CREATE(type, name) \
+  vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
+
 //--------------------------------------------------------------------------
 
 vtkMTInteractorStyle::vtkMTInteractorStyle()
@@ -59,6 +62,7 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 	this->Moving = 0;
 	this->PixelArray = vtkUnsignedCharArray::New();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->LandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->ActorsPositionsSaved = 0;
 	this->NumberOfSelectedActors = 0;
 }
@@ -66,6 +70,10 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 void vtkMTInteractorStyle::SetActorCollection(vtkSmartPointer<vtkMTActorCollection> ActColl)
 {
 	this->ActorCollection = ActColl;
+}
+void vtkMTInteractorStyle::SetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+{
+	this->LandmarkCollection = LmkColl;
 }
 
 //--------------------------------------------------------------------------
@@ -393,12 +401,13 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 				  else
 				  {
 					  //Create a LMActor
-					  vtkSmartPointer<vtkLMActor> myLM =
-						  vtkSmartPointer<vtkLMActor>::New();
+					  
+					  VTK_CREATE(vtkLMActor, myLM);
+					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
 					  myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
 					  myLM->SetLMSize(0.1);
 					  myLM->SetLMType(1);
-					  myLM->SetLMNumber(10);
+					  myLM->SetLMNumber(num);
 					  myLM->SetLMBodyType(0);
 					  //Create a sphere
 					 /* vtkSmartPointer<vtkSphereSource> sphereSource =
@@ -416,9 +425,9 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  actor->SetMapper(mapper);*/
 			
 					  
-					  myLM->PrintSelf(cout, vtkIndent(1));
-
-					  this->CurrentRenderer->AddActor(myLM);
+					  //myLM->PrintSelf(cout, vtkIndent(1));
+					  this->LandmarkCollection->AddItem(myLM);
+					  //this->CurrentRenderer->AddActor(myLM);
 					  this->Interactor->Render();
 				  }
 

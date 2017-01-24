@@ -12,7 +12,7 @@ Module:    vtkLMActor.h
 #define vtkLMActor_h
 
 
-#include "vtkProp3D.h"
+#include "vtkActor.h"
 
 class vtkActor;
 class vtkCaptionActor2D;
@@ -25,7 +25,7 @@ class vtkProperty;
 class vtkRenderer;
 class vtkSphereSource;
 
-class  vtkLMActor : public vtkProp3D
+class  vtkLMActor : public vtkActor
 {
 public:
 	static vtkLMActor *New();
@@ -131,6 +131,10 @@ public:
 	// Enable/disable drawing the axis labels.
 	vtkSetMacro(LMDrawLabel, int);
 	vtkGetMacro(LMDrawLabel, int);
+
+	void SetSelected(int selected);
+	vtkGetMacro(Selected, int);
+
 	vtkBooleanMacro(LMDrawLabel, int);
 	vtkGetMacro(LMType, int);
 	void SetLMType(int type);
@@ -142,6 +146,9 @@ public:
 	vtkGetMacro(LMNumber, int);
 	void SetLMNumber(int num);
 
+	vtkSetVector4Macro(LMColor, double);
+	vtkGetVector4Macro(LMColor, double);
+	void SetLMColor();
 protected:
 	vtkLMActor();
 	~vtkLMActor();
@@ -151,7 +158,7 @@ protected:
 	char              *LMLabelText;
 	vtkCaptionActor2D *LMLabel;
 	int LMNumber; // landmark number in sequence
-
+	double LMColor[4]; // mesh "uniform" color (no vertex coloring) and transparency.
 	int LMBodyType; //0; sphere //1 needle needle 
 	int LMType; // 0; normal landmark (red) // 1 target landmark (yellow)
 				// 2; curve node (dark red) // 3; curve handle (orange) // 4 curve starting point (green)
@@ -160,7 +167,7 @@ protected:
 	double		     LMSize;
 	double			LMOrigin[3];
 	double			LMOrientation[3];
-
+	int Selected;
 private:
 	vtkLMActor(const vtkLMActor&);  // Not implemented.
 	void operator=(const vtkLMActor&);  // Not implemented.

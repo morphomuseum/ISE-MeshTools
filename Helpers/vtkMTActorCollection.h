@@ -78,7 +78,7 @@ protected:
 	~vtkMTActorCollection();
 	void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
 	void ComputeBoundingBoxLength();
-	void ComputeCenterOfMass();
+	virtual void ComputeCenterOfMass(); // will be overridden in derived vtkLMActorCollection Class
 	int ActorChanged(); // tells whether an actor was changed.
 	double centerOfMass[3];
 	double centerOfMassOfSelectedActors[3];

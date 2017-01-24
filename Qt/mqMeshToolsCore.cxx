@@ -7,6 +7,7 @@
 =========================================================================*/
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
+#include "vtkLMActor.h"
 
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -110,6 +111,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->SetRenderer(this->Renderer);
+
+	this->LandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->LandmarkCollection->SetRenderer(this->Renderer);
 	//this->ActorCollection = vtkMTActorCollection::New();
 	
 
@@ -335,6 +339,18 @@ void mqMeshToolsCore::Undo(int Count)
 		myActor->Undo(Count);		
 	}
 	this->ActorCollection->Undo(Count);
+
+	//@@TODO! 
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		cout << "MyLMActor undo!" << endl;
+		//myActor->Undo(Count);
+	}
+	// To update to take into account reorder!
+	this->LandmarkCollection->Undo(Count);
+
 }
 void mqMeshToolsCore::Redo()
 {
@@ -354,6 +370,18 @@ void mqMeshToolsCore::Redo(int Count)
 		myActor->Redo(Count);
 	}
 	this->ActorCollection->Redo(Count);
+
+	//@@TODO! 
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		cout << "MyLMActor redo!" << endl;
+		//myActor->Redo(Count);
+	}
+	// To update to take into account reorder!
+	this->LandmarkCollection->Redo(Count);
+
 }
 void mqMeshToolsCore::Erase(int Count)
 {
@@ -367,6 +395,17 @@ void mqMeshToolsCore::Erase(int Count)
 		myActor->Erase(Count);
 	}
 	this->ActorCollection->Erase(Count);
+
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		//cout << "MyActor Erase!" << endl;
+		//@@ TO IMPLEMENT
+		//myActor->Erase(Count);
+	}
+	this->LandmarkCollection->Erase(Count);
+
 }
 void mqMeshToolsCore::setUndoStack(mqUndoStack* stack)
 {
@@ -404,6 +443,10 @@ return this->UndoStack;
 vtkSmartPointer<vtkMTActorCollection> mqMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;
+}
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getLandmarkCollection()
+{
+	return this->LandmarkCollection;
 }
 /*
 vtkMTActorCollection* mqMeshToolsCore::getActorCollection()

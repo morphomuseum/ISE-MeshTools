@@ -32,8 +32,10 @@ vtkStandardNewMacro(vtkLMActor);
 //----------------------------------------------------------------------------
 vtkLMActor::vtkLMActor()
 {
+	this->Selected=0;
 	this->LMDrawLabel = 1;
-	this->LMType = 0;
+	this->LMType = 0;	
+	this->SetLMColor();
 	this->LMBodyType = 0; //sphere by default
 	this->LMSize = 1; // 1mm by default 
 	this->LMNumber = 1;
@@ -55,7 +57,7 @@ vtkLMActor::vtkLMActor()
 
 
 
-
+	
 	this->UpdateProps();
 }
 
@@ -67,7 +69,34 @@ vtkLMActor::~vtkLMActor()
 	this->SetLMLabelText(NULL);
 	this->LMLabel->Delete();
 }
-
+void vtkLMActor::SetSelected(int selected)
+{
+	this->Selected = selected;
+	vtkSmartPointer<vtkTextProperty> mproperty = vtkSmartPointer<vtkTextProperty>::New();
+	
+	if (selected == 1)
+	{
+		this->LMBody->GetProperty()->SetColor(0.5, 0.5, 0.5);
+		this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
+		if (this->LMColor[3] < 0.75)
+		{
+			this->LMBody->GetProperty()->SetOpacity(0.75);
+		}
+		mproperty->SetColor(0.5, 0.5,0.5);
+		mproperty->SetFontFamilyToArial();
+		this->LMLabel->SetCaptionTextProperty(mproperty);
+	}
+	else
+	{
+		this->LMBody->GetProperty()->SetColor(this->LMColor[0], this->LMColor[1], this->LMColor[2]);
+		//cout << "mColor[3](alpha) =" << this->mColor[3] << endl;
+		this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
+		double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
+		mproperty->SetColor(color);
+		mproperty->SetFontFamilyToArial();
+		this->LMLabel->SetCaptionTextProperty(mproperty);
+	}
+}
 //----------------------------------------------------------------------------
 // Shallow copy of an actor.
 void vtkLMActor::ShallowCopy(vtkProp *prop)
@@ -287,53 +316,17 @@ void vtkLMActor::CreateLMLabelText()
 
 	double pos[3] = { this->LMOrigin[0] + 1.1*this->LMSize , this->LMOrigin[1], this->LMOrigin[2] };
 
-	// Create six colors - one for each line
-	double red[3] = { 1, 0, 0 }; // LMType=0
-	double yellow[3] = { 1, 1, 0 }; // LMType = 1 (target LM)
-	double darkred[3] = { 0.5, 0, 0 }; // LMType = 2 (curve node: dark red)
-	double orange[3] = { 1, 0.5, 0 }; // LMType = 3 (curve handle : orange)
-	double green[3] = { 0, 1, 0 }; // LMType=4 (curve starting point)
-	double blue[3] = { 0, 0, 1 }; // LMType = 5 (curve milestone)	
-	double cyan[3] = { 0, 1, 1 }; // LMType = 6 (curve ending point)
-
-
+	
 
 	vtkSmartPointer<vtkTextProperty> mproperty = vtkSmartPointer<vtkTextProperty>::New();
 
-
+	double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
+	
 
 	std::string myStrLabel;
-	myStrLabel = std::to_string(this->LMNumber);
-
-	if (this->LMType == 0)
-	{
-		mproperty->SetColor(red);
-	}
-	else if (this->LMType == 1)
-	{
-		mproperty->SetColor(yellow);
-	}
-	else if (this->LMType == 2)
-	{
-		mproperty->SetColor(darkred);
-	}
-	else if (this->LMType == 3)
-	{
-		mproperty->SetColor(orange);
-	}
-	else if (this->LMType == 4)
-	{
-		mproperty->SetColor(green);
-	}
-	else if (this->LMType == 5)
-	{
-		mproperty->SetColor(blue);
-	}
-	else if (this->LMType == 6)
-	{
-		mproperty->SetColor(cyan);
-	}
-
+	myStrLabel = std::to_string(this->LMNumber);	
+	mproperty->SetColor(color);
+	
 
 
 	mproperty->SetFontFamilyToArial();
@@ -372,48 +365,10 @@ void vtkLMActor::CreateLMBody()
 
 	this->LMBody->SetMapper(mapper);
 
-	// Create six colors - one for each line
-	double red[3] = { 1, 0, 0 }; // LMType=0
-	double yellow[3] = { 1, 1, 0 }; // LMType = 1 (target LM)
-	double darkred[3] = { 0.5, 0, 0 }; // LMType = 2 (curve node: dark red)
-	double orange[3] = { 1, 0.5, 0 }; // LMType = 3 (curve handle : orange)
-	double green[3] = { 0, 1, 0 }; // LMType=4 (curve starting point)
-	double blue[3] = { 0, 0, 1 }; // LMType = 5 (curve milestone)
-	double cyan[3] = { 0, 1, 1 }; // LMType = 6 (curve ending point)
+	double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
+	this->LMBody->GetProperty()->SetColor(color);
+	this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
 	
-
-	if (this->LMType == 0)
-	{
-		this->LMBody->GetProperty()->SetColor(red);
-	}
-	else if (this->LMType == 1)
-	{
-		this->LMBody->GetProperty()->SetColor(yellow);
-		this->LMBody->GetProperty()->SetOpacity(0.5);
-	}
-	else if (this->LMType == 2)
-	{
-		this->LMBody->GetProperty()->SetColor(darkred);
-		
-	}
-	else if (this->LMType == 3)
-	{	
-		this->LMBody->GetProperty()->SetColor(orange);
-		this->LMBody->GetProperty()->SetOpacity(0.5);
-	}
-	else if (this->LMType == 4)
-	{
-		this->LMBody->GetProperty()->SetColor(green); 
-	}
-	else if (this->LMType == 5)
-	{
-		
-		this->LMBody->GetProperty()->SetColor(blue);
-	}
-	else if (this->LMType == 6)
-	{
-		this->LMBody->GetProperty()->SetColor(cyan);
-	}
 		
 
 	sphereSource->Update();
@@ -489,11 +444,33 @@ unsigned long int vtkLMActor::GetRedrawMTime()
 #endif
 
 
+void vtkLMActor::SetLMColor()
+{
+	// Create six colors - one for each line
+	double red[4] = { 1, 0, 0, 1 }; // LMType=0
+	double yellow[4] = { 1, 1, 0,0.5 }; // LMType = 1 (target LM)
+	double darkred[4] = { 0.5, 0, 0, 1 }; // LMType = 2 (curve node: dark red)
+	double orange[4] = { 1, 0.5, 0, 1 }; // LMType = 3 (curve handle : orange)
+	double green[4] = { 0, 1, 0, 1 }; // LMType=4 (curve starting point)
+	double blue[4] = { 0, 0, 1, 1 }; // LMType = 5 (curve milestone)	
+	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
+	if (this->LMType == 0) { this->SetLMColor(red); }
+	if (this->LMType == 1) { this->SetLMColor(yellow); }
+	if (this->LMType == 2) { this->SetLMColor(darkred); }
+	if (this->LMType == 3) { this->SetLMColor(orange); }
+	if (this->LMType == 4) { this->SetLMColor(green); }
+	if (this->LMType == 5) { this->SetLMColor(blue); }
+	if (this->LMType == 6) { this->SetLMColor(cyan); }
+}
+
 //----------------------------------------------------------------------------
 void vtkLMActor::SetLMType(int type)
 {
 	if (this->LMType != type && type >= 0 && type <= 6)
 	{
+		
+
+		this->SetLMColor(); // when type changes, color changes as well
 		this->LMType = type;
 		this->Modified();
 		this->UpdateProps();
