@@ -33,7 +33,8 @@ vtkStandardNewMacro(vtkLMActor);
 vtkLMActor::vtkLMActor()
 {
 	this->PickableOn();
-	this->LMSphere =  vtkPolyData::New();
+	this->LMBody =  vtkSmartPointer<vtkPolyData>::New();
+	this->LMLabel = vtkCaptionActor2D::New();
 	this->UndoRedo = new vtkLMActorUndoRedo;
 	this->Selected=0;
 	this->LMDrawLabel = 1;//Draws the label
@@ -52,13 +53,9 @@ vtkLMActor::vtkLMActor()
 
 	this->LMLabelText = NULL;
 
-
-	this->LMLabel = vtkCaptionActor2D::New();
-	this->LMBody = vtkOpenGLActor::New();
-	this->LMBody->PickableOn();
-	LMBody->GetProperty()->SetOpacity(1);
-	LMBody->GetProperty()->SetLineWidth(3);
-
+		
+	
+	
 
 
 	
@@ -71,10 +68,9 @@ vtkLMActor::~vtkLMActor()
 	this->UndoRedo->RedoStack.clear();
 	this->UndoRedo->UndoStack.clear();
 	delete this->UndoRedo;
-	this->LMBody->Delete();
 	this->SetLMLabelText(NULL);
-	this->LMLabel->Delete();
-	this->LMSphere->Delete();
+	//this->LMLabel->Delete();
+	//this->LMBody->Delete();
 }
 void vtkLMActor::SetSelected(int selected)
 {
@@ -83,11 +79,11 @@ void vtkLMActor::SetSelected(int selected)
 	
 	if (selected == 1)
 	{
-		this->LMBody->GetProperty()->SetColor(0.5, 0.5, 0.5);
-		this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
-		if (this->LMColor[3] < 0.75)
+		this->GetProperty()->SetColor(0.5, 0.5, 0.5);
+		this->GetProperty()->SetOpacity(this->mColor[3]);
+		if (this->mColor[3] < 0.75)
 		{
-			this->LMBody->GetProperty()->SetOpacity(0.75);
+			this->GetProperty()->SetOpacity(0.75);
 		}
 		mproperty->SetColor(0.5, 0.5,0.5);
 		mproperty->SetFontFamilyToArial();
@@ -95,10 +91,10 @@ void vtkLMActor::SetSelected(int selected)
 	}
 	else
 	{
-		this->LMBody->GetProperty()->SetColor(this->LMColor[0], this->LMColor[1], this->LMColor[2]);
+		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
 		//cout << "mColor[3](alpha) =" << this->mColor[3] << endl;
-		this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
-		double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
+		this->GetProperty()->SetOpacity(this->mColor[3]);
+		double color[3] = { this->mColor[0], this->mColor[1], this->mColor[2] };
 		mproperty->SetColor(color);
 		mproperty->SetFontFamilyToArial();
 		this->LMLabel->SetCaptionTextProperty(mproperty);
@@ -108,127 +104,13 @@ void vtkLMActor::SetSelected(int selected)
 // Shallow copy of an actor.
 void vtkLMActor::ShallowCopy(vtkProp *prop)
 {
-	vtkLMActor *a = vtkLMActor::SafeDownCast(prop);
-	if (a != NULL)
-	{
-		this->SetLMDrawLabel(a->GetLMDrawLabel());
-		this->SetLMLabelText(a->GetLMLabelText());
-		this->SetLMOrigin(a->GetLMOrigin());
-		this->SetLMOrientation(a->GetLMOrientation());
-		this->SetLMSize(a->GetLMSize());
-		this->SetLMType(a->GetLMType());
-		this->SetLMNumber(a->GetLMNumber());
-		this->SetLMBodyType(a->GetLMBodyType());
+	vtkMTActor *f = vtkMTActor::SafeDownCast(prop);
 
-	}
 
 	// Now do superclass
-	this->vtkProp3D::ShallowCopy(prop);
+	this->vtkMTActor::ShallowCopy(prop);
+	
 }
-
-//----------------------------------------------------------------------------
-void vtkLMActor::GetActors(vtkPropCollection *ac)
-{
-	ac->AddItem(this->LMBody);
-
-
-}
-
-//----------------------------------------------------------------------------
-int vtkLMActor::RenderOpaqueGeometry(vtkViewport *vp)
-{
-	int renderedSomething = 0;
-
-	this->UpdateProps();
-
-	renderedSomething += this->LMBody->RenderOpaqueGeometry(vp);
-
-
-
-	if (this->LMDrawLabel)
-	{
-		renderedSomething += this->LMLabel->RenderOpaqueGeometry(vp);
-
-	}
-
-	renderedSomething = (renderedSomething > 0) ? (1) : (0);
-	return renderedSomething;
-}
-
-//-----------------------------------------------------------------------------
-int vtkLMActor::RenderTranslucentPolygonalGeometry(vtkViewport *vp)
-{
-	int renderedSomething = 0;
-
-	this->UpdateProps();
-
-	renderedSomething += this->LMBody->RenderTranslucentPolygonalGeometry(vp);
-
-
-	if (this->LMDrawLabel)
-	{
-		renderedSomething += this->LMLabel->RenderTranslucentPolygonalGeometry(vp);
-
-	}
-
-	renderedSomething = (renderedSomething > 0) ? (1) : (0);
-	return renderedSomething;
-}
-
-//-----------------------------------------------------------------------------
-// Description:
-// Does this prop have some translucent polygonal geometry?
-int vtkLMActor::HasTranslucentPolygonalGeometry()
-{
-	int result = 0;
-
-	this->UpdateProps();
-
-	result |= this->LMBody->HasTranslucentPolygonalGeometry();
-
-
-
-	if (this->LMDrawLabel)
-	{
-		result |= this->LMLabel->HasTranslucentPolygonalGeometry();
-
-	}
-	return result;
-}
-
-//-----------------------------------------------------------------------------
-int vtkLMActor::RenderOverlay(vtkViewport *vp)
-{
-	int renderedSomething = 0;
-
-	if (!this->LMDrawLabel)
-	{
-		return renderedSomething;
-	}
-
-	this->UpdateProps();
-
-	renderedSomething += this->LMLabel->RenderOverlay(vp);
-
-
-
-	renderedSomething = (renderedSomething > 0) ? (1) : (0);
-	return renderedSomething;
-}
-
-//----------------------------------------------------------------------------
-void vtkLMActor::ReleaseGraphicsResources(vtkWindow *win)
-{
-	this->LMBody->ReleaseGraphicsResources(win);
-
-
-
-	this->LMLabel->ReleaseGraphicsResources(win);
-
-
-}
-
-//----------------------------------------------------------------------------
 
 
 
@@ -333,7 +215,7 @@ void vtkLMActor::CreateLMLabelText()
 
 	vtkSmartPointer<vtkTextProperty> mproperty = vtkSmartPointer<vtkTextProperty>::New();
 
-	double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
+	double color[3] = { this->mColor[0], this->mColor[1], this->mColor[2] };
 	
 
 	std::string myStrLabel;
@@ -369,94 +251,12 @@ void vtkLMActor::CreateLMBody()
 		sphereSource->SetRadius(1.1*this->LMSize);
 	}
 	sphereSource->Update();
-	this->LMSphere->DeepCopy(sphereSource->GetOutput());
+	this->LMBody = sphereSource->GetOutput();
 
-	// Setup the visualization pipeline
-	vtkSmartPointer<vtkPolyDataMapper> mapper =
-	vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(sphereSource->GetOutput());
-	mapper->Update();
-	
-	
-
-	double color[3] = { this->LMColor[0], this->LMColor[1], this->LMColor[2] };
-	this->LMBody->GetProperty()->SetColor(color);
-	this->LMBody->GetProperty()->SetOpacity(this->LMColor[3]);
-	
 		
 
-	
-	mapper->Update();
-
-	this->LMBody->PickableOn();
-	this->LMBody->SetMapper(mapper);
 }
 
-//----------------------------------------------------------------------------
-// Get the bounds for this Actor as (Xmin,Xmax,Ymin,Ymax,Zmin,Zmax).
-double *vtkLMActor::GetBounds()
-{
-
-
-	if (this->LMBodyType == 0) // sphere
-	{
-		this->Bounds[0] = this->LMOrigin[0]-this->LMSize / 2;
-		this->Bounds[1] = this->LMOrigin[0]+this->LMSize / 2;
-		this->Bounds[2] = this->LMOrigin[1] -this->LMSize / 2;
-		this->Bounds[3] = this->LMOrigin[1]+this->LMSize / 2;
-		this->Bounds[4] = this->LMOrigin[2] -this->LMSize / 2;
-		this->Bounds[5] = this->LMOrigin[2]+this->LMSize / 2;
-	}
-	else
-	{
-		//needle
-		this->Bounds[0] = this->LMOrigin[0];
-		this->Bounds[1] = this->LMOrigin[0]+this->LMSize;
-		this->Bounds[2] = this->LMOrigin[1] -this->LMSize / 4;
-		this->Bounds[3] = this->LMOrigin[1]+this->LMSize / 4;
-		this->Bounds[4] = this->LMOrigin[2] -this->LMSize / 4;
-		this->Bounds[5] = this->LMOrigin[2]+this->LMSize / 4;
-	}
-
-
-
-	return this->Bounds;
-}
-
-//----------------------------------------------------------------------------
-#if VTK_MINOR_VERSION >= 1
-
-vtkMTimeType vtkLMActor::GetMTime()
-{
-	vtkMTimeType mTime = this->Superclass::GetMTime();
-	return mTime;
-}
-
-vtkMTimeType vtkLMActor::GetRedrawMTime()
-{
-	vtkMTimeType mTime = this->GetMTime();
-	return mTime;
-}
-#else
-unsigned long int vtkLMActor::GetMTime()
-{
-	unsigned long mTime = this->Superclass::GetMTime();
-	return mTime;
-}
-
-
-
-//----------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------------
-unsigned long int vtkLMActor::GetRedrawMTime()
-{
-	unsigned long mTime = this->GetMTime();
-	return mTime;
-}
-
-#endif
 
 
 void vtkLMActor::SetLMColor()
@@ -469,13 +269,13 @@ void vtkLMActor::SetLMColor()
 	double green[4] = { 0, 1, 0, 1 }; // LMType=4 (curve starting point)
 	double blue[4] = { 0, 0, 1, 1 }; // LMType = 5 (curve milestone)	
 	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
-	if (this->LMType == 0) { this->SetLMColor(red); }
-	if (this->LMType == 1) { this->SetLMColor(yellow); }
-	if (this->LMType == 2) { this->SetLMColor(darkred); }
-	if (this->LMType == 3) { this->SetLMColor(orange); }
-	if (this->LMType == 4) { this->SetLMColor(green); }
-	if (this->LMType == 5) { this->SetLMColor(blue); }
-	if (this->LMType == 6) { this->SetLMColor(cyan); }
+	if (this->LMType == 0) { this->SetmColor(red); }
+	if (this->LMType == 1) { this->SetmColor(yellow); }
+	if (this->LMType == 2) { this->SetmColor(darkred); }
+	if (this->LMType == 3) { this->SetmColor(orange); }
+	if (this->LMType == 4) { this->SetmColor(green); }
+	if (this->LMType == 5) { this->SetmColor(blue); }
+	if (this->LMType == 6) { this->SetmColor(cyan); }
 }
 
 //----------------------------------------------------------------------------

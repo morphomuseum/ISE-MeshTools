@@ -12,7 +12,7 @@ Module:    vtkLMActor.h
 #define vtkLMActor_h
 
 
-#include <vtkOpenGLActor.h>
+#include "vtkMTActor.h"
 #include <vtkMatrix4x4.h>
 #include <vtkSmartPointer.h>
 #include <vector>
@@ -61,90 +61,41 @@ public:
 	VectorOfElements RedoStack;
 };
 
-class  vtkLMActor : public  vtkOpenGLActor
+class  vtkLMActor : public  vtkMTActor
 {
 public:
 	static vtkLMActor *New();
 	vtkTypeMacro(vtkLMActor, vtkProp3D);
 	void PrintSelf(ostream& os, vtkIndent indent);
 
-	// Description:
-	// For some exporters and other other operations we must be
-	// able to collect all the actors or volumes. These methods
-	// are used in that process.
-	virtual void GetActors(vtkPropCollection *);
+	
 
 	// Description:
-	// Support the standard render methods.
-	virtual int RenderOpaqueGeometry(vtkViewport *viewport);
-	virtual int RenderTranslucentPolygonalGeometry(vtkViewport *viewport);
-	virtual int RenderOverlay(vtkViewport *viewport);
-
-	// Description:
-	// Does this prop have some translucent polygonal geometry?
-	virtual int HasTranslucentPolygonalGeometry();
-
-	// Description:
-	// Shallow copy of an axes actor. Overloads the virtual vtkProp method.
 	void ShallowCopy(vtkProp *prop);
-
-	// Description:
-	// Release any graphics resources that are being consumed by this actor.
-	// The parameter window could be used to determine which graphic
-	// resources to release.
-	void ReleaseGraphicsResources(vtkWindow *);
 
 	// Description:
 	// Get the bounds for this Actor as (Xmin,Xmax,Ymin,Ymax,Zmin,Zmax). (The
 	// method GetBounds(double bounds[6]) is available from the superclass.)
 	
-	double *GetBounds();
-	vtkPolyData *GetSphere() { return this->LMSphere; }
 	void SetLMOrigin(double x, double y, double z);
 	void SetLMOrigin(double origin[3]);
 	void GetLMOrigin(double origin[3]);
 	double * GetLMOrigin();
-
+	void SetLMColor();
 	void SetLMOrientation(double x, double y, double z);
 	void SetLMOrientation(double orientation[3]);
 	void GetLMOrientation(double orientation[3]);
 	double * GetLMOrientation();
 
-	void SaveState(int mCount);
-	void Redo(int mCount); // Try to redo (if exists) "mCount" event
-	void Erase(int mCount); // Try to erase (if exists) "mCount" event
-	void Undo(int mCount); // Try to undo (if exists) "mCount" event
-	void PopUndoStack();
-	void PopRedoStack();
+	virtual void SetSelected(int selected);
+	virtual void SaveState(int mCount);
+	virtual void Redo(int mCount); // Try to redo (if exists) "mCount" event
+	virtual void Erase(int mCount); // Try to erase (if exists) "mCount" event
+	virtual void Undo(int mCount); // Try to undo (if exists) "mCount" event
+	virtual void PopUndoStack();
+	virtual void PopRedoStack();
 	// Description:
 	// Get the actors mtime plus consider its properties and texture if set.
-
-#if VTK_MINOR_VERSION >= 1
-
-	/**
-	* Get the actors mtime plus consider its properties and texture if set.
-	*/
-	vtkMTimeType GetMTime();
-
-	/**
-	* Return the mtime of anything that would cause the rendered image to
-	* appear differently. Usually this involves checking the mtime of the
-	* prop plus anything else it depends on such as properties, textures
-	* etc.
-	*/
-	virtual vtkMTimeType GetRedrawMTime();
-
-#else
-	unsigned long int GetMTime();
-
-	// Description:
-	// Return the mtime of anything that would cause the rendered image to
-	// appear differently. Usually this involves checking the mtime of the
-	// prop plus anything else it depends on such as properties, textures
-	// etc.
-
-	virtual unsigned long GetRedrawMTime();
-#endif
 
 
 
@@ -155,7 +106,7 @@ public:
 	// Description:
 	// Retrieve handles to the X, Y and Z axis (so that you can set their text
 	// properties for example)
-	vtkCaptionActor2D *GetLMLabelActor2D()
+	vtkSmartPointer<vtkCaptionActor2D> GetLMLabelActor2D()
 	{
 		return this->LMLabel;
 	}
@@ -167,7 +118,7 @@ public:
 	vtkGetStringMacro(LMLabelText);
 
 
-
+	vtkSmartPointer<vtkPolyData> getLMBody() { return this->LMBody; }
 	// Description:
 
 
@@ -175,7 +126,7 @@ public:
 	vtkSetMacro(LMDrawLabel, int);
 	vtkGetMacro(LMDrawLabel, int);
 
-	void SetSelected(int selected);
+	//void SetSelected(int selected);
 	vtkGetMacro(Selected, int);
 
 	vtkBooleanMacro(LMDrawLabel, int);
@@ -189,20 +140,15 @@ public:
 	vtkGetMacro(LMNumber, int);
 	void SetLMNumber(int num);
 
-	vtkSetVector4Macro(LMColor, double);
-	vtkGetVector4Macro(LMColor, double);
-	void SetLMColor();
 protected:
 	vtkLMActor();
 	~vtkLMActor();
 
-	vtkPolyData *LMSphere;
-	vtkOpenGLActor          *LMBody;
+	vtkSmartPointer<vtkPolyData> LMBody;	
 	void               UpdateProps();
 	char              *LMLabelText;
-	vtkCaptionActor2D *LMLabel;
+	vtkSmartPointer<vtkCaptionActor2D> LMLabel;
 	int LMNumber; // landmark number in sequence
-	double LMColor[4]; // mesh "uniform" color (no vertex coloring) and transparency.
 	int LMBodyType; //0; sphere //1 needle needle 
 	int LMType; // 0; normal landmark (red) // 1 target landmark (yellow)
 				// 2; curve node (dark red) // 3; curve handle (orange) // 4 curve starting point (green)

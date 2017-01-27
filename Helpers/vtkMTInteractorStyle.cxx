@@ -421,10 +421,9 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  //Create a mapper and actor
 					  vtkSmartPointer<vtkPolyDataMapper> mapper =
 						  vtkSmartPointer<vtkPolyDataMapper>::New();
-					  mapper->SetInputData(sphereSource->GetOutput());
-					  mapper->Update();
-					  vtkSmartPointer<vtkActor> actor =
-						  vtkSmartPointer<vtkActor>::New();
+					 // mapper->SetInputData(sphereSource->GetOutput());
+					  mapper->SetInputData(myLM->getLMBody());
+					  mapper->Update();					
 					  myLM->SetMapper(mapper);
 			
 					  

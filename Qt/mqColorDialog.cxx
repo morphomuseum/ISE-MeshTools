@@ -11,8 +11,8 @@
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
 
-
-#include <GL/glew.h>
+// we actually do not need glew...
+//#include <GL/glew.h>
 #include <QApplication>
 #include <QFile>
 #include <QHeaderView>

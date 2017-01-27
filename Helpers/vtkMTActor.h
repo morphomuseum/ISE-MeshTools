@@ -67,13 +67,13 @@ public:
 
 	// Actual actor render method.
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
-	void SetSelected(int selected);
-	void SaveState(int mCount);
-	void Redo(int mCount); // Try to redo (if exists) "mCount" event
-	void Erase(int mCount); // Try to erase (if exists) "mCount" event
-	void Undo(int mCount); // Try to undo (if exists) "mCount" event
-	void PopUndoStack();
-	void PopRedoStack();
+	virtual void SetSelected(int selected);
+	virtual void SaveState(int mCount);
+	virtual void Redo(int mCount); // Try to redo (if exists) "mCount" event
+	virtual void Erase(int mCount); // Try to erase (if exists) "mCount" event
+	virtual void Undo(int mCount); // Try to undo (if exists) "mCount" event
+	virtual void PopUndoStack();
+	virtual void PopRedoStack();
 
 
 protected:

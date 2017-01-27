@@ -673,7 +673,22 @@ void MeshTools::slotOpenMeshFile()
 			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			VTK_CREATE(vtkMTActor, actor);
+			cout << "create LM Actor" << endl;
+			VTK_CREATE(vtkLMActor, actor);
+			int num = 2;
+			actor->SetLMOrigin(0, 0, 0);
+			cout << "create LM origin" << endl;
+			actor->SetLMOrientation(0, 0, 1);
+			cout << "create LM orientation" << endl;
+			actor->SetLMSize(0.1);
+			cout << "create LM Size" << endl;
+			actor->SetLMType(1);
+			cout << "create LM Type" << endl;
+			actor->SetLMNumber(num);
+			cout << "create LM Actor" << endl;
+			actor->SetLMBodyType(0);
+
+
 			//VTK_CREATE(vtkOpenGLActor, actor);
 			actor->SetmColor(this->MeshToolsCore->Getmui_MeshColor());
 			//actor->GetProperty()->SetColor(this->MeshToolsCore->Getmui_MeshColor()[0], this->MeshToolsCore->Getmui_MeshColor()[1], this->MeshToolsCore->Getmui_MeshColor()[2]);

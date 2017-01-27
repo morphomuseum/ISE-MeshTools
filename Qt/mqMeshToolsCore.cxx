@@ -132,7 +132,14 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->LMActor->SetLMBodyType(0);
 	this->LMActor->SetLMSize(3);
 	this->LMActor->SetLMOrigin(10,10,10);
-	//this->Renderer->AddActor(this->LMActor);
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	// mapper->SetInputData(sphereSource->GetOutput());
+	mapper->SetInputData(this->LMActor->getLMBody());
+	mapper->Update();
+	this->LMActor->SetMapper(mapper);
+	
+	this->Renderer->AddActor(this->LMActor);
 	
 	this->Renderer->AddActor(this->GridActor);
 	/*vtkSmartPointer<vtkSphereSource> sphereSource =
