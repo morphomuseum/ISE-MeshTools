@@ -90,7 +90,7 @@ public:
 
 	// Description:
 	// Get the MTime.
-	unsigned long GetMTime();
+//	unsigned long GetMTime();
 
 	// Description:
 	// Make another transform of the same type.

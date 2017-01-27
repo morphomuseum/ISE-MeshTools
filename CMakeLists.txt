@@ -83,6 +83,7 @@ set( required_vtk_modules
   vtkCommonSystem
   vtkCommonTransforms
   vtkFiltersCore
+  vtkFiltersExtraction
   vtkFiltersGeneral
   vtkIOCore
   vtkIOGeometry

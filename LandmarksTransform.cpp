@@ -393,7 +393,7 @@ void LandmarksTransform::InternalUpdate()
 }
 
 //------------------------------------------------------------------------
-unsigned long LandmarksTransform::GetMTime()
+/*unsigned long LandmarksTransform::GetMTime()
 {
 	unsigned long result = this->vtkLinearTransform::GetMTime();
 	unsigned long mtime;
@@ -415,7 +415,7 @@ unsigned long LandmarksTransform::GetMTime()
 		}
 	}
 	return result;
-}
+}*/
 //------------------------------------------------------------------------
 void LandmarksTransform::SetSourceLandmarks(vtkPoints *source)
 {
