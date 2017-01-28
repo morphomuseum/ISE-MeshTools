@@ -7,6 +7,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
+#include "vtkLM2Actor.h"
 #include "mqMeshToolsCore.h"
 #include "mqUndoStack.h"
 #include "vtkMTInteractorStyle.h"
@@ -251,7 +252,8 @@ MeshTools::MeshTools()
 	this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
 	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
 	
-	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
+	//this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
+	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToAnaglyph();
 	this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
 	settings.beginGroup("renderer_settings");
 	this->MeshToolsCore->Setmui_Anaglyph(settings.value("Anaglyph", "0").toInt());
@@ -673,10 +675,11 @@ void MeshTools::slotOpenMeshFile()
 			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			cout << "create LM Actor" << endl;
-			VTK_CREATE(vtkLMActor, actor);
+			cout << "create LM2 Actor" << endl;
+			VTK_CREATE(vtkLM2Actor, actor);
+			//VTK_CREATE(vtkMTActor, actor);
 			int num = 2;
-			actor->SetLMOrigin(0, 0, 0);
+			/*actor->SetLMOrigin(0, 0, 0);
 			cout << "create LM origin" << endl;
 			actor->SetLMOrientation(0, 0, 1);
 			cout << "create LM orientation" << endl;
@@ -686,7 +689,7 @@ void MeshTools::slotOpenMeshFile()
 			cout << "create LM Type" << endl;
 			actor->SetLMNumber(num);
 			cout << "create LM Actor" << endl;
-			actor->SetLMBodyType(0);
+			actor->SetLMBodyType(0);*/
 
 
 			//VTK_CREATE(vtkOpenGLActor, actor);
@@ -698,10 +701,13 @@ void MeshTools::slotOpenMeshFile()
 			//Now the add actor to renderer is managed inside the collection
 			//this->MeshToolsCore->getRenderer()->AddActor(actor);
 			this->MeshToolsCore->getActorCollection()->AddItem(actor);
+			cout << "actor added to collection" << endl;
 			this->MeshToolsCore->getActorCollection()->SetChanged(1);
-			
+			cout << "actor collection changed" << endl;
+
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->AdjustCameraAndGrid();
+			cout << "camera and grid adjusted" << endl;
 			/*
 			double bounds[6];
 			MyPolyData->GetBounds(bounds);
@@ -882,6 +888,7 @@ void MeshTools::slotOpenMeshFile()
 //Called to ajust camera and grid positions (distance etc...) after opening a new mesh.
 void MeshTools::AdjustCameraAndGrid()
 {
+	cout << "start adjust camera and grid" << endl;
 	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{

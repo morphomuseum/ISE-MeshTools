@@ -55,8 +55,11 @@ vtkMTActorCollection::~vtkMTActorCollection()
 }
 void vtkMTActorCollection::AddItem(vtkActor *a)
 {
+	cout << "Add item" << endl;
 	this->Superclass::AddItem(a);
+	cout << "Item added" << endl;
 	this->Renderer->AddActor(a);
+	cout << "Actor added to renderer" << endl;
 }
 void vtkMTActorCollection::ApplyProperties(vtkProperty *p)
 {
