@@ -675,9 +675,9 @@ void MeshTools::slotOpenMeshFile()
 			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			cout << "create LM2 Actor" << endl;
-			VTK_CREATE(vtkLM2Actor, actor);
-			//VTK_CREATE(vtkMTActor, actor);
+			//cout << "create LM2 Actor" << endl;
+			//VTK_CREATE(vtkLM2Actor, actor);
+			VTK_CREATE(vtkMTActor, actor);
 			int num = 2;
 			/*actor->SetLMOrigin(0, 0, 0);
 			cout << "create LM origin" << endl;
@@ -892,7 +892,9 @@ void MeshTools::AdjustCameraAndGrid()
 	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
+		cout << "this is it no ? " << endl;
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
+		cout << "no obviously" << endl;
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
 
 

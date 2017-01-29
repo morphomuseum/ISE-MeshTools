@@ -231,7 +231,15 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
+		/*std::string str1("vtkMTActor");
+		std::string str2("vtkMTActor");
+		if (str1.compare(a->GetClassName()) == 0)
+		{
+		if (this->GetNextActor()->GetClassName())*/
+		//
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
+
+		//vtkActor *myActor = this->GetNextActor();
 
 
 		centerOfMassFilter->SetInputData(myActor->GetMapper()->GetInput());
@@ -397,15 +405,18 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 
 void vtkMTActorCollection::ApplyChanges()
 {
+	cout << "this?" << endl;
 	this->ComputeCenterOfMass();
+	cout << "that?" << endl;
 	this->ComputeBoundingBoxLength();
-	
+	cout << "or?" << endl;
 
 	// Reset state "changed" to 0 for this and all actors.
 	this->Changed = 0;
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
+		cout << "thut?" << endl;
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
 		myActor->SetChanged(0);
 	}
@@ -414,7 +425,9 @@ void vtkMTActorCollection::ApplyChanges()
 
 void vtkMTActorCollection::GetCenterOfMass(double center[3])
 {
-	if (this->Changed == 1 || this->ActorChanged() == 1) { ApplyChanges(); }
+	if (this->Changed == 1 || this->ActorChanged() == 1) { 
+		ApplyChanges(); 
+}
 	double *com = this->GetCenterOfMass();
 
 	center[0] = com[0];
