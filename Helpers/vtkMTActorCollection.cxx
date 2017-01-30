@@ -289,7 +289,10 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 			//get transformed center!
 			double *tcenter = Tdata->GetPoint(0);
 			//cout << "acenter:" << acenter[0] << "," << acenter[1] << "," << acenter[2] << endl;
-			//cout << "tcenter:" << tcenter[0] << "," << tcenter[1] << "," << tcenter[2] << endl;
+
+			//MultiplyPoint(const double in[4], double out[4])
+
+			cout << "tcenter:" << tcenter[0] << "," << tcenter[1] << "," << tcenter[2] << endl;
 			acenter[0] = tcenter[0];
 			acenter[1] = tcenter[1];
 			acenter[2] = tcenter[2];

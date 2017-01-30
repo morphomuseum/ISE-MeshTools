@@ -22,6 +22,7 @@
 #include <vtkIndent.h>
 #include <vtkProperty.h>
 #include <vtkTransform.h>
+#include <vtkTransformFilter.h>
 #include <vtkCamera.h>
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
@@ -989,10 +990,10 @@ void vtkMTInteractorStyle::Pick()
 
   this->Interactor->Render();
 }
-double* vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors()
+void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 {
 	cout << "start a com:" << endl;
-	double com[3] = { 0, 0,0 };	
+	//double com[3] = { 0, 0,0 };	
 	double *coma=  this->ActorCollection->GetCenterOfMassOfSelectedActors();
 
 	int nv = 0;
@@ -1017,7 +1018,7 @@ double* vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors()
 	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
 	}
 	cout << "global com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
-	return com;
+	//return com;
 }
 
 double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
@@ -1078,10 +1079,10 @@ void vtkMTInteractorStyle::RotateActors()
 
 	// First get the origin of the assembly
 	/*double *obj_center = this->InteractionProp->GetCenter();*/
-	cout << "rotate actors...." << endl;
-	double *rot_center = this->GetCenterOfMassOfSelectedActors();
-	
-	//cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
+	double rot_center[3];
+	this->GetCenterOfMassOfSelectedActors(rot_center);
+	//cout << "rotation center: " << rot_centerendl;
+	cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
 	cout << "bb length...." << endl;
 	double boundRadius = this->GetBoundingBoxLengthOfSelectedActors();
 	//cout << "Bound Radius: " << boundRadius << endl;
@@ -1214,13 +1215,18 @@ void vtkMTInteractorStyle::RotateActors()
 					2,
 					rotate,
 					scale);
+				cout << "myPropr->Matrix()" << *myPropr->GetMatrix()<< endl;
+				
+				//==> use myPropr transform matrix to transform ap into apt.
 
 				double ap[3] = { myLabel->GetAttachmentPoint()[0],myLabel->GetAttachmentPoint()[1],myLabel->GetAttachmentPoint()[2] };
+				double apt[3];
 				cout << "ap:" << ap[0] << "," << ap[1] << "," << ap[2] << endl;
-				double * apt = this->AttachmentPointTransform(ap, rot_center,
+				/*this->AttachmentPointTransform(ap, rot_center,
 					2,
 					rotate,
-					scale);
+					scale, apt);*/
+				this->AttachmentPointTransform(ap, myPropr, apt);
 				cout << "apt:" << apt[0] << "," << apt[1] << "," << apt[2] << endl;
 				myLabel->SetAttachmentPoint(apt);
 				//we have to change the origin!
@@ -1246,7 +1252,7 @@ void vtkMTInteractorStyle::RotateActors()
 //----------------------------------------------------------------------------
 void vtkMTInteractorStyle::SpinActors()
 {
-	if (this->CurrentRenderer == NULL 
+	if (this->CurrentRenderer == NULL
 		|| this->ActorCollection == NULL
 		)
 	{
@@ -1258,7 +1264,8 @@ void vtkMTInteractorStyle::SpinActors()
 
 	// Get the axis to rotate around = vector from eye to origin
 
-	double *spin_center = this->GetCenterOfMassOfSelectedActors();
+	double spin_center[3] = { 0,0,0 };
+	this->GetCenterOfMassOfSelectedActors(spin_center);
 	//double obj_center[3] = { 0,0, 0 };
 	
 	double motion_vector[3];
@@ -1361,8 +1368,8 @@ void vtkMTInteractorStyle::PanActors()
 	vtkRenderWindowInteractor *rwi = this->Interactor;
 
 	// Use initial center as the origin from which to pan
-
-	double *pan_center = this->GetCenterOfMassOfSelectedActors();
+	double pan_center[3];
+	this->GetCenterOfMassOfSelectedActors(pan_center);
 
 	double disp_obj_center[3], new_pick_point[4];
 	double old_pick_point[4], motion_vector[3];
@@ -1452,10 +1459,37 @@ void vtkMTInteractorStyle::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
-double* vtkMTInteractorStyle::AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
+
+void vtkMTInteractorStyle::AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3])
+{
+	vtkTransform *Transform = vtkTransform::New();	
+	Transform->SetMatrix(prop3D->GetMatrix());
+		vtkSmartPointer<vtkPoints>  data = vtkSmartPointer<vtkPoints> ::New();
+		data->SetDataTypeToDouble();
+		data->SetNumberOfPoints(1);
+		data->SetPoint(0, ap);
+		vtkSmartPointer<vtkPolyData> pdata = vtkSmartPointer<vtkPolyData>::New();
+		pdata->SetPoints(data);
+		vtkSmartPointer<vtkTransformFilter> transformFilter =
+		vtkSmartPointer<vtkTransformFilter>::New();
+		transformFilter->SetInputData(pdata);
+		transformFilter->SetTransform(Transform);
+		transformFilter->Update();
+		vtkSmartPointer<vtkPoints> Tdata = vtkSmartPointer<vtkPoints>::New();
+		Tdata = transformFilter->GetOutput()->GetPoints();
+
+		//get transformed center!
+		double *tcenter = Tdata->GetPoint(0);
+		apt[0] = tcenter[0];
+		apt[1] = tcenter[1];
+		apt[2] = tcenter[2];
+}
+
+/*void vtkMTInteractorStyle::AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
 	int numRotation,
 	double **rotate,
-	double *scale)
+	double *scale, 
+	double newAttachmentPoint[3])
 {
 	vtkMatrix4x4 *oldMatrix = vtkMatrix4x4::New();
 	
@@ -1484,15 +1518,15 @@ double* vtkMTInteractorStyle::AttachmentPointTransform(double* attachmentPoint, 
 	newTransform->Translate(orig[0], orig[1], orig[2]);
 
 
-	double newAttachmentPoint[3];
+
 	newAttachmentPoint[0]= newTransform->GetPosition()[0];
 	newAttachmentPoint[1] = newTransform->GetPosition()[1];
 	newAttachmentPoint[2] = newTransform->GetPosition()[2];
 
 	oldMatrix->Delete();
 	newTransform->Delete();
-	return newAttachmentPoint;
-}
+	
+}*/
 
 void vtkMTInteractorStyle::Prop3DTransform(vtkProp3D *prop3D,
 	double *boxCenter,

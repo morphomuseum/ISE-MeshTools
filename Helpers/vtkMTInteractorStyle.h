@@ -71,10 +71,13 @@ protected:
 	  int NumRotation,
 	  double **rotate,
 	  double *scale);
-  double* AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
+  void AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3]);
+/*void  AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
+  
 	  int numRotation,
 	  double **rotate,
-	  double *scale);
+	  double *scale, 
+	double newAttachmentPoint[3]);*/
   virtual void Pick();
   void RedrawRubberBand();
 
@@ -88,7 +91,7 @@ protected:
   int NumberOfSelectedActors;
   int getNumberOfSelectedActors();
   double GetBoundingBoxLengthOfSelectedActors();
-  double *GetCenterOfMassOfSelectedActors();
+  void GetCenterOfMassOfSelectedActors(double com[3]);
   vtkUnsignedCharArray *PixelArray;
 
   int CurrentMode;
