@@ -47,6 +47,16 @@ public:
 	double GetBoundingBoxLengthOfSelectedActors();
 	double GetBoundingBoxLength();
 
+	vtkSetVector6Macro(BoundingBox, double);
+	vtkGetVector6Macro(BoundingBox, double);
+
+	vtkSetVector6Macro(BoundingBoxSelected, double);
+	vtkGetVector6Macro(BoundingBoxSelected, double);
+	
+	vtkSetMacro(GlobalVN, int);
+	vtkGetMacro(GlobalVN, int);
+	vtkSetMacro(GlobalSelectedVN, int);
+	vtkGetMacro(GlobalSelectedVN, int);
 	vtkSetMacro(Changed, int);
 	vtkGetMacro(Changed, int);
 	vtkBooleanMacro(Changed, int);
@@ -76,13 +86,18 @@ protected:
 	
 	vtkMTActorCollection();
 	~vtkMTActorCollection();
-	void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
-	void ComputeBoundingBoxLength();
+	
+	virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
+	virtual void ComputeBoundingBoxLength();
 	virtual void ComputeCenterOfMass(); // will be overridden in derived vtkLMActorCollection Class
-	int ActorChanged(); // tells whether an actor was changed.
+	virtual int ActorChanged(); // tells whether an actor was changed.
 	double centerOfMass[3];
 	double centerOfMassOfSelectedActors[3];
 	int Changed;
+	int GlobalVN;
+	int GlobalSelectedVN;
+	double BoundingBox[6];
+	double BoundingBoxSelected[6];
 	double BoundingBoxLength;
 	double BoundingBoxLengthOfSelectedActors;
 	vtkSmartPointer<vtkRenderer> Renderer;

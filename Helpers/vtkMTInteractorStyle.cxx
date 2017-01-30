@@ -131,6 +131,17 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SaveState(Count);
 					}
 				}
+
+				this->LandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
+
 				END_UNDO_SET();
 				//cout << "a and CTRL pressed!" << endl;
 				this->ActorCollection->InitTraversal();
@@ -142,6 +153,19 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SetSelected(1);
 						myActor->SetChanged(1);
 						
+					}
+
+
+				}
+				this->LandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+
 					}
 
 
@@ -167,6 +191,15 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SaveState(Count);
 					}
 				}
+				this->LandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 1)
+					{
+						myActor->SaveState(Count);
+					}
+				}
 				END_UNDO_SET();
 				vtkRenderWindowInteractor *rwi = this->Interactor;
 				this->ActorCollection->InitTraversal();
@@ -178,6 +211,19 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SetSelected(0);
 						myActor->SetChanged(1);
 						
+					}
+
+
+				}
+				this->LandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 1)
+					{
+						myActor->SetSelected(0);
+						myActor->SetChanged(1);
+
 					}
 
 
@@ -404,32 +450,41 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  
 					  VTK_CREATE(vtkLMActor, myLM);
 					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
+					  cout << "call LMOrigin" << endl;
 					  myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+					  cout << "call LMOrientation" << endl;
 					  myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
+					  cout << "call LMSize" << endl;
 					  myLM->SetLMSize(0.1);
-					  myLM->SetLMType(1);
+					  cout << "call LMType" << endl;
+					  myLM->SetLMType(0);
+					  cout << "call LMNumber" << endl;
 					  myLM->SetLMNumber(num);
+					  cout << "call LMBodyType" << endl;
 					  myLM->SetLMBodyType(0);
-
+					  myLM->SetSelected(0);
 					 
 					  //Create a sphere
-					  vtkSmartPointer<vtkSphereSource> sphereSource =
+					 /* vtkSmartPointer<vtkSphereSource> sphereSource =
 						  vtkSmartPointer<vtkSphereSource>::New();
 					  sphereSource->SetCenter(pos[0], pos[1], pos[2]);
 					  sphereSource->SetRadius(0.1);
-					  sphereSource->Update();
+					  sphereSource->Update();*/
 					  //Create a mapper and actor
 					  vtkSmartPointer<vtkPolyDataMapper> mapper =
 						  vtkSmartPointer<vtkPolyDataMapper>::New();
 					 // mapper->SetInputData(sphereSource->GetOutput());
-					  mapper->SetInputData(myLM->getLMBody());
+					  cout << "call GetLMBody" << endl;
+					mapper->SetInputData(myLM->getLMBody());
 					  mapper->Update();					
 					  myLM->SetMapper(mapper);
 			
 					  
 					  //myLM->PrintSelf(cout, vtkIndent(1));
 					  this->LandmarkCollection->AddItem(myLM);
+					  this->LandmarkCollection->SetChanged(1);
 					  //this->CurrentRenderer->AddActor(myLM);
+					  //this->CurrentRenderer->AddActor(myLM->GetLMLabelActor2D());
 					  this->Interactor->Render();
 				  }
 
@@ -490,6 +545,19 @@ int vtkMTInteractorStyle::getNumberOfSelectedActors()
 		}
 		
 	}
+	this->LandmarkCollection->InitTraversal();
+	
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+
+	}
+
 	return cpt;
 }
 
@@ -525,6 +593,16 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			if (myActor->GetSelected() == 1)
 			{
 				cout << "Call myActor Save Position with count"<<Count << endl;
+				myActor->SaveState(Count);
+			}
+		}
+		this->LandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				cout << "Call myLMActor Save Position with count" << Count << endl;
 				myActor->SaveState(Count);
 			}
 		}
@@ -911,8 +989,81 @@ void vtkMTInteractorStyle::Pick()
 
   this->Interactor->Render();
 }
+double* vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors()
+{
+	cout << "start a com:" << endl;
+	double com[3] = { 0, 0,0 };	
+	double *coma=  this->ActorCollection->GetCenterOfMassOfSelectedActors();
 
+	int nv = 0;
+	int nva = this->ActorCollection->GetGlobalSelectedVN();
+	if (nva>0) {
+		com[0] += coma[0] * nva ;
+		com[1] += coma[1] * nva ;
+		com[2] += coma[2] * nva ;
+	}
+	cout << "start  lm com:" << endl;
+	
+	int nvlm = this->LandmarkCollection->GetGlobalSelectedVN();
+	if (nvlm > 0) {
+		cout << "nvlm>0" << endl;
+		double *comlm = this->LandmarkCollection->GetCenterOfMassOfSelectedActors();
+		com[0] += comlm[0] * nvlm;
+		com[1] += comlm[1] * nvlm;
+		com[2] += comlm[2] * nvlm;
+	}
+	nv = nvlm + nva;
 
+	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
+	}
+	cout << "global com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
+	return com;
+}
+
+double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
+{
+	double boundsa[6];
+	this->ActorCollection->GetBoundingBoxSelected(boundsa);
+	double boundslm[6];
+	this->LandmarkCollection->GetBoundingBoxSelected(boundslm);
+	
+	double largestboundsselected[6];
+	largestboundsselected[0] = DBL_MAX;
+	largestboundsselected[1] = -DBL_MAX;
+	largestboundsselected[2] = DBL_MAX;
+	largestboundsselected[3] = -DBL_MAX;
+	largestboundsselected[4] = DBL_MAX;
+	largestboundsselected[5] = -DBL_MAX;
+
+	if (boundsa[0] < largestboundsselected[0]) { largestboundsselected[0] = boundsa[0]; }
+	if (boundsa[1] > largestboundsselected[1]) { largestboundsselected[1] = boundsa[1]; }
+	if (boundsa[2] < largestboundsselected[2]) { largestboundsselected[2] = boundsa[2]; }
+	if (boundsa[3] > largestboundsselected[3]) { largestboundsselected[3] = boundsa[3]; }
+	if (boundsa[4] < largestboundsselected[4]) { largestboundsselected[4] = boundsa[4]; }
+	if (boundsa[5] > largestboundsselected[5]) { largestboundsselected[5] = boundsa[5]; }
+
+	if (boundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = boundslm[0]; }
+	if (boundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = boundslm[1]; }
+	if (boundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = boundslm[2]; }
+	if (boundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = boundslm[3]; }
+	if (boundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = boundslm[4]; }
+	if (boundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = boundslm[5]; }
+	double A[3];
+	double B[3];
+	double diag[3];
+	A[0] = largestboundsselected[0];
+	A[1] = largestboundsselected[2];
+	A[2] = largestboundsselected[4];
+	B[0] = largestboundsselected[1];
+	B[1] = largestboundsselected[3];
+	B[2] = largestboundsselected[5];
+	diag[0] = B[0] - A[0];
+	diag[1] = B[1] - A[1];
+	diag[2] = B[2] - A[2];
+	double lengthxyz = sqrt((diag[0])*(diag[0]) + (diag[1])*(diag[1]) + (diag[2])*(diag[2]));
+	return lengthxyz;
+
+}
 void vtkMTInteractorStyle::RotateActors()
 {
 	if (this->CurrentRenderer == NULL 
@@ -927,9 +1078,12 @@ void vtkMTInteractorStyle::RotateActors()
 
 	// First get the origin of the assembly
 	/*double *obj_center = this->InteractionProp->GetCenter();*/
-	double *rot_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	cout << "rotate actors...." << endl;
+	double *rot_center = this->GetCenterOfMassOfSelectedActors();
+	
 	//cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
-	double boundRadius = this->ActorCollection->GetBoundingBoxLengthOfSelectedActors();
+	cout << "bb length...." << endl;
+	double boundRadius = this->GetBoundingBoxLengthOfSelectedActors();
 	//cout << "Bound Radius: " << boundRadius << endl;
 	if (boundRadius == std::numeric_limits<double>::infinity())
 	{
@@ -1033,7 +1187,48 @@ void vtkMTInteractorStyle::RotateActors()
 				myActor->SetChanged(1);
 			}
 		}
-		
+		this->LandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+			
+			
+			if (myActor->GetSelected() == 1)
+			{
+				//cout << "Apply prop3Dtransform" << endl;
+				for (vtkIdType j = 0; j < 2; j++)
+				{
+					for (vtkIdType k = 0; k < 4; k++)
+					{
+						//cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
+
+					}
+				}
+
+				//cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
+
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+
+				double ap[3] = { myLabel->GetAttachmentPoint()[0],myLabel->GetAttachmentPoint()[1],myLabel->GetAttachmentPoint()[2] };
+				cout << "ap:" << ap[0] << "," << ap[1] << "," << ap[2] << endl;
+				double * apt = this->AttachmentPointTransform(ap, rot_center,
+					2,
+					rotate,
+					scale);
+				cout << "apt:" << apt[0] << "," << apt[1] << "," << apt[2] << endl;
+				myLabel->SetAttachmentPoint(apt);
+				//we have to change the origin!
+				//myActor->SetOrigin();
+				myActor->SetChanged(1);
+
+			}
+		}
 
 		delete[] rotate[0];
 		delete[] rotate[1];
@@ -1063,7 +1258,7 @@ void vtkMTInteractorStyle::SpinActors()
 
 	// Get the axis to rotate around = vector from eye to origin
 
-	double *spin_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	double *spin_center = this->GetCenterOfMassOfSelectedActors();
 	//double obj_center[3] = { 0,0, 0 };
 	
 	double motion_vector[3];
@@ -1125,7 +1320,23 @@ void vtkMTInteractorStyle::SpinActors()
 		}
 		
 	}
-	
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			myActor->SetChanged(1);
+		}
+
+	}
+
 
 	delete[] rotate[0];
 	delete[] rotate;
@@ -1151,7 +1362,7 @@ void vtkMTInteractorStyle::PanActors()
 
 	// Use initial center as the origin from which to pan
 
-	double *pan_center = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	double *pan_center = this->GetCenterOfMassOfSelectedActors();
 
 	double disp_obj_center[3], new_pick_point[4];
 	double old_pick_point[4], motion_vector[3];
@@ -1198,6 +1409,31 @@ void vtkMTInteractorStyle::PanActors()
 			myActor->SetChanged(1);
 		}
 	}
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			myActor->SetChanged(1);
+		}
+	}
 
 	
 
@@ -1216,6 +1452,48 @@ void vtkMTInteractorStyle::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
+double* vtkMTInteractorStyle::AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
+	int numRotation,
+	double **rotate,
+	double *scale)
+{
+	vtkMatrix4x4 *oldMatrix = vtkMatrix4x4::New();
+	
+	double orig[3] = {attachmentPoint[0],attachmentPoint[1],attachmentPoint[2] };	
+	vtkTransform *newTransform = vtkTransform::New();
+	newTransform->PostMultiply();
+	newTransform->SetMatrix(oldMatrix);
+	newTransform->Translate(-(boxCenter[0]), -(boxCenter[1]), -(boxCenter[2]));
+
+	for (int i = 0; i < numRotation; i++)
+	{
+		newTransform->RotateWXYZ(rotate[i][0], rotate[i][1],
+			rotate[i][2], rotate[i][3]);
+	}
+
+	if ((scale[0] * scale[1] * scale[2]) != 0.0)
+	{
+		newTransform->Scale(scale[0], scale[1], scale[2]);
+	}
+
+	newTransform->Translate(boxCenter[0], boxCenter[1], boxCenter[2]);
+
+	// now try to get the composit of translate, rotate, and scale
+	newTransform->Translate(-(orig[0]), -(orig[1]), -(orig[2]));
+	newTransform->PreMultiply();
+	newTransform->Translate(orig[0], orig[1], orig[2]);
+
+
+	double newAttachmentPoint[3];
+	newAttachmentPoint[0]= newTransform->GetPosition()[0];
+	newAttachmentPoint[1] = newTransform->GetPosition()[1];
+	newAttachmentPoint[2] = newTransform->GetPosition()[2];
+
+	oldMatrix->Delete();
+	newTransform->Delete();
+	return newAttachmentPoint;
+}
+
 void vtkMTInteractorStyle::Prop3DTransform(vtkProp3D *prop3D,
 	double *boxCenter,
 	int numRotation,

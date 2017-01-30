@@ -55,7 +55,7 @@ void vtkMTActor::SetSelected(int selected)
 void vtkMTActor::Undo(int mCount)
 {
 
-	//cout << "Inside actor Undo" << endl;
+	cout << "Inside MT actor Undo count" << endl;
 	if (this->UndoRedo->UndoStack.empty())
 	{
 		return;
@@ -64,6 +64,7 @@ void vtkMTActor::Undo(int mCount)
 	{
 		//cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
 		// ici : faire l'appel global à undo de ce count là!!  
+		cout << "Call PopUndoStack from  MT actor" << endl;
 		this->PopUndoStack();
 	}
 	
@@ -104,6 +105,7 @@ void vtkMTActor::Erase(int mCount)
 
 void vtkMTActor::PopUndoStack()
 {
+	cout << "Inside MT actor PopUndoStack" << endl;
 	if (this->UndoRedo->UndoStack.empty())
 	{
 		return;

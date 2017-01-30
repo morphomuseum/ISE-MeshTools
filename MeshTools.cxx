@@ -7,7 +7,7 @@
 #include "vtkOrientationHelperWidget.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "vtkMTActor.h"
-#include "vtkLM2Actor.h"
+#include "vtkLMActor.h"
 #include "mqMeshToolsCore.h"
 #include "mqUndoStack.h"
 #include "vtkMTInteractorStyle.h"
@@ -105,30 +105,56 @@ void RubberBandSelect(vtkObject* caller,
 	props->InitTraversal();
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
-		vtkMTActor *myActor;
+		
 		
 		vtkProp3D *myprop3D = props->GetNextProp3D();
-		myActor = vtkMTActor::SafeDownCast(myprop3D);
-	//	myActor->PrintSelf(cout, vtkIndent(2));
-		
-		std::cout << "Actor prop:  class name:" << myActor->GetClassName() << std::endl;
+		std::cout << "Actor prop:  class name:" << myprop3D->GetClassName() << std::endl;
 
-		if (myActor->GetSelected() == 0)
+		std::string str1("vtkLMActor");
+		if (str1.compare(myprop3D->GetClassName()) == 0)
 		{
-			myActor->SaveState(Count);
-			myActor->SetChanged(1);
-			myActor->SetSelected(1);
-			//myActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
-			//myActor->GetProperty()->SetOpacity(1);
+			vtkLMActor *myActor;
+			myActor = vtkLMActor::SafeDownCast(myprop3D);
+	
+			
+			if (myActor->GetSelected() == 0)
+			{
+				myActor->SaveState(Count);
+				myActor->SetChanged(1);
+				myActor->SetSelected(1);
+				
+			}
+			else
+			{
+				myActor->SaveState(Count);
+				myActor->SetChanged(1);
+				myActor->SetSelected(0);
+			
+			}
 		}
-		else
+		std::string str2("vtkMTActor");
+		if (str2.compare(myprop3D->GetClassName()) == 0)
 		{
-			myActor->SaveState(Count);
-			myActor->SetChanged(1);
-			myActor->SetSelected(0);
-			//myActor->GetProperty()->SetColor(0.5, 0, 0.5);
-			//myActor->GetProperty()->SetOpacity(0.5);
+			vtkMTActor *myActor;
+			myActor = vtkMTActor::SafeDownCast(myprop3D);
+			
+		
+			if (myActor->GetSelected() == 0)
+			{
+				myActor->SaveState(Count);
+				myActor->SetChanged(1);
+				myActor->SetSelected(1);
+			
+			}
+			else
+			{
+				myActor->SaveState(Count);
+				myActor->SetChanged(1);
+				myActor->SetSelected(0);
+				
+			}
 		}
+		
 	}
 	if (something_to_store == 1)
 	{

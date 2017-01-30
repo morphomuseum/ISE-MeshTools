@@ -41,6 +41,19 @@ vtkMTActorCollection::vtkMTActorCollection()
 	this->centerOfMassOfSelectedActors[2] = 0;
 	this->BoundingBoxLength = 0;
 	this->BoundingBoxLengthOfSelectedActors = 0;
+	this->BoundingBox[0] = 0; 
+	this->BoundingBox[1] = 0;
+	this->BoundingBox[2] = 0;
+	this->BoundingBox[3] = 0;
+	this->BoundingBox[4] = 0;
+	this->BoundingBox[5] = 0;
+	this->BoundingBoxSelected[0] = 0;
+	this->BoundingBoxSelected[1] = 0;
+	this->BoundingBoxSelected[2] = 0;
+	this->BoundingBoxSelected[3] = 0;
+	this->BoundingBoxSelected[4] = 0;
+	this->BoundingBoxSelected[5] = 0;
+	
 
 	this->Changed = 0;
 }
@@ -167,7 +180,8 @@ void vtkMTActorCollection::PopUndoStack() {
 	ActColl->InitTraversal();
 	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
 	{
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		vtkActor *myActor = ActColl->GetNextActor();
 		this->AddItem(myActor);
 		this->Renderer->AddActor(myActor);
 		this->Changed = 1;
@@ -190,7 +204,8 @@ void vtkMTActorCollection::PopRedoStack() {
 	ActColl->InitTraversal();
 	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
 	{
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+		vtkActor *myActor = ActColl->GetNextActor();
 		this->RemoveItem(myActor);
 		this->Renderer->RemoveActor(myActor);
 		this->Changed = 1;
@@ -219,9 +234,12 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
+	this->GlobalSelectedVN = 0;
+	this->GlobalVN = 0;
 	this->centerOfMassOfSelectedActors[0] = 0;
 	this->centerOfMassOfSelectedActors[1] = 0;
 	this->centerOfMassOfSelectedActors[2] = 0;
+	
 
 
 	vtkIdType globalvn = 0;
@@ -313,8 +331,11 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 		centerOfMassOfSelectedActors[2] /= globalSelectedvn;
 
 	}
+	this->SetGlobalSelectedVN(globalSelectedvn);
+	this->SetGlobalVN(globalvn);
 
 }
+
 void vtkMTActorCollection::ComputeBoundingBoxLength()
 {
 	double largestbounds[6];
@@ -336,8 +357,8 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
 		vtkMTActor* actor = vtkMTActor::SafeDownCast(this->GetNextActor());
-		if (i == 0) { 
-			actor->GetBounds(largestbounds); 
+		if (i == 0) {
+			actor->GetBounds(largestbounds);
 			if (actor->GetSelected() == 1)
 			{
 				actor->GetBounds(largestboundsselected);
@@ -346,7 +367,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 		else
 		{
 			double bounds[6];
-			
+
 			actor->GetBounds(bounds);
 			if (bounds[0] < largestbounds[0]) { largestbounds[0] = bounds[0]; }
 			if (bounds[1] > largestbounds[1]) { largestbounds[1] = bounds[1]; }
@@ -356,7 +377,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 			if (bounds[5] > largestbounds[5]) { largestbounds[5] = bounds[5]; }
 			if (actor->GetSelected() == 1)
 			{
-				
+
 				if (bounds[0] < largestboundsselected[0]) { largestboundsselected[0] = bounds[0]; }
 				if (bounds[1] > largestboundsselected[1]) { largestboundsselected[1] = bounds[1]; }
 				if (bounds[2] < largestboundsselected[2]) { largestboundsselected[2] = bounds[2]; }
@@ -377,6 +398,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 	B[0] = largestbounds[1];
 	B[1] = largestbounds[3];
 	B[2] = largestbounds[5];
+	this->SetBoundingBox(largestbounds);
 	//cout << "A:" << A[0] << "," << A[1] << "," << A[2] << endl;
 	//cout << "B:" << B[0] << "," << B[1] << "," << B[2] << endl;
 	double diag[3];
@@ -393,6 +415,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 	B[0] = largestboundsselected[1];
 	B[1] = largestboundsselected[3];
 	B[2] = largestboundsselected[5];
+	this->SetBoundingBoxSelected(largestboundsselected);
 	//cout << "A:" << A[0] << "," << A[1] << "," << A[2] << endl;
 	//cout << "B:" << B[0] << "," << B[1] << "," << B[2] << endl;	
 	diag[0] = B[0] - A[0];

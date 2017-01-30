@@ -8,7 +8,9 @@
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
+#include "vtkLM2Actor.h"
 #include <vtkSphereSource.h>
+#include <vtkProperty.h>
 #include <vtkCubeAxesActor.h>
 
 #include <vtkPolyDataMapper.h>
@@ -128,39 +130,50 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->GridActor->SetGridType(2);	
 
 	this->LMActor = vtkSmartPointer<vtkLMActor>::New();
-	this->LMActor->SetLMType(0);
-	this->LMActor->SetLMBodyType(0);
-	this->LMActor->SetLMSize(3);
-	this->LMActor->SetLMOrigin(10,10,10);
+	//this->LMActor->SetLMType(0);
+	//this->LMActor->SetLMBodyType(0);
+	//this->LMActor->SetLMSize(3);
+	//this->LMActor->SetLMOrigin(10,10,10);
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
-	// mapper->SetInputData(sphereSource->GetOutput());
-	mapper->SetInputData(this->LMActor->getLMBody());
+	
+	vtkSmartPointer<vtkSphereSource> sphereSource =
+		vtkSmartPointer<vtkSphereSource>::New();
+	sphereSource->SetCenter(20, -10, 10);
+	sphereSource->SetRadius(3);
+
+
+	sphereSource->Update();
+	 mapper->SetInputData(sphereSource->GetOutput());
+
+	//mapper->SetInputData(this->LMActor->getLMBody());
 	mapper->Update();
 	this->LMActor->SetMapper(mapper);
 	
-	this->Renderer->AddActor(this->LMActor);
+	//this->Renderer->AddActor(this->LMActor);
 	
 	this->Renderer->AddActor(this->GridActor);
+
 	/*vtkSmartPointer<vtkSphereSource> sphereSource =
 		vtkSmartPointer<vtkSphereSource>::New();
-	
+	sphereSource->SetCenter(20, -10, 10);
+	sphereSource->SetRadius(3);
+
 	
 	sphereSource->Update();
 
 	// Create a mapper and actor
-	vtkSmartPointer<vtkPolyDataMapper> mapper =
+	vtkSmartPointer<vtkPolyDataMapper> mapper2 =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	mapper2->SetInputData(sphereSource->GetOutput());
 
-	vtkSmartPointer<vtkActor> actor =
-		vtkSmartPointer<vtkActor>::New();
-	actor->SetMapper(mapper);*/
-	
-	/*vtkSmartPointer<vtkCubeAxesActor> cubeaxesactor =
-		vtkSmartPointer<vtkCubeAxesActor>::New();
-	cubeaxesactor->SetCamera(this->Camera);
-	this->Renderer->AddActor(cubeaxesactor);*/
+	vtkSmartPointer<vtkLM2Actor> actor =
+		vtkSmartPointer<vtkLM2Actor>::New();
+	actor->SetMapper(mapper2);
+	actor->GetProperty()->SetColor(0, 1, 0);
+	this->Renderer->AddActor(actor);*/
+
+
 
 	
 }
@@ -375,9 +388,9 @@ void mqMeshToolsCore::Undo(int Count)
 	this->LandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		cout << "MyLMActor undo!" << endl;
-		//myActor->Undo(Count);
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
 	this->LandmarkCollection->Undo(Count);
@@ -406,9 +419,9 @@ void mqMeshToolsCore::Redo(int Count)
 	this->LandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
 		cout << "MyLMActor redo!" << endl;
-		//myActor->Redo(Count);
+		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
 	this->LandmarkCollection->Redo(Count);
@@ -430,10 +443,10 @@ void mqMeshToolsCore::Erase(int Count)
 	this->LandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		//cout << "MyActor Erase!" << endl;
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		cout << "MyLMActor Erase!" << endl;
 		//@@ TO IMPLEMENT
-		//myActor->Erase(Count);
+		myActor->Erase(Count);
 	}
 	this->LandmarkCollection->Erase(Count);
 

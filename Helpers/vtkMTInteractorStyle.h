@@ -66,11 +66,15 @@ protected:
   ~vtkMTInteractorStyle();
   virtual void Dolly(double factor);
   void Prop3DTransform(vtkProp3D *prop3D,
+
 	  double *boxCenter,
 	  int NumRotation,
 	  double **rotate,
 	  double *scale);
-
+  double* AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
+	  int numRotation,
+	  double **rotate,
+	  double *scale);
   virtual void Pick();
   void RedrawRubberBand();
 
@@ -83,6 +87,8 @@ protected:
   void DeleteSelectedActors();
   int NumberOfSelectedActors;
   int getNumberOfSelectedActors();
+  double GetBoundingBoxLengthOfSelectedActors();
+  double *GetCenterOfMassOfSelectedActors();
   vtkUnsignedCharArray *PixelArray;
 
   int CurrentMode;
