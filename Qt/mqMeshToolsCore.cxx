@@ -8,7 +8,6 @@
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
-#include "vtkLM2Actor.h"
 #include <vtkSphereSource.h>
 #include <vtkProperty.h>
 #include <vtkCubeAxesActor.h>
@@ -150,28 +149,11 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mapper->Update();
 	this->LMActor->SetMapper(mapper);
 	
-	//this->Renderer->AddActor(this->LMActor);
+	this->Renderer->AddActor(this->LMActor);
 	
 	this->Renderer->AddActor(this->GridActor);
 
-	/*vtkSmartPointer<vtkSphereSource> sphereSource =
-		vtkSmartPointer<vtkSphereSource>::New();
-	sphereSource->SetCenter(20, -10, 10);
-	sphereSource->SetRadius(3);
-
 	
-	sphereSource->Update();
-
-	// Create a mapper and actor
-	vtkSmartPointer<vtkPolyDataMapper> mapper2 =
-		vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper2->SetInputData(sphereSource->GetOutput());
-
-	vtkSmartPointer<vtkLM2Actor> actor =
-		vtkSmartPointer<vtkLM2Actor>::New();
-	actor->SetMapper(mapper2);
-	actor->GetProperty()->SetColor(0, 1, 0);
-	this->Renderer->AddActor(actor);*/
 
 
 

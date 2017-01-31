@@ -23,9 +23,12 @@ public:
 	{
 		vtkSmartPointer<vtkActorCollection> Collection;
 		int UndoCount;
-		Element(vtkSmartPointer<vtkActorCollection> col,  int Count)
+		int CreationCount; // in case of load a new actor or load several actors, how many actors were loaded/created
+		//-1 if action is not a "load".
+		Element(vtkSmartPointer<vtkActorCollection> col,  int creationcount, int Count)
 		{
 			this->Collection = col;
+			this->CreationCount = creationcount;
 			this->UndoCount = Count;
 			
 		}
@@ -74,6 +77,7 @@ public:
 	void Undo(int mCount); // Try to undo (if exists) "mCount" event
 	void PopUndoStack();
 	void PopRedoStack();
+	void CreateLoadUndoSet(int count, int creationcount);
 	vtkSmartPointer<vtkRenderer> getRenderer() { return this->Renderer; }
 	void SetRenderer(vtkSmartPointer<vtkRenderer> rend)
 	{

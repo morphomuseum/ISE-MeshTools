@@ -73,20 +73,49 @@ void vtkMTActorCollection::AddItem(vtkActor *a)
 	cout << "Item added" << endl;
 	this->Renderer->AddActor(a);
 	cout << "Actor added to renderer" << endl;
+
+	
+
+}
+void vtkMTActorCollection::CreateLoadUndoSet(int count, int creationcount)
+{
+	cout << "CreateLoadUndoSet(" << count << "," << creationcount << ")" << endl;
+	vtkSmartPointer<vtkActorCollection> voidcoll = vtkSmartPointer<vtkActorCollection>::New();
+	this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(voidcoll, creationcount, count));
+	
+
 }
 void vtkMTActorCollection::ApplyProperties(vtkProperty *p)
 {
 	this->Superclass::ApplyProperties(p);
 	
 }
+
+
+		
+
+
+
 void vtkMTActorCollection::DeleteSelectedActors()
 {
 	int anychange = 0;
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
-		if (myActor->GetSelected() == 1) { anychange = 1; }
+		vtkActor *act = this->GetNextActor();
+		std::string str1("vtkMTActor");
+		if (str1.compare(act->GetClassName()) == 0)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(act);
+			if (myActor->GetSelected() == 1) { anychange = 1; }
+		}
+		std::string str2("vtkLMActor");
+		if (str2.compare(act->GetClassName()) == 0)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
+			if (myActor->GetSelected() == 1) { anychange = 1; }
+		}
+		
 	}
 	if (anychange == 1)
 	{
@@ -105,20 +134,39 @@ void vtkMTActorCollection::DeleteSelectedActors()
 				int found = 0;
 				for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 				{
-					
-					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
-					if (!found && myActor->GetSelected() == 1) {
-						undocoll->AddItem(myActor);
-						this->RemoveItem(myActor);
-						this->Renderer->RemoveActor(myActor);
-						found = 1;
+					vtkActor *act = this->GetNextActor();
+					std::string str1("vtkMTActor");
+					if (str1.compare(act->GetClassName()) == 0)
+					{
+						vtkMTActor *myActor = vtkMTActor::SafeDownCast(act);
+						if (!found && myActor->GetSelected() == 1) {
+							undocoll->AddItem(myActor);
+							this->RemoveItem(myActor);
+							this->Renderer->RemoveActor(myActor);
+							found = 1;
+						}
 					}
+					std::string str2("vtkLMActor");
+					if (str2.compare(act->GetClassName()) == 0)
+					{
+						vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
+						if (!found && myActor->GetSelected() == 1) {
+							undocoll->AddItem(myActor);
+							this->RemoveItem(myActor);
+							this->Renderer->RemoveActor(myActor);
+							this->Renderer->RemoveActor(myActor->GetLMLabelActor2D());
+							found = 1;
+						}
+					}
+
+					
 
 				}
 				if (found == 0) { done = 1; }
 			}
 		}
-		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll, mCount));
+		// the is not a load call (-1)
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll,-1, mCount));
 		END_UNDO_SET();
 		this->Changed = 1;
 	}
@@ -130,7 +178,7 @@ void vtkMTActorCollection::Redo(int mCount) {
 	//cout << "Inside actor Undo, try to undo " <<mCount<< endl;
 	if (this->UndoRedo->RedoStack.empty())
 	{
-		cout << "Redo Stack empty!" << endl;
+		//cout << "Redo Stack empty!" << endl;
 		return;
 	}
 	//cout << "Youngest redo count= " << this->UndoRedo->RedoStack.back().UndoCount<< endl;
@@ -175,45 +223,124 @@ void vtkMTActorCollection::PopUndoStack() {
 	{
 		return;
 	}
-
+	cout << "PopUndoStack(" << this->UndoRedo->UndoStack.back().UndoCount << "," << this->UndoRedo->UndoStack.back().CreationCount << ")" << endl;
 	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->UndoStack.back().Collection;
-	ActColl->InitTraversal();
-	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
-	{
-		//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
-		vtkActor *myActor = ActColl->GetNextActor();
-		this->AddItem(myActor);
-		this->Renderer->AddActor(myActor);
-		this->Changed = 1;
-	}
-
-
 	
-	this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl,  this->UndoRedo->UndoStack.back().UndoCount));
+	// if there actually are actors to store in the undo count again (not a load file or create actor)....
+	if (this->UndoRedo->UndoStack.back().CreationCount<0)
+	{
+		ActColl->InitTraversal();
+		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+		{
+			//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+			vtkActor *myActor = ActColl->GetNextActor();
+			this->AddItem(myActor);
+			this->Renderer->AddActor(myActor);
+			// if myActor is a landmark => Add label to the renderer
+
+
+			std::string str1("vtkLMActor");
+			if (str1.compare(myActor->GetClassName()) == 0)
+			{
+				vtkLMActor *myLMActor;
+				myLMActor = vtkLMActor::SafeDownCast(myActor);
+				this->Renderer->AddActor(myLMActor->GetLMLabelActor2D());
+			}
+			this->Changed = 1;
+		}
+		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->UndoStack.back().CreationCount, this->UndoRedo->UndoStack.back().UndoCount));
+	}
+	else
+	{	
+		cout << "Try to remove last created actor(s)" << endl;
+		// actor(s) creation (file loading / create 1 landmark etc...)
+		// this means that this action corresponds to "create a new actor (or load a bunch of new actors)".
+		for (vtkIdType i = 0; i < this->UndoRedo->UndoStack.back().CreationCount; i++)
+		{
+			this->InitTraversal();
+			//removes this actor from the renderer
+			//adds this actor to the RedoStack.
+			//not sure this works for several actors!
+			cout << "Try to get last actor, creation count = " << this->UndoRedo->UndoStack.back().CreationCount<< "this->Number of items="<< this->GetNumberOfItems()<<endl;
+			vtkActor *myActor = this->GetLastActor();
+			ActColl->AddItem(myActor);
+			this->RemoveItem(myActor);
+			this->Renderer->RemoveActor(myActor);
+			std::string str1("vtkLMActor");
+			if (str1.compare(myActor->GetClassName()) == 0)
+			{
+				vtkLMActor *myLMActor;
+				myLMActor = vtkLMActor::SafeDownCast(myActor);
+				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor2D());
+			}
+
+		}
+		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->UndoStack.back().CreationCount, this->UndoRedo->UndoStack.back().UndoCount));
+	}		
 	this->UndoRedo->UndoStack.pop_back();
 	this->Modified();
-
 }
 void vtkMTActorCollection::PopRedoStack() {
 	if (this->UndoRedo->RedoStack.empty())
 	{
 		return;
 	}
-
+	cout << "PopRedoStack(" << this->UndoRedo->RedoStack.back().UndoCount << "," << this->UndoRedo->RedoStack.back().CreationCount << ")" << endl;
 	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->RedoStack.back().Collection;
 	ActColl->InitTraversal();
-	for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+	if (this->UndoRedo->RedoStack.back().CreationCount < 0)
 	{
-		//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
-		vtkActor *myActor = ActColl->GetNextActor();
-		this->RemoveItem(myActor);
-		this->Renderer->RemoveActor(myActor);
-		this->Changed = 1;
+		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+		{
+
+			//vtkMTActor *myActor = vtkMTActor::SafeDownCast(ActColl->GetNextActor());
+			vtkActor *myActor = ActColl->GetNextActor();
+			this->RemoveItem(myActor);
+			this->Renderer->RemoveActor(myActor);
+			std::string str1("vtkLMActor");
+			if (str1.compare(myActor->GetClassName()) == 0)
+			{
+				vtkLMActor *myLMActor;
+				myLMActor = vtkLMActor::SafeDownCast(myActor);
+				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor2D());
+			}
+			this->Changed = 1;
+		}
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, -1, this->UndoRedo->RedoStack.back().UndoCount));
+	}
+	else
+	{
+		cout << "Try to re-add last created actor(s)" << endl;
+
+		// actor(s) creation (file loading / create 1 landmark etc...)
+		// this means that this action corresponds to "create a new actor (or load a bunch of new actors)".
+		ActColl->InitTraversal();
+		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
+		{
+
+			vtkActor *myActor = ActColl->GetNextActor();
+			cout << "Try to get last actor, creation count = " << this->UndoRedo->RedoStack.back().CreationCount << "this->Number of itemps=" << this->GetNumberOfItems() << endl;
+
+			this->AddItem(myActor);
+			this->Renderer->AddActor(myActor);
+			// if myActor is a landmark => Add label to the renderer
+			std::string str1("vtkLMActor");
+			if (str1.compare(myActor->GetClassName()) == 0)
+			{
+				vtkLMActor *myLMActor;
+				myLMActor = vtkLMActor::SafeDownCast(myActor);
+				this->Renderer->AddActor(myLMActor->GetLMLabelActor2D());
+			}
+			this->Changed = 1;
+
+		}
+		vtkSmartPointer<vtkActorCollection> ActCollVoid = vtkSmartPointer<vtkActorCollection>::New();
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActCollVoid, this->UndoRedo->RedoStack.back().CreationCount, this->UndoRedo->RedoStack.back().UndoCount));
+
 	}
 
-
-
-	this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->RedoStack.back().UndoCount));
+	
+		
 	this->UndoRedo->RedoStack.pop_back();
 	this->Modified();
 
@@ -224,8 +351,20 @@ int vtkMTActorCollection::ActorChanged()
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{		
-		vtkMTActor *myActor= vtkMTActor::SafeDownCast(this->GetNextActor());
-		if (myActor->GetChanged() == 1) { anychange = 1; }
+		vtkActor *myActor = this->GetNextActor();
+		
+		std::string str1("vtkMTActor");
+		if (str1.compare(myActor->GetClassName()) == 0)
+		{
+			vtkMTActor *myMTActor = vtkMTActor::SafeDownCast(myActor);
+			if (myMTActor->GetChanged() == 1) { anychange = 1; }
+		}
+		std::string str2("vtkLMActor");
+		if (str2.compare(myActor->GetClassName()) == 0)
+		{
+			vtkLMActor *myLMActor = vtkLMActor::SafeDownCast(myActor);
+			if (myLMActor->GetChanged() == 1) { anychange = 1; }
+		}
 	}
 	return anychange;
 }
@@ -336,7 +475,8 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 	}
 	this->SetGlobalSelectedVN(globalSelectedvn);
 	this->SetGlobalVN(globalvn);
-
+	cout << "New MT Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;	
+	cout << "New MT Coll sVn:" << globalSelectedvn << endl;
 }
 
 void vtkMTActorCollection::ComputeBoundingBoxLength()
@@ -359,16 +499,8 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
-		vtkMTActor* actor = vtkMTActor::SafeDownCast(this->GetNextActor());
-		if (i == 0) {
-			actor->GetBounds(largestbounds);
-			if (actor->GetSelected() == 1)
-			{
-				actor->GetBounds(largestboundsselected);
-			}
-		}
-		else
-		{
+		vtkActor* actor = this->GetNextActor();
+		
 			double bounds[6];
 
 			actor->GetBounds(bounds);
@@ -378,7 +510,26 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 			if (bounds[3] > largestbounds[3]) { largestbounds[3] = bounds[3]; }
 			if (bounds[4] < largestbounds[4]) { largestbounds[4] = bounds[4]; }
 			if (bounds[5] > largestbounds[5]) { largestbounds[5] = bounds[5]; }
-			if (actor->GetSelected() == 1)
+			int selected = 0;
+			std::string str1("vtkMTActor");
+			std::string str2("vtkLMActor");
+			if (str1.compare(actor->GetClassName()) == 0)
+			{
+				vtkMTActor* MTactor = vtkMTActor::SafeDownCast(actor);
+				if (MTactor->GetSelected() == 1)
+				{
+					selected = 1;
+				}
+			}
+			if (str2.compare(actor->GetClassName()) == 0)
+			{
+				vtkLMActor* LMactor = vtkLMActor::SafeDownCast(actor);
+				if (LMactor->GetSelected() == 1)
+				{
+					selected = 1;
+				}
+			}
+			if (selected == 1)
 			{
 
 				if (bounds[0] < largestboundsselected[0]) { largestboundsselected[0] = bounds[0]; }
@@ -389,7 +540,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 				if (bounds[5] > largestboundsselected[5]) { largestboundsselected[5] = bounds[5]; }
 			}
 
-		}
+		
 
 	}
 	double A[3];//min
@@ -431,20 +582,33 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 
 void vtkMTActorCollection::ApplyChanges()
 {
-	cout << "this?" << endl;
+	//cout << "this?" << endl;
 	this->ComputeCenterOfMass();
-	cout << "that?" << endl;
+	//cout << "that?" << endl;
 	this->ComputeBoundingBoxLength();
-	cout << "or?" << endl;
+	//cout << "or?" << endl;
 
 	// Reset state "changed" to 0 for this and all actors.
 	this->Changed = 0;
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
-		cout << "thut?" << endl;
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->GetNextActor());
-		myActor->SetChanged(0);
+		vtkActor* actor = this->GetNextActor();
+
+		//cout << "thut?" << endl;
+		std::string str1("vtkMTActor");
+		std::string str2("vtkLMActor");
+		if (str1.compare(actor->GetClassName()) == 0)
+		{
+			vtkMTActor *myMTActor = vtkMTActor::SafeDownCast(actor);
+			myMTActor->SetChanged(0);
+		}
+		if (str2.compare(actor->GetClassName()) == 0)
+		{
+			vtkLMActor *myLMActor = vtkLMActor::SafeDownCast(actor);
+			myLMActor->SetChanged(0);
+		}
+
 	}
 }
 

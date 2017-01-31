@@ -79,67 +79,10 @@ int vtkLMActorCollection::GetNextLandmarkNumber()
 	return next;
 }
 
-void vtkLMActorCollection::DeleteSelectedActors()
-{
-	int anychange = 0;
-	this->InitTraversal();
-	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
-	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
-		if (myActor->GetSelected() == 1) { anychange = 1; }
-	}
-	if (anychange == 1)
-	{
-		vtkSmartPointer<vtkActorCollection> undocoll = vtkSmartPointer<vtkActorCollection>::New();
-		std::string action = "Delete selected landmarks";
-		int mCount = BEGIN_UNDO_SET(action);
-
-		int done = 0;
-		while (!done)
-		{
-
-			if (this->GetNumberOfItems() == 0) { done = 1; }
-			else
-			{
-				this->InitTraversal();
-				int found = 0;
-				for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
-				{
-
-					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
-					if (!found && myActor->GetSelected() == 1) {
-						undocoll->AddItem(myActor);
-						this->RemoveItem(myActor);
-						this->Renderer->RemoveActor(myActor);
-						found = 1;
-					}
-
-				}
-				if (found == 0) { done = 1; }
-			}
-		}
-		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll, mCount));
-		END_UNDO_SET();
-		this->Changed = 1;
-	}
 
 
 
-} //delete all selected actors
-
-int vtkLMActorCollection::ActorChanged()
-{
-	int anychange = 0;
-	this->InitTraversal();
-	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
-	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
-		if (myActor->GetChanged() == 1) { anychange = 1; }
-	}
-	return anychange;
-}
-
-void vtkLMActorCollection::ComputeBoundingBoxLength()
+/*void vtkLMActorCollection::ComputeBoundingBoxLength()
 {
 	double largestbounds[6];
 	largestbounds[0] = DBL_MAX;
@@ -227,7 +170,7 @@ void vtkLMActorCollection::ComputeBoundingBoxLength()
 	lengthxyz = sqrt((diag[0])*(diag[0]) + (diag[1])*(diag[1]) + (diag[2])*(diag[2]));
 	//cout << "Bounding box lenght selected:" << lengthxyz << endl;
 	this->SetBoundingBoxLengthOfSelectedActors(lengthxyz);
-}
+}*/
 void vtkLMActorCollection::ComputeCenterOfMass()
 {
 	this->centerOfMass[0] = 0;
@@ -277,7 +220,9 @@ void vtkLMActorCollection::ComputeCenterOfMass()
 		centerOfMassOfSelectedActors[1] /= nSelectedLM;
 		centerOfMassOfSelectedActors[2] /= nSelectedLM;
 	}
+	cout << "New LM Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;
 	this->SetGlobalSelectedVN(nSelectedLM);
+	cout << "New LM Coll sVn:" << nSelectedLM << endl;
 	this->SetGlobalVN(nLM);
 }
 
@@ -291,21 +236,20 @@ void vtkLMActorCollection::PrintSelf(ostream& os, vtkIndent indent)
 	
 
 }
-void vtkLMActorCollection::ApplyChanges()
+
+/*void vtkLMActorCollection::ApplyChanges()
 {
-	cout << "LMthis?" << endl;
-	this->ComputeCenterOfMass();
-	cout << "LMthat?" << endl;
+	
+	this->ComputeCenterOfMass();	
 	this->ComputeBoundingBoxLength();
-	cout << "LMor?" << endl;
+	
 
 	// Reset state "changed" to 0 for this and all actors.
 	this->Changed = 0;
 	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
-	{
-		cout << "LMthut?" << endl;
+	{		
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
 		myActor->SetChanged(0);
 	}
-}
+}*/

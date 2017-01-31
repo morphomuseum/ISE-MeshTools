@@ -208,18 +208,18 @@ void vtkLMActor::CreateLMBody()
 void vtkLMActor::SetLMColor()
 {
 	// Create six colors - one for each line
-	double red[4] = { 1, 0, 0, 1 }; // LMType=0
+	double green[4] = { 0.5, 1, 0, 1 }; // LMType=0 
 	double yellow[4] = { 1, 1, 0,0.5 }; // LMType = 1 (target LM)
 	double darkred[4] = { 0.5, 0, 0, 1 }; // LMType = 2 (curve node: dark red)
 	double orange[4] = { 1, 0.5, 0, 1 }; // LMType = 3 (curve handle : orange)
-	double green[4] = { 0, 1, 0, 1 }; // LMType=4 (curve starting point)
-	double blue[4] = { 0, 0, 1, 1 }; // LMType = 5 (curve milestone)	
+	double red[4] = { 1, 0.4, 0.4, 1 }; // LMType=4 (curve starting point)
+	double blue[4] = { 0, 0.5, 1, 1 }; // LMType = 5 (curve milestone)	
 	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
-	if (this->LMType == 0) { this->SetmColor(red); }
+	if (this->LMType == 0) { this->SetmColor(green); }
 	if (this->LMType == 1) { this->SetmColor(yellow); }
 	if (this->LMType == 2) { this->SetmColor(darkred); }
 	if (this->LMType == 3) { this->SetmColor(orange); }
-	if (this->LMType == 4) { this->SetmColor(green); }
+	if (this->LMType == 4) { this->SetmColor(red); }
 	if (this->LMType == 5) { this->SetmColor(blue); }
 	if (this->LMType == 6) { this->SetmColor(cyan); }
 }

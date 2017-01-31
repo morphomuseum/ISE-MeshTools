@@ -32,17 +32,17 @@ public:
 	
 	int GetNextLandmarkNumber();
 
-	void DeleteSelectedActors();
+
 
 protected:
 	
 	vtkLMActorCollection();
 	~vtkLMActorCollection();
-	virtual int ActorChanged(); // tells whether an actor was changed.
-	virtual void ComputeBoundingBoxLength();
+	
+	//virtual void ComputeBoundingBoxLength();
 	virtual void ComputeCenterOfMass();
 	void ReorderLandmarks();
-	virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
+	//virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
 
 private:
 	vtkLMActorCollection(const vtkLMActorCollection&);  // Not implemented.

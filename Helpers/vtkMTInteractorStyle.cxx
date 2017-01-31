@@ -420,6 +420,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 			  int y = this->Interactor->GetEventPosition()[1];
 			  std::cout << "Clicked at "
 				  << x << " " << y   << std::endl;
+			  if (this->CurrentRenderer == NULL) { cout << "Current renderer null" << endl; }
 			  if (this->CurrentRenderer != NULL)
 			  {
 				  std::cout << "Current renderer:" << this->CurrentRenderer << endl;
@@ -484,6 +485,11 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  //myLM->PrintSelf(cout, vtkIndent(1));
 					  this->LandmarkCollection->AddItem(myLM);
 					  this->LandmarkCollection->SetChanged(1);
+					  std::string action = "Create landmark";
+					  int mCount = BEGIN_UNDO_SET(action);
+					  mqMeshToolsCore::instance()->getLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+					 
+					  END_UNDO_SET();
 					  //this->CurrentRenderer->AddActor(myLM);
 					  //this->CurrentRenderer->AddActor(myLM->GetLMLabelActor2D());
 					  this->Interactor->Render();
@@ -530,6 +536,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 void vtkMTInteractorStyle::DeleteSelectedActors()
 {
 	this->ActorCollection->DeleteSelectedActors();
+	this->LandmarkCollection->DeleteSelectedActors();
 	this->Interactor->Render();
 }
 int vtkMTInteractorStyle::getNumberOfSelectedActors()
@@ -1017,7 +1024,8 @@ void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 
 	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
 	}
-	cout << "global com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
+	cout << "global selected com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
+	cout << "global selected nv:" << nv << endl;
 	//return com;
 }
 

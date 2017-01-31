@@ -701,8 +701,6 @@ void MeshTools::slotOpenMeshFile()
 			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			//cout << "create LM2 Actor" << endl;
-			//VTK_CREATE(vtkLM2Actor, actor);
 			VTK_CREATE(vtkMTActor, actor);
 			int num = 2;
 			/*actor->SetLMOrigin(0, 0, 0);
@@ -727,6 +725,11 @@ void MeshTools::slotOpenMeshFile()
 			//Now the add actor to renderer is managed inside the collection
 			//this->MeshToolsCore->getRenderer()->AddActor(actor);
 			this->MeshToolsCore->getActorCollection()->AddItem(actor);
+			std::string action = "Load mesh file";
+			int mCount = BEGIN_UNDO_SET(action);
+			this->MeshToolsCore->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
 			cout << "actor added to collection" << endl;
 			this->MeshToolsCore->getActorCollection()->SetChanged(1);
 			cout << "actor collection changed" << endl;

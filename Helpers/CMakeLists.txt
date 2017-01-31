@@ -4,7 +4,6 @@ vtkOrientationHelperActor.cxx
 vtkGridActor.cxx 
 vtkMTActor.cxx 
 vtkLMActor.cxx 
-vtkLM2Actor.cxx 
 vtkMTActorCollection.cxx 
 vtkLMActorCollection.cxx 
 vtkOrientationHelperWidget.cxx 
@@ -17,7 +16,6 @@ set( Helpers_HDRS
 vtkOrientationHelperActor.h 
 vtkMTActor.h 
 vtkLMActor.h 
-vtkLM2Actor.h 
 vtkMTActorCollection.h 
 vtkLMActorCollection.h 
 vtkGridActor.h 
