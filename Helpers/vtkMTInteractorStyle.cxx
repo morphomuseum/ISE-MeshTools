@@ -452,31 +452,16 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  
 					  VTK_CREATE(vtkLMActor, myLM);
 					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
-					  cout << "call LMOrigin" << endl;
-					  myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
-					  cout << "call LMOrientation" << endl;
-					  myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
-					  cout << "call LMSize" << endl;
+					   myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+					   myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
 					  myLM->SetLMSize(0.1);
-					  cout << "call LMType" << endl;
 					  myLM->SetLMType(0);
-					  cout << "call LMNumber" << endl;
 					  myLM->SetLMNumber(num);
-					  cout << "call LMBodyType" << endl;
 					  myLM->SetLMBodyType(0);
 					  myLM->SetSelected(0);
 					 
-					  //Create a sphere
-					 /* vtkSmartPointer<vtkSphereSource> sphereSource =
-						  vtkSmartPointer<vtkSphereSource>::New();
-					  sphereSource->SetCenter(pos[0], pos[1], pos[2]);
-					  sphereSource->SetRadius(0.1);
-					  sphereSource->Update();*/
-					  //Create a mapper and actor
-					  vtkSmartPointer<vtkPolyDataMapper> mapper =
+						  vtkSmartPointer<vtkPolyDataMapper> mapper =
 						  vtkSmartPointer<vtkPolyDataMapper>::New();
-					 // mapper->SetInputData(sphereSource->GetOutput());
-					  cout << "call GetLMBody" << endl;
 					mapper->SetInputData(myLM->getLMBody());
 					  mapper->Update();					
 					  myLM->SetMapper(mapper);
@@ -999,23 +984,32 @@ void vtkMTInteractorStyle::Pick()
 }
 void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 {
-	cout << "start a com:" << endl;
+	com[0] = 0;
+	com[1] = 0;
+	com[2] = 0;
+	//cout << "start a com:" << endl;
 	//double com[3] = { 0, 0,0 };	
-	double *coma=  this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	//Conception weakness : call COM before VN otherwise computation may not have been triggered!!
+	
+
 
 	int nv = 0;
+	double *coma = this->ActorCollection->GetCenterOfMassOfSelectedActors();
 	int nva = this->ActorCollection->GetGlobalSelectedVN();
 	if (nva>0) {
 		com[0] += coma[0] * nva ;
 		com[1] += coma[1] * nva ;
 		com[2] += coma[2] * nva ;
 	}
-	cout << "start  lm com:" << endl;
-	
+	//cout << " com:" << com[0] << "," << com[1] << "," << com[2] << endl;
+	//cout << "selected nva:" << nva << endl;
+	//cout << "start  lm com:" << endl;
+	//Conception weakness : call COM before VN otherwise computation may not have been triggered!!
+	double *comlm = this->LandmarkCollection->GetCenterOfMassOfSelectedActors();
 	int nvlm = this->LandmarkCollection->GetGlobalSelectedVN();
 	if (nvlm > 0) {
-		cout << "nvlm>0" << endl;
-		double *comlm = this->LandmarkCollection->GetCenterOfMassOfSelectedActors();
+		//cout << "nvlm>0" << endl;
+		
 		com[0] += comlm[0] * nvlm;
 		com[1] += comlm[1] * nvlm;
 		com[2] += comlm[2] * nvlm;
@@ -1024,8 +1018,8 @@ void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 
 	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
 	}
-	cout << "global selected com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
-	cout << "global selected nv:" << nv << endl;
+	//cout << "global selected com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
+	//cout << "global selected nv:" << nv << endl;
 	//return com;
 }
 
@@ -1073,6 +1067,19 @@ double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
 	return lengthxyz;
 
 }
+void vtkMTInteractorStyle::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]) {
+	double pointPred[4]; double pointNew[4] = { 0, 0, 0, 0 };
+	pointPred[0] = pointin[0];
+	pointPred[1] = pointin[1];
+	pointPred[2] = pointin[2];
+	pointPred[3] = 1;
+
+	matrix->MultiplyPoint(pointPred, pointNew);
+	pointout[0] = pointNew[0];
+	pointout[1] = pointNew[1];
+	pointout[2] = pointNew[2];
+}
+
 void vtkMTInteractorStyle::RotateActors()
 {
 	if (this->CurrentRenderer == NULL 
@@ -1087,11 +1094,12 @@ void vtkMTInteractorStyle::RotateActors()
 
 	// First get the origin of the assembly
 	/*double *obj_center = this->InteractionProp->GetCenter();*/
-	double rot_center[3];
+	double rot_center[3] = { 0,0,0 };
+	
 	this->GetCenterOfMassOfSelectedActors(rot_center);
 	//cout << "rotation center: " << rot_centerendl;
 	cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
-	cout << "bb length...." << endl;
+	//cout << "bb length...." << endl;
 	double boundRadius = this->GetBoundingBoxLengthOfSelectedActors();
 	//cout << "Bound Radius: " << boundRadius << endl;
 	if (boundRadius == std::numeric_limits<double>::infinity())
@@ -1224,19 +1232,24 @@ void vtkMTInteractorStyle::RotateActors()
 					rotate,
 					scale);
 				cout << "myPropr->Matrix()" << *myPropr->GetMatrix()<< endl;
+				vtkMatrix4x4 *mat = myPropr->GetMatrix();
+
+				double ap[3] = { myActor->GetLMOrigin()[0]+ +1.1*myActor->GetLMSize(),myActor->GetLMOrigin()[1], myActor->GetLMOrigin()[2] };
+				//Wrong!
+				//double ap[3] = { myLabel->GetAttachmentPoint()[0],myLabel->GetAttachmentPoint()[1],myLabel->GetAttachmentPoint()[2] };
 				
+
+
+
 				//==> use myPropr transform matrix to transform ap into apt.
 
-				double ap[3] = { myLabel->GetAttachmentPoint()[0],myLabel->GetAttachmentPoint()[1],myLabel->GetAttachmentPoint()[2] };
+
+				
 				double apt[3];
-				cout << "ap:" << ap[0] << "," << ap[1] << "," << ap[2] << endl;
-				/*this->AttachmentPointTransform(ap, rot_center,
-					2,
-					rotate,
-					scale, apt);*/
-				this->AttachmentPointTransform(ap, myPropr, apt);
-				cout << "apt:" << apt[0] << "," << apt[1] << "," << apt[2] << endl;
-				myLabel->SetAttachmentPoint(apt);
+				double apt2[3];
+				
+				this->TransformPoint(mat, ap, apt2);
+				myLabel->SetAttachmentPoint(apt2);
 				//we have to change the origin!
 				//myActor->SetOrigin();
 				myActor->SetChanged(1);
@@ -1468,7 +1481,7 @@ void vtkMTInteractorStyle::PrintSelf(ostream& os, vtkIndent indent)
   this->Superclass::PrintSelf(os, indent);
 }
 
-void vtkMTInteractorStyle::AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3])
+/*void vtkMTInteractorStyle::AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3])
 {
 	vtkTransform *Transform = vtkTransform::New();	
 	Transform->SetMatrix(prop3D->GetMatrix());
@@ -1491,7 +1504,7 @@ void vtkMTInteractorStyle::AttachmentPointTransform(double *ap, vtkProp3D *prop3
 		apt[0] = tcenter[0];
 		apt[1] = tcenter[1];
 		apt[2] = tcenter[2];
-}
+}*/
 
 /*void vtkMTInteractorStyle::AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
 	int numRotation,

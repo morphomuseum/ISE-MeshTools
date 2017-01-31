@@ -1335,22 +1335,22 @@ void MeshTools::DollyCameraForPerspectiveMode()
 	double multfactor = 3.73; // at 30° vtk : angle = 2*atan((h/2)/d). 
 	// then 2*d  =12/tan(viewangle/2) 
 	multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
-	cout << "DollyCameraForPerspectiveMode" << endl;
-	cout << "multfactor" << multfactor << endl;
-	cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
+	//cout << "DollyCameraForPerspectiveMode" << endl;
+	//cout << "multfactor" << multfactor << endl;
+	//cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
 
 	vtkMath::Subtract(campos, foc, dispvector);		
-	cout<<"Disp Vector:" << dispvector[0] << ","<<dispvector[1] << "," << dispvector[2] << endl;
+	//cout<<"Disp Vector:" << dispvector[0] << ","<<dispvector[1] << "," << dispvector[2] << endl;
 	vtkMath::Normalize(dispvector);
-	cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+	//cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
 	
 	double newdist = multfactor*this->MeshToolsCore->getCamera()->GetParallelScale();
-	cout << "New dist:" << newdist << endl;
+	//cout << "New dist:" << newdist << endl;
 	vtkMath::MultiplyScalar(dispvector, newdist);
-	cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+	//cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
 	double newpos[3]={ 0,0,0 }; 
 	vtkMath::Add(foc, dispvector, newpos);
-	cout << "New pos:" << newpos[0] << "," << newpos[1] << "," << newpos[2] << endl;
+	//cout << "New pos:" << newpos[0] << "," << newpos[1] << "," << newpos[2] << endl;
 
 	this->MeshToolsCore->getCamera()->SetPosition(newpos);
 	

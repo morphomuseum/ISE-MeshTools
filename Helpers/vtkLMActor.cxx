@@ -215,9 +215,14 @@ void vtkLMActor::SetLMColor()
 	double red[4] = { 1, 0.4, 0.4, 1 }; // LMType=4 (curve starting point)
 	double blue[4] = { 0, 0.5, 1, 1 }; // LMType = 5 (curve milestone)	
 	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
-	if (this->LMType == 0) { this->SetmColor(green); }
+	if (this->LMType == 0) { 
+		//cout << "green!" << endl;
+		this->SetmColor(green); 
+	}
 	if (this->LMType == 1) { this->SetmColor(yellow); }
-	if (this->LMType == 2) { this->SetmColor(darkred); }
+	if (this->LMType == 2) { 
+		//cout << "darkred!" << endl;
+		this->SetmColor(darkred); }
 	if (this->LMType == 3) { this->SetmColor(orange); }
 	if (this->LMType == 4) { this->SetmColor(red); }
 	if (this->LMType == 5) { this->SetmColor(blue); }
@@ -227,11 +232,13 @@ void vtkLMActor::SetLMColor()
 //----------------------------------------------------------------------------
 void vtkLMActor::SetLMType(int type)
 {
+	this->LMType = type;
+	this->SetLMColor();
 	if (this->LMType != type && type >= 0 && type <= 6)
 	{
 
 
-		this->SetLMColor(); // when type changes, color changes as well
+		
 		this->LMType = type;
 		this->Modified();
 		this->UpdateProps();

@@ -71,7 +71,7 @@ protected:
 	  int NumRotation,
 	  double **rotate,
 	  double *scale);
-  void AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3]);
+  //void AttachmentPointTransform(double *ap, vtkProp3D *prop3D, double apt[3]);
 /*void  AttachmentPointTransform(double* attachmentPoint, double *boxCenter,
   
 	  int numRotation,
@@ -101,6 +101,8 @@ protected:
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
   vtkSmartPointer<vtkLMActorCollection> LandmarkCollection;
 private:
+
+	void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
 #if VTK_MINOR_VERSION >= 1
 	vtkMTInteractorStyle(const vtkMTInteractorStyle&) VTK_DELETE_FUNCTION;
 	void operator=(const vtkMTInteractorStyle&) VTK_DELETE_FUNCTION;

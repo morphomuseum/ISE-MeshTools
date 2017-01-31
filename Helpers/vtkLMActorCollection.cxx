@@ -173,6 +173,7 @@ int vtkLMActorCollection::GetNextLandmarkNumber()
 }*/
 void vtkLMActorCollection::ComputeCenterOfMass()
 {
+	cout << "LM Compute center of mass" << endl;
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
@@ -220,10 +221,11 @@ void vtkLMActorCollection::ComputeCenterOfMass()
 		centerOfMassOfSelectedActors[1] /= nSelectedLM;
 		centerOfMassOfSelectedActors[2] /= nSelectedLM;
 	}
-	cout << "New LM Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;
 	this->SetGlobalSelectedVN(nSelectedLM);
-	cout << "New LM Coll sVn:" << nSelectedLM << endl;
 	this->SetGlobalVN(nLM);
+	cout << "New LM Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;
+	cout << "New LM Coll sVn:" << nSelectedLM << endl;
+
 }
 
 

@@ -130,6 +130,7 @@ protected:
 	vtkSmartPointer<vtkCamera> Camera;
 	vtkSmartPointer<vtkGridActor> GridActor;
 	vtkSmartPointer<vtkLMActor> LMActor;
+	vtkSmartPointer<vtkLMActor> LMActor2;
 	//vtkUndoStack* UndoStack;
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;

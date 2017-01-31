@@ -39,6 +39,8 @@ vtkMTActorCollection::vtkMTActorCollection()
 	this->centerOfMassOfSelectedActors[0] = 0;
 	this->centerOfMassOfSelectedActors[1] = 0;
 	this->centerOfMassOfSelectedActors[2] = 0;
+	this->SetGlobalSelectedVN(0);
+	this->SetGlobalVN(0);
 	this->BoundingBoxLength = 0;
 	this->BoundingBoxLengthOfSelectedActors = 0;
 	this->BoundingBox[0] = 0; 
@@ -370,6 +372,7 @@ int vtkMTActorCollection::ActorChanged()
 }
 void vtkMTActorCollection::ComputeCenterOfMass()
 {
+	cout << "MT Compute center of mass" << endl;
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
@@ -582,7 +585,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 
 void vtkMTActorCollection::ApplyChanges()
 {
-	//cout << "this?" << endl;
+	cout << "Compute center of mass" << endl;
 	this->ComputeCenterOfMass();
 	//cout << "that?" << endl;
 	this->ComputeBoundingBoxLength();

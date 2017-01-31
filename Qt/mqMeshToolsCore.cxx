@@ -128,28 +128,47 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
 	this->GridActor->SetGridType(2);	
 
+	
+
+
 	this->LMActor = vtkSmartPointer<vtkLMActor>::New();
-	//this->LMActor->SetLMType(0);
-	//this->LMActor->SetLMBodyType(0);
-	//this->LMActor->SetLMSize(3);
-	//this->LMActor->SetLMOrigin(10,10,10);
+	this->LMActor->SetLMType(2);
+	this->LMActor->SetLMBodyType(0);
+	this->LMActor->SetLMSize(3);
+	this->LMActor->SetLMOrigin(0,0,0);
+	
+	this->LMActor2 = vtkSmartPointer<vtkLMActor>::New();
+	this->LMActor2->SetLMType(6);
+	this->LMActor2->SetLMBodyType(0);
+	this->LMActor2->SetLMSize(3);
+	this->LMActor2->SetLMOrigin(0, 0, 10);
+
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
+	// mapper->SetInputData(sphereSource->GetOutput());
 	
-	vtkSmartPointer<vtkSphereSource> sphereSource =
-		vtkSmartPointer<vtkSphereSource>::New();
-	sphereSource->SetCenter(20, -10, 10);
-	sphereSource->SetRadius(3);
-
-
-	sphereSource->Update();
-	 mapper->SetInputData(sphereSource->GetOutput());
-
-	//mapper->SetInputData(this->LMActor->getLMBody());
+	mapper->SetInputData(this->LMActor->getLMBody());
 	mapper->Update();
 	this->LMActor->SetMapper(mapper);
-	
-	this->Renderer->AddActor(this->LMActor);
+	//this->LMActor->SetMapper(mapper);
+	this->LandmarkCollection->AddItem(this->LMActor);
+
+	this->LMActor2 = vtkSmartPointer<vtkLMActor>::New();
+	this->LMActor2->SetLMType(3);
+	this->LMActor2->SetLMBodyType(0);
+	this->LMActor2->SetLMSize(3);
+	this->LMActor2->SetLMOrigin(0, 0, 20);
+	vtkSmartPointer<vtkPolyDataMapper> mapper2 =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	// mapper->SetInputData(sphereSource->GetOutput());
+
+	mapper2->SetInputData(this->LMActor2->getLMBody());
+	mapper2->Update();
+	this->LMActor2->SetMapper(mapper2);
+	//this->LMActor->SetMapper(mapper);
+	this->LandmarkCollection->AddItem(this->LMActor2);
+
+	this->LandmarkCollection->SetChanged(1);
 	
 	this->Renderer->AddActor(this->GridActor);
 
