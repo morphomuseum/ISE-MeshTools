@@ -50,7 +50,8 @@
 #include <vtkInteractorStyleRubberBandPick.h>
 #include <vtkInteractorStyleSwitch.h>
 #include <vtkCallbackCommand.h>
-#include <vtkAreaPicker.h>
+//#include <vtkAreaPicker.h>
+#include <vtkRenderedAreaPicker.h>
 #include <vtkLine.h>
 #include <vtkProp3DCollection.h>
 
@@ -78,7 +79,7 @@ void RubberBandSelect(vtkObject* caller,
 	void* vtkNotUsed(callData))
 {
 	std::cout << "Pick." << std::endl;
-	vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
+	vtkRenderedAreaPicker* areaPicker = static_cast<vtkRenderedAreaPicker*>(caller);
 	vtkPropCollection *pcoll = areaPicker->GetPickList();
 	pcoll->GetNumberOfItems();
 	cout << "Pcoll Number of items:" << pcoll->GetNumberOfItems() << endl;
@@ -396,7 +397,7 @@ MeshTools::MeshTools()
 
 	 pickCallback->SetCallback(RubberBandSelect);
 	 this->AreaPicker =
-		 vtkSmartPointer<vtkAreaPicker>::New();
+		 vtkSmartPointer<vtkRenderedAreaPicker>::New();
 
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
 	
