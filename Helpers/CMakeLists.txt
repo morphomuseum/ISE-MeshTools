@@ -10,6 +10,7 @@ vtkOrientationHelperWidget.cxx
 vtkMTInteractorStyle.cxx 
 vtkUndoStack.cxx 
 vtkUndoStackBuilder.cxx 
+vtkProbeSource.cxx 
 )
 
 set( Helpers_HDRS 
@@ -23,7 +24,10 @@ vtkOrientationHelperWidget.h
 vtkMTInteractorStyle.h 
 vtkUndoStack.h 
 vtkUndoStackBuilder.h 
-vtkUndoStackInternal.h)
+vtkUndoStackInternal.h
+vtkProbeSource.h 
+
+)
 
 #Sorry but we need QT for the undo stack stuff... 
 #So far, in the interactor style and in the core

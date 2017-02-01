@@ -38,9 +38,10 @@
 #include <vtkSmartPointer.h>
 #include <vtkPropPicker.h>
 #include <vtkCellPicker.h>
-#include <vtkSphereSource.h>
+
 #include <vtkPolyDataMapper.h>
 vtkStandardNewMacro(vtkMTInteractorStyle);
+
 
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
@@ -82,6 +83,68 @@ vtkMTInteractorStyle::~vtkMTInteractorStyle()
 {
   this->PixelArray->Delete();
 }
+
+void vtkMTInteractorStyle::EndRotate()
+{
+	this->EndLandmarkMovements();
+	this->Superclass::EndRotate();
+
+}
+void vtkMTInteractorStyle::EndSpin()
+{
+	this->EndLandmarkMovements();
+	this->Superclass::EndSpin();
+
+}
+void vtkMTInteractorStyle::EndPan()
+{
+	this->EndLandmarkMovements();
+	this->Superclass::EndPan();
+
+}
+
+void vtkMTInteractorStyle::EndLandmarkMovements()
+{
+
+	//we reset LMOrigin and LMOrientation
+
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
+		if (myActor->GetSelected() == 1)
+		{
+			// do something
+			vtkMatrix4x4 *Mat = myActor->GetMatrix();
+
+			/*cout << "Initial matrix:" << endl;
+			Mat->PrintSelf(cout, vtkIndent(1));*/
+			double lmorigin[3] = { Mat->GetElement(0, 3), Mat->GetElement(1, 3), Mat->GetElement(2, 3) };
+			//double lmorientation[3] = { 0,0,1 };
+			double a[3] = { 0,0,0 };
+			double at[3];
+			double b[3] = { 1,0,0 };
+			double bt[3];
+			this->TransformPoint(Mat, a, at);
+			this->TransformPoint(Mat, b, bt);
+			double lmorientation[3] = { bt[0] - at[0],bt[1] - at[1] ,bt[2] - at[2] };
+			vtkMath::Normalize(lmorientation);
+			//myActor->SetLMOrigin(lmorigin);
+			myActor->SetLMOriginAndOrientation(lmorigin, lmorientation);
+
+			//Mat->SetElement(1, 3, this->LMOrigin[1]);
+			//Mat->SetElement(2, 3, this->LMOrigin[2]);
+
+		}
+	}
+
+}
+
+
+
 
 //--------------------------------------------------------------------------
 void vtkMTInteractorStyle::StartSelect()
@@ -452,12 +515,13 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  
 					  VTK_CREATE(vtkLMActor, myLM);
 					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
-					   myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
-					   myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
-					  myLM->SetLMSize(0.1);
+					  myLM->SetLMOriginAndOrientation(pos, norm);
+					   //myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+					   //myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
+					  myLM->SetLMSize(1);
 					  myLM->SetLMType(0);
 					  myLM->SetLMNumber(num);
-					  myLM->SetLMBodyType(0);
+					  myLM->SetLMBodyType(1);
 					  myLM->SetSelected(0);
 					 
 						  vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -1231,27 +1295,32 @@ void vtkMTInteractorStyle::RotateActors()
 					2,
 					rotate,
 					scale);
-				cout << "myPropr->Matrix()" << *myPropr->GetMatrix()<< endl;
-				vtkMatrix4x4 *mat = myPropr->GetMatrix();
+				//cout << "myPropr->Matrix()" << *myPropr->GetMatrix()<< endl;
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				/*vtkMatrix4x4 *mat = myPropr->GetMatrix();				
+				double init_pos=1;
+				double mult = 1;
+				if (myActor->GetLMType() == 2 || myActor->GetLMType() == 5)
+				{
+					mult = 1.1;
+				}
+				if (myActor->GetLMBodyType() == 0)
+				{
+					init_pos = 0.5*1.1*mult*myActor->GetLMSize();
+				}
+				else
+				{
+					init_pos = 3 * 1.1*mult*myActor->GetLMSize();
+				}
 
-				double ap[3] = { myActor->GetLMOrigin()[0]+ +1.1*myActor->GetLMSize(),myActor->GetLMOrigin()[1], myActor->GetLMOrigin()[2] };
-				//Wrong!
-				//double ap[3] = { myLabel->GetAttachmentPoint()[0],myLabel->GetAttachmentPoint()[1],myLabel->GetAttachmentPoint()[2] };
-				
+				double ap[3] = { init_pos,
+					0,
+					0};
 
-
-
-				//==> use myPropr transform matrix to transform ap into apt.
-
-
-				
 				double apt[3];
-				double apt2[3];
 				
-				this->TransformPoint(mat, ap, apt2);
-				myLabel->SetAttachmentPoint(apt2);
-				//we have to change the origin!
-				//myActor->SetOrigin();
+				this->TransformPoint(mat, ap, apt);
+				myLabel->SetAttachmentPoint(apt);		*/
 				myActor->SetChanged(1);
 
 			}
@@ -1353,6 +1422,8 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -1360,6 +1431,10 @@ void vtkMTInteractorStyle::SpinActors()
 				1,
 				rotate,
 				scale);
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+			
+
+
 			myActor->SetChanged(1);
 		}
 
@@ -1442,6 +1517,8 @@ void vtkMTInteractorStyle::PanActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -1459,6 +1536,8 @@ void vtkMTInteractorStyle::PanActors()
 					motion_vector[1],
 					motion_vector[2]);
 			}
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+
 			myActor->SetChanged(1);
 		}
 	}
@@ -1473,7 +1552,33 @@ void vtkMTInteractorStyle::PanActors()
 	rwi->Render();
 }
 
+void vtkMTInteractorStyle::ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActor *LMActor)
+{
+	vtkCaptionActor2D *LMLabel = LMActor->GetLMLabelActor2D();
+	double init_pos = 1;
+	double mult = 1;
+	if (LMActor->GetLMType() == 2 || LMActor->GetLMType() == 5)
+	{
+		mult = 1.1;
+	}
+	if (LMActor->GetLMBodyType() == 0)
+	{
+		init_pos = 0.5*1.1*mult*LMActor->GetLMSize();
+	}
+	else
+	{
+		init_pos = 3 * 1.1*mult*LMActor->GetLMSize();
+	}
 
+	double ap[3] = { init_pos,
+		0,
+		0 };
+
+	double apt[3];
+
+	this->TransformPoint(NewMat, ap, apt);
+	LMLabel->SetAttachmentPoint(apt);
+}
 
 //--------------------------------------------------------------------------
 void vtkMTInteractorStyle::PrintSelf(ostream& os, vtkIndent indent)

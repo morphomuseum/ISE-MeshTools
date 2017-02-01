@@ -91,6 +91,7 @@ public:
 	void SetLMOrigin(double x, double y, double z);
 	void SetLMOrigin(double origin[3]);
 	void GetLMOrigin(double origin[3]);
+	void SetLMOriginAndOrientation(double origin[3], double orientation[3]);
 	double * GetLMOrigin();
 	void SetLMColor();
 	void SetLMOrientation(double x, double y, double z);
@@ -123,6 +124,7 @@ private:
 	void operator=(const vtkLMActor&);  // Not implemented.
 	void CreateLMBody(); //instantiates LM Body (sphere or needle)
 	void CreateLMLabelText();//instantiates the  label actor
+	void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
 	
 };
 

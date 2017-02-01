@@ -4,9 +4,11 @@ Program:   MeshTools
 Module:    vtkLMActor.cxx
 =========================================================================*/
 #include "vtkLMActor.h"
+#include  "vtkProbeSource.h"
 
 #include <vtkTextProperty.h>
 #include <vtkSphereSource.h>
+
 #include <vtkObjectFactory.h>
 #include <vtkMath.h>
 #include <vtkRenderer.h>
@@ -58,6 +60,34 @@ vtkLMActor::~vtkLMActor()
 
 }
 
+void vtkLMActor::SetLMOriginAndOrientation(double origin[3], double orientation[3])
+{
+	
+		
+
+	
+	if (this->LMOrigin[0] != origin[0]
+		|| this->LMOrigin[1] != origin[1]
+		|| this->LMOrigin[2] != origin[2]
+		|| this->LMOrientation[0] != orientation[0]
+		|| this->LMOrientation[1] != orientation[1]
+		|| this->LMOrientation[2] != orientation[2]
+
+		)
+	{
+		this->LMOrigin[0] = origin[0];
+		this->LMOrigin[1] = origin[1];
+		this->LMOrigin[2] = origin[2];
+		this->LMOrientation[0] = orientation[0];
+		this->LMOrientation[1] = orientation[1];
+		this->LMOrientation[2] = orientation[2];
+
+
+		this->Modified();
+		cout << "Update proprs" << endl;
+		this->UpdateProps();
+	}
+}
 
 
 void vtkLMActor::SetLMOrigin(double x, double y, double z)
@@ -83,7 +113,7 @@ void vtkLMActor::SetLMOrigin(double origin[3])
 
 
 		this->Modified();
-		cout << "Update proprs" << endl;
+		//cout << "Update proprs" << endl;
 		this->UpdateProps();
 	}
 }
@@ -146,6 +176,18 @@ double *vtkLMActor::GetLMOrientation()
 	return this->LMOrientation;
 }
 
+void vtkLMActor::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]) {
+	double pointPred[4]; double pointNew[4] = { 0, 0, 0, 0 };
+	pointPred[0] = pointin[0];
+	pointPred[1] = pointin[1];
+	pointPred[2] = pointin[2];
+	pointPred[3] = 1;
+
+	matrix->MultiplyPoint(pointPred, pointNew);
+	pointout[0] = pointNew[0];
+	pointout[1] = pointNew[1];
+	pointout[2] = pointNew[2];
+}
 
 void vtkLMActor::CreateLMLabelText()
 {
@@ -155,9 +197,29 @@ void vtkLMActor::CreateLMLabelText()
 	// 0 : -x x -y y
 	// 1 :  -x x -z z
 	// 2 : -y y -z z
+	// Position of the label can be computed using this matrix!
 
-	double pos[3] = { this->LMOrigin[0] + 1.1*this->LMSize , this->LMOrigin[1], this->LMOrigin[2] };
+	double init_pos[3] = { 0,0,0 };
+	double mult = 1;
+	if (this->LMType == 2 || this->LMType == 5)
+	{
+		mult = 1.1;
+	}
+	if (this->LMBodyType == 0)
+	{
+		init_pos[0] += 0.5*1.1*mult*this->LMSize;
+	}
+	else
+	{
+		init_pos[0] += 3*1.1*mult*this->LMSize;
+	}
 
+	
+	double final_pos[3];
+
+	
+
+	this->TransformPoint(this->GetMatrix(), init_pos, final_pos);
 
 
 	vtkSmartPointer<vtkTextProperty> mproperty = vtkSmartPointer<vtkTextProperty>::New();
@@ -175,7 +237,7 @@ void vtkLMActor::CreateLMLabelText()
 
 	this->LMLabel->SetCaptionTextProperty(mproperty);
 	this->LMLabel->SetPosition(0, 0);
-	this->LMLabel->SetAttachmentPoint(pos);
+	this->LMLabel->SetAttachmentPoint(final_pos);
 	this->LMLabel->SetHeight(0.03);
 	this->LMLabel->BorderOff();
 	this->LMLabel->LeaderOff();
@@ -187,17 +249,90 @@ void vtkLMActor::CreateLMLabelText()
 void vtkLMActor::CreateLMBody()
 {
 
+	
+	vtkMatrix4x4 *Mat = this->GetMatrix();
+	
+	/*cout << "Initial matrix:" << endl;
+	Mat->PrintSelf(cout, vtkIndent(1));*/
+	Mat->SetElement(0, 3, this->LMOrigin[0]);
+	Mat->SetElement(1, 3, this->LMOrigin[1]);
+	Mat->SetElement(2, 3, this->LMOrigin[2]);
 
-	vtkSmartPointer<vtkSphereSource> sphereSource =
-		vtkSmartPointer<vtkSphereSource>::New();
-	sphereSource->SetCenter(this->LMOrigin[0], this->LMOrigin[1], this->LMOrigin[2]);
-	sphereSource->SetRadius(this->LMSize);
-	if (this->LMType == 1 || this->LMType == 3)
+	vtkMath::Normalize(this->LMOrientation);
+			
+	// rotation 
+	// Landmark object oriented along x axis : 1 0 0 
+	// assume rot.  
+	// 1) around z 
+	// 2)    around x 
+	// -> values sinz,cosz,sinx,cosx need to be computed
+
+	float cosz = this->LMOrientation[0]; // nx
+	float sinz = sqrt(1.0 - (cosz*cosz));
+	float cosx, sinx;
+	if (sinz == 0.0) // just in case we are in the speciale case
 	{
-		sphereSource->SetRadius(1.1*this->LMSize);
+		cosx = 1.0; sinx = 0.0;
 	}
-	sphereSource->Update();
-	this->LMBody = sphereSource->GetOutput();
+	else
+	{
+		cosx = this->LMOrientation[1] / sinz;
+
+		sinx = this->LMOrientation[2] / sinz;
+	}
+	
+	Mat->SetElement(0, 0, cosz); //=nx
+	Mat->SetElement(1, 0, cosx*sinz); //=ny
+	Mat->SetElement(2, 0, sinx *sinz);    //=nz
+
+	Mat->SetElement(0, 1, -sinz);
+	Mat->SetElement(1, 1, cosx*cosz);
+	Mat->SetElement(2, 1, sinx*cosz);
+
+	Mat->SetElement(0, 2, 0); 
+	Mat->SetElement(1, 2, -sinx);
+	Mat->SetElement(2, 2, cosx); 
+
+
+	/*cout << "Modified matrix:" << endl;
+	Mat->PrintSelf(cout, vtkIndent(1));*/
+
+	
+	this->SetUserMatrix(Mat);
+
+	double pos[3];
+	this->GetPosition(pos);
+	
+	
+	if (this->LMBodyType == 0)
+	{
+		vtkSmartPointer<vtkSphereSource> sphereSource =
+			vtkSmartPointer<vtkSphereSource>::New();
+
+		sphereSource->SetCenter(0, 0, 0);
+		sphereSource->SetRadius(0.5*this->LMSize);
+		if (this->LMType == 1 || this->LMType == 3)
+		{
+			sphereSource->SetRadius(0.5*1.1*this->LMSize);
+		}
+		sphereSource->Update();
+		this->LMBody = sphereSource->GetOutput();
+	}
+	else
+	{
+		vtkSmartPointer<vtkProbeSource> probeSource =
+			vtkSmartPointer<vtkProbeSource>::New();
+
+		probeSource->SetInvert(true);		
+		probeSource->SetArrowLength(3*this->LMSize);
+		if (this->LMType == 1 || this->LMType == 3)
+		{
+			probeSource->SetArrowLength(3*1.1*this->LMSize);
+		}
+		probeSource->Update();
+		this->LMBody = probeSource->GetOutput();
+	}
+
 
 
 

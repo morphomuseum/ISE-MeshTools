@@ -51,13 +51,17 @@ public:
   virtual void RubberStop();
   virtual void OnKeyPress();
   virtual void OnKeyRelease();
+  virtual void EndRotate();
+  virtual void EndSpin();
+  virtual void EndPan();
+ 
   //@}
   //virtual void SaveSelectedActorPositions();
   virtual void RotateActors();
   virtual void SpinActors();
   virtual void PanActors();
 
-
+  void EndLandmarkMovements();
   void SetActorCollection(vtkSmartPointer<vtkMTActorCollection>ActColl);
   void SetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
 protected:
@@ -93,7 +97,7 @@ protected:
   double GetBoundingBoxLengthOfSelectedActors();
   void GetCenterOfMassOfSelectedActors(double com[3]);
   vtkUnsignedCharArray *PixelArray;
-
+  void ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActor *LMActor);
   int CurrentMode;
   int Ctrl;
   int L;

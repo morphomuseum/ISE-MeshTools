@@ -8,7 +8,7 @@
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
-#include <vtkSphereSource.h>
+
 #include <vtkProperty.h>
 #include <vtkCubeAxesActor.h>
 
@@ -133,16 +133,12 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->LMActor = vtkSmartPointer<vtkLMActor>::New();
 	this->LMActor->SetLMType(2);
-	this->LMActor->SetLMBodyType(0);
-	this->LMActor->SetLMSize(3);
+	this->LMActor->SetLMBodyType(1);
+	this->LMActor->SetLMSize(1);
 	this->LMActor->SetLMOrigin(0,0,0);
+	this->LMActor->SetLMNumber(1);
 	
-	this->LMActor2 = vtkSmartPointer<vtkLMActor>::New();
-	this->LMActor2->SetLMType(6);
-	this->LMActor2->SetLMBodyType(0);
-	this->LMActor2->SetLMSize(3);
-	this->LMActor2->SetLMOrigin(0, 0, 10);
-
+	
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
 	// mapper->SetInputData(sphereSource->GetOutput());
@@ -155,9 +151,10 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->LMActor2 = vtkSmartPointer<vtkLMActor>::New();
 	this->LMActor2->SetLMType(3);
-	this->LMActor2->SetLMBodyType(0);
-	this->LMActor2->SetLMSize(3);
+	this->LMActor2->SetLMBodyType(1);
+	this->LMActor2->SetLMSize(1);
 	this->LMActor2->SetLMOrigin(0, 0, 20);
+	this->LMActor2->SetLMNumber(2);
 	vtkSmartPointer<vtkPolyDataMapper> mapper2 =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
 	// mapper->SetInputData(sphereSource->GetOutput());

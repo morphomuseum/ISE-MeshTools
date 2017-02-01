@@ -42,6 +42,7 @@ protected:
 	//virtual void ComputeBoundingBoxLength();
 	virtual void ComputeCenterOfMass();
 	void ReorderLandmarks();
+	int AreLandmarksWellOrdered();
 	//virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
 
 private:

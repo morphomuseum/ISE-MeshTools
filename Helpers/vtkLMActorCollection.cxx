@@ -53,6 +53,58 @@ void vtkLMActorCollection::AddItem(vtkActor *a)
 
 	}
 }
+int vtkLMActorCollection::AreLandmarksWellOrdered()
+{
+	this->InitTraversal();
+	if (this->GetNumberOfItems() == 0) { return 1; }
+	int well_ordered = 1;
+	int next = 1;
+	int previous = 0;
+
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
+		next = myActor->GetLMNumber();
+		if (next < previous) { well_ordered = 0; return well_ordered; }
+		else { previous = next; }
+	}
+	return well_ordered;
+}
+void vtkLMActorCollection::ReorderLandmarks()
+{
+	if (this->AreLandmarksWellOrdered() == 0)
+	{
+		int well_ordered = 0;				
+		while (well_ordered == 0)
+		{
+			well_ordered = 1;
+			this->InitTraversal();
+			int next = 1;
+			int previous = 0;
+			vtkLMActor *precedingLM = NULL;
+			for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *nextLM = vtkLMActor::SafeDownCast(this->GetNextActor());
+				next = nextLM->GetLMNumber();
+				if (next < previous) 
+				{ 
+					if (precedingLM != NULL)
+					{
+						this->RemoveItem(precedingLM);
+						this->AddItem(precedingLM);
+					}
+					well_ordered = 0; 
+					break; 
+				}
+				else 
+				{
+					previous = next; precedingLM = nextLM;
+				}
+			}			
+		}
+	}
+
+}
 
 int vtkLMActorCollection::GetNextLandmarkNumber()
 {
@@ -60,8 +112,13 @@ int vtkLMActorCollection::GetNextLandmarkNumber()
 	//if we have 1 2 3 4 6 7 8, we should return 5
 	// if we have nothing, we should return 1
 	// if we have 1 2 3 4, we should return 5
+	if (this->AreLandmarksWellOrdered() == 0)
+	{
+		ReorderLandmarks();
+
+	}
 	int next = 1;
-	int previous = 1;
+	int previous = 0;
 	this->InitTraversal();
 	if (this->GetNumberOfItems() == 0) { return 1; }
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)

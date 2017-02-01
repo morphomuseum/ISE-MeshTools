@@ -23,7 +23,7 @@ class vtkPolyData;
 class vtkPropCollection;
 class vtkProperty;
 class vtkRenderer;
-class vtkSphereSource;
+
 
 class  vtkGridActor : public vtkProp3D
 {

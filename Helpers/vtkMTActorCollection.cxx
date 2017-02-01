@@ -26,6 +26,8 @@ Module:    vtkMTActorCollection.cxx
 
 vtkStandardNewMacro(vtkMTActorCollection);
 
+#define CREATE_EVENT 1
+#define DELETE_EVENT 0
 
 //----------------------------------------------------------------------------
 vtkMTActorCollection::vtkMTActorCollection()
@@ -82,8 +84,28 @@ void vtkMTActorCollection::AddItem(vtkActor *a)
 void vtkMTActorCollection::CreateLoadUndoSet(int count, int creationcount)
 {
 	cout << "CreateLoadUndoSet(" << count << "," << creationcount << ")" << endl;
-	vtkSmartPointer<vtkActorCollection> voidcoll = vtkSmartPointer<vtkActorCollection>::New();
-	this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(voidcoll, creationcount, count));
+	vtkSmartPointer<vtkActorCollection> NewlyCreatedActors = vtkSmartPointer<vtkActorCollection>::New();
+	// we retrieve the last "creationcount" created actors.
+	this->InitTraversal();
+	int num_actors = this->GetNumberOfItems();
+	int num_toremain = num_actors - creationcount;
+	vtkActor *myActor;
+	if (num_toremain >= 0)
+	{
+		for (vtkIdType i = 0; i < num_toremain; i++)
+		{
+			//these actors will remain in the renderer in case of undo
+			myActor = this->GetNextActor();
+		}	
+		for (vtkIdType i = 0; i < creationcount; i++)
+		{
+			//these actors are put in the undo collection
+			NewlyCreatedActors->AddItem(this->GetNextActor());
+		}
+	}
+	
+	
+	this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(NewlyCreatedActors, CREATE_EVENT, count));
 	
 
 }
@@ -168,7 +190,7 @@ void vtkMTActorCollection::DeleteSelectedActors()
 			}
 		}
 		// the is not a load call (-1)
-		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll,-1, mCount));
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll,DELETE_EVENT, mCount));
 		END_UNDO_SET();
 		this->Changed = 1;
 	}
@@ -225,11 +247,11 @@ void vtkMTActorCollection::PopUndoStack() {
 	{
 		return;
 	}
-	cout << "PopUndoStack(" << this->UndoRedo->UndoStack.back().UndoCount << "," << this->UndoRedo->UndoStack.back().CreationCount << ")" << endl;
+	cout << "PopUndoStack(" << this->UndoRedo->UndoStack.back().UndoCount << "," << this->UndoRedo->UndoStack.back().EventType << ")" << endl;
 	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->UndoStack.back().Collection;
 	
-	// if there actually are actors to store in the undo count again (not a load file or create actor)....
-	if (this->UndoRedo->UndoStack.back().CreationCount<0)
+	// If stored event was a DELETE_EVENT, we need to put back deleted object in renderer + this
+	if (this->UndoRedo->UndoStack.back().EventType==DELETE_EVENT)
 	{
 		ActColl->InitTraversal();
 		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
@@ -250,22 +272,20 @@ void vtkMTActorCollection::PopUndoStack() {
 			}
 			this->Changed = 1;
 		}
-		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->UndoStack.back().CreationCount, this->UndoRedo->UndoStack.back().UndoCount));
+		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, DELETE_EVENT, this->UndoRedo->UndoStack.back().UndoCount));
 	}
+	// If stored event was a CREATE_EVENT, we need to remove last inserted objects + from this
 	else
 	{	
-		cout << "Try to remove last created actor(s)" << endl;
+		//cout << "Try to remove last created objects" << endl;
+		ActColl->InitTraversal();
 		// actor(s) creation (file loading / create 1 landmark etc...)
 		// this means that this action corresponds to "create a new actor (or load a bunch of new actors)".
-		for (vtkIdType i = 0; i < this->UndoRedo->UndoStack.back().CreationCount; i++)
+		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
 		{
-			this->InitTraversal();
-			//removes this actor from the renderer
-			//adds this actor to the RedoStack.
-			//not sure this works for several actors!
-			cout << "Try to get last actor, creation count = " << this->UndoRedo->UndoStack.back().CreationCount<< "this->Number of items="<< this->GetNumberOfItems()<<endl;
-			vtkActor *myActor = this->GetLastActor();
-			ActColl->AddItem(myActor);
+						
+			
+			vtkActor *myActor = ActColl->GetNextActor();			
 			this->RemoveItem(myActor);
 			this->Renderer->RemoveActor(myActor);
 			std::string str1("vtkLMActor");
@@ -277,7 +297,7 @@ void vtkMTActorCollection::PopUndoStack() {
 			}
 
 		}
-		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, this->UndoRedo->UndoStack.back().CreationCount, this->UndoRedo->UndoStack.back().UndoCount));
+		this->UndoRedo->RedoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, CREATE_EVENT, this->UndoRedo->UndoStack.back().UndoCount));
 	}		
 	this->UndoRedo->UndoStack.pop_back();
 	this->Modified();
@@ -287,11 +307,13 @@ void vtkMTActorCollection::PopRedoStack() {
 	{
 		return;
 	}
-	cout << "PopRedoStack(" << this->UndoRedo->RedoStack.back().UndoCount << "," << this->UndoRedo->RedoStack.back().CreationCount << ")" << endl;
+	cout << "PopRedoStack(" << this->UndoRedo->RedoStack.back().UndoCount << "," << this->UndoRedo->RedoStack.back().EventType << ")" << endl;
 	vtkSmartPointer<vtkActorCollection> ActColl = this->UndoRedo->RedoStack.back().Collection;
-	ActColl->InitTraversal();
-	if (this->UndoRedo->RedoStack.back().CreationCount < 0)
+	
+	// If stored event was a DELETE_EVENT, we need to remove again deleted object in renderer + from this
+	if (this->UndoRedo->RedoStack.back().EventType ==DELETE_EVENT)
 	{
+		ActColl->InitTraversal();
 		for (vtkIdType i = 0; i < ActColl->GetNumberOfItems(); i++)
 		{
 
@@ -308,10 +330,12 @@ void vtkMTActorCollection::PopRedoStack() {
 			}
 			this->Changed = 1;
 		}
-		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, -1, this->UndoRedo->RedoStack.back().UndoCount));
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, DELETE_EVENT, this->UndoRedo->RedoStack.back().UndoCount));
 	}
 	else
 	{
+		// If stored event was a CREATE_EVENT, we need to put again corresponding objects in renderer + inside this
+		ActColl->InitTraversal();
 		cout << "Try to re-add last created actor(s)" << endl;
 
 		// actor(s) creation (file loading / create 1 landmark etc...)
@@ -321,7 +345,7 @@ void vtkMTActorCollection::PopRedoStack() {
 		{
 
 			vtkActor *myActor = ActColl->GetNextActor();
-			cout << "Try to get last actor, creation count = " << this->UndoRedo->RedoStack.back().CreationCount << "this->Number of itemps=" << this->GetNumberOfItems() << endl;
+			//cout << "Try to get last actor, creation count = " << this->UndoRedo->RedoStack.back().CreationCount << "this->Number of itemps=" << this->GetNumberOfItems() << endl;
 
 			this->AddItem(myActor);
 			this->Renderer->AddActor(myActor);
@@ -335,9 +359,8 @@ void vtkMTActorCollection::PopRedoStack() {
 			}
 			this->Changed = 1;
 
-		}
-		vtkSmartPointer<vtkActorCollection> ActCollVoid = vtkSmartPointer<vtkActorCollection>::New();
-		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActCollVoid, this->UndoRedo->RedoStack.back().CreationCount, this->UndoRedo->RedoStack.back().UndoCount));
+		}		
+		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(ActColl, CREATE_EVENT, this->UndoRedo->RedoStack.back().UndoCount));
 
 	}
 

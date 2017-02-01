@@ -23,12 +23,11 @@ public:
 	{
 		vtkSmartPointer<vtkActorCollection> Collection;
 		int UndoCount;
-		int CreationCount; // in case of load a new actor or load several actors, how many actors were loaded/created
-		//-1 if action is not a "load".
-		Element(vtkSmartPointer<vtkActorCollection> col,  int creationcount, int Count)
+		int EventType; // CREATE_EVENT(1) or DELETE_EVENT
+		Element(vtkSmartPointer<vtkActorCollection> col,  int event_type, int Count)
 		{
 			this->Collection = col;
-			this->CreationCount = creationcount;
+			this->EventType = event_type;
 			this->UndoCount = Count;
 			
 		}
