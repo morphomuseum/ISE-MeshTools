@@ -195,10 +195,12 @@ MeshTools::MeshTools()
 	settings.endGroup();
 	settings.beginGroup("color_settings");
 	double defaultMeshColor[4];
+	double defaultFlagColor[3];
 	double defaultBackGroundColor[3];
 	double defaultBackGroundColor2[3];
 
 	this->MeshToolsCore->Getmui_DefaultMeshColor(defaultMeshColor);
+	this->MeshToolsCore->Getmui_DefaultFlagColor(defaultFlagColor);
 	this->MeshToolsCore->Getmui_DefaultBackGroundColor(defaultBackGroundColor);
 	this->MeshToolsCore->Getmui_DefaultBackGroundColor2(defaultBackGroundColor2);
 	//cout << "defaultMeshColor[3]=" << defaultMeshColor[3] << endl;
@@ -215,6 +217,17 @@ MeshTools::MeshTools()
 	settings.value("MeshAlpha", 
 		defaultMeshColor[3]
 		).toDouble()
+		);
+	this->MeshToolsCore->Setmui_FlagColor(
+		settings.value("FlagRed",
+			defaultFlagColor[0]
+			).toDouble(),
+		settings.value("FlagGreen",
+			defaultFlagColor[1]
+			).toDouble(),
+		settings.value("FlagBlue",
+			defaultFlagColor[2]
+			).toDouble()
 		);
 	this->MeshToolsCore->Setmui_BackGroundColor(
 		settings.value("BackGroundRed", 
@@ -239,6 +252,29 @@ MeshTools::MeshTools()
 			defaultBackGroundColor2[2]
 			).toDouble()
 		);
+	settings.endGroup();
+
+	settings.beginGroup("landmark_settings");
+	this->MeshToolsCore->Setmui_LandmarkBodyType(
+		settings.value("LandmarkBodyType",
+			this->MeshToolsCore->Getmui_DefaultLandmarkBodyType()
+			).toInt()
+			);
+	this->MeshToolsCore->Setmui_FlagRenderingSize(
+		settings.value("FlagRenderingSize",
+			this->MeshToolsCore->Getmui_DefaultFlagRenderingSize()
+			).toDouble()
+		);
+	this->MeshToolsCore->Setmui_LandmarkRenderingSize(
+		settings.value("LandmarkRenderingSize",
+			this->MeshToolsCore->Getmui_DefaultLandmarkRenderingSize()
+			).toDouble()
+		);
+	this->MeshToolsCore->Setmui_AdjustLandmarkRenderingSize(
+		settings.value("AdjustLandmarkRenderingSize",
+			this->MeshToolsCore->Getmui_DefaultAdjustLandmarkRenderingSize()
+			).toInt()
+		);	
 	settings.endGroup();
 
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
@@ -464,8 +500,23 @@ void MeshTools::saveSettings()
 	settings.setValue("MeshGreen", this->MeshToolsCore->Getmui_MeshColor()[1]);
 	settings.setValue("MeshBlue", this->MeshToolsCore->Getmui_MeshColor()[2]);
 	settings.setValue("MeshAlpha", this->MeshToolsCore->Getmui_MeshColor()[3]);
+
+	settings.setValue("FlagRed", this->MeshToolsCore->Getmui_FlagColor()[0]);
+	settings.setValue("FlagGreen", this->MeshToolsCore->Getmui_FlagColor()[1]);
+	settings.setValue("FlagBlue", this->MeshToolsCore->Getmui_FlagColor()[2]);
+	
+
+	
+
 	settings.endGroup();
 	
+	settings.beginGroup("landmark_settings");
+	settings.setValue("LandmarkBodyType", this->MeshToolsCore->Getmui_LandmarkBodyType());
+	settings.setValue("LandmarkRenderingSize", this->MeshToolsCore->Getmui_LandmarkRenderingSize());
+	settings.setValue("FlagRenderingSize", this->MeshToolsCore->Getmui_FlagRenderingSize());
+	
+	settings.setValue("AdjustLandmarkRenderingSize", this->MeshToolsCore->Getmui_AdjustLandmarkRenderingSize());
+	settings.endGroup();
 	settings.beginGroup("renderer_settings");
 	settings.setValue("Anaglyph", this->MeshToolsCore->Getmui_Anaglyph());	
 	settings.endGroup();

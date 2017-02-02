@@ -19,6 +19,10 @@ set (Qt_SRCS
   mqColorDialogReaction.cxx
   mqColorDialog.cxx
   mqColorDialog.h
+  mqLandmarkDialogReaction.h
+  mqLandmarkDialogReaction.cxx
+  mqLandmarkDialog.cxx
+  mqLandmarkDialog.h
   mqUndoRedoReaction.h
   mqUndoRedoReaction.cxx
   mqUndoStack.h
@@ -36,7 +40,7 @@ set (Qt_MOC_HDRS
   mqAboutDialog.h
 )
 
-set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqMainControlsToolbar.ui)
+set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqLandmarkDialog.ui  mqMainControlsToolbar.ui)
 
 set( Qt_RCs ../Icons/icons.qrc )
 

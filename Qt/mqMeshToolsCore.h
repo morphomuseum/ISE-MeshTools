@@ -64,14 +64,33 @@ public:
 	void Setmui_MeshColor(double c[4]);
 
 	
+	double* Getmui_FlagColor();
+	void Getmui_FlagColor(double c[3]);
+	double* Getmui_DefaultFlagColor();
+	void Getmui_DefaultFlagColor(double c[3]);
+	void Setmui_FlagColor(double c1, double c2, double c3);
+	void Setmui_FlagColor(double c[3]);
+
+	void Setmui_LandmarkBodyType(int type);
+	int Getmui_DefaultLandmarkBodyType();
+	int Getmui_LandmarkBodyType();
+
+	void Setmui_LandmarkRenderingSize(double size);
+	double Getmui_DefaultLandmarkRenderingSize();
+	double Getmui_LandmarkRenderingSize();
 
 
+	void Setmui_AdjustLandmarkRenderingSize(int adjust);
+	int Getmui_DefaultAdjustLandmarkRenderingSize();
+	int Getmui_AdjustLandmarkRenderingSize();
 
+
+	void Setmui_FlagRenderingSize(double size);
+	double Getmui_DefaultFlagRenderingSize();
+	double Getmui_FlagRenderingSize();
 	
 
-	//vtkSetVector3Macro(mui_BackGroundColor, double);
-	//vtkGetVector3Macro(mui_BackGroundColor, double);
-	//vtkGetVector3Macro(mui_DefaultBackGroundColor, double);
+	
 
 	double* Getmui_BackGroundColor();
 	void Getmui_BackGroundColor(double bg[3]);
@@ -93,7 +112,7 @@ public:
 	void Setmui_BackGroundColor2(double background[3]);
   //static mqMeshToolsCore* New();
   static mqMeshToolsCore* instance();
-  
+  void UpdateLandmarkSettings();
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
   void SetRenderWindow(vtkRenderWindow *renwin)
   {
@@ -147,13 +166,26 @@ protected:
 	int mui_DefaultCameraOrtho;
 
 	double mui_MeshColor[4];
+	double mui_FlagColor[3];
 	double mui_BackGroundColor[3];
 	double mui_BackGroundColor2[3];
 
 	double mui_DefaultMeshColor[4];
+	double mui_DefaultFlagColor[3];
 	double mui_DefaultBackGroundColor[3];
 	double mui_DefaultBackGroundColor2[3];
 	
+	int mui_DefaultLandmarkBodyType;
+	int mui_LandmarkBodyType;
+
+	int mui_DefaultLandmarkRenderingSize;
+	int mui_LandmarkRenderingSize;
+
+	int mui_DefaultAdjustLandmarkRenderingSize;
+	int mui_AdjustLandmarkRenderingSize;
+
+	int mui_DefaultFlagRenderingSize;
+	int mui_FlagRenderingSize;
 
 private:
 	static mqMeshToolsCore* Instance;

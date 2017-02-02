@@ -7,6 +7,7 @@
 
 #include "mqAboutDialogReaction.h"
 #include "mqColorDialogReaction.h"
+#include "mqLandmarkDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqMainControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
@@ -63,6 +64,7 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
   new mqColorDialogReaction(menu.addAction("Edit color options") << mqSetName("actionColor"));
+  new mqLandmarkDialogReaction(menu.addAction("Edit landmark and flag rendering options") << mqSetName("actionLandmark"));
   //new pqUndoRedoReaction(ui.actionEditUndo, true);
   //new pqUndoRedoReaction(ui.actionEditRedo, false);
   //new pqCameraUndoRedoReaction(ui.actionEditCameraUndo, true);

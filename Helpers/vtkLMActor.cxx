@@ -159,6 +159,12 @@ void vtkLMActor::SetLMOrientation(double orientation[3])
 		this->UpdateProps();
 	}
 }
+void vtkLMActor::SetLMSize(double size)
+{
+	this->LMSize = size;
+	this->Modified();
+	this->UpdateProps();
+}
 void vtkLMActor::GetLMOrientation(double orientation[3])
 {
 	double *ori = this->GetLMOrientation();
@@ -393,7 +399,7 @@ void vtkLMActor::SetLMBodyType(int type)
 
 
 }
-
+/*
 void vtkLMActor::SetLMSize(double size)
 {
 	if (this->LMSize != size && size>0)
@@ -403,7 +409,7 @@ void vtkLMActor::SetLMSize(double size)
 		this->UpdateProps();
 	}
 
-}
+}*/
 
 
 void vtkLMActor::SetLMNumber(int num)

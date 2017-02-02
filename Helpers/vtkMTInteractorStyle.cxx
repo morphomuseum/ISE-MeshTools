@@ -518,10 +518,10 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 					  myLM->SetLMOriginAndOrientation(pos, norm);
 					   //myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
 					   //myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
-					  myLM->SetLMSize(1);
+					  myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
 					  myLM->SetLMType(0);
 					  myLM->SetLMNumber(num);
-					  myLM->SetLMBodyType(1);
+					  myLM->SetLMBodyType(mqMeshToolsCore::instance()->Getmui_LandmarkBodyType());
 					  myLM->SetSelected(0);
 					 
 						  vtkSmartPointer<vtkPolyDataMapper> mapper =

@@ -35,9 +35,20 @@ mqMeshToolsCore::mqMeshToolsCore()
 {
 
 	mqMeshToolsCore::Instance = this;
+
+	this->mui_LandmarkBodyType = this->mui_DefaultLandmarkBodyType = 0;
+	this->mui_LandmarkRenderingSize=this->mui_DefaultLandmarkRenderingSize=1;
+	this->mui_AdjustLandmarkRenderingSize= this->mui_DefaultAdjustLandmarkRenderingSize=1;
+	this->mui_FlagRenderingSize= this->mui_DefaultFlagRenderingSize=5;
+
+
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
 	
+	this->mui_FlagColor[0] = this->mui_DefaultFlagColor[0] = 0;
+	this->mui_FlagColor[1] = this->mui_DefaultFlagColor[1] = 0.7;
+	this->mui_FlagColor[2] = this->mui_DefaultFlagColor[2] = 0.7;
+
 	this->mui_MeshColor[0] = this->mui_DefaultMeshColor[0] = 0.631373;
 	this->mui_MeshColor[1] = this->mui_DefaultMeshColor[1] = 0.572549;
 	this->mui_MeshColor[2] = this->mui_DefaultMeshColor[2] = 0.372549;
@@ -221,6 +232,39 @@ void mqMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 }
 
 
+void mqMeshToolsCore::Setmui_LandmarkBodyType(int type) {
+	this->mui_LandmarkBodyType = type; 
+	this->UpdateLandmarkSettings();
+}
+int mqMeshToolsCore::Getmui_DefaultLandmarkBodyType() { return this->mui_DefaultLandmarkBodyType; }
+int mqMeshToolsCore::Getmui_LandmarkBodyType() { return this->mui_LandmarkBodyType; }
+
+void mqMeshToolsCore::Setmui_LandmarkRenderingSize(double size)
+{ this->mui_LandmarkRenderingSize = size;
+this->UpdateLandmarkSettings();
+}
+double mqMeshToolsCore::Getmui_DefaultLandmarkRenderingSize() { return this->mui_DefaultLandmarkRenderingSize; }
+double mqMeshToolsCore::Getmui_LandmarkRenderingSize() { return this->mui_LandmarkRenderingSize; }
+
+
+void mqMeshToolsCore::Setmui_AdjustLandmarkRenderingSize(int adjust) {
+	this->mui_AdjustLandmarkRenderingSize = adjust; 
+
+}
+int mqMeshToolsCore::Getmui_DefaultAdjustLandmarkRenderingSize() { return this->mui_DefaultAdjustLandmarkRenderingSize; }
+int mqMeshToolsCore::Getmui_AdjustLandmarkRenderingSize() { return this->mui_AdjustLandmarkRenderingSize; }
+
+
+void mqMeshToolsCore::Setmui_FlagRenderingSize(double size) { 
+	this->mui_FlagRenderingSize = size; 
+	cout << mui_FlagRenderingSize << endl;
+}
+double mqMeshToolsCore::Getmui_DefaultFlagRenderingSize() { return this->mui_DefaultFlagRenderingSize; }
+
+double mqMeshToolsCore::Getmui_FlagRenderingSize() { return this->mui_FlagRenderingSize; 
+cout << "Default f r z" << this->mui_FlagRenderingSize<<endl;
+}
+
 
 
 double* mqMeshToolsCore::Getmui_MeshColor() { return this->mui_MeshColor; }
@@ -268,11 +312,64 @@ void mqMeshToolsCore::Setmui_MeshColor(double c[4])
 		if (myActor->GetSelected()==1)
 		{
 			
-			//myActor->SetmColor(this->mui_MeshColor);
-			//myActor->SetSelected(0);
+			myActor->SetmColor(this->mui_MeshColor);
+			myActor->SetSelected(0);
 		}
 	}
 }
+
+double* mqMeshToolsCore::Getmui_FlagColor() { return this->mui_FlagColor; }
+void mqMeshToolsCore::Getmui_FlagColor(double c[3])
+{
+	double *co = this->Getmui_FlagColor();
+
+	c[0] = co[0];
+	c[1] = co[1];
+	c[2] = co[2];	
+}
+
+double* mqMeshToolsCore::Getmui_DefaultFlagColor() { return this->mui_DefaultFlagColor; }
+
+void mqMeshToolsCore::Getmui_DefaultFlagColor(double c[3])
+{
+	double *co = this->Getmui_DefaultFlagColor();
+
+	c[0] = co[0];
+	c[1] = co[1];
+	c[2] = co[2];
+	
+}
+void mqMeshToolsCore::Setmui_FlagColor(double c1, double c2, double c3)
+{
+	double c[3];
+	c[0] = c1;
+	c[1] = c2;
+	c[2] = c3;
+	
+
+
+	this->Setmui_FlagColor(c);
+}
+void mqMeshToolsCore::Setmui_FlagColor(double c[3])
+{
+	this->mui_FlagColor[0] = c[0];
+	this->mui_FlagColor[1] = c[1];
+	this->mui_FlagColor[2] = c[2];
+	
+	//cout << "Core: this->mui_MeshColor[3]="<<this->mui_MeshColor[3] << endl;
+	/*this->FlagCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+
+			//myActor->SetmColor(this->mui_FlagColor);
+			//myActor->SetSelected(0);
+		}
+	}*/
+}
+
 
 
 double* mqMeshToolsCore::Getmui_BackGroundColor() { return this->mui_BackGroundColor; }
@@ -359,6 +456,22 @@ void mqMeshToolsCore::Setmui_BackGroundColor2(double background[3])
 	this->Renderer->SetBackground2(background);
 	//this->RenderWindow->Render();
 }
+void mqMeshToolsCore::UpdateLandmarkSettings()
+{
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		myActor->SetLMBodyType ( this->Getmui_LandmarkBodyType());
+		myActor->SetLMSize (this->Getmui_LandmarkRenderingSize());
+		vtkSmartPointer<vtkPolyDataMapper> mapper =
+			vtkSmartPointer<vtkPolyDataMapper>::New();
+		mapper->SetInputData(myActor->getLMBody());
+		mapper->Update();
+		myActor->SetMapper(mapper);
+	}
+
+}
 
 void mqMeshToolsCore::Undo()
 {
@@ -425,6 +538,7 @@ void mqMeshToolsCore::Redo(int Count)
 	this->LandmarkCollection->Redo(Count);
 
 }
+
 void mqMeshToolsCore::Erase(int Count)
 {
 	//cout << "Erase(" << Count << ")" << endl;
