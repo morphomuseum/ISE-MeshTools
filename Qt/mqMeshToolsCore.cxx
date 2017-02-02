@@ -147,7 +147,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mapper->Update();
 	this->LMActor->SetMapper(mapper);
 	//this->LMActor->SetMapper(mapper);
-	this->LandmarkCollection->AddItem(this->LMActor);
+	//this->LandmarkCollection->AddItem(this->LMActor);
 
 	this->LMActor2 = vtkSmartPointer<vtkLMActor>::New();
 	this->LMActor2->SetLMType(3);
@@ -163,9 +163,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mapper2->Update();
 	this->LMActor2->SetMapper(mapper2);
 	//this->LMActor->SetMapper(mapper);
-	this->LandmarkCollection->AddItem(this->LMActor2);
+	//this->LandmarkCollection->AddItem(this->LMActor2);
 
-	this->LandmarkCollection->SetChanged(1);
+	//this->LandmarkCollection->SetChanged(1);
 	
 	this->Renderer->AddActor(this->GridActor);
 

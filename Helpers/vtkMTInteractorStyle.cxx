@@ -649,7 +649,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				cout << "Call myActor Save Position with count"<<Count << endl;
+				//cout << "Call myActor Save Position with count"<<Count << endl;
 				myActor->SaveState(Count);
 			}
 		}

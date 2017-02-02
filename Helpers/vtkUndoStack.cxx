@@ -28,7 +28,7 @@ vtkUndoStack::vtkUndoStack()
   this->Internal = new vtkUndoStackInternal;
   this->InUndo = false;
   this->InRedo = false;
-  this->StackDepth = 5;
+  this->StackDepth = 20;
   this->NestedCount = 0;
   this->GlobalCount = 0;
   this->UndoStackBuilder = vtkSmartPointer<vtkUndoStackBuilder>::New();
