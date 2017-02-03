@@ -426,13 +426,13 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Color options</string>
+   <string>Landmark and flag options</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>360</y>
+     <x>50</x>
+     <y>370</y>
      <width>247</width>
      <height>25</height>
     </rect>
@@ -461,9 +461,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>30</y>
      <width>321</width>
-     <height>201</height>
+     <height>221</height>
     </rect>
    </property>
    <property name="palette">
@@ -940,7 +940,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>160</y>
+      <y>190</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -952,11 +952,34 @@
    <widget class="QDoubleSpinBox" name="LandmarkRenderingSizeValue">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>160</y>
+      <x>200</x>
+      <y>190</y>
       <width>62</width>
       <height>22</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="AdjustScaleFactor">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>148</y>
+      <width>62</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>150</y>
+      <width>171</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Adjustment scale factor (0.1-10)</string>
     </property>
    </widget>
   </widget>
@@ -964,7 +987,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>240</y>
+     <y>260</y>
      <width>321</width>
      <height>91</height>
     </rect>

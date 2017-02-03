@@ -84,6 +84,9 @@ public:
 	int Getmui_DefaultAdjustLandmarkRenderingSize();
 	int Getmui_AdjustLandmarkRenderingSize();
 
+	void Setmui_AdjustScaleFactor(double factor);
+	double Getmui_DefaultAdjustScaleFactor();
+	double Getmui_AdjustScaleFactor();
 
 	void Setmui_FlagRenderingSize(double size);
 	double Getmui_DefaultFlagRenderingSize();
@@ -130,7 +133,7 @@ public:
   void Redo(int Count); // send redo message to the concerned elements (actors mostly!)
   void Erase(int Count); // erase action number Count (in actors!)
   void Undo(int Count); // send undo message to the concerned elements (actors!)
-
+  double AdjustedLandmarkSize();
   //vtkSmartPointer<vtkUndoStack> getUndoStack();
   mqUndoStack* getUndoStack();
   void setUndoStack(mqUndoStack* stack);
@@ -178,11 +181,14 @@ protected:
 	int mui_DefaultLandmarkBodyType;
 	int mui_LandmarkBodyType;
 
-	int mui_DefaultLandmarkRenderingSize;
-	int mui_LandmarkRenderingSize;
+	double mui_DefaultLandmarkRenderingSize;
+	double mui_LandmarkRenderingSize;
 
-	int mui_DefaultAdjustLandmarkRenderingSize;
-	int mui_AdjustLandmarkRenderingSize;
+	double mui_DefaultAdjustLandmarkRenderingSize;
+	double mui_AdjustLandmarkRenderingSize;
+
+	double mui_DefaultAdjustScaleFactor;
+	double mui_AdjustScaleFactor;
 
 	int mui_DefaultFlagRenderingSize;
 	int mui_FlagRenderingSize;

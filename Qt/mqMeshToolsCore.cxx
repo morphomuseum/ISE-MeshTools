@@ -40,7 +40,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->mui_LandmarkRenderingSize=this->mui_DefaultLandmarkRenderingSize=1;
 	this->mui_AdjustLandmarkRenderingSize= this->mui_DefaultAdjustLandmarkRenderingSize=1;
 	this->mui_FlagRenderingSize= this->mui_DefaultFlagRenderingSize=5;
-
+	this->mui_AdjustScaleFactor = this->mui_DefaultAdjustScaleFactor = 1;
 
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
@@ -246,13 +246,20 @@ this->UpdateLandmarkSettings();
 double mqMeshToolsCore::Getmui_DefaultLandmarkRenderingSize() { return this->mui_DefaultLandmarkRenderingSize; }
 double mqMeshToolsCore::Getmui_LandmarkRenderingSize() { return this->mui_LandmarkRenderingSize; }
 
-
-void mqMeshToolsCore::Setmui_AdjustLandmarkRenderingSize(int adjust) {
-	this->mui_AdjustLandmarkRenderingSize = adjust; 
-
+void mqMeshToolsCore::Setmui_AdjustLandmarkRenderingSize(int adjust)
+{
+	this->mui_AdjustLandmarkRenderingSize = adjust;
+	this->UpdateLandmarkSettings();
 }
 int mqMeshToolsCore::Getmui_DefaultAdjustLandmarkRenderingSize() { return this->mui_DefaultAdjustLandmarkRenderingSize; }
 int mqMeshToolsCore::Getmui_AdjustLandmarkRenderingSize() { return this->mui_AdjustLandmarkRenderingSize; }
+
+void mqMeshToolsCore::Setmui_AdjustScaleFactor(double factor) {
+	this->mui_AdjustScaleFactor = factor; 
+	this->UpdateLandmarkSettings();
+}
+double mqMeshToolsCore::Getmui_DefaultAdjustScaleFactor() { return this->mui_DefaultAdjustScaleFactor; }
+double mqMeshToolsCore::Getmui_AdjustScaleFactor() { return this->mui_AdjustScaleFactor; }
 
 
 void mqMeshToolsCore::Setmui_FlagRenderingSize(double size) { 
@@ -456,6 +463,21 @@ void mqMeshToolsCore::Setmui_BackGroundColor2(double background[3])
 	this->Renderer->SetBackground2(background);
 	//this->RenderWindow->Render();
 }
+double mqMeshToolsCore::AdjustedLandmarkSize()
+{
+
+	double bbl = this->ActorCollection->GetBoundingBoxLength();
+	double adjusted_size = this->Getmui_AdjustScaleFactor()*bbl / 50;
+	if (adjusted_size > 0 && bbl < DBL_MAX)
+	{
+		return adjusted_size;
+	}
+	else
+	{
+		return this->Getmui_LandmarkRenderingSize();
+	}
+
+}
 void mqMeshToolsCore::UpdateLandmarkSettings()
 {
 	this->LandmarkCollection->InitTraversal();
@@ -463,7 +485,15 @@ void mqMeshToolsCore::UpdateLandmarkSettings()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
 		myActor->SetLMBodyType ( this->Getmui_LandmarkBodyType());
-		myActor->SetLMSize (this->Getmui_LandmarkRenderingSize());
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			//myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+			myActor->SetLMSize(this->AdjustedLandmarkSize());
+		}
+		else
+		{
+			myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+		}
 		vtkSmartPointer<vtkPolyDataMapper> mapper =
 			vtkSmartPointer<vtkPolyDataMapper>::New();
 		mapper->SetInputData(myActor->getLMBody());

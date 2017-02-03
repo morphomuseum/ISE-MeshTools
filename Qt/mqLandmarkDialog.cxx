@@ -74,42 +74,43 @@ mqLandmarkDialog::mqLandmarkDialog(QWidget* Parent)
 	  this->Ui->SpheresRadioButton->setChecked(false);
 	  this->Ui->ArrowsRadioButton->setChecked(true);
   }
-  connect(this->Ui->SpheresRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
-  connect(this->Ui->ArrowsRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
-
-  int adjust_lmk_size = mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize();
-  if (adjust_lmk_size == 1) {
+ 
+  int adj_lmk_size = mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize();
+  cout << "adj_lmk_size" << adj_lmk_size << endl;
+  if (adj_lmk_size == 1) {
 	  this->Ui->AdjustLandmarkRenderingSizeCheckBox->setChecked(true);
 	  this->Ui->LandmarkRenderingSizeValue->setDisabled(true);
+	  this->Ui->AdjustScaleFactor->setEnabled(true);
   }
   else
   {
 	  this->Ui->LandmarkRenderingSizeValue->setEnabled(true);
+	  this->Ui->AdjustScaleFactor->setDisabled(true);
   }
  
-  connect(this->Ui->AdjustLandmarkRenderingSizeCheckBox, SIGNAL(clicked()), this, SLOT(slotAdjustLandmarkRenderingSizeChanged()));
-
-
+   this->Ui->AdjustScaleFactor->setMinimum(0.01);
+  this->Ui->AdjustScaleFactor->setMaximum(10);
+  double scale_factor = mqMeshToolsCore::instance()->Getmui_AdjustScaleFactor();
+  cout << "mt scale factor=" << scale_factor << endl;
+  this->Ui->AdjustScaleFactor->setValue(scale_factor);
 
   double landmark_rendering_size = mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize();
+  //cout << "LRS=" << landmark_rendering_size<< endl;
   this->Ui->LandmarkRenderingSizeValue->setMinimum(0);
   //this->Ui->LandmarkRenderingSizeValue->setMaximum(10000);
   this->Ui->LandmarkRenderingSizeValue->setSingleStep(1);
   this->Ui->LandmarkRenderingSizeValue->setValue(landmark_rendering_size);
-  //Validator(new QDoubleValidator(0, 100, 2, this));
-  //this->Ui->LandmarkRenderingSizeInput->setT
   double flag_rendering_size = mqMeshToolsCore::instance()->Getmui_FlagRenderingSize();
-  //cout << "flag r s" << flag_rendering_size<<endl;
-  //this->Ui->FlagRenderingSizeInput->setValidator(new QDoubleValidator(0, 100, 2, this));
-
   this->Ui->FlagRenderingSizeValue->setMinimum(0);
-  //this->Ui->FlagRenderingSizeValue->setMaximum(10000);
   this->Ui->FlagRenderingSizeValue->setSingleStep(1);
   this->Ui->FlagRenderingSizeValue->setValue(flag_rendering_size);
   
-
+  connect(this->Ui->SpheresRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
+  connect(this->Ui->ArrowsRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
+  connect(this->Ui->AdjustLandmarkRenderingSizeCheckBox, SIGNAL(clicked()), this, SLOT(slotAdjustLandmarkRenderingSizeChanged()));
   connect(this->Ui->LandmarkRenderingSizeValue, SIGNAL(valueChanged(double)), this, SLOT(slotLandmarkRenderingSizeChanged()));
   connect(this->Ui->FlagRenderingSizeValue, SIGNAL(valueChanged(double)), this, SLOT(slotFlagRenderingSizeChanged()));
+  connect(this->Ui->AdjustScaleFactor, SIGNAL(valueChanged(double)), this, SLOT(slotAdjustScaleFactorChanged()));
 
 }
 
@@ -130,7 +131,13 @@ mqLandmarkDialog::~mqLandmarkDialog()
 	
   delete this->Ui;
 }
+void mqLandmarkDialog::slotAdjustScaleFactorChanged()
+{
+	double scale_factor = 1;
+	scale_factor = this->Ui->AdjustScaleFactor->value();
+	mqMeshToolsCore::instance()->Setmui_AdjustScaleFactor(scale_factor);
 
+}
 void mqLandmarkDialog::slotAdjustLandmarkRenderingSizeChanged()
 {
 	int adj_lmk_size=0;
@@ -140,10 +147,12 @@ void mqLandmarkDialog::slotAdjustLandmarkRenderingSizeChanged()
 	}
 	if (adj_lmk_size == 1) {		
 		this->Ui->LandmarkRenderingSizeValue->setDisabled(true);
+		this->Ui->AdjustScaleFactor->setEnabled(true);
 	}
 	else
 	{
 		this->Ui->LandmarkRenderingSizeValue->setEnabled(true);
+		this->Ui->AdjustScaleFactor->setDisabled(true);
 	}
 
 

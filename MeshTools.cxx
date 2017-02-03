@@ -265,16 +265,22 @@ MeshTools::MeshTools()
 			this->MeshToolsCore->Getmui_DefaultFlagRenderingSize()
 			).toDouble()
 		);
+
 	this->MeshToolsCore->Setmui_LandmarkRenderingSize(
 		settings.value("LandmarkRenderingSize",
 			this->MeshToolsCore->Getmui_DefaultLandmarkRenderingSize()
 			).toDouble()
 		);
-	this->MeshToolsCore->Setmui_AdjustLandmarkRenderingSize(
-		settings.value("AdjustLandmarkRenderingSize",
-			this->MeshToolsCore->Getmui_DefaultAdjustLandmarkRenderingSize()
-			).toInt()
-		);	
+	
+
+	this->MeshToolsCore->Setmui_AdjustScaleFactor(
+		settings.value("AdjustScaleFactor",
+			this->MeshToolsCore->Getmui_DefaultAdjustScaleFactor()
+			).toDouble()
+		);
+	cout << settings.value("AdjustScaleFactor",
+		this->MeshToolsCore->Getmui_DefaultAdjustScaleFactor()
+		).toDouble() << endl;
 	settings.endGroup();
 
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
@@ -516,6 +522,8 @@ void MeshTools::saveSettings()
 	settings.setValue("FlagRenderingSize", this->MeshToolsCore->Getmui_FlagRenderingSize());
 	
 	settings.setValue("AdjustLandmarkRenderingSize", this->MeshToolsCore->Getmui_AdjustLandmarkRenderingSize());
+	settings.setValue("AdjustScaleFactor", this->MeshToolsCore->Getmui_AdjustScaleFactor());
+	
 	settings.endGroup();
 	settings.beginGroup("renderer_settings");
 	settings.setValue("Anaglyph", this->MeshToolsCore->Getmui_Anaglyph());	
@@ -782,6 +790,8 @@ void MeshTools::slotOpenMeshFile()
 			this->MeshToolsCore->getActorCollection()->CreateLoadUndoSet(mCount, 1);
 			END_UNDO_SET();
 
+			
+
 			cout << "actor added to collection" << endl;
 			this->MeshToolsCore->getActorCollection()->SetChanged(1);
 			cout << "actor collection changed" << endl;
@@ -789,6 +799,11 @@ void MeshTools::slotOpenMeshFile()
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->AdjustCameraAndGrid();
 			cout << "camera and grid adjusted" << endl;
+
+			if (this->MeshToolsCore->Getmui_AdjustLandmarkRenderingSize() == 1)
+			{
+				this->MeshToolsCore->UpdateLandmarkSettings();
+			}
 			/*
 			double bounds[6];
 			MyPolyData->GetBounds(bounds);
