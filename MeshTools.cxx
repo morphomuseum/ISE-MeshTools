@@ -300,10 +300,7 @@ MeshTools::MeshTools()
 	
 
 
-	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
-	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
-	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
-	mqMeshToolsMenuBuilders::buildToolbars(*this);
+	
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	// Qt Table View
 	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
@@ -395,6 +392,12 @@ MeshTools::MeshTools()
 
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
+	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
+	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
+	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
+	mqMeshToolsMenuBuilders::buildToolbars(*this);
+
+	QObject::connect(this->ui->actionOpenNTW, SIGNAL(triggered()), this, SLOT(slotOpenNTW()));
 
 	vtkSmartPointer<vtkOrientationHelperActor> axes =
 		vtkSmartPointer<vtkOrientationHelperActor>::New();
@@ -554,7 +557,415 @@ void MeshTools::UpdateRenderer()
 }
 
 
+// Action to be taken upon file open
+void MeshTools::slotOpenNTW()
+{
+	std::string SfileName;
+	QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Load project"), QDir::currentPath(),
+		tr("NTW (*.ntw)"));
 
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	int file_exists = 1;
+
+
+	QFile file(fileName);
+	QString name = "";
+	if (file.exists()) {
+		// Message
+		name = file.fileName(); // Return only a file name		
+		file.close();
+	}
+	else
+	{
+		file_exists = 0;
+
+	}
+
+
+	if (file_exists == 1)
+	{
+		cout << "found file!!!!" << endl;
+	
+			/*std::string only_filename = fl_filename_name(filename.c_str());
+			std::string path = filename.substr(0, (filename.length() - only_filename.length()));
+
+			Mesh_UnselectAll();
+			//filein = fopen(szFile, "rt");
+			//fopen_s(&filein, filename.c_str(), "rt");	
+			filein = fopen(filename.c_str(), "r");
+			readstr(filein, oneline);
+			int ok = 0;
+			while (!feof(filein))
+			{
+
+				sscanf(oneline, "%[^\n]s", param1);
+				//cout << "param1" << param1 << endl;
+				std::string myline = param1;
+
+				std::string FLGext(".flg");
+				std::string FLGext2(".FLG");
+				std::string VERext(".ver");
+				std::string VERext2(".VER");
+				std::string CURext(".cur");
+				std::string CURext2(".CUR");
+				std::string STVext(".stv");
+				std::string STVext2(".STV");
+				std::string TAGext(".tag");
+				std::string TAGext2(".TAG");
+				std::string ORIext(".ori");
+				std::string ORIext2(".ORI");
+				int lmk_file = 0;
+
+				std::size_t found = myline.find(FLGext);
+				std::size_t found2 = myline.find(FLGext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					// Now open flag file!
+					std::string flgfilename = fl_filename_name(myline.c_str());
+					if (myline.length() == flgfilename.length())
+					{
+						myline = path.c_str();
+						myline.append(flgfilename.c_str());
+					}
+					std::cout << "Try to load flag file :<<" << myline.c_str() << std::endl;
+					this->Open_FLG_File(myline);
+
+				}
+
+				found = myline.find(VERext);
+				found2 = myline.find(VERext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					int landmark_mode = 0;
+					// Now open flag file!
+					std::string verfilename = fl_filename_name(myline.c_str());
+					if (myline.length() == verfilename.length())
+					{
+						myline = path.c_str();
+						myline.append(verfilename.c_str());
+					}
+					std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
+					this->Open_VER_File(landmark_mode, myline);
+					// Now open VER file !
+
+				}
+
+				found = myline.find(CURext);
+				found2 = myline.find(CURext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					// Now open flag file!
+					std::string curfilename = fl_filename_name(myline.c_str());
+					if (myline.length() == curfilename.length())
+					{
+						myline = path.c_str();
+						myline.append(curfilename.c_str());
+					}
+					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+					this->Open_CUR_File(myline);
+
+
+				}
+
+				found = myline.find(STVext);
+				found2 = myline.find(STVext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					std::string stvfilename = fl_filename_name(myline.c_str());
+					if (myline.length() == stvfilename.length())
+					{
+						myline = path.c_str();
+						myline.append(stvfilename.c_str());
+					}
+					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+					this->Open_STV_File(myline);
+					// Now open CUR file !
+
+
+				}
+				found = myline.find(ORIext);
+				found2 = myline.find(ORIext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					std::string orifilename = fl_filename_name(myline.c_str());
+					if (myline.length() == orifilename.length())
+					{
+						myline = path.c_str();
+						myline.append(orifilename.c_str());
+					}
+					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+					this->Open_ORI_File(myline);
+					// Now open CUR file !
+
+
+				}
+
+				found = myline.find(TAGext);
+				found2 = myline.find(TAGext2);
+				if (found != std::string::npos || found2 != std::string::npos)
+				{
+					lmk_file = 1;
+					std::string tagfilename = fl_filename_name(myline.c_str());
+					if (myline.length() == tagfilename.length())
+					{
+						myline = path.c_str();
+						myline.append(tagfilename.c_str());
+					}
+					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+					this->Open_TAG_File(myline);
+					// Now open CUR file !
+
+
+				}
+
+				if (lmk_file == 0)
+				{
+					if (i == 0)
+					{
+
+						//length=(int)strlen(oneline);						
+						//strncpy(param1, oneline, length-1);
+						std::string meshname = param1;
+						//cout << "meshname:" << meshname<<endl;
+						std::string STLext(".stl");
+						std::string STLext2(".STL");
+						std::string VTKext(".vtk");
+						std::string VTKext2(".VTK");
+						std::string OBJext(".obj");
+						std::string OBJext2(".OBJ");
+						std::string PLYext(".ply");
+						std::string PLYext2(".PLY");
+
+						int type = 0; //0 = stl, 1 = vtk, 2 = obj, 3 = ply
+						found = meshname.find(STLext);
+						found2 = meshname.find(STLext2);
+						if (found != std::string::npos || found2 != std::string::npos)
+						{
+							type = 0;
+							//STL
+						}
+
+						//std::cout << "0Type= " <<type<< std::endl;
+						found = meshname.find(VTKext);
+						found2 = meshname.find(VTKext2);
+						if (found != std::string::npos || found2 != std::string::npos)
+						{
+							type = 1; //VTK
+						}
+						//std::cout << "1Type= " <<type<< std::endl;
+						found = meshname.find(OBJext);
+						found2 = meshname.find(OBJext2);
+						if (found != std::string::npos || found2 != std::string::npos)
+						{
+							type = 2; //OBJ
+						}
+						//std::cout << "2Type= " <<type<< std::endl;
+						found = meshname.find(PLYext);
+						found2 = meshname.find(PLYext2);
+						if (found != std::string::npos || found2 != std::string::npos)
+						{
+							type = 3; //PLY
+						}
+						//std::cout << "3Type= " <<type<< std::endl;
+
+						std::string meshfilename = fl_filename_name(meshname.c_str());
+						OBJECT_MESH *MyObj = NULL;
+						vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+
+						if (meshname.length() == meshfilename.length())
+						{
+							meshname = path.c_str();
+							meshname.append(meshfilename.c_str());
+						}
+
+						if (type == 0)
+						{
+
+							vtkSmartPointer<vtkSTLReader> reader =
+								vtkSmartPointer<vtkSTLReader>::New();
+
+							reader->SetFileName(meshname.c_str());
+							reader->Update();
+							ObjNormals->SetInputData(reader->GetOutput());
+							//MyObj= (OBJECT_MESH*)reader->GetOutput();
+						}
+						else if (type == 1)
+						{
+							vtkSmartPointer<vtkPolyDataReader> reader =
+								vtkSmartPointer<vtkPolyDataReader>::New();
+
+							reader->SetFileName(meshname.c_str());
+							reader->Update();
+							ObjNormals->SetInputData(reader->GetOutput());
+							//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+						}
+						else if (type == 2)
+						{
+							vtkSmartPointer<vtkOBJReader> reader =
+								vtkSmartPointer<vtkOBJReader>::New();
+
+							reader->SetFileName(meshname.c_str());
+							reader->Update();
+							ObjNormals->SetInputData(reader->GetOutput());
+							//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+						}
+						else
+						{
+							vtkSmartPointer<vtkPLYReader> reader =
+								vtkSmartPointer<vtkPLYReader>::New();
+
+							reader->SetFileName(meshname.c_str());
+							reader->Update();
+							ObjNormals->SetInputData(reader->GetOutput());
+							//MyObj= (OBJECT_MESH*)reader->GetOutput();
+
+						}
+
+
+
+
+						ObjNormals->ComputePointNormalsOn();
+						ObjNormals->ComputeCellNormalsOn();
+						//ObjNormals->AutoOrientNormalsOff();
+						ObjNormals->ConsistencyOff();
+						ObjNormals->Update();
+
+						vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+						cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+						cleanPolyDataFilter->PieceInvariantOff();
+						cleanPolyDataFilter->ConvertLinesToPointsOff();
+						cleanPolyDataFilter->ConvertPolysToLinesOff();
+						cleanPolyDataFilter->ConvertStripsToPolysOff();
+						cleanPolyDataFilter->PointMergingOn();
+						cleanPolyDataFilter->Update();
+
+						MyObj = (OBJECT_MESH*)cleanPolyDataFilter->GetOutput();
+
+						std::cout << "\nNumber of points 1:" << MyObj->GetNumberOfPoints() << std::endl;
+						std::cout << "\nNumber of cells 1:" << MyObj->GetNumberOfCells() << std::endl;
+
+
+						vtkFloatArray* norms = vtkFloatArray::SafeDownCast
+						(MyObj->GetCellData()->GetNormals());
+						std::cout << "Safe cell downcast done ! " << std::endl;
+						if (norms)
+						{
+
+							std::cout << "There are here " << norms->GetNumberOfTuples()
+								<< " Float Cell normals in norms" << std::endl;
+						}
+						else
+						{
+							std::cout << "FloatNorms CELL is null " << std::endl;
+						}
+
+						norms = vtkFloatArray::SafeDownCast
+						(MyObj->GetPointData()->GetNormals());
+						std::cout << "Safe point downcast done ! " << std::endl;
+						if (norms)
+						{
+
+							std::cout << "There are  " << norms->GetNumberOfTuples()
+								<< " Float POINT normals in norms" << std::endl;
+						}
+						else
+						{
+							std::cout << "FloatNorms POINTS is null " << std::endl;
+						}
+
+
+						if (MyObj->GetNumberOfPoints() > 10)
+						{
+
+							ok = 1;
+
+							std::string newname = fl_filename_name(param1);
+
+							int nPos = newname.find_first_of(".");
+							if (nPos > -1)
+							{
+								newname = newname.substr(0, nPos);
+							}
+
+							CheckingName(&newname);
+							My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());
+							My_Obj->Set_Active_Scalar();
+
+							My_Obj->selected = 1;
+							std::cout << "Object <<" << My_Obj->name.c_str() << ">> loaded" << std::endl;
+						}
+						else
+						{
+							ok = 0;
+						}
+
+
+					}
+					if (i == 1)
+					{
+						if (ok)
+						{
+
+							//length= (int)strlen(oneline);						
+							//strncpy(param1, oneline, length-1);
+							std::string posfile = param1;
+							//posfile = posfile.substr(0, (posfile.length()-1));// for some reason
+
+							std::string posfilename = fl_filename_name(posfile.c_str());
+							if (posfile.length() == posfilename.length())
+							{
+								posfile = path.c_str();
+								posfile.append(posfilename.c_str());
+							}
+							std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
+							this->Open_POS_File(posfile, My_Obj);
+							//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
+							My_Obj->selected = 0;
+						}
+					}
+					if (i == 2)
+					{
+						if (ok)
+						{
+							sscanf(oneline, "%f %f %f %f\n", &color1, &color2, &color3, &color4);
+							//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
+							My_Obj->color[0] = color1; My_Obj->color[1] = color2; My_Obj->color[2] = color3; My_Obj->color[3] = color4;
+							My_Obj->blend = color4;
+							My_Obj->Update_RGB();
+						}
+					}
+					i++;
+					if (i > 2)
+					{
+						i = 0;
+					}
+				}
+				readstr(filein, oneline); //read next line
+
+			}//While scanff...						
+
+			fclose(filein);
+			break;
+	*/
+}//if file exists
+
+
+/*this->Compute_Global_Mean(0);
+if (g_landmark_auto_rendering_size)
+{
+	this->Adjust_landmark_rendering_size();
+}
+	}*/
+}
 
 // Action to be taken upon file open
 void MeshTools::slotOpenMeshFile()

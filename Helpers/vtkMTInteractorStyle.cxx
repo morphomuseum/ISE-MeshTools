@@ -162,7 +162,7 @@ void vtkMTInteractorStyle::StartSelect()
 	// Output the key that was pressed
 	if (key.compare("l") == 0)
 	{
-		//cout << "l pressed" << endl;
+		cout << "l pressed" << endl;
 		this->L = L_PRESSED;
 	}
 	if (key.compare("Control_L") == 0)
@@ -469,6 +469,7 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 }
 void vtkMTInteractorStyle::OnLeftButtonDown()
 {
+	cout << "Left button down!" << endl;
   if (this->CurrentMode != VTKISMT_SELECT)
   {
     //if not in rubber band mode, let the parent class handle it

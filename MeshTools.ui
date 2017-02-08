@@ -69,6 +69,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenMesh"/>
+    <addaction name="actionOpenNTW"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -304,6 +305,11 @@
    </property>
    <property name="toolTip">
     <string>Toggle renderer : normal or anaglyph (red-blue)</string>
+   </property>
+  </action>
+  <action name="actionOpenNTW">
+   <property name="text">
+    <string>Open NTW</string>
    </property>
   </action>
  </widget>

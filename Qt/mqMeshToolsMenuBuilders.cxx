@@ -4,7 +4,7 @@
    Module:    mqMeshToolsMenuBuilders.cxx
 
 ========================================================================*/
-
+#include "mqMeshToolsCore.h"
 #include "mqAboutDialogReaction.h"
 #include "mqColorDialogReaction.h"
 #include "mqLandmarkDialogReaction.h"
@@ -14,13 +14,13 @@
 
 #include "mqSetName.h"
 
-//#include "ui_mdEditMenuBuilder.h" // no .ui Edit menu file yet
+//#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
 //#include "ui_mqFileMenuBuilder.h" // no .ui File menu yet
 
 
 //#include "pqAboutDialogReaction.h"
 
-
+#include <iostream>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QDockWidget>
@@ -35,12 +35,14 @@
 void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
 {
   QString objectName = menu.objectName();
-  //Ui::mqFileMenuBuilder ui; we do not have a ui file yet for the menu!
+  std::cout << "Menu object name" << objectName.toStdString() << std::endl;
+  //Ui::mqFileMenuBuilder ui;// we do not have a ui file yet for the menu!
   //ui.setupUi(&menu);
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
-  QAction *openNtw = menu.addAction("Open Network");
-  /*QObject::connect(
+ // QAction *openNtw = menu.addAction("Open Network");
+ //QObject::connect(openNtw, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(mqMeshToolsCore::slotOpenNTW()));
+ /*QObject::connect(
     ui.actionFileExit, SIGNAL(triggered()), pqApplicationCore::instance(), SLOT(quit()));*/
 
   // now setup reactions.

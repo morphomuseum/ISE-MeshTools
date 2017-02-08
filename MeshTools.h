@@ -74,6 +74,7 @@ public slots:
   virtual void slotCameraOrthoPerspectiveToggle();
   virtual void slotRendererAnaglyphToggle();
   virtual void slotExit();
+  virtual void slotOpenNTW();
  // int GetUndoCount();
 //  void SetUndoCount(int Count);
 
