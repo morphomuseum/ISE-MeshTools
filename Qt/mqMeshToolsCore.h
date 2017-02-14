@@ -35,6 +35,8 @@ class  mqMeshToolsCore : public QObject
 	Q_OBJECT
 		typedef QObject Superclass;
 public:
+	void UnselectAll(int Count);
+	void SelectAll(int Count);
 	void Setmui_Anaglyph(int anaglyph);
 	int Getmui_DefaultAnaglyph();
 	int Getmui_Anaglyph();

@@ -15,6 +15,11 @@
 //#include "vtkUndoStack.h"
 //#include "vtkUndoSet.h"
 //#include "vtkUndoElement.h"
+#include <stdlib.h>
+#include <string>
+#include <sstream>
+#include <iostream>
+
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -58,6 +63,8 @@
 #include <QTemporaryFile>
 #include <QSettings>
 #include <QIcon>
+#include <QFile>
+#include <QTextStream>
 
 //-----------------------------------------------------------------------------
 //MeshTools* MeshTools::Instance = 0;
@@ -560,21 +567,23 @@ void MeshTools::UpdateRenderer()
 // Action to be taken upon file open
 void MeshTools::slotOpenNTW()
 {
+	
 	std::string SfileName;
-	QString fileName = QFileDialog::getOpenFileName(this,
+	QString NTWfile = QFileDialog::getOpenFileName(this,
 		tr("Load project"), QDir::currentPath(),
 		tr("NTW (*.ntw)"));
 
-	cout << fileName.toStdString();
-	if (fileName.isEmpty()) return;
+	cout << NTWfile.toStdString() << endl;
+	if (NTWfile.isEmpty()) return;
 	int file_exists = 1;
 
+	
 
-	QFile file(fileName);
-	QString name = "";
+	QFile file(NTWfile);
+	QFileInfo fileInfo(NTWfile);
+	QString onlyfilename(fileInfo.fileName());
 	if (file.exists()) {
 		// Message
-		name = file.fileName(); // Return only a file name		
 		file.close();
 	}
 	else
@@ -588,14 +597,29 @@ void MeshTools::slotOpenNTW()
 	{
 		cout << "found file!!!!" << endl;
 	
-			/*std::string only_filename = fl_filename_name(filename.c_str());
-			std::string path = filename.substr(0, (filename.length() - only_filename.length()));
 
-			Mesh_UnselectAll();
-			//filein = fopen(szFile, "rt");
-			//fopen_s(&filein, filename.c_str(), "rt");	
-			filein = fopen(filename.c_str(), "r");
-			readstr(filein, oneline);
+			std::string only_filename = onlyfilename.toStdString();;
+			std::string path = NTWfile.toStdString().substr(0, (NTWfile.toStdString().length() - only_filename.length()));
+			cout << "only_filename" << only_filename << endl;
+			cout << "path" << path << endl;
+			this->MeshToolsCore->UnselectAll(-1);
+			
+			
+			
+			
+
+			QFile inputFile(NTWfile);
+			if (inputFile.open(QIODevice::ReadOnly))
+			{
+				QTextStream in(&inputFile);
+				while (!in.atEnd())
+				{
+					QString line = in.readLine();
+					cout << "Line:" << line.toStdString() << endl;
+				}
+				inputFile.close();
+			}
+			/*readstr(filein, oneline);
 			int ok = 0;
 			while (!feof(filein))
 			{

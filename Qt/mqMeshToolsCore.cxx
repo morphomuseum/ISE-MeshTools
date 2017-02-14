@@ -187,7 +187,57 @@ mqMeshToolsCore::mqMeshToolsCore()
 	
 }
 
+void mqMeshToolsCore::SelectAll(int Count)
+{}
+void mqMeshToolsCore::UnselectAll(int Count)
+{
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1 &&Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1&&Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
 
+
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+	this->LandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+}
 
 void mqMeshToolsCore::Render()
 {
