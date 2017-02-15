@@ -596,7 +596,7 @@ void MeshTools::UpdateRenderer()
 // Action to be taken upon file open
 void MeshTools::slotOpenNTW()
 {
-	char param1[1000];
+	//char param1[1000];
 	int i = 0;
 	std::string SfileName;
 	QString NTWfile = QFileDialog::getOpenFileName(this,
@@ -648,9 +648,10 @@ void MeshTools::slotOpenNTW()
 				{
 					QString line = in.readLine();
 					cout << "Line:" << line.toStdString() << endl;
-					sscanf(line.toStdString().c_str(), "%[^\n]s", param1);
+					//sscanf(line.toStdString().c_str(), "%[^\n]s", param1);
 					//cout << "param1" << param1 << endl;
-					std::string myline = param1;
+					//std::string myline = param1;
+					std::string myline = line.toStdString();
 					cout << "My line:" << myline << endl;
 					std::string FLGext(".flg");
 					std::string FLGext2(".FLG");
@@ -803,7 +804,7 @@ void MeshTools::slotOpenNTW()
 
 							//length=(int)strlen(oneline);						
 							//strncpy(param1, oneline, length-1);
-							std::string meshname = param1;
+							std::string meshname = line.toStdString();
 							QFileInfo meshfileInfo(line);
 							QString onlymeshfilename(meshfileInfo.fileName());
 							std::string meshfilename = onlymeshfilename.toStdString();
@@ -817,8 +818,9 @@ void MeshTools::slotOpenNTW()
 
 							 
 
-							vtkSmartPointer<vtkMTActor> actor = this->OpenMeshFile(meshfile);
-							
+							this->OpenMeshFile(meshfile);
+							vtkMTActor* actor = this->GetLastActor();
+
 							if (actor != NULL && actor->GetNumberOfPoints() > 10)
 							{
 
@@ -839,7 +841,7 @@ void MeshTools::slotOpenNTW()
 
 								//length= (int)strlen(oneline);						
 								//strncpy(param1, oneline, length-1);
-								std::string posfile = param1;
+								std::string posfile = line.toStdString();
 								// Now open TAG file!
 								QFileInfo posfileInfo(line);
 								QString onlyposfilename(posfileInfo.fileName());
@@ -851,11 +853,11 @@ void MeshTools::slotOpenNTW()
 									posfile.append(posfilename.c_str());
 								}
 								std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
+								QString qposfile(posfile.c_str());
+								this->OpenPOSFile(qposfile, 0);
 								//@@TODO!
 								//this->Open_POS_File(posfile, My_Obj);
 								//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
-								vtkMTActor *actor = this->GetLastActor();
-								actor->SetSelected(0);
 								//My_Obj->selected = 0;
 							}
 						}
@@ -867,10 +869,15 @@ void MeshTools::slotOpenNTW()
 								double r, g, b, a;
 								QTextStream myteststream(&line);
 								myteststream >> r >> g >> b >> a;
+								if (r > 1|| g > 1|| b > 1) { r /= 255; g/= 255;
+								b/= 255;
+								}
+								
 
-								actor->SetmColor(r, g, b, a); 
+								actor->SetmColor(r, g, b, a);
 								actor->SetChanged(1);
-								actor->Modified();
+								
+								this->MeshToolsCore->getActorCollection()->SetChanged(1);
 								/*sscanf(oneline, "%f %f %f %f\n", &color1, &color2, &color3, &color4);
 								//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
 								My_Obj->color[0] = color1; My_Obj->color[1] = color2; My_Obj->color[2] = color3; My_Obj->color[3] = color4;
@@ -889,244 +896,11 @@ void MeshTools::slotOpenNTW()
 				}
 				inputFile.close();
 			}
-			/*readstr(filein, oneline);
-			int ok = 0;
-			while (!feof(filein))
-			{
+			
 
-				
+					
 
-				if (lmk_file == 0)
-				{
-					if (i == 0)
-					{
-
-						//length=(int)strlen(oneline);						
-						//strncpy(param1, oneline, length-1);
-						std::string meshname = param1;
-						//cout << "meshname:" << meshname<<endl;
-						std::string STLext(".stl");
-						std::string STLext2(".STL");
-						std::string VTKext(".vtk");
-						std::string VTKext2(".VTK");
-						std::string OBJext(".obj");
-						std::string OBJext2(".OBJ");
-						std::string PLYext(".ply");
-						std::string PLYext2(".PLY");
-
-						int type = 0; //0 = stl, 1 = vtk, 2 = obj, 3 = ply
-						found = meshname.find(STLext);
-						found2 = meshname.find(STLext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{
-							type = 0;
-							//STL
-						}
-
-						//std::cout << "0Type= " <<type<< std::endl;
-						found = meshname.find(VTKext);
-						found2 = meshname.find(VTKext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{
-							type = 1; //VTK
-						}
-						//std::cout << "1Type= " <<type<< std::endl;
-						found = meshname.find(OBJext);
-						found2 = meshname.find(OBJext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{
-							type = 2; //OBJ
-						}
-						//std::cout << "2Type= " <<type<< std::endl;
-						found = meshname.find(PLYext);
-						found2 = meshname.find(PLYext2);
-						if (found != std::string::npos || found2 != std::string::npos)
-						{
-							type = 3; //PLY
-						}
-						//std::cout << "3Type= " <<type<< std::endl;
-
-						std::string meshfilename = fl_filename_name(meshname.c_str());
-						OBJECT_MESH *MyObj = NULL;
-						vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
-
-						if (meshname.length() == meshfilename.length())
-						{
-							meshname = path.c_str();
-							meshname.append(meshfilename.c_str());
-						}
-
-						if (type == 0)
-						{
-
-							vtkSmartPointer<vtkSTLReader> reader =
-								vtkSmartPointer<vtkSTLReader>::New();
-
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-						}
-						else if (type == 1)
-						{
-							vtkSmartPointer<vtkPolyDataReader> reader =
-								vtkSmartPointer<vtkPolyDataReader>::New();
-
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-
-						}
-						else if (type == 2)
-						{
-							vtkSmartPointer<vtkOBJReader> reader =
-								vtkSmartPointer<vtkOBJReader>::New();
-
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-
-						}
-						else
-						{
-							vtkSmartPointer<vtkPLYReader> reader =
-								vtkSmartPointer<vtkPLYReader>::New();
-
-							reader->SetFileName(meshname.c_str());
-							reader->Update();
-							ObjNormals->SetInputData(reader->GetOutput());
-							//MyObj= (OBJECT_MESH*)reader->GetOutput();
-
-						}
-
-
-
-
-						ObjNormals->ComputePointNormalsOn();
-						ObjNormals->ComputeCellNormalsOn();
-						//ObjNormals->AutoOrientNormalsOff();
-						ObjNormals->ConsistencyOff();
-						ObjNormals->Update();
-
-						vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
-						cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
-						cleanPolyDataFilter->PieceInvariantOff();
-						cleanPolyDataFilter->ConvertLinesToPointsOff();
-						cleanPolyDataFilter->ConvertPolysToLinesOff();
-						cleanPolyDataFilter->ConvertStripsToPolysOff();
-						cleanPolyDataFilter->PointMergingOn();
-						cleanPolyDataFilter->Update();
-
-						MyObj = (OBJECT_MESH*)cleanPolyDataFilter->GetOutput();
-
-						std::cout << "\nNumber of points 1:" << MyObj->GetNumberOfPoints() << std::endl;
-						std::cout << "\nNumber of cells 1:" << MyObj->GetNumberOfCells() << std::endl;
-
-
-						vtkFloatArray* norms = vtkFloatArray::SafeDownCast
-						(MyObj->GetCellData()->GetNormals());
-						std::cout << "Safe cell downcast done ! " << std::endl;
-						if (norms)
-						{
-
-							std::cout << "There are here " << norms->GetNumberOfTuples()
-								<< " Float Cell normals in norms" << std::endl;
-						}
-						else
-						{
-							std::cout << "FloatNorms CELL is null " << std::endl;
-						}
-
-						norms = vtkFloatArray::SafeDownCast
-						(MyObj->GetPointData()->GetNormals());
-						std::cout << "Safe point downcast done ! " << std::endl;
-						if (norms)
-						{
-
-							std::cout << "There are  " << norms->GetNumberOfTuples()
-								<< " Float POINT normals in norms" << std::endl;
-						}
-						else
-						{
-							std::cout << "FloatNorms POINTS is null " << std::endl;
-						}
-
-
-						if (MyObj->GetNumberOfPoints() > 10)
-						{
-
-							ok = 1;
-
-							std::string newname = fl_filename_name(param1);
-
-							int nPos = newname.find_first_of(".");
-							if (nPos > -1)
-							{
-								newname = newname.substr(0, nPos);
-							}
-
-							CheckingName(&newname);
-							My_Obj = Cont_Mesh.Mesh_PDcontainerload(MyObj, (char*)newname.c_str());
-							My_Obj->Set_Active_Scalar();
-
-							My_Obj->selected = 1;
-							std::cout << "Object <<" << My_Obj->name.c_str() << ">> loaded" << std::endl;
-						}
-						else
-						{
-							ok = 0;
-						}
-
-
-					}
-					if (i == 1)
-					{
-						if (ok)
-						{
-
-							//length= (int)strlen(oneline);						
-							//strncpy(param1, oneline, length-1);
-							std::string posfile = param1;
-							//posfile = posfile.substr(0, (posfile.length()-1));// for some reason
-
-							std::string posfilename = fl_filename_name(posfile.c_str());
-							if (posfile.length() == posfilename.length())
-							{
-								posfile = path.c_str();
-								posfile.append(posfilename.c_str());
-							}
-							std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
-							this->Open_POS_File(posfile, My_Obj);
-							//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
-							My_Obj->selected = 0;
-						}
-					}
-					if (i == 2)
-					{
-						if (ok)
-						{
-							sscanf(oneline, "%f %f %f %f\n", &color1, &color2, &color3, &color4);
-							//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
-							My_Obj->color[0] = color1; My_Obj->color[1] = color2; My_Obj->color[2] = color3; My_Obj->color[3] = color4;
-							My_Obj->blend = color4;
-							My_Obj->Update_RGB();
-						}
-					}
-					i++;
-					if (i > 2)
-					{
-						i = 0;
-					}
-				}
-				readstr(filein, oneline); //read next line
-
-			}//While scanff...						
-
-			fclose(filein);
-			break;
-	*/
+			//this->ui->qvtkWidget->update();
 }//if file exists
 
 
@@ -1137,11 +911,175 @@ if (g_landmark_auto_rendering_size)
 }
 	}*/
 }
+
+void MeshTools::OpenPOSFile(QString fileName, int mode)
+{
+	// mode : 0 for last inserted mesh
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+	// mode : 3 for all selected landmarks/flags and meshes
+
+	//Open a position file!
+
+	int i, j, l;
+	size_t  length;
+	
+
+	length = fileName.toStdString().length();
+
+	union {
+		float f;
+		char c[4];
+	} u; // holds one float or 4 characters (bytes)
+
+
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string MAText(".mat");
+			std::string MAText2(".MAT");
+			std::string POSext(".pos");
+			std::string POSext2(".POS");
+
+			int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File or simple .MAT file
+
+			std::size_t found = fileName.toStdString().find(MAText);
+			std::size_t found2 = fileName.toStdString().find(MAText2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//MAT
+			}
+
+			found = fileName.toStdString().find(POSext);
+			found2 = fileName.toStdString().find(POSext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 0; //POS
+			}
+
+			
+			
+
+			int Ok = 1;
+			vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+			
+
+
+			if (type == 1)
+			{
+				FILE	*filein;									// Filename To Open
+
+
+				filein = fopen(fileName.toStdString().c_str(), "rb");
+				for (i = 0; i<4; i++)
+					for (j = 0; j<4; j++)
+					{
+
+						for (l = 3; l >= 0; l--)
+						{
+							u.c[l] = fgetc(filein);
+						}
+						//My_Obj->Mat1[i][j] = u.f;
+					}
+
+
+				for (i = 0; i<4; i++)
+					for (j = 0; j<4; j++)
+					{
+						for (l = 3; l >= 0; l--)
+						{
+							u.c[l] = fgetc(filein);
+						}
+						Mat->SetElement(j, i, double(u.f));
+						
+					}
+
+			}
+			else
+			{
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+				
+					// first matrix is useless (for the moment)	
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+				
+					}
+					//
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+						double n1, n2, n3, n4;
+						QTextStream myteststream(&line);
+						myteststream >> n1 >> n2 >> n3 >> n4;
+
+						Mat->SetElement(0, i, n1);
+						Mat->SetElement(1, i, n2);
+						Mat->SetElement(2, i, n3);
+						Mat->SetElement(3, i, n4);
+
+						
+					}
+
+				}
+			}//fin if																		
+			this->ApplyMatrix(Mat, mode);
+		}//file exists...
+	}	//length
+
+}
+
+void MeshTools::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
+{
+	// mode : 0 for last inserted mesh
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+	// mode : 3 for all selected landmarks/flags and meshes
+	if (mode == 0)
+	{
+		vtkMTActor *actor = this->GetLastActor();
+		actor->ApplyMatrix(Mat);
+	}
+	else
+	{
+		if (mode == 1 || mode == 3)
+		{
+
+		}
+		//@@TODO!
+	}
+}
+
 vtkMTActor* MeshTools::GetLastActor()
 {
 	return vtkMTActor::SafeDownCast(this->MeshToolsCore->getActorCollection()->GetLastActor());
 }
-vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
+void MeshTools::OpenMeshFile(QString fileName)
 {
 	
 	int file_exists = 1;
@@ -1155,7 +1093,7 @@ vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
 	else
 	{
 		file_exists = 0;
-		return NULL;
+		
 
 	}
 
@@ -1291,7 +1229,7 @@ vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
 			VTK_CREATE(vtkMTActor, actor);
 			std::string newname = name.toStdString();
 
-			int nPos = newname.find_first_of(".");
+			size_t nPos = newname.find_first_of(".");
 			if (nPos > -1)
 			{
 				newname = newname.substr(0, nPos);
@@ -1518,9 +1456,9 @@ vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
 			cout << "G_zoom after initialization:" << g_zoom << endl;
 			this->redraw();
 			cout << "G_zoom after redraw:" << g_zoom << endl;*/
-			return actor;
+			
 		}
-		return NULL;
+		
 	}
 
 
@@ -1533,7 +1471,8 @@ vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
 	VTK_CREATE(vtkActor, actor);
 	actor->GetProperty()->SetColor(0.5, 1, 0.5);
 	actor->GetProperty()->SetOpacity(0.5);*/
-	return NULL;
+	this->ui->qvtkWidget->update();
+
 }
 // Action to be taken upon file open
 void MeshTools::slotOpenMeshFile()
@@ -1559,19 +1498,15 @@ void MeshTools::slotOpenMeshFile()
 //Called to ajust camera and grid positions (distance etc...) after opening a new mesh.
 void MeshTools::AdjustCameraAndGrid()
 {
-	cout << "start adjust camera and grid" << endl;
 	double newcamerafocalpoint[3] = { 0,0,0 };
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{
-		cout << "this is it no ? " << endl;
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
-		cout << "no obviously" << endl;
 		this->MeshToolsCore->getGridActor()->SetGridOrigin(newcamerafocalpoint);
 
 
 	}
-	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;
-
+	
 	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
 	double GlobalBoundingBoxLength = this->MeshToolsCore->getActorCollection()->GetBoundingBoxLength();
 	if (GlobalBoundingBoxLength == std::numeric_limits<double>::infinity() || GlobalBoundingBoxLength == 0)
@@ -1617,8 +1552,7 @@ void MeshTools::ReplaceCameraAndGrid()
 	{
 		this->MeshToolsCore->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);				
 	}
-	cout << "New camera focal point:" << newcamerafocalpoint[0] << " " << newcamerafocalpoint[1] << " " << newcamerafocalpoint[2] << endl;			
-
+	
 	double oldcampos[3];
 	double newcampos[3];
 	this->MeshToolsCore->getCamera()->GetPosition(oldcampos);
@@ -1647,7 +1581,6 @@ void MeshTools::slotExit() {
 void MeshTools::slotCameraFront()
 {
 	
-	cout << "this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin()=" << this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() << endl;
 	double cameracentre[3] = { 0, 0, 0 };
 	if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 	{

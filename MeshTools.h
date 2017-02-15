@@ -55,7 +55,9 @@ public:
 
 
   vtkOrientationHelperWidget* OrientationHelperWidget; 
-  vtkSmartPointer<vtkMTActor> OpenMeshFile(QString fileName);
+  void OpenMeshFile(QString fileName);
+  void OpenPOSFile(QString fileName, int mode);
+  void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
   vtkMTActor* GetLastActor();
   
 public slots:

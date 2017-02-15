@@ -62,9 +62,10 @@ public:
 	vtkGetMacro(Changed, int);
 	vtkBooleanMacro(Changed, int);
 
-	vtkSetVector4Macro(mColor, double);
+	//vtkSetVector4Macro(mColor, double);
 	vtkGetVector4Macro(mColor, double);
-
+	void SetmColor(double r, double g, double b, double a);
+	void SetmColor(double c[4]);
 	// Actual actor render method.
 	vtkIdType GetNumberOfPoints();
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
@@ -75,6 +76,7 @@ public:
 	virtual void Undo(int mCount); // Try to undo (if exists) "mCount" event
 	virtual void PopUndoStack();
 	virtual void PopRedoStack();
+	virtual void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat); // can be overrident in LMActor!
 
 
 protected:

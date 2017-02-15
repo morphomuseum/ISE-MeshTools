@@ -395,7 +395,7 @@ int vtkMTActorCollection::ActorChanged()
 }
 void vtkMTActorCollection::ComputeCenterOfMass()
 {
-	cout << "MT Compute center of mass" << endl;
+	//cout << "MT Compute center of mass" << endl;
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
@@ -457,7 +457,7 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 
 			//MultiplyPoint(const double in[4], double out[4])
 
-			cout << "tcenter:" << tcenter[0] << "," << tcenter[1] << "," << tcenter[2] << endl;
+			//cout << "tcenter:" << tcenter[0] << "," << tcenter[1] << "," << tcenter[2] << endl;
 			acenter[0] = tcenter[0];
 			acenter[1] = tcenter[1];
 			acenter[2] = tcenter[2];
@@ -501,8 +501,8 @@ void vtkMTActorCollection::ComputeCenterOfMass()
 	}
 	this->SetGlobalSelectedVN(globalSelectedvn);
 	this->SetGlobalVN(globalvn);
-	cout << "New MT Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;	
-	cout << "New MT Coll sVn:" << globalSelectedvn << endl;
+	//cout << "New MT Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;	
+	//cout << "New MT Coll sVn:" << globalSelectedvn << endl;
 }
 
 void vtkMTActorCollection::ComputeBoundingBoxLength()

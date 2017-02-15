@@ -65,6 +65,23 @@ void vtkMTActor::SetSelected(int selected)
 		this->GetProperty()->SetOpacity(this->mColor[3]);
 	}
 }
+void vtkMTActor::SetmColor(double c[4])
+{
+	this->SetmColor(c[0], c[1], c[2], c[3]);
+}
+void vtkMTActor::SetmColor(double r, double g, double b, double a)
+{
+	this->mColor[0] = r; 
+	this->mColor[1] = g;
+	this->mColor[2] = b;
+	this->mColor[3] = a;
+	if (this->Selected == 0)
+	{
+		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
+		this->GetProperty()->SetOpacity(this->mColor[3]);
+	}
+}
+
 void vtkMTActor::Undo(int mCount)
 {
 
@@ -116,6 +133,20 @@ void vtkMTActor::Erase(int mCount)
 	}
 }
 
+void vtkMTActor::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat)
+
+{
+	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
+	vtkTransform *newTransform = vtkTransform::New();
+	newTransform->PostMultiply();
+	newTransform->SetMatrix(Mat);
+	prop3D->SetPosition(newTransform->GetPosition());
+	prop3D->SetScale(newTransform->GetScale());
+	prop3D->SetOrientation(newTransform->GetOrientation());
+	newTransform->Delete();
+
+}
+
 void vtkMTActor::PopUndoStack()
 {
 	cout << "Inside MT actor PopUndoStack" << endl;
@@ -134,14 +165,15 @@ void vtkMTActor::PopUndoStack()
 	std::cout << "Old Matrix: " << endl << *SavedMat << std::endl;
 	std::cout << "New Matrix: " << endl << *Mat << std::endl;
 
-	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
+	/*vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
 	vtkTransform *newTransform = vtkTransform::New();
 	newTransform->PostMultiply();
 	newTransform->SetMatrix(Mat);
 	prop3D->SetPosition(newTransform->GetPosition());
 	prop3D->SetScale(newTransform->GetScale());
 	prop3D->SetOrientation(newTransform->GetOrientation());
-	newTransform->Delete();
+	newTransform->Delete();*/
+	this->ApplyMatrix(Mat);
 
 
 	this->GetMatrix(Mat);
@@ -177,14 +209,15 @@ void vtkMTActor::PopRedoStack()
 	SavedMat->DeepCopy(Mat);
 	// Now put redp Matrix inside object : 
 	Mat->DeepCopy(this->UndoRedo->RedoStack.back().Matrix);
-	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
+	/*vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
 	vtkTransform *newTransform = vtkTransform::New();
 	newTransform->PostMultiply();
 	newTransform->SetMatrix(Mat);
 	prop3D->SetPosition(newTransform->GetPosition());
 	prop3D->SetScale(newTransform->GetScale());
 	prop3D->SetOrientation(newTransform->GetOrientation());
-	newTransform->Delete();
+	newTransform->Delete();*/
+	this->ApplyMatrix(Mat);
 
 	double myCurrentColor[4];
 	int mCurrentSelected = this->Selected;
