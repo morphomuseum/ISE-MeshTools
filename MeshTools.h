@@ -55,7 +55,8 @@ public:
 
 
   vtkOrientationHelperWidget* OrientationHelperWidget; 
-
+  vtkSmartPointer<vtkMTActor> OpenMeshFile(QString fileName);
+  vtkMTActor* GetLastActor();
   
 public slots:
   //static  MeshTools* Instance;

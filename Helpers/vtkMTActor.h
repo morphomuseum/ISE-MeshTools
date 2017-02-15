@@ -66,6 +66,7 @@ public:
 	vtkGetVector4Macro(mColor, double);
 
 	// Actual actor render method.
+	vtkIdType GetNumberOfPoints();
 	void Render(vtkRenderer *ren, vtkMapper *mapper);
 	virtual void SetSelected(int selected);
 	virtual void SaveState(int mCount);

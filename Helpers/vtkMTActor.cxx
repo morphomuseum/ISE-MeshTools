@@ -10,7 +10,9 @@ Module:    vtkMTActor.cxx
 #include <vtkRenderer.h>
 #include <vtkProperty.h>
 #include <vtkTexture.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkTransform.h>
+#include <vtkPolyData.h>
 vtkStandardNewMacro(vtkMTActor);
 
 
@@ -32,6 +34,17 @@ vtkMTActor::~vtkMTActor()
 	delete this->UndoRedo;
 	
 
+}
+vtkIdType vtkMTActor::GetNumberOfPoints()
+{
+	vtkIdType nv = 0;
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(this->GetMapper());
+	if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+	{
+		return vtkPolyData::SafeDownCast(mapper->GetInput())->GetNumberOfPoints();
+	}
+	
+	return nv;
 }
 void vtkMTActor::SetSelected(int selected)
 {

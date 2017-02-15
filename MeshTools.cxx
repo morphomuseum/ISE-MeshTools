@@ -548,7 +548,36 @@ std::string  MeshTools::CheckingName(std::string name_obj, int cpt_name) {
 	std::string s_cpt_name = std::to_string(cpt_name);
 	std::string name = name_obj + "(" + s_cpt_name + ")";
 	// to do!!!
+	/*
+	string name = *name_obj + "(" + s_cpt_name + ")";
+	OBJECT_MESH *object;
 
+	if (cpt_name == 0){
+		name = *name_obj;
+	}
+
+	if (Cont_Mesh.OBJECTS_ROOT->OBJECTS != NULL){
+		int cpt = 0;
+		object = Cont_Mesh.OBJECTS_ROOT->OBJECTS;
+		while (object != NULL)// on parcours tous les objets
+		{
+			if (object->name == name){// si il existe déjà, on augmente l'indice
+				cpt_name++;
+				cpt++;
+				s_cpt_name = std::to_string(cpt_name);
+				name = *name_obj + "(" + s_cpt_name + ")";
+			}
+			
+			object = object->nextobj;
+		}//fin while
+
+		if (cpt == 0)
+			*name_obj = name;
+		else{
+			CheckingName(name_obj, cpt_name);
+		}
+	}
+	*/
 	return name_obj;
 }
 
@@ -567,7 +596,8 @@ void MeshTools::UpdateRenderer()
 // Action to be taken upon file open
 void MeshTools::slotOpenNTW()
 {
-	
+	char param1[1000];
+	int i = 0;
 	std::string SfileName;
 	QString NTWfile = QFileDialog::getOpenFileName(this,
 		tr("Load project"), QDir::currentPath(),
@@ -609,6 +639,8 @@ void MeshTools::slotOpenNTW()
 			
 
 			QFile inputFile(NTWfile);
+			int ok = 0;
+
 			if (inputFile.open(QIODevice::ReadOnly))
 			{
 				QTextStream in(&inputFile);
@@ -616,6 +648,244 @@ void MeshTools::slotOpenNTW()
 				{
 					QString line = in.readLine();
 					cout << "Line:" << line.toStdString() << endl;
+					sscanf(line.toStdString().c_str(), "%[^\n]s", param1);
+					//cout << "param1" << param1 << endl;
+					std::string myline = param1;
+					cout << "My line:" << myline << endl;
+					std::string FLGext(".flg");
+					std::string FLGext2(".FLG");
+					std::string VERext(".ver");
+					std::string VERext2(".VER");
+					std::string CURext(".cur");
+					std::string CURext2(".CUR");
+					std::string STVext(".stv");
+					std::string STVext2(".STV");
+					std::string TAGext(".tag");
+					std::string TAGext2(".TAG");
+					std::string ORIext(".ori");
+					std::string ORIext2(".ORI");
+					int lmk_file = 0;
+
+					std::size_t found = myline.find(FLGext);
+					std::size_t found2 = myline.find(FLGext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open flag file!
+						QFileInfo flgfileInfo(line);
+						QString onlyflgfilename(flgfileInfo.fileName());
+						std::string flgfilename = onlyflgfilename.toStdString();
+						if (myline.length() == flgfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(flgfilename.c_str());
+						}
+						std::cout << "Try to load flag file :<<" << myline.c_str() << std::endl;
+						//@@TODO
+						//this->Open_FLG_File(myline);
+
+					}
+
+					found = myline.find(VERext);
+					found2 = myline.find(VERext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						int landmark_mode = 0;
+						// Now open ver file!
+						QFileInfo verfileInfo(line);
+						QString onlyverfilename(verfileInfo.fileName());						
+						std::string verfilename = onlyverfilename.toStdString();
+						if (myline.length() == verfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(verfilename.c_str());
+						}
+						std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
+						//TODO!
+						//this->Open_VER_File(landmark_mode, myline);
+						// Now open VER file !
+
+					}
+
+					found = myline.find(CURext);
+					found2 = myline.find(CURext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open cur file!
+						QFileInfo curfileInfo(line);
+						QString onlycurfilename(curfileInfo.fileName());
+						std::string curfilename = onlycurfilename.toStdString();						
+						if (myline.length() == curfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(curfilename.c_str());
+						}
+						std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+						//@@TODO!
+						//this->Open_CUR_File(myline);
+
+
+					}
+
+					found = myline.find(STVext);
+					found2 = myline.find(STVext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open STV file!
+						QFileInfo stvfileInfo(line);
+						QString onlystvfilename(stvfileInfo.fileName());
+						std::string stvfilename = onlystvfilename.toStdString();						
+						if (myline.length() == stvfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(stvfilename.c_str());
+						}
+						std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
+						//@@TODO!
+						//this->Open_STV_File(myline);
+						// Now open CUR file !
+
+
+					}
+					found = myline.find(ORIext);
+					found2 = myline.find(ORIext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open ORI file!
+						QFileInfo orifileInfo(line);
+						QString onlyorifilename(orifileInfo.fileName());
+						std::string orifilename = onlyorifilename.toStdString();						
+						if (myline.length() == orifilename.length())
+						{
+							myline = path.c_str();
+							myline.append(orifilename.c_str());
+						}
+						std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+						//@@TODO
+						//this->Open_ORI_File(myline);
+						// Now open CUR file !
+
+
+					}
+
+					found = myline.find(TAGext);
+					found2 = myline.find(TAGext2);
+					if (found != std::string::npos || found2 != std::string::npos)
+					{
+						lmk_file = 1;
+						// Now open TAG file!
+						QFileInfo tagfileInfo(line);
+						QString onlytagfilename(tagfileInfo.fileName());
+						std::string tagfilename = onlytagfilename.toStdString();						
+						if (myline.length() == tagfilename.length())
+						{
+							myline = path.c_str();
+							myline.append(tagfilename.c_str());
+						}
+						std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
+						//@@TODO!
+						//this->Open_TAG_File(myline);
+						// Now open CUR file !
+
+
+					}
+
+					//NOW THE SURFACES!!!
+					
+					if (lmk_file == 0)
+					{
+						if (i == 0)
+						{
+
+							//length=(int)strlen(oneline);						
+							//strncpy(param1, oneline, length-1);
+							std::string meshname = param1;
+							QFileInfo meshfileInfo(line);
+							QString onlymeshfilename(meshfileInfo.fileName());
+							std::string meshfilename = onlymeshfilename.toStdString();
+							
+							if (meshname.length() == meshfilename.length())
+							{
+								meshname = path.c_str();
+								meshname.append(meshfilename.c_str());
+							}
+							QString meshfile (meshname.c_str());
+
+							 
+
+							vtkSmartPointer<vtkMTActor> actor = this->OpenMeshFile(meshfile);
+							
+							if (actor != NULL && actor->GetNumberOfPoints() > 10)
+							{
+
+								ok = 1;
+								cout << "Object has more than 10 points <<" << endl;
+							}
+							else
+							{
+								ok = 0;
+							}
+
+
+						}
+						if (i == 1)
+						{
+							if (ok)
+							{
+
+								//length= (int)strlen(oneline);						
+								//strncpy(param1, oneline, length-1);
+								std::string posfile = param1;
+								// Now open TAG file!
+								QFileInfo posfileInfo(line);
+								QString onlyposfilename(posfileInfo.fileName());
+								std::string posfilename = onlyposfilename.toStdString();
+
+								if (posfile.length() == posfilename.length())
+								{
+									posfile = path.c_str();
+									posfile.append(posfilename.c_str());
+								}
+								std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
+								//@@TODO!
+								//this->Open_POS_File(posfile, My_Obj);
+								//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
+								vtkMTActor *actor = this->GetLastActor();
+								actor->SetSelected(0);
+								//My_Obj->selected = 0;
+							}
+						}
+						if (i == 2)
+						{
+							if (ok)
+							{
+								vtkMTActor *actor = this->GetLastActor();
+								double r, g, b, a;
+								QTextStream myteststream(&line);
+								myteststream >> r >> g >> b >> a;
+
+								actor->SetmColor(r, g, b, a); 
+								actor->SetChanged(1);
+								actor->Modified();
+								/*sscanf(oneline, "%f %f %f %f\n", &color1, &color2, &color3, &color4);
+								//std::cout <<"color 1"<<color1<<",color 2"<<color3<<",color 3"<<color3<<",color 4"<<color4<< std::endl;
+								My_Obj->color[0] = color1; My_Obj->color[1] = color2; My_Obj->color[2] = color3; My_Obj->color[3] = color4;
+								My_Obj->blend = color4;
+								My_Obj->Update_RGB();*/
+							}
+						}
+						i++;
+						if (i > 2)
+						{
+							i = 0;
+						}
+					}
+
+
 				}
 				inputFile.close();
 			}
@@ -624,130 +894,7 @@ void MeshTools::slotOpenNTW()
 			while (!feof(filein))
 			{
 
-				sscanf(oneline, "%[^\n]s", param1);
-				//cout << "param1" << param1 << endl;
-				std::string myline = param1;
-
-				std::string FLGext(".flg");
-				std::string FLGext2(".FLG");
-				std::string VERext(".ver");
-				std::string VERext2(".VER");
-				std::string CURext(".cur");
-				std::string CURext2(".CUR");
-				std::string STVext(".stv");
-				std::string STVext2(".STV");
-				std::string TAGext(".tag");
-				std::string TAGext2(".TAG");
-				std::string ORIext(".ori");
-				std::string ORIext2(".ORI");
-				int lmk_file = 0;
-
-				std::size_t found = myline.find(FLGext);
-				std::size_t found2 = myline.find(FLGext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					// Now open flag file!
-					std::string flgfilename = fl_filename_name(myline.c_str());
-					if (myline.length() == flgfilename.length())
-					{
-						myline = path.c_str();
-						myline.append(flgfilename.c_str());
-					}
-					std::cout << "Try to load flag file :<<" << myline.c_str() << std::endl;
-					this->Open_FLG_File(myline);
-
-				}
-
-				found = myline.find(VERext);
-				found2 = myline.find(VERext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					int landmark_mode = 0;
-					// Now open flag file!
-					std::string verfilename = fl_filename_name(myline.c_str());
-					if (myline.length() == verfilename.length())
-					{
-						myline = path.c_str();
-						myline.append(verfilename.c_str());
-					}
-					std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
-					this->Open_VER_File(landmark_mode, myline);
-					// Now open VER file !
-
-				}
-
-				found = myline.find(CURext);
-				found2 = myline.find(CURext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					// Now open flag file!
-					std::string curfilename = fl_filename_name(myline.c_str());
-					if (myline.length() == curfilename.length())
-					{
-						myline = path.c_str();
-						myline.append(curfilename.c_str());
-					}
-					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
-					this->Open_CUR_File(myline);
-
-
-				}
-
-				found = myline.find(STVext);
-				found2 = myline.find(STVext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					std::string stvfilename = fl_filename_name(myline.c_str());
-					if (myline.length() == stvfilename.length())
-					{
-						myline = path.c_str();
-						myline.append(stvfilename.c_str());
-					}
-					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
-					this->Open_STV_File(myline);
-					// Now open CUR file !
-
-
-				}
-				found = myline.find(ORIext);
-				found2 = myline.find(ORIext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					std::string orifilename = fl_filename_name(myline.c_str());
-					if (myline.length() == orifilename.length())
-					{
-						myline = path.c_str();
-						myline.append(orifilename.c_str());
-					}
-					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
-					this->Open_ORI_File(myline);
-					// Now open CUR file !
-
-
-				}
-
-				found = myline.find(TAGext);
-				found2 = myline.find(TAGext2);
-				if (found != std::string::npos || found2 != std::string::npos)
-				{
-					lmk_file = 1;
-					std::string tagfilename = fl_filename_name(myline.c_str());
-					if (myline.length() == tagfilename.length())
-					{
-						myline = path.c_str();
-						myline.append(tagfilename.c_str());
-					}
-					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
-					this->Open_TAG_File(myline);
-					// Now open CUR file !
-
-
-				}
+				
 
 				if (lmk_file == 0)
 				{
@@ -990,21 +1137,14 @@ if (g_landmark_auto_rendering_size)
 }
 	}*/
 }
-
-// Action to be taken upon file open
-void MeshTools::slotOpenMeshFile()
+vtkMTActor* MeshTools::GetLastActor()
 {
-
-	std::string SfileName;
-	QString fileName = QFileDialog::getOpenFileName(this,
-		tr("Load surface"), QDir::currentPath(),
-		tr("surfaces (*.ply *.stl *.vtk)"));
-
-	cout << fileName.toStdString();
-	if (fileName.isEmpty()) return;
+	return vtkMTActor::SafeDownCast(this->MeshToolsCore->getActorCollection()->GetLastActor());
+}
+vtkSmartPointer<vtkMTActor> MeshTools::OpenMeshFile(QString fileName)
+{
+	
 	int file_exists = 1;
-
-
 	QFile file(fileName);
 	QString name = "";
 	if (file.exists()) {
@@ -1015,6 +1155,7 @@ void MeshTools::slotOpenMeshFile()
 	else
 	{
 		file_exists = 0;
+		return NULL;
 
 	}
 
@@ -1147,7 +1288,7 @@ void MeshTools::slotOpenMeshFile()
 		if (MyPolyData->GetNumberOfPoints() > 10)
 		{
 
-
+			VTK_CREATE(vtkMTActor, actor);
 			std::string newname = name.toStdString();
 
 			int nPos = newname.find_first_of(".");
@@ -1155,12 +1296,12 @@ void MeshTools::slotOpenMeshFile()
 			{
 				newname = newname.substr(0, nPos);
 			}
-			// to change... 
+			//@@TODO! 
 			newname = CheckingName(newname, 0);
 			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
 			{
 				MyPolyData->GetPointData()->SetScalars(NULL);
-				cout << "found RGB colours! "<<endl;
+				cout << "found RGB colours! " << endl;
 			}
 			/*
 			vtkSmartPointer<vtkUnsignedCharArray> newcolors =
@@ -1186,7 +1327,7 @@ void MeshTools::slotOpenMeshFile()
 			newcolors->SetName("Init_RGB");
 			My_Obj->GetPointData()->AddArray(newcolors);
 			}
-			
+
 			*/
 
 			// Mapper
@@ -1196,41 +1337,22 @@ void MeshTools::slotOpenMeshFile()
 			mapper->SetColorModeToDefault();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-			VTK_CREATE(vtkMTActor, actor);
+			
 			int num = 2;
-			/*actor->SetLMOrigin(0, 0, 0);
-			cout << "create LM origin" << endl;
-			actor->SetLMOrientation(0, 0, 1);
-			cout << "create LM orientation" << endl;
-			actor->SetLMSize(0.1);
-			cout << "create LM Size" << endl;
-			actor->SetLMType(1);
-			cout << "create LM Type" << endl;
-			actor->SetLMNumber(num);
-			cout << "create LM Actor" << endl;
-			actor->SetLMBodyType(0);*/
-
-
-			//VTK_CREATE(vtkOpenGLActor, actor);
+			
 			actor->SetmColor(this->MeshToolsCore->Getmui_MeshColor());
-			//actor->GetProperty()->SetColor(this->MeshToolsCore->Getmui_MeshColor()[0], this->MeshToolsCore->Getmui_MeshColor()[1], this->MeshToolsCore->Getmui_MeshColor()[2]);
-			//actor->GetProperty()->SetOpacity(this->MeshToolsCore->Getmui_MeshColor()[3]);
-			actor->SetSelected(0);
+			actor->SetSelected(1);
 			actor->SetMapper(mapper);
-			//Now the add actor to renderer is managed inside the collection
-			//this->MeshToolsCore->getRenderer()->AddActor(actor);
 			this->MeshToolsCore->getActorCollection()->AddItem(actor);
 			std::string action = "Load mesh file";
 			int mCount = BEGIN_UNDO_SET(action);
 			this->MeshToolsCore->getActorCollection()->CreateLoadUndoSet(mCount, 1);
 			END_UNDO_SET();
 
-			
 
-			cout << "actor added to collection" << endl;
+
 			this->MeshToolsCore->getActorCollection()->SetChanged(1);
-			cout << "actor collection changed" << endl;
-
+			
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			this->AdjustCameraAndGrid();
 			cout << "camera and grid adjusted" << endl;
@@ -1243,73 +1365,73 @@ void MeshTools::slotOpenMeshFile()
 			double bounds[6];
 			MyPolyData->GetBounds(bounds);
 			vtkSmartPointer<vtkElevationFilter> elevation =
-				vtkSmartPointer<vtkElevationFilter>::New();
+			vtkSmartPointer<vtkElevationFilter>::New();
 			elevation->SetInputData(MyPolyData);
 			elevation->SetLowPoint(0, bounds[2], 0);
 			elevation->SetHighPoint(0, bounds[3], 0);
 			elevation->Update();
 			vtkSmartPointer<vtkBandedPolyDataContourFilter> bcf =
-				vtkSmartPointer<vtkBandedPolyDataContourFilter>::New();
+			vtkSmartPointer<vtkBandedPolyDataContourFilter>::New();
 			bcf->SetInputConnection(elevation->GetOutputPort());
 			bcf->SetScalarModeToValue();
 			bcf->GenerateContourEdgesOn();
-			
+
 			bcf->GenerateValues(10, elevation->GetScalarRange());
 
 			bcf->Update();
 			//bcf->GetNumberOfContours();
 			vtkSmartPointer<vtkPolyDataMapper> contourLineMapper =
-				vtkSmartPointer<vtkPolyDataMapper>::New();
+			vtkSmartPointer<vtkPolyDataMapper>::New();
 			contourLineMapper->SetInputData(bcf->GetContourEdgesOutput());
-			
+
 			cout<<"Number of contours:"<< bcf->GetNumberOfContours();
-			
+
 			contourLineMapper->SetScalarRange(elevation->GetScalarRange());
 			contourLineMapper->SetResolveCoincidentTopologyToPolygonOffset();
 			contourLineMapper->Update();
-			
+
 			vtkSmartPointer<vtkMTActor> contourLineActor =
-				vtkSmartPointer<vtkMTActor>::New();
+			vtkSmartPointer<vtkMTActor>::New();
 			contourLineActor->SetMapper(contourLineMapper);
 			contourLineActor->GetProperty()->SetColor(0.5, 0.5, 1.0);
 			this->MeshToolsCore->getRenderer()->AddActor(contourLineActor);
 
 			vtkSmartPointer<vtkPolyDataMapper> mapper2 =
-				vtkSmartPointer<vtkPolyDataMapper>::New();
+			vtkSmartPointer<vtkPolyDataMapper>::New();
 			mapper2->SetInputConnection(bcf->GetOutputPort());
 			mapper2->SetScalarModeToUseCellData();
 			//mapper2->SetScalarRange(0, 1);
 			vtkSmartPointer<vtkMTActor> actor2=
-				vtkSmartPointer<vtkMTActor>::New();
+			vtkSmartPointer<vtkMTActor>::New();
 			actor2->SetMapper(mapper2);
 			this->MeshToolsCore->getRenderer()->AddActor(actor2);
 			*/
 			/*if (this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin() == 0)
 			{
-				double globalcenterofmass[3];
-				this->GetGlobalCenterOfMass(globalcenterofmass);
-				cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
+			double globalcenterofmass[3];
+			this->GetGlobalCenterOfMass(globalcenterofmass);
+			cout << "Center of mass of all opened mesh is " << globalcenterofmass[0] << " " << globalcenterofmass[1] << " " << globalcenterofmass[2] << endl;
 
-				double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
-				cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
+			double GlobalBoundingBoxLength = this->GetGlobalBoundingBoxLength();
+			cout << "Global Bounding Box length is " << GlobalBoundingBoxLength << " mm" << endl;
 
-				double campos[3];
-				this->MeshToolsCore->getCamera()->GetPosition(campos);
-				double camfocalpoint[3];
-				this->MeshToolsCore->getCamera()->GetFocalPoint(camfocalpoint);
-				double camscale = this->MeshToolsCore->getCamera()->GetParallelScale();
+			double campos[3];
+			this->MeshToolsCore->getCamera()->GetPosition(campos);
+			double camfocalpoint[3];
+			this->MeshToolsCore->getCamera()->GetFocalPoint(camfocalpoint);
+			double camscale = this->MeshToolsCore->getCamera()->GetParallelScale();
 
-				double movex, movey, movez;
-				movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
-				movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
-				movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
-				this->MeshToolsCore->getCamera()->SetPosition
-					(globalcenterofmass[0] + movex,
-						globalcenterofmass[1] + movey,
-						globalcenterofmass[2] + movez);
-				//this->MeshToolsCore->getCamera()->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
-				this->MeshToolsCore->getCamera()->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
-				this->MeshToolsCore->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
+			double movex, movey, movez;
+			movex = (campos[0] - camfocalpoint[0])*GlobalBoundingBoxLength / camscale;
+			movey = (campos[1] - camfocalpoint[1])*GlobalBoundingBoxLength / camscale;
+			movez = (campos[2] - camfocalpoint[2])*GlobalBoundingBoxLength / camscale;
+			this->MeshToolsCore->getCamera()->SetPosition
+			(globalcenterofmass[0] + movex,
+			globalcenterofmass[1] + movey,
+			globalcenterofmass[2] + movez);
+			//this->MeshToolsCore->getCamera()->SetPosition(center[0] + GlobalBoundingBoxLength, center[1], center[2]);
+			this->MeshToolsCore->getCamera()->SetFocalPoint(globalcenterofmass[0], globalcenterofmass[1], globalcenterofmass[2]);
+			this->MeshToolsCore->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
 			}*/
 			//this->MeshToolsCore->getCamera()->ParallelProjectionOn();
 
@@ -1396,8 +1518,9 @@ void MeshTools::slotOpenMeshFile()
 			cout << "G_zoom after initialization:" << g_zoom << endl;
 			this->redraw();
 			cout << "G_zoom after redraw:" << g_zoom << endl;*/
-
+			return actor;
 		}
+		return NULL;
 	}
 
 
@@ -1410,6 +1533,23 @@ void MeshTools::slotOpenMeshFile()
 	VTK_CREATE(vtkActor, actor);
 	actor->GetProperty()->SetColor(0.5, 1, 0.5);
 	actor->GetProperty()->SetOpacity(0.5);*/
+	return NULL;
+}
+// Action to be taken upon file open
+void MeshTools::slotOpenMeshFile()
+{
+
+	std::string SfileName;
+	QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Load surface"), QDir::currentPath(),
+		tr("surfaces (*.ply *.stl *.vtk)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	
+	this->OpenMeshFile(fileName);
+
+
 }
 
 // problème
