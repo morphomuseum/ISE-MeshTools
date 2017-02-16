@@ -8,7 +8,8 @@
 #include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
-
+#include "vtkOrientationHelperActor.h"
+#include "vtkOrientationHelperWidget.h"
 #include <vtkProperty.h>
 #include <vtkCubeAxesActor.h>
 
@@ -30,12 +31,12 @@ mqMeshToolsCore* mqMeshToolsCore::instance()
 }
 
 
-
 mqMeshToolsCore::mqMeshToolsCore()
 {
 
 	mqMeshToolsCore::Instance = this;
-
+	this->MainWindow = NULL;
+	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	this->mui_LandmarkBodyType = this->mui_DefaultLandmarkBodyType = 0;
 	this->mui_LandmarkRenderingSize=this->mui_DefaultLandmarkRenderingSize=1;
 	this->mui_AdjustLandmarkRenderingSize= this->mui_DefaultAdjustLandmarkRenderingSize=1;
@@ -182,9 +183,317 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	
 
-
-
 	
+
+}
+//should only be done after main window is initialized.
+void mqMeshToolsCore::InitializeOrientationHelper()
+{
+	vtkSmartPointer<vtkOrientationHelperActor> axes =
+		vtkSmartPointer<vtkOrientationHelperActor>::New();
+
+	//
+
+	//vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
+	// Does not work with a smart pointer, can't figure out why
+
+
+	this->OrientationHelperWidget->SetOutlineColor(0.9300, 0.5700, 0.1300);
+	this->OrientationHelperWidget->SetOrientationMarker(axes);
+	this->OrientationHelperWidget->SetDefaultRenderer(this->getRenderer());
+	this->OrientationHelperWidget->SetInteractor(this->RenderWindow->GetInteractor());
+	this->OrientationHelperWidget->SetViewport(0.0, 0.0, 0.2, 0.2);
+	this->OrientationHelperWidget->SetEnabled(1);
+	this->OrientationHelperWidget->InteractiveOff();
+	this->OrientationHelperWidget->PickingManagedOn();
+
+
+}
+void mqMeshToolsCore::SetMainWindow(QMainWindow *_mainWindow)
+{
+	this->MainWindow = _mainWindow;
+}
+QMainWindow* mqMeshToolsCore::GetMainWindow() {
+	return this->MainWindow	;
+}
+
+//Called to repplace camera and grid positions when switching from "orange grid mode" to "blue grid mode"
+//= when camera focalpoint and grid center are changed between 0,0,0 and COM of all opened meshes.
+void mqMeshToolsCore::ReplaceCameraAndGrid()
+{
+	double newcamerafocalpoint[3] = { 0,0,0 };
+	if (this->Getmui_CameraCentreOfMassAtOrigin() == 0)
+	{
+		this->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
+	}
+
+	double oldcampos[3];
+	double newcampos[3];
+	this->getCamera()->GetPosition(oldcampos);
+	double oldcamerafocalpoint[3];
+	this->getCamera()->GetFocalPoint(oldcamerafocalpoint);
+
+	double dispvector[3];
+	vtkMath::Subtract(newcamerafocalpoint, oldcamerafocalpoint, dispvector);
+	vtkMath::Add(oldcampos, dispvector, newcampos);
+	this->getCamera()->SetPosition(newcampos);
+	this->getCamera()->SetFocalPoint(newcamerafocalpoint);
+
+	this->getGridActor()->SetGridOrigin(newcamerafocalpoint);
+	this->getGridActor()->SetOutlineMode(this->Getmui_CameraCentreOfMassAtOrigin());
+	//this->getGridActor()->SetGridType(gridtype);	
+	this->Render();
+
+
+}
+void mqMeshToolsCore::AdjustCameraAndGrid()
+{
+	double newcamerafocalpoint[3] = { 0,0,0 };
+	if (this->Getmui_CameraCentreOfMassAtOrigin() == 0)
+	{
+		this->getActorCollection()->GetCenterOfMass(newcamerafocalpoint);
+		this->getGridActor()->SetGridOrigin(newcamerafocalpoint);
+
+
+	}
+
+	double multfactor = 1 / tan(this->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	double GlobalBoundingBoxLength = this->getActorCollection()->GetBoundingBoxLength();
+	if (GlobalBoundingBoxLength == std::numeric_limits<double>::infinity() || GlobalBoundingBoxLength == 0)
+	{
+		GlobalBoundingBoxLength = 120;
+	}
+
+	double oldcampos[3];
+	double newcampos[3];
+	this->getCamera()->GetPosition(oldcampos);
+	double oldcamerafocalpoint[3];
+	this->getCamera()->GetFocalPoint(oldcamerafocalpoint);
+
+	double dispvector[3];
+
+	vtkMath::Subtract(oldcampos, oldcamerafocalpoint, dispvector);
+	vtkMath::Normalize(dispvector);
+	double newdist = multfactor*GlobalBoundingBoxLength;
+	vtkMath::MultiplyScalar(dispvector, newdist);
+
+	vtkMath::Add(newcamerafocalpoint, dispvector, newcampos);
+
+	this->getCamera()->SetPosition(newcampos);
+	this->getCamera()->SetFocalPoint(newcamerafocalpoint);
+
+	// now adjust if necessary..
+	if (this->Getmui_CameraOrtho() == 1)
+	{
+		this->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
+		this->getRenderer()->ResetCameraClippingRange();
+	}
+
+	//this->ui->qvtkWidget->update();
+	this->Render();
+
+
+
+}
+
+void mqMeshToolsCore::ResetCameraOrthoPerspective()
+{
+	if (this->Getmui_CameraOrtho() == 1)
+	{
+		this->getCamera()->SetParallelProjection(true);
+		this->DollyCameraForParallelScale();
+	}
+	else
+	{
+
+		this->getCamera()->SetParallelProjection(false);
+		this->DollyCameraForPerspectiveMode();
+
+
+	}
+	//cout << "Parallel scale"<<this->MeshToolsCore->getCamera()->GetParallelScale()<<endl;
+	double dist = 0;
+
+
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+	this->getCamera()->GetPosition(campos);
+	//cout << "Camera Position:" << campos[0] <<","<<campos[1]<<","<<campos[2]<< endl;
+	this->getCamera()->GetFocalPoint(foc);
+	//cout << "Camera Position:" << foc[0] << "," << foc[1] << "," << foc[2] << endl;
+	dist = sqrt(pow((campos[0] - foc[0]), 2) + pow((campos[1] - foc[1]), 2) + pow((campos[2] - foc[2]), 2));
+	//cout << "Distance between camera and focal point:" << dist << endl;
+
+	//cout << "Camera viewing angle:" << this->MeshToolsCore->getCamera()->GetViewAngle() << endl;
+
+	this->Render(); // update main window!
+}
+/*
+In perspective mode, "zoom" (dolly) in/out changes the position of the camera
+("dolly" functions of vtkInteractorStyleTrackballCamera.cxx and of vtkInteractorStyleJoystickCamera )
+Beware : no real "Zoom" function is applied in these styles!!!!
+=> before I create  MeshTools' own interactor styles, camera's parallel scale (=ortho "zoom") should
+be updated when switching from "perspective" to "ortho" to keep track of that change...
+=> Once these styles are created, this function should be removed!
+
+*/
+void mqMeshToolsCore::DollyCameraForParallelScale()
+{
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+
+	this->getCamera()->GetPosition(campos);
+	this->getCamera()->GetFocalPoint(foc);
+	double dist = sqrt(vtkMath::Distance2BetweenPoints(campos, foc));
+	//double dist = sqrt(pow((campos[0] - foc[0]), 2) + pow((campos[1] - foc[1]), 2) + pow((campos[2] - foc[2]), 2));
+	double multfactor = 1 / tan(this->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
+
+	double newparallelscale = dist / multfactor;
+	this->getCamera()->SetParallelScale(newparallelscale);
+
+}
+
+/*
+In parallel mode, "zoom" (dolly) in/out does not change the position of the camera
+("dolly" functions of vtkInteractorStyleTrackballCamera.cxx and of vtkInteractorStyleJoystickCamera )
+Beware : no real "Zoom" function is applied in these styles!!!!
+=> before I create  MeshTools' own interactor styles, camera's position in perspective mode should
+be updated when switching from "ortho" to "perspective" to keep track of that change...
+=> Once these styles are created, this function should be removed!
+
+*/
+void mqMeshToolsCore::DollyCameraForPerspectiveMode()
+{
+	double campos[3] = { 0,0,0 };
+	double foc[3] = { 0,0,0 };
+	double dispvector[3];
+	this->getCamera()->GetPosition(campos);
+	this->getCamera()->GetFocalPoint(foc);
+	double multfactor = 3.73; // at 30° vtk : angle = 2*atan((h/2)/d). 
+							  // then 2*d  =12/tan(viewangle/2) 
+	multfactor = 1 / tan(this->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
+	//cout << "DollyCameraForPerspectiveMode" << endl;
+	//cout << "multfactor" << multfactor << endl;
+	//cout << "Old posisition:" << campos[0] << "," << campos[1] << "," << campos[2] << endl;
+
+	vtkMath::Subtract(campos, foc, dispvector);
+	//cout<<"Disp Vector:" << dispvector[0] << ","<<dispvector[1] << "," << dispvector[2] << endl;
+	vtkMath::Normalize(dispvector);
+	//cout << "Normalized Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+
+	double newdist = multfactor*this->getCamera()->GetParallelScale();
+	//cout << "New dist:" << newdist << endl;
+	vtkMath::MultiplyScalar(dispvector, newdist);
+	//cout << "Multiplied Disp Vector:" << dispvector[0] << "," << dispvector[1] << "," << dispvector[2] << endl;
+	double newpos[3] = { 0,0,0 };
+	vtkMath::Add(foc, dispvector, newpos);
+	//cout << "New pos:" << newpos[0] << "," << newpos[1] << "," << newpos[2] << endl;
+
+	this->getCamera()->SetPosition(newpos);
+
+
+
+}
+
+//On ajoute un indice au nom si le nom existe déjà.
+//fonction recurente pour savoir quel indice lui donner.
+std::string  mqMeshToolsCore::CheckingName(std::string name_obj, int cpt_name) {
+	std::string s_cpt_name = std::to_string(cpt_name);
+	std::string name = name_obj + "(" + s_cpt_name + ")";
+	// to do!!!
+	/*
+	string name = *name_obj + "(" + s_cpt_name + ")";
+	OBJECT_MESH *object;
+
+	if (cpt_name == 0){
+	name = *name_obj;
+	}
+
+	if (Cont_Mesh.OBJECTS_ROOT->OBJECTS != NULL){
+	int cpt = 0;
+	object = Cont_Mesh.OBJECTS_ROOT->OBJECTS;
+	while (object != NULL)// on parcours tous les objets
+	{
+	if (object->name == name){// si il existe déjà, on augmente l'indice
+	cpt_name++;
+	cpt++;
+	s_cpt_name = std::to_string(cpt_name);
+	name = *name_obj + "(" + s_cpt_name + ")";
+	}
+
+	object = object->nextobj;
+	}//fin while
+
+	if (cpt == 0)
+	*name_obj = name;
+	else{
+	CheckingName(name_obj, cpt_name);
+	}
+	}
+	*/
+	return name_obj;
+}
+
+void mqMeshToolsCore::SetGridVisibility()
+{
+	vtkPropCollection* props = this->getRenderer()->GetViewProps(); //iterate through and set each visibility to 0
+	props->InitTraversal();
+	std::string str1("vtkGridActor");
+	for (int i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		vtkProp *myprop = props->GetNextProp();
+		if (str1.compare(myprop->GetClassName()) == 0)
+		{
+			if (this->Getmui_ShowGrid() == 1)
+			{
+				myprop->VisibilityOn();
+			}
+			else
+			{
+				myprop->VisibilityOff();
+			}
+		}
+
+	}
+	this->Render();
+}
+void mqMeshToolsCore::SetOrientationHelperVisibility()
+{
+
+	//std::string str1("vtkOrientationHelperActor");
+	if (this->Getmui_ShowOrientationHelper() == 1)
+	{
+		this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOn();
+	}
+	else
+	{
+		this->OrientationHelperWidget->GetOrientationMarker()->VisibilityOff();
+	}
+	this->Render();
+}
+vtkMTActor* mqMeshToolsCore::GetLastActor()
+{
+	return vtkMTActor::SafeDownCast(this->getActorCollection()->GetLastActor());
+}
+void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
+{
+	// mode : 0 for last inserted mesh
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+	// mode : 3 for all selected landmarks/flags and meshes
+	if (mode == 0)
+	{
+		vtkMTActor *actor = this->GetLastActor();
+		actor->ApplyMatrix(Mat);
+	}
+	else
+	{
+		if (mode == 1 || mode == 3)
+		{
+
+		}
+		//@@TODO!
+	}
 }
 
 void mqMeshToolsCore::SelectAll(int Count)

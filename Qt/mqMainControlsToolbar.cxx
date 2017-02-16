@@ -33,9 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ui_mqMainControlsToolbar.h"
 
 // For later!
-//#include "mqLoadDataReaction.h"
-//#include "mqSaveDataReaction.h"
+
 #include "mqUndoRedoReaction.h"
+#include "mqMeshToolsCore.h"
+#include "mqOpenDataReaction.h"
+#include "mqCameraReaction.h"
+#include "mqDisplayReaction.h"
 
 #include <QToolButton>
 
@@ -44,12 +47,51 @@ void mqMainControlsToolbar::constructor()
 {
   Ui::mqMainControlsToolbar ui;
   ui.setupUi(this);
-  //new mqLoadDataReaction(ui.actionOpenData);
+  new mqOpenDataReaction(ui.actionOpenData, 0);//0= open data (generic)
+  new mqCameraReaction(ui.actionCameraFront, 0); //0 = camera Front
+  new mqCameraReaction(ui.actionCameraBack, 1); //1 = camera Back
+  new mqCameraReaction(ui.actionCameraLeft, 2); //2 = camera Left
+  new mqCameraReaction(ui.actionCameraRight, 3); //3 = camera Right
+  new mqCameraReaction(ui.actionCameraAbove, 4); //4 = camera Above
+  new mqCameraReaction(ui.actionCameraBelow, 5); //5 = camera Below
+
   //new mqSaveDataReaction(ui.actionSaveData);
  
   new mqUndoRedoReaction(ui.actionUndo, true);
   new mqUndoRedoReaction(ui.actionRedo, false);
 
+  if (mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin() == 0)
+  {
 
-  
+	  ui.actionCameraCentreOfMassToggle->setChecked(true);
+  }
+
+  if (mqMeshToolsCore::instance()->Getmui_CameraOrtho() == 0)
+  {
+
+	  ui.actionCameraOrthoPerspectiveToggle->setChecked(true);
+  }
+
+  if (mqMeshToolsCore::instance()->Getmui_Anaglyph() == 1)
+  {
+
+	  ui.actionRendererAnaglyphToggle->setChecked(true);
+  }
+
+  if (mqMeshToolsCore::instance()->Getmui_ShowGrid() == 1)
+  {
+
+	  ui.actionGridToggle->setChecked(true);
+  }
+  if (mqMeshToolsCore::instance()->Getmui_ShowOrientationHelper() == 1)
+  {
+
+	  ui.actionOrientationHelperToggle->setChecked(true);
+  }
+  new mqCameraReaction(ui.actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
+  new mqCameraReaction(ui.actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
+
+  new mqDisplayReaction(ui.actionGridToggle, 0); //0 = display Grid Toggle
+  new mqDisplayReaction(ui.actionOrientationHelperToggle, 1); //1 = display Orientation Helper Toggle
+  new mqDisplayReaction(ui.actionRendererAnaglyphToggle, 2); //2 = display Anaglyph mode Toggle
 }

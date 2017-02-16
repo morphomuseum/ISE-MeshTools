@@ -27,6 +27,7 @@
 #include <vtkSmartPointer.h>    
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
+#include <QMainWindow>
 // 
 class mqUndoStack;
 
@@ -118,6 +119,8 @@ public:
   //static mqMeshToolsCore* New();
   static mqMeshToolsCore* instance();
   void UpdateLandmarkSettings();
+  void SetMainWindow(QMainWindow *_mainWindow);
+  QMainWindow* GetMainWindow();
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
   void SetRenderWindow(vtkRenderWindow *renwin)
   {
@@ -141,6 +144,17 @@ public:
   void setUndoStack(mqUndoStack* stack);
   mqUndoStack* getUndoStack() const { return this->UndoStack; }
   mqMeshToolsCore();
+  void AdjustCameraAndGrid();
+  void ReplaceCameraAndGrid();
+  void DollyCameraForPerspectiveMode();
+  void DollyCameraForParallelScale();
+  void ResetCameraOrthoPerspective();
+  void SetGridVisibility();
+  void SetOrientationHelperVisibility();
+  std::string CheckingName(std::string name_obj, int cpt_name);
+  vtkMTActor* GetLastActor();
+  void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
+  void InitializeOrientationHelper();
 protected:
 	
 	~mqMeshToolsCore();
@@ -155,6 +169,7 @@ protected:
 	vtkSmartPointer<vtkGridActor> GridActor;
 	vtkSmartPointer<vtkLMActor> LMActor;
 	vtkSmartPointer<vtkLMActor> LMActor2;
+	QMainWindow* MainWindow;
 	//vtkUndoStack* UndoStack;
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
@@ -194,6 +209,8 @@ protected:
 
 	int mui_DefaultFlagRenderingSize;
 	int mui_FlagRenderingSize;
+
+	vtkOrientationHelperWidget* OrientationHelperWidget;
 
 private:
 	static mqMeshToolsCore* Instance;

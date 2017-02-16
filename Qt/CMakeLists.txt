@@ -9,6 +9,8 @@ set (Qt_SRCS
   mqDesktopServicesReaction.h
   mqReaction.cxx
   mqReaction.h
+  mqOpenDataReaction.cxx
+  mqOpenDataReaction.h
   mqSetName.cxx
   mqSetName.h
   mqMeshToolsMenuBuilders.cxx
@@ -17,6 +19,10 @@ set (Qt_SRCS
   mqColorChooserButton.h
   mqColorDialogReaction.h
   mqColorDialogReaction.cxx
+  mqCameraReaction.h
+  mqDisplayReaction.cxx
+  mqDisplayReaction.h
+  mqCameraReaction.cxx
   mqColorDialog.cxx
   mqColorDialog.h
   mqLandmarkDialogReaction.h

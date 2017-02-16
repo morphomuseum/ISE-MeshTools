@@ -53,63 +53,36 @@ public:
   
   vtkSmartPointer<vtkRenderedAreaPicker> AreaPicker;
 
-
-  vtkOrientationHelperWidget* OrientationHelperWidget; 
-  void OpenMeshFile(QString fileName);
-  void OpenPOSFile(QString fileName, int mode);
-  void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
-  vtkMTActor* GetLastActor();
+  
+  
   
 public slots:
   //static  MeshTools* Instance;
  // static MeshTools* instance();
  // static int getTestInt();
-  virtual void slotOpenMeshFile();
-  virtual void slotCameraFront();
-  virtual void slotCameraBack();
-  virtual void slotCameraLeft();
-  virtual void slotCameraRight();
-  virtual void slotCameraAbove();
-  virtual void slotCameraBelow();
-  virtual void slotGridToggle();
-  virtual void slotOrientationHelperToggle();
-  virtual void slotCameraCentreOfMassToggle();
-  virtual void slotCameraOrthoPerspectiveToggle();
-  virtual void slotRendererAnaglyphToggle();
+  
+  
+  
+  
   virtual void slotExit();
-  virtual void slotOpenNTW();
- // int GetUndoCount();
-//  void SetUndoCount(int Count);
-
-/*  void RubberBandSelect(vtkObject* caller,
-	  long unsigned int vtkNotUsed(eventId),
-	  void* vtkNotUsed(clientData),
-	  void* vtkNotUsed(callData));*/
+  
 
 protected:
 
 protected slots:
 	
 private:
-	void ReplaceCameraAndGrid();
-	void AdjustCameraAndGrid();
-	void ResetCameraOrthoPerspective();
-	void DollyCameraForParallelScale();
-	void DollyCameraForPerspectiveMode();
-	void SetGridVisibility();
-	void SetOrientationHelperVisibility();
+	
+	
+	
+	
+	
 	
 	void saveSettings();
-	void UpdateRenderer();
-	//int UndoCount;
 	
-	//static int testint;
-	std::string CheckingName(std::string name_obj, int cpt_name);
 	
   vtkSmartPointer<vtkQtTableView>         TableView;
-
-  // Designer form
-  Ui_MeshTools *ui;
+   Ui_MeshTools *ui;
 };
 
 #endif // MeshTools_H

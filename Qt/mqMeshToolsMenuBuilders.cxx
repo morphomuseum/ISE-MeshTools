@@ -11,6 +11,7 @@
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqMainControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
+#include "mqOpenDataReaction.h"
 
 #include "mqSetName.h"
 
@@ -40,15 +41,11 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   //ui.setupUi(&menu);
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
- // QAction *openNtw = menu.addAction("Open Network");
- //QObject::connect(openNtw, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(mqMeshToolsCore::slotOpenNTW()));
- /*QObject::connect(
-    ui.actionFileExit, SIGNAL(triggered()), pqApplicationCore::instance(), SLOT(quit()));*/
+ // QAction *openNtw = menu.addAction("Open Project");
+  //new mqOpenDataReaction(openNtw, 1);//1= open NTW 
 
-  // now setup reactions.
-  /*new pqLoadDataReaction(ui.actionFileOpen);*/
-
-  //new pqRecentFilesMenu(*ui.menuRecentFiles, ui.menuRecentFiles);
+  new mqOpenDataReaction(menu.addAction("Open Mesh") << mqSetName("actionOpenMesh"), 2);
+  new mqOpenDataReaction(menu.addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
 
   
 }
