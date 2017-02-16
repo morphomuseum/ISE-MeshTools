@@ -172,6 +172,8 @@ void mqOpenDataReaction::OpenNTW()
 					}
 					std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
 					//TODO!
+					QString verfile(myline.c_str());
+					this->OpenVERFile(verfile, landmark_mode);
 					//this->Open_VER_File(landmark_mode, myline);
 					// Now open VER file !
 
@@ -509,6 +511,192 @@ void mqOpenDataReaction::OpenPOSFile(QString fileName, int mode)
 	}	//length
 
 }
+void mqOpenDataReaction::OpenVERFile(QString fileName, int mode)
+{// mode : 0 for normal landmarks
+	// mode : 1 for target landmarks
+	double  x, y, z, nx, ny, nz;
+	QString LMKName;
+	//Open a landmark file!
+
+	int i;
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string VERext(".ver");
+			std::string VERext2(".VER");
+			std::string LMKext(".LMK");
+			std::string LMKext2(".LMK");
+
+			int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File or simple .MAT file
+
+			std::size_t found = fileName.toStdString().find(LMKext);
+			std::size_t found2 = fileName.toStdString().find(LMKext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//LMK
+			}
+
+			found = fileName.toStdString().find(VERext);
+			found2 = fileName.toStdString().find(VERext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 0; //VER
+			}
+
+
+
+			if (type == 1)
+			{
+				
+
+			}
+			else
+			{
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+
+					// first matrix is useless (for the moment)	
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+
+					}
+					//
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+						QTextStream myteststream(&line);
+						myteststream >> LMKName >>  x >> y >> z >> nx >> ny >> nz;
+
+						/**/
+
+
+					}
+
+				}
+			}//fin if																		
+			
+		}//file exists...
+	}	//length
+
+	/*double  x, y, z, nx, ny, nz;
+	std::string LMKName;
+	FILE	*filein;									// Filename To Open
+														//	OBJECT_LANDMARK * My_Landmark;
+	char	oneline[255];
+
+	std::string VERext(".ver");
+	std::string VERext2(".VER");
+	std::string LMKext(".lmk");
+	std::string LMKext2(".LMK");
+
+	//char *szFile = fl_file_chooser("Load landmarks", "*.{ver,VER,lmk,LMK}", "");	
+	int file_exists = 1;
+	ifstream file(filename.c_str());
+	if (file)
+	{
+		//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+		file.close();
+	}
+	else
+	{
+
+		std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+		file_exists = 0;
+	}
+
+	if (file_exists == 1)
+	{
+
+		int type = 0; //0 = lmk, 1 = ver
+		std::size_t found = filename.find(VERext);
+		std::size_t found2 = filename.find(VERext2);
+		if (found != std::string::npos || found2 != std::string::npos)
+		{
+			type = 1; //VER
+
+		}
+		else
+		{
+			type = 0;
+		}
+
+		//filein = fopen(szFile, "rt");
+		filein = fopen(filename.c_str(), "r");
+		readstr(filein, oneline);
+		feof(filein);
+		std::cout << "Try open landmark file " << std::endl;
+		std::cout << "feof(filein)" << feof(filein) << std::endl;
+
+		vtkSmartPointer<vtkFloatArray> param_list = vtkSmartPointer<vtkFloatArray>::New();
+		param_list->SetNumberOfComponents(1);
+
+		while (!feof(filein))
+		{
+			//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
+			//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));
+			if (type == 1)
+			{
+				sscanf(oneline, "%s %f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7);
+				param_list->InsertNextTuple1(param2);
+				param_list->InsertNextTuple1(param3);
+				param_list->InsertNextTuple1(param4);
+				param_list->InsertNextTuple1(param5);
+				param_list->InsertNextTuple1(param6);
+				param_list->InsertNextTuple1(param7);
+			}
+			else
+			{
+				sscanf(oneline, "%s %f %f %f\n", param1, &param2, &param3, &param4);
+				param_list->InsertNextTuple1(param2);
+				param_list->InsertNextTuple1(param3);
+				param_list->InsertNextTuple1(param4);
+			}
+			create_landmarks(landmark_mode, param_list, type);
+
+			param_list = vtkSmartPointer<vtkFloatArray>::New();
+			param_list->SetNumberOfComponents(1);
+
+
+			readstr(filein, oneline); //read next line
+
+		}//While scanff...
+		fclose(filein);
+
+	}//if file exists
+
+	*/
+
+}
+
 void mqOpenDataReaction::OpenMeshFile(QString fileName)
 {
 

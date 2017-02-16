@@ -37,6 +37,7 @@ public:
    void OpenCUR();
    void OpenTAG();
    void OpenORI();
+   void OpenVERFile(QString fileName, int mode);
    void OpenMeshFile(QString fileName);
    void OpenPOSFile(QString fileName, int mode);
 protected:
