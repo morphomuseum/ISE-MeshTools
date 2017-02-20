@@ -46,6 +46,13 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
 
   new mqOpenDataReaction(menu.addAction("Open Mesh") << mqSetName("actionOpenMesh"), 2);
   new mqOpenDataReaction(menu.addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
+  new mqOpenDataReaction(menu.addAction("Open Landmark") << mqSetName("actionOpenNormalLMK"), 3);
+  new mqOpenDataReaction(menu.addAction("Open Target Landmark") << mqSetName("actionOpenNormalLMK"), 4);
+  new mqOpenDataReaction(menu.addAction("Open Curve") << mqSetName("actionOpenCUR"), 5);
+  new mqOpenDataReaction(menu.addAction("Open Position") << mqSetName("actionOpenPOS"), 8);
+  new mqOpenDataReaction(menu.addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
+  new mqOpenDataReaction(menu.addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);
+  new mqOpenDataReaction(menu.addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
   
 }

@@ -20,7 +20,8 @@
 
 #include "mqUndoStack.h"
 
-
+#define VTK_CREATE(type, name) \
+  vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
 //-----------------------------------------------------------------------------
 mqMeshToolsCore* mqMeshToolsCore::Instance = 0;
 
@@ -187,6 +188,47 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 }
 //should only be done after main window is initialized.
+
+void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
+{
+
+	VTK_CREATE(vtkLMActor, myLM);
+	int num = this->LandmarkCollection->GetNextLandmarkNumber();
+	myLM->SetLMOriginAndOrientation(coord, ori);
+	//myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
+	//myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
+	if (mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize() == 1)
+	{
+		myLM->SetLMSize(mqMeshToolsCore::instance()->AdjustedLandmarkSize());
+	}
+	else
+	{
+		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
+	}
+	myLM->SetLMType(0);
+	myLM->SetLMNumber(num);
+	myLM->SetLMBodyType(mqMeshToolsCore::instance()->Getmui_LandmarkBodyType());
+	myLM->SetSelected(0);
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(myLM->getLMBody());
+	mapper->Update();
+	myLM->SetMapper(mapper);
+
+
+	//myLM->PrintSelf(cout, vtkIndent(1));
+	this->LandmarkCollection->AddItem(myLM);
+	this->LandmarkCollection->SetChanged(1);
+	std::string action = "Create landmark";
+	int mCount = BEGIN_UNDO_SET(action);
+	mqMeshToolsCore::instance()->getLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+
+	END_UNDO_SET();
+	//this->CurrentRenderer->AddActor(myLM);
+	//this->CurrentRenderer->AddActor(myLM->GetLMLabelActor2D());
+}
+
 void mqMeshToolsCore::InitializeOrientationHelper()
 {
 	vtkSmartPointer<vtkOrientationHelperActor> axes =

@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <vtkPLYReader.h>
+#include <vtkMath.h>
 #include <vtkSTLReader.h>
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
@@ -39,18 +40,14 @@ mqOpenDataReaction::mqOpenDataReaction(QAction* parentObject,  int _mode)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void mqOpenDataReaction::OpenData()
-{
-	//@@TODO
-	cout << "Open data!" << endl;
-}
+
 
 //-----------------------------------------------------------------------------
 void mqOpenDataReaction::OpenMesh()
 {
  //mqMeshToolsCore::instance()->getUndoStack();
 	cout << "Open mesh!" << endl;
-	std::string SfileName;
+	
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
 		tr("Load surface"), QDir::currentPath(),
 		tr("surfaces (*.ply *.stl *.vtk)"));
@@ -58,27 +55,278 @@ void mqOpenDataReaction::OpenMesh()
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;
 
-	this->OpenMeshFile(fileName);
+	this->OpenMesh(fileName);
 }
-//-----------------------------------------------------------------------------
+void mqOpenDataReaction::OpenLMK_or_VER(int mode)
+{
+	//mqMeshToolsCore::instance()->getUndoStack();
+	cout << "Open LMK or VER!" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load landmarks"), QDir::currentPath(),
+		tr("landmark files(*.ver *.lmk)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+
+	
+	std::string VERext(".ver");
+	std::string VERext2(".VER");	
+	std::string LMKext(".lmk");
+	std::string LMKext2(".LMK");
+
+	int type = 0; //0 =  ver, 1 lmk
+	std::size_t found = fileName.toStdString().find(VERext);
+	std::size_t found2 = fileName.toStdString().find(VERext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 0; //VER
+	}
+
+	
+	found = fileName.toStdString().find(LMKext);
+	found2 = fileName.toStdString().find(LMKext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 1; //LMK
+	}
+
+	if (type == 0)
+	{
+		
+		this->OpenVER(fileName, mode);
+	}
+	else 
+	{
+		this->OpenLMK(fileName, mode);
+	}
+
+}
+void mqOpenDataReaction::OpenPOS(int mode)
+{
+	if (mode < 1) { mode = 1; }
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+	// mode : 3 for all selected landmarks/flags and meshes
+
+	//open and applies position 
+	//mqMeshToolsCore::instance()->getUndoStack();
+	cout << "Open POS" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load position file"), QDir::currentPath(),
+		tr("position file (*.pos)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;	
+	this->OpenPOS(fileName,mode);
+	
+}
+void mqOpenDataReaction::OpenORI()
+{
+	
+	cout << "Open ORI" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load orientation file"), QDir::currentPath(),
+		tr("orientation file (*.ori)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	this->OpenORI(fileName);
+
+}
+void mqOpenDataReaction::OpenFLG()
+{
+
+	cout << "Open FLG" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load flag file"), QDir::currentPath(),
+		tr("flag file (*.flg)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	this->OpenFLG(fileName);
+
+}
+void mqOpenDataReaction::OpenCUR()
+{
+
+	cout << "Open CUR" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load CUR file"), QDir::currentPath(),
+		tr("curve file (*.cur)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	this->OpenCUR(fileName);
+
+}
+void mqOpenDataReaction::OpenTAG()
+{
+
+	cout << "Open CUR" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load TAG file"), QDir::currentPath(),
+		tr("tag file (*.tag)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+	this->OpenTAG(fileName);
+
+}
+void mqOpenDataReaction::OpenData()
+{
+	//mqMeshToolsCore::instance()->getUndoStack();
+	cout << "Open Data!" << endl;
+	
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load data"), QDir::currentPath(),
+		tr("meshtools data or project (*.ntw *.ver *.cur *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+
+	std::string STLext(".stl");
+	std::string STLext2(".STL");
+	std::string VTKext(".vtk");
+	std::string VTKext2(".VTK");
+	std::string VTKext3(".vtp");
+	std::string VTKext4(".VTP");
+	std::string PLYext(".ply");
+	std::string PLYext2(".PLY");
+	std::string NTWext(".ntw");
+	std::string NTWext2(".NTW");
+	std::string VERext(".ver");
+	std::string VERext2(".VER");
+	std::string CURext(".cur");
+	std::string CURext2(".CUR");
+	std::string FLGext(".flg");
+	std::string FLGext2(".FLG");
+	std::string LMKext(".lmk");
+	std::string LMKext2(".LMK");
+
+	int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
+	std::size_t found = fileName.toStdString().find(STLext);
+	std::size_t found2 = fileName.toStdString().find(STLext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 0;
+		//STL
+	}
+
+	found = fileName.toStdString().find(VTKext);
+	found2 = fileName.toStdString().find(VTKext2);
+	std::size_t found3 = fileName.toStdString().find(VTKext3);
+	std::size_t found4 = fileName.toStdString().find(VTKext4);
+	if (found != std::string::npos || found2 != std::string::npos || found3 != std::string::npos || found4 != std::string::npos)
+	{
+		type = 1; //VTK
+	}
+
+	//std::cout << "2Type= " <<type<< std::endl;
+	found = fileName.toStdString().find(PLYext);
+	found2 = fileName.toStdString().find(PLYext2);
+	
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 2; //PLY
+	}
+	
+	
+	//0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
+	found = fileName.toStdString().find(NTWext);
+	found2 = fileName.toStdString().find(NTWext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 3; //NTW
+	}
+
+	//4 ver, 5 cur, 6 flg, 7 lmk
+	found = fileName.toStdString().find(VERext);
+	found2 = fileName.toStdString().find(VERext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 4; //VER
+	}
+	
+	found = fileName.toStdString().find(CURext);
+	found2 = fileName.toStdString().find(CURext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 5; //CUR
+	}
+	found = fileName.toStdString().find(FLGext);
+	found2 = fileName.toStdString().find(FLGext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 6; //FLG
+	}
+	found = fileName.toStdString().find(LMKext);
+	found2 = fileName.toStdString().find(LMKext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 7; //LMK
+	}
+
+	if (type < 3)
+	{
+		this->OpenMesh(fileName);
+	}
+	else if (type == 3)
+	{
+		this->OpenNTW(fileName);
+	}
+	else if (type == 4)
+	{
+		this->OpenVER(fileName,0);
+	}
+	else if (type == 5)
+	{
+		this->OpenCUR(fileName);
+	}
+	else if (type == 6)
+	{
+		this->OpenFLG(fileName);
+	}
+	else if (type == 7)
+	{
+		this->OpenLMK(fileName, 0);
+	}
+}
+
 void mqOpenDataReaction::OpenNTW()
 {
 	cout << "Open NTW!" << endl;
 	//char param1[1000];
 	int i = 0;
-	std::string SfileName;
+	
 	QString NTWfile = QFileDialog::getOpenFileName(this->MainWindow,
 		tr("Load project"), QDir::currentPath(),
 		tr("NTW (*.ntw)"));
 
 	cout << NTWfile.toStdString() << endl;
 	if (NTWfile.isEmpty()) return;
+	this->OpenNTW(NTWfile);
+}
+
+void mqOpenDataReaction::OpenFLG(QString fileName) {}
+void mqOpenDataReaction::OpenCUR(QString fileName) {}
+void mqOpenDataReaction::OpenTAG(QString fileName) {}
+void mqOpenDataReaction::OpenORI(QString fileName) {}
+
+//-----------------------------------------------------------------------------
+void mqOpenDataReaction::OpenNTW(QString fileName)
+{
+	
+	
 	int file_exists = 1;
-
-
-
-	QFile file(NTWfile);
-	QFileInfo fileInfo(NTWfile);
+	int i = 0;
+	QFile file(fileName);
+	QFileInfo fileInfo(fileName);
 	QString onlyfilename(fileInfo.fileName());
 	if (file.exists()) {
 		// Message
@@ -97,7 +345,7 @@ void mqOpenDataReaction::OpenNTW()
 
 
 		std::string only_filename = onlyfilename.toStdString();;
-		std::string path = NTWfile.toStdString().substr(0, (NTWfile.toStdString().length() - only_filename.length()));
+		std::string path = fileName.toStdString().substr(0, (fileName.toStdString().length() - only_filename.length()));
 		cout << "only_filename" << only_filename << endl;
 		cout << "path" << path << endl;
 		mqMeshToolsCore::instance()->UnselectAll(-1);
@@ -106,7 +354,7 @@ void mqOpenDataReaction::OpenNTW()
 
 
 
-		QFile inputFile(NTWfile);
+		QFile inputFile(fileName);
 		int ok = 0;
 
 		if (inputFile.open(QIODevice::ReadOnly))
@@ -173,7 +421,7 @@ void mqOpenDataReaction::OpenNTW()
 					std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
 					//TODO!
 					QString verfile(myline.c_str());
-					this->OpenVERFile(verfile, landmark_mode);
+					this->OpenVER(verfile, landmark_mode);
 					//this->Open_VER_File(landmark_mode, myline);
 					// Now open VER file !
 
@@ -288,7 +536,7 @@ void mqOpenDataReaction::OpenNTW()
 
 
 
-						this->OpenMeshFile(meshfile);
+						this->OpenMesh(meshfile);
 						vtkMTActor* actor = mqMeshToolsCore::instance()->GetLastActor();
 
 						if (actor != NULL && actor->GetNumberOfPoints() > 10)
@@ -324,7 +572,7 @@ void mqOpenDataReaction::OpenNTW()
 							}
 							std::cout << "Try to load position :<<" << posfile.c_str() << std::endl;
 							QString qposfile(posfile.c_str());
-							this->OpenPOSFile(qposfile, 0);
+							this->OpenPOS(qposfile, 0);
 							//@@TODO!
 							//this->Open_POS_File(posfile, My_Obj);
 							//std::cout <<"Object <<"<<My_Obj->name.c_str()<<">> position loaded"<< std::endl;
@@ -346,6 +594,7 @@ void mqOpenDataReaction::OpenNTW()
 
 
 							actor->SetmColor(r, g, b, a);
+							actor->SetSelected(0);
 							actor->SetChanged(1);
 
 							mqMeshToolsCore::instance()->getActorCollection()->SetChanged(1);
@@ -370,7 +619,7 @@ void mqOpenDataReaction::OpenNTW()
 	}
 }
 
-void mqOpenDataReaction::OpenPOSFile(QString fileName, int mode)
+void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 {
 	// mode : 0 for last inserted mesh
 	// mode : 1 for all selected meshes
@@ -503,6 +752,7 @@ void mqOpenDataReaction::OpenPOSFile(QString fileName, int mode)
 
 
 					}
+					inputFile.close();
 
 				}
 			}//fin if																		
@@ -511,14 +761,94 @@ void mqOpenDataReaction::OpenPOSFile(QString fileName, int mode)
 	}	//length
 
 }
-void mqOpenDataReaction::OpenVERFile(QString fileName, int mode)
+void mqOpenDataReaction::OpenLMK(QString fileName, int mode)
+{// mode : 0 for normal landmarks
+ // mode : 1 for target landmarks
+	double  x, y, z;
+	QString LMKName;
+	//Open a landmark file!
+
+
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string LMKext(".LMK");
+			std::string LMKext2(".LMK");
+
+			std::size_t found = fileName.toStdString().find(LMKext);
+			std::size_t found2 = fileName.toStdString().find(LMKext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+			
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+
+					while (!in.atEnd())
+					{
+
+						QString line = in.readLine();
+						QTextStream myteststream(&line);
+						myteststream >> LMKName >> x >> y >> z;
+						double coord[3] = { x,y,z };
+						double ori[3];
+
+						
+						ori[0] = 0;
+						ori[1] = 0;
+						ori[2] = 1;
+						
+						mqMeshToolsCore::instance()->CreateLandmark(coord, ori, mode);
+
+					}
+					/**/
+
+					inputFile.close();
+
+
+				}
+
+			}//fin if																		
+
+		}//file exists...
+	}	//length
+
+
+}
+void mqOpenDataReaction::OpenVER(QString fileName, int mode)
 {// mode : 0 for normal landmarks
 	// mode : 1 for target landmarks
 	double  x, y, z, nx, ny, nz;
 	QString LMKName;
 	//Open a landmark file!
 
-	int i;
+	
 	size_t  length;
 
 
@@ -583,121 +913,46 @@ void mqOpenDataReaction::OpenVERFile(QString fileName, int mode)
 				{
 					QTextStream in(&inputFile);
 
-					// first matrix is useless (for the moment)	
-					for (i = 0; i < 4; i++)
+					while (!in.atEnd())
 					{
-						QString line = in.readLine();
 
-					}
-					//
-					for (i = 0; i < 4; i++)
-					{
 						QString line = in.readLine();
 						QTextStream myteststream(&line);
-						myteststream >> LMKName >>  x >> y >> z >> nx >> ny >> nz;
-
+						myteststream >> LMKName >> x >> y >> z >> nx >> ny >> nz;
+						double coord[3] = { x,y,z };
+						double ncoord[3] = { nx,ny,nz };
+						double ori[3];
+						
+							double length = nx*nx + ny*ny + nz*nz;
+						if (length == 1)
+						{
+							ori[0] = ncoord[0];
+							ori[1] = ncoord[1];
+							ori[2] = ncoord[2];
+						}
+						else
+						{
+							vtkMath::Subtract(ncoord, coord, ori);
+							vtkMath::Normalize(ori);
+						}
+						mqMeshToolsCore::instance()->CreateLandmark(coord, ori, mode);
+						
+					}
 						/**/
 
-
-					}
+					inputFile.close();
+					
 
 				}
 			}//fin if																		
 			
 		}//file exists...
 	}	//length
-
-	/*double  x, y, z, nx, ny, nz;
-	std::string LMKName;
-	FILE	*filein;									// Filename To Open
-														//	OBJECT_LANDMARK * My_Landmark;
-	char	oneline[255];
-
-	std::string VERext(".ver");
-	std::string VERext2(".VER");
-	std::string LMKext(".lmk");
-	std::string LMKext2(".LMK");
-
-	//char *szFile = fl_file_chooser("Load landmarks", "*.{ver,VER,lmk,LMK}", "");	
-	int file_exists = 1;
-	ifstream file(filename.c_str());
-	if (file)
-	{
-		//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
-		file.close();
-	}
-	else
-	{
-
-		std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
-		file_exists = 0;
-	}
-
-	if (file_exists == 1)
-	{
-
-		int type = 0; //0 = lmk, 1 = ver
-		std::size_t found = filename.find(VERext);
-		std::size_t found2 = filename.find(VERext2);
-		if (found != std::string::npos || found2 != std::string::npos)
-		{
-			type = 1; //VER
-
-		}
-		else
-		{
-			type = 0;
-		}
-
-		//filein = fopen(szFile, "rt");
-		filein = fopen(filename.c_str(), "r");
-		readstr(filein, oneline);
-		feof(filein);
-		std::cout << "Try open landmark file " << std::endl;
-		std::cout << "feof(filein)" << feof(filein) << std::endl;
-
-		vtkSmartPointer<vtkFloatArray> param_list = vtkSmartPointer<vtkFloatArray>::New();
-		param_list->SetNumberOfComponents(1);
-
-		while (!feof(filein))
-		{
-			//std::cout << "Try sscanf_s "  <<oneline<< std::endl;
-			//sscanf(oneline, "%s%f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, _countof(param1));
-			if (type == 1)
-			{
-				sscanf(oneline, "%s %f %f %f %f %f %f\n", param1, &param2, &param3, &param4, &param5, &param6, &param7);
-				param_list->InsertNextTuple1(param2);
-				param_list->InsertNextTuple1(param3);
-				param_list->InsertNextTuple1(param4);
-				param_list->InsertNextTuple1(param5);
-				param_list->InsertNextTuple1(param6);
-				param_list->InsertNextTuple1(param7);
-			}
-			else
-			{
-				sscanf(oneline, "%s %f %f %f\n", param1, &param2, &param3, &param4);
-				param_list->InsertNextTuple1(param2);
-				param_list->InsertNextTuple1(param3);
-				param_list->InsertNextTuple1(param4);
-			}
-			create_landmarks(landmark_mode, param_list, type);
-
-			param_list = vtkSmartPointer<vtkFloatArray>::New();
-			param_list->SetNumberOfComponents(1);
-
-
-			readstr(filein, oneline); //read next line
-
-		}//While scanff...
-		fclose(filein);
-
-	}//if file exists
-
-	*/
+	
 
 }
 
-void mqOpenDataReaction::OpenMeshFile(QString fileName)
+void mqOpenDataReaction::OpenMesh(QString fileName)
 {
 
 	int file_exists = 1;
@@ -722,6 +977,8 @@ void mqOpenDataReaction::OpenMeshFile(QString fileName)
 		std::string STLext2(".STL");
 		std::string VTKext(".vtk");
 		std::string VTKext2(".VTK");
+		std::string VTKext3(".vtp");
+		std::string VTKext4(".VTP");
 		std::string OBJext(".obj");
 		std::string OBJext2(".OBJ");
 		std::string PLYext(".ply");
@@ -739,7 +996,9 @@ void mqOpenDataReaction::OpenMeshFile(QString fileName)
 		//std::cout << "0Type= " <<type<< std::endl;
 		found = fileName.toStdString().find(VTKext);
 		found2 = fileName.toStdString().find(VTKext2);
-		if (found != std::string::npos || found2 != std::string::npos)
+		std::size_t found3 = fileName.toStdString().find(VTKext3);
+		std::size_t found4 = fileName.toStdString().find(VTKext4);
+		if (found != std::string::npos || found2 != std::string::npos || found3 != std::string::npos || found4 != std::string::npos)
 		{
 			type = 1; //VTK
 		}

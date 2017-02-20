@@ -31,15 +31,22 @@ public:
    void OpenData();
    void OpenNTW();
    void OpenMesh();
-   void OpenPOS();
-   void OpenLMK();
+   void OpenPOS(int mode);
+   void OpenLMK_or_VER(int mode);
    void OpenFLG();
    void OpenCUR();
    void OpenTAG();
    void OpenORI();
-   void OpenVERFile(QString fileName, int mode);
-   void OpenMeshFile(QString fileName);
-   void OpenPOSFile(QString fileName, int mode);
+   
+   void OpenFLG(QString fileName);
+   void OpenCUR(QString fileName);
+   void OpenTAG(QString fileName);
+   void OpenORI(QString fileName);
+   void OpenNTW(QString fileName);
+   void OpenVER(QString fileName, int mode);
+   void OpenLMK(QString fileName, int mode);
+   void OpenMesh(QString fileName);
+   void OpenPOS(QString fileName, int mode);
 protected:
   /**
   * Called when the action is triggered.
@@ -58,6 +65,38 @@ protected:
 	else if (this->Mode == 2)
 	{
 		this->OpenMesh();
+	}
+	else if (this->Mode == 3)
+	{
+		this->OpenLMK_or_VER(0);
+	}
+	else if (this->Mode == 4)
+	{
+		this->OpenLMK_or_VER(1);
+	}
+	else if (this->Mode == 5)
+	{
+		this->OpenCUR();
+	}
+	else if (this->Mode == 6)
+	{
+		this->OpenFLG();
+	}
+	else if (this->Mode == 7)
+	{
+		this->OpenORI();
+	}
+	else if (this->Mode == 8)
+	{
+		this->OpenPOS(0);
+	}
+	else if (this->Mode == 9)
+	{
+		this->OpenTAG();
+	}
+	else if (this->Mode == 10)
+	{
+		this->OpenPOS(2);
 	}
   }
 

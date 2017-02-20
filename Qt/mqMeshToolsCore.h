@@ -155,6 +155,7 @@ public:
   vtkMTActor* GetLastActor();
   void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
   void InitializeOrientationHelper();
+  void CreateLandmark(double coord[3], double ori[3], int mode);
 protected:
 	
 	~mqMeshToolsCore();
