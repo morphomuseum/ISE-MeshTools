@@ -4,8 +4,12 @@
 #include "ui_MeshTools.h"
 #include "MeshTools.h"
 
+
+
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqOpenDataReaction.h"
+#include "vtkBezierSurfaceWidget.h"
+#include "vtkBezierSurfaceSource.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
 #include "mqMeshToolsCore.h"
@@ -20,7 +24,7 @@
 #include <sstream>
 #include <iostream>
 
-
+#include <vtkPlaneSource.h>
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -436,7 +440,8 @@ MeshTools::MeshTools()
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
-
+  //EXAMPLE vtkBoxWidget
+  /*
   vtkSmartPointer<vtkConeSource> coneSource =
 	  vtkSmartPointer<vtkConeSource>::New();
   coneSource->SetHeight(1.5);
@@ -458,11 +463,78 @@ MeshTools::MeshTools()
   boxWidget->PlaceWidget();
   vtkSmartPointer<vtkMyCallback> callback = vtkSmartPointer<vtkMyCallback>::New();
   boxWidget->AddObserver(vtkCommand::InteractionEvent, callback);
-  boxWidget->On();
+  boxWidget->On();*/
+
 
   
   
+
+  //EXAMPLE BEZIER SOURCE + BEZIER WIDGET
+  /*
+  unsigned int controlPointsX = 4;
+  unsigned int controlPointsY = 4;
   
+  // Create an arbitrary plane that we can use
+  // to initialize the control points for the Bezier surface
+  vtkSmartPointer<vtkPlaneSource> planeSource =
+	  vtkSmartPointer<vtkPlaneSource>::New();
+  planeSource->SetOrigin(0, 0, 0);
+  planeSource->SetPoint2(1, 0, 0);
+  planeSource->SetPoint1(0, 0, 1);
+  planeSource->SetXResolution(controlPointsX - 1);
+  planeSource->SetYResolution(controlPointsY - 1);
+  planeSource->Update();
+
+  // Create a transformation to be applied to the Bezier surface
+  vtkSmartPointer<vtkTransform> transform =
+	  vtkSmartPointer<vtkTransform>::New();
+  transform->Scale(2, 1, 1);
+
+  // Create the Bezier surface that matches the plane created above
+  // and scaled by the transformation
+  vtkSmartPointer<vtkBezierSurfaceSource> bezierSource =
+	  vtkSmartPointer<vtkBezierSurfaceSource>::New();
+  bezierSource->SetNumberOfControlPoints(controlPointsX, controlPointsY);
+
+  vtkPolyData* planePoly = planeSource->GetOutput();
+
+  unsigned int controlPointCount = 0;
+  for (unsigned int i = 0; i < controlPointsX; ++i)
+  {
+	  for (unsigned int j = 0; j < controlPointsY; ++j)
+	  {
+		  double point[3];
+		  planePoly->GetPoint(i*controlPointsY + j, point);
+		  //          std::cout << "Point " << controlPointCount << ": "
+		  //                    << point[0] << " " << point[1] << " " << point[2] << std::endl;
+		  bezierSource->SetControlPoint(i, j, point);
+		  controlPointCount++;
+	  }
+  }
+
+  std::cout << "Created " << controlPointCount << " control points." << std::endl;
+
+  bezierSource->SetTransform(transform);
+  bezierSource->Update();
+  
+  vtkBezierSurfaceWidget *widget = vtkBezierSurfaceWidget::New();
+	  
+  widget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
+  widget->SetBezierSource(bezierSource);
+  widget->SetHandleSize(0.1);
+  widget->On();
+
+  vtkSmartPointer<vtkPolyDataMapper> Bmapper =
+	  vtkSmartPointer<vtkPolyDataMapper>::New();
+  Bmapper->SetInputConnection(bezierSource->GetOutputPort());
+
+  vtkSmartPointer<vtkActor> Bactor =
+	  vtkSmartPointer<vtkActor>::New();
+  Bactor->SetMapper(Bmapper);
+  
+  this->MeshToolsCore->getRenderer()->AddActor(Bactor);
+  */
+
   this->MeshToolsCore->SetGridVisibility();
   this->MeshToolsCore->InitializeOrientationHelper(); // creates orientation helper...
   this->MeshToolsCore->SetOrientationHelperVisibility();

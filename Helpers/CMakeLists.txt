@@ -11,6 +11,9 @@ vtkMTInteractorStyle.cxx
 vtkUndoStack.cxx 
 vtkUndoStackBuilder.cxx 
 vtkProbeSource.cxx 
+vtkBezierSurfaceSource.cxx
+vtkBezierSurfaceWidget.cxx
+
 )
 
 set( Helpers_HDRS 
@@ -26,7 +29,8 @@ vtkUndoStack.h
 vtkUndoStackBuilder.h 
 vtkUndoStackInternal.h
 vtkProbeSource.h 
-
+vtkBezierSurfaceSource.h
+vtkBezierSurfaceWidget.h
 )
 
 #Sorry but we need QT for the undo stack stuff... 
