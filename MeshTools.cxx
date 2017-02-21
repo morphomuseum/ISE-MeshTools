@@ -470,7 +470,7 @@ MeshTools::MeshTools()
   
 
   //EXAMPLE BEZIER SOURCE + BEZIER WIDGET
-  /*
+  
   unsigned int controlPointsX = 4;
   unsigned int controlPointsY = 4;
   
@@ -533,7 +533,7 @@ MeshTools::MeshTools()
   Bactor->SetMapper(Bmapper);
   
   this->MeshToolsCore->getRenderer()->AddActor(Bactor);
-  */
+  
 
   this->MeshToolsCore->SetGridVisibility();
   this->MeshToolsCore->InitializeOrientationHelper(); // creates orientation helper...

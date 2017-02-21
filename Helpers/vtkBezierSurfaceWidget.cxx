@@ -634,8 +634,13 @@ void vtkBezierSurfaceWidget::OnMouseMove()
 
   // Modify the handle position and the control point position
   info->SetPosition(p[0], p[1], p[2]);
+ 
+  
 
-  // Dont modify the control point yet, modify it upon mouse release
+
+  
+  //Modify the control point during movement!!!
+  this->BezierSource->SetControlPoint(info->xCPIndex, info->yCPIndex, p);
 
   this->EventCallbackCommand->SetAbortFlag(1);
   this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
