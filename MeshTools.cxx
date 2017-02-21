@@ -20,6 +20,7 @@
 #include <sstream>
 #include <iostream>
 
+
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
@@ -34,7 +35,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkDataSetMapper.h>
 #include <vtkPolyDataReader.h>
-#include <vtkQtTableView.h>
 #include <vtkRenderWindow.h>
 #include <vtkVectorText.h>
 #include <vtkImageData.h>
@@ -66,6 +66,12 @@
 #include <QFile>
 #include <QTextStream>
 
+
+#include <vtkTransform.h>
+#include <vtkConeSource.h>
+#include <vtkBoxWidget.h>
+#include <vtkCommand.h>
+
 //-----------------------------------------------------------------------------
 //MeshTools* MeshTools::Instance = 0;
 
@@ -78,6 +84,20 @@ int MeshTools::getTestInt()
 {
 	return MeshTools::testint;
 }*/
+
+
+class vtkMyCallback : public vtkCommand
+{
+public:
+	static vtkMyCallback *New() { return new vtkMyCallback; }
+	virtual void Execute(vtkObject *caller, unsigned long, void*)
+	{    // Here we use the vtkBoxWidget to transform the underlying coneActor   
+		 // (by manipulating its transformation matrix).  
+		vtkSmartPointer<vtkTransform> t = vtkSmartPointer<vtkTransform>::New();
+		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
+		widget->GetTransform(t);    widget->GetProp3D()->SetUserTransform(t);
+	}
+};
 
 //Select meshes, landmarks and tags ... first try!
 void RubberBandSelect(vtkObject* caller,
@@ -300,13 +320,6 @@ MeshTools::MeshTools()
 
 	
 	
-	// Qt Table View
-	this->TableView = vtkSmartPointer<vtkQtTableView>::New();
-	
-
-	
-
-
 	// Place the table view in the designer form
 	//this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
 
@@ -332,6 +345,7 @@ MeshTools::MeshTools()
 
 
 	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->MeshToolsCore->getRenderer());
+
 	this->MeshToolsCore->getRenderer()->GradientBackgroundOn();
 	
 	this->MeshToolsCore->getRenderer()->SetBackground(this->MeshToolsCore->Getmui_BackGroundColor());
@@ -421,6 +435,32 @@ MeshTools::MeshTools()
 // style->SetCurrentRenderer(this->MeshToolsCore->getRenderer());
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
+  
+
+  vtkSmartPointer<vtkConeSource> coneSource =
+	  vtkSmartPointer<vtkConeSource>::New();
+  coneSource->SetHeight(1.5);
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+	  vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInputConnection(coneSource->GetOutputPort());
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  actor->SetMapper(mapper);
+  //NEW
+
+  //NEW
+  //DNEW
+  this->MeshToolsCore->getRenderer()->AddActor(actor);
+
+  vtkSmartPointer<vtkBoxWidget> boxWidget = vtkSmartPointer<vtkBoxWidget>::New();
+  boxWidget->SetInteractor(this->ui->qvtkWidget->GetRenderWindow()->GetInteractor());
+  boxWidget->SetProp3D(actor);
+  boxWidget->SetPlaceFactor(1.25);
+  boxWidget->PlaceWidget();
+  vtkSmartPointer<vtkMyCallback> callback = vtkSmartPointer<vtkMyCallback>::New();
+  boxWidget->AddObserver(vtkCommand::InteractionEvent, callback);
+  boxWidget->On();
+
+  
   
   
   this->MeshToolsCore->SetGridVisibility();
