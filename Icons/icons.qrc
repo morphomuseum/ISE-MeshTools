@@ -31,6 +31,18 @@
  <file>renderer_anaglyph.gif</file>
  <file>undo.png</file>
  <file>redo.png</file>
+<!-- landmarks related stuff. -->
+
+ <file>landmarks4.gif</file>
+ <file>landmarks5.gif</file>
+ <file>landmarks6.gif</file>
+ <file>landmarks7.gif</file>
+ <file>landmarks8.gif</file>
+
+ <file>landmarks9.gif</file>
+
+
+
 
   </qresource>
 </RCC>

@@ -349,25 +349,23 @@ void vtkLMActor::CreateLMBody()
 void vtkLMActor::SetLMColor()
 {
 	// Create six colors - one for each line
-	double green[4] = { 0.5, 1, 0, 1 }; // LMType=0 
-	double yellow[4] = { 1, 1, 0,0.5 }; // LMType = 1 (target LM)
-	double darkred[4] = { 0.5, 0, 0, 1 }; // LMType = 2 (curve node: dark red)
-	double orange[4] = { 1, 0.5, 0, 1 }; // LMType = 3 (curve handle : orange)
-	double red[4] = { 1, 0.4, 0.4, 1 }; // LMType=4 (curve starting point)
-	double blue[4] = { 0, 0.5, 1, 1 }; // LMType = 5 (curve milestone)	
-	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
-	if (this->LMType == 0) { 
-		//cout << "green!" << endl;
-		this->SetmColor(green); 
-	}
-	if (this->LMType == 1) { this->SetmColor(yellow); }
-	if (this->LMType == 2) { 
-		//cout << "darkred!" << endl;
-		this->SetmColor(darkred); }
-	if (this->LMType == 3) { this->SetmColor(orange); }
-	if (this->LMType == 4) { this->SetmColor(red); }
-	if (this->LMType == 5) { this->SetmColor(blue); }
-	if (this->LMType == 6) { this->SetmColor(cyan); }
+	double red[4] = { 1, 0.4, 0.4, 1 };// LMType=0 VERT
+
+	double yellow[4] = { 1, 1, 0,0.5 }; 
+	double darkred[4] = { 0.5, 0, 0, 1 }; 
+	double orange[4] = { 1, 0.5, 0, 1 }; 
+	double green[4] = { 0.5, 1, 0, 1 };  
+	double blue[4] = { 0, 0.5, 1, 1 }; 
+	
+	double cyan[4] = { 0, 1, 1, 1 }; 
+	double violet[4] = { 0.7, 0, 1, 1 }; 
+	if (this->LMType == 0) { this->SetmColor(green); }// LMType = 0 (normal LM) vert
+	if (this->LMType == 1) { this->SetmColor(orange); }// LMType = 1 (target LM) jaune
+	if (this->LMType == 2) { this->SetmColor(red); }// LMType = 2( curve node LM) rosé
+	if (this->LMType == 3) { this->SetmColor(violet); }// LMType = 3( curve handle) violet
+	if (this->LMType == 4) { this->SetmColor(darkred); }// LMType = 4( curve starting point) rouge sombre
+	if (this->LMType == 5) { this->SetmColor(blue); } // LMType=5 (curve milestone) bleu
+	if (this->LMType == 6) { this->SetmColor(cyan); }// LMType=6 (curve end point start to 0) cyan
 }
 
 //----------------------------------------------------------------------------

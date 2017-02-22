@@ -292,6 +292,13 @@ MeshTools::MeshTools()
 			this->MeshToolsCore->Getmui_DefaultLandmarkBodyType()
 			).toInt()
 			);
+
+	this->MeshToolsCore->Setmui_LandmarkMode(
+		settings.value("LandmarkMode",
+			this->MeshToolsCore->Getmui_DefaultLandmarkMode()
+			).toInt()
+		);
+
 	this->MeshToolsCore->Setmui_FlagRenderingSize(
 		settings.value("FlagRenderingSize",
 			this->MeshToolsCore->Getmui_DefaultFlagRenderingSize()
@@ -420,7 +427,10 @@ MeshTools::MeshTools()
 	 vtkSmartPointer<vtkMTInteractorStyle> style =
     vtkSmartPointer<vtkMTInteractorStyle>::New();
 	 style->SetActorCollection(this->MeshToolsCore->getActorCollection());
-	 style->SetLandmarkCollection(this->MeshToolsCore->getLandmarkCollection());
+	 style->SetNormalLandmarkCollection(this->MeshToolsCore->getNormalLandmarkCollection());
+	 style->SetTargetLandmarkCollection(this->MeshToolsCore->getTargetLandmarkCollection());
+	 style->SetNodeLandmarkCollection(this->MeshToolsCore->getNodeLandmarkCollection());
+	 style->SetHandleLandmarkCollection(this->MeshToolsCore->getHandleLandmarkCollection());
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =
@@ -470,7 +480,7 @@ MeshTools::MeshTools()
   
 
   //EXAMPLE BEZIER SOURCE + BEZIER WIDGET
-  
+  /*
   unsigned int controlPointsX = 4;
   unsigned int controlPointsY = 4;
   
@@ -533,7 +543,7 @@ MeshTools::MeshTools()
   Bactor->SetMapper(Bmapper);
   
   this->MeshToolsCore->getRenderer()->AddActor(Bactor);
-  
+  */
 
   this->MeshToolsCore->SetGridVisibility();
   this->MeshToolsCore->InitializeOrientationHelper(); // creates orientation helper...
@@ -596,6 +606,7 @@ void MeshTools::saveSettings()
 	
 	settings.beginGroup("landmark_settings");
 	settings.setValue("LandmarkBodyType", this->MeshToolsCore->Getmui_LandmarkBodyType());
+	settings.setValue("LandmarkMode", this->MeshToolsCore->Getmui_LandmarkMode());
 	settings.setValue("LandmarkRenderingSize", this->MeshToolsCore->Getmui_LandmarkRenderingSize());
 	settings.setValue("FlagRenderingSize", this->MeshToolsCore->Getmui_FlagRenderingSize());
 	

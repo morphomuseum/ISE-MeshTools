@@ -64,7 +64,10 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 	this->Moving = 0;
 	this->PixelArray = vtkUnsignedCharArray::New();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
-	this->LandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->NormalLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->TargetLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->NodeLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->HandleLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->ActorsPositionsSaved = 0;
 	this->NumberOfSelectedActors = 0;
 }
@@ -73,11 +76,22 @@ void vtkMTInteractorStyle::SetActorCollection(vtkSmartPointer<vtkMTActorCollecti
 {
 	this->ActorCollection = ActColl;
 }
-void vtkMTInteractorStyle::SetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+void vtkMTInteractorStyle::SetNormalLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
 {
-	this->LandmarkCollection = LmkColl;
+	this->NormalLandmarkCollection = LmkColl;
 }
-
+void vtkMTInteractorStyle::SetTargetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+{
+	this->TargetLandmarkCollection = LmkColl;
+}
+void vtkMTInteractorStyle::SetNodeLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+{
+	this->NodeLandmarkCollection = LmkColl;
+}
+void vtkMTInteractorStyle::SetHandleLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+{
+	this->HandleLandmarkCollection = LmkColl;
+}
 //--------------------------------------------------------------------------
 vtkMTInteractorStyle::~vtkMTInteractorStyle()
 {
@@ -103,43 +117,68 @@ void vtkMTInteractorStyle::EndPan()
 
 }
 
+void vtkMTInteractorStyle::EndLandmarkMovements(vtkLMActor *myActor)
+{
+	vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+	vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
+	if (myActor->GetSelected() == 1)
+	{
+		// do something
+		vtkMatrix4x4 *Mat = myActor->GetMatrix();
+
+		/*cout << "Initial matrix:" << endl;
+		Mat->PrintSelf(cout, vtkIndent(1));*/
+		double lmorigin[3] = { Mat->GetElement(0, 3), Mat->GetElement(1, 3), Mat->GetElement(2, 3) };
+		//double lmorientation[3] = { 0,0,1 };
+		double a[3] = { 0,0,0 };
+		double at[3];
+		double b[3] = { 1,0,0 };
+		double bt[3];
+		this->TransformPoint(Mat, a, at);
+		this->TransformPoint(Mat, b, bt);
+		double lmorientation[3] = { bt[0] - at[0],bt[1] - at[1] ,bt[2] - at[2] };
+		vtkMath::Normalize(lmorientation);
+		//myActor->SetLMOrigin(lmorigin);
+		myActor->SetLMOriginAndOrientation(lmorigin, lmorientation);
+
+		//Mat->SetElement(1, 3, this->LMOrigin[1]);
+		//Mat->SetElement(2, 3, this->LMOrigin[2]);
+
+	}
+}
 void vtkMTInteractorStyle::EndLandmarkMovements()
 {
 
 	//we reset LMOrigin and LMOrientation
-
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
-		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
-		if (myActor->GetSelected() == 1)
-		{
-			// do something
-			vtkMatrix4x4 *Mat = myActor->GetMatrix();
-
-			/*cout << "Initial matrix:" << endl;
-			Mat->PrintSelf(cout, vtkIndent(1));*/
-			double lmorigin[3] = { Mat->GetElement(0, 3), Mat->GetElement(1, 3), Mat->GetElement(2, 3) };
-			//double lmorientation[3] = { 0,0,1 };
-			double a[3] = { 0,0,0 };
-			double at[3];
-			double b[3] = { 1,0,0 };
-			double bt[3];
-			this->TransformPoint(Mat, a, at);
-			this->TransformPoint(Mat, b, bt);
-			double lmorientation[3] = { bt[0] - at[0],bt[1] - at[1] ,bt[2] - at[2] };
-			vtkMath::Normalize(lmorientation);
-			//myActor->SetLMOrigin(lmorigin);
-			myActor->SetLMOriginAndOrientation(lmorigin, lmorientation);
-
-			//Mat->SetElement(1, 3, this->LMOrigin[1]);
-			//Mat->SetElement(2, 3, this->LMOrigin[2]);
-
-		}
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		this->EndLandmarkMovements(myActor);
 	}
+	//we reset LMOrigin and LMOrientation
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		this->EndLandmarkMovements(myActor);
+	}
+	//we reset LMOrigin and LMOrientation
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		this->EndLandmarkMovements(myActor);
+	}
+	//we reset LMOrigin and LMOrientation
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		this->EndLandmarkMovements(myActor);
+	}
+	
 
 }
 
@@ -162,7 +201,7 @@ void vtkMTInteractorStyle::StartSelect()
 	// Output the key that was pressed
 	if (key.compare("l") == 0)
 	{
-		cout << "l pressed" << endl;
+		//cout << "l pressed" << endl;
 		this->L = L_PRESSED;
 	}
 	if (key.compare("Control_L") == 0)
@@ -196,16 +235,42 @@ void vtkMTInteractorStyle::StartSelect()
 					}
 				}
 
-				this->LandmarkCollection->InitTraversal();
-				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				this->NormalLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 				{
-					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 					if (myActor->GetSelected() == 0)
 					{
 						myActor->SaveState(Count);
 					}
 				}
-
+				this->TargetLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
+				this->NodeLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
+				this->HandleLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
 				END_UNDO_SET();
 				//cout << "a and CTRL pressed!" << endl;
 				this->ActorCollection->InitTraversal();
@@ -221,19 +286,47 @@ void vtkMTInteractorStyle::StartSelect()
 
 
 				}
-				this->LandmarkCollection->InitTraversal();
-				for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+				this->NormalLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 				{
-					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 					if (myActor->GetSelected() == 0)
 					{
 						myActor->SetSelected(1);
 						myActor->SetChanged(1);
-
 					}
-
-
 				}
+				this->TargetLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+					}
+				}
+				this->NodeLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+					}
+				}
+				this->HandleLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+					}
+				}
+
 				vtkRenderWindowInteractor *rwi = this->Interactor;
 				rwi->Render();
 			}
@@ -474,44 +567,8 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 				  if (picker->GetActor() == NULL) { cout << "Picked Null actor" << endl; }
 				  else
 				  {
-					  //Create a LMActor
-					  
-					  VTK_CREATE(vtkLMActor, myLM);
-					  int num = this->LandmarkCollection->GetNextLandmarkNumber();
-					  myLM->SetLMOriginAndOrientation(pos, norm);
-					   //myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
-					   //myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
-					  if (mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize() == 1)
-					  {
-						  myLM->SetLMSize(mqMeshToolsCore::instance()->AdjustedLandmarkSize());
-					  }
-					  else
-					  {
-						  myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
-					  }
-					  myLM->SetLMType(0);
-					  myLM->SetLMNumber(num);
-					  myLM->SetLMBodyType(mqMeshToolsCore::instance()->Getmui_LandmarkBodyType());
-					  myLM->SetSelected(0);
-					 
-						  vtkSmartPointer<vtkPolyDataMapper> mapper =
-						  vtkSmartPointer<vtkPolyDataMapper>::New();
-					mapper->SetInputData(myLM->getLMBody());
-					  mapper->Update();					
-					  myLM->SetMapper(mapper);
-			
-					  
-					  //myLM->PrintSelf(cout, vtkIndent(1));
-					  this->LandmarkCollection->AddItem(myLM);
-					  this->LandmarkCollection->SetChanged(1);
-					  std::string action = "Create landmark";
-					  int mCount = BEGIN_UNDO_SET(action);
-					  mqMeshToolsCore::instance()->getLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
-					 
-					  END_UNDO_SET();
-					  //this->CurrentRenderer->AddActor(myLM);
-					  //this->CurrentRenderer->AddActor(myLM->GetLMLabelActor2D());
-					  this->Interactor->Render();
+					  mqMeshToolsCore::instance()->CreateLandmark(pos, norm, mqMeshToolsCore::instance()->Getmui_LandmarkMode());
+					  mqMeshToolsCore::instance()->Render();
 				  }
 
 			  }
@@ -555,7 +612,10 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 void vtkMTInteractorStyle::DeleteSelectedActors()
 {
 	this->ActorCollection->DeleteSelectedActors();
-	this->LandmarkCollection->DeleteSelectedActors();
+	this->NormalLandmarkCollection->DeleteSelectedActors();
+	this->TargetLandmarkCollection->DeleteSelectedActors();
+	this->NodeLandmarkCollection->DeleteSelectedActors();
+	this->HandleLandmarkCollection->DeleteSelectedActors();
 	this->Interactor->Render();
 }
 int vtkMTInteractorStyle::getNumberOfSelectedActors()
@@ -572,11 +632,11 @@ int vtkMTInteractorStyle::getNumberOfSelectedActors()
 		}
 		
 	}
-	this->LandmarkCollection->InitTraversal();
+	this->NormalLandmarkCollection->InitTraversal();
 	
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 
 		if (myActor->GetSelected() == 1)
 		{
@@ -585,6 +645,42 @@ int vtkMTInteractorStyle::getNumberOfSelectedActors()
 
 	}
 
+	this->TargetLandmarkCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+
+	}
 	return cpt;
 }
 
@@ -623,10 +719,40 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 				myActor->SaveState(Count);
 			}
 		}
-		this->LandmarkCollection->InitTraversal();
-		for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+		this->NormalLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 		{
-			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				cout << "Call myLMActor Save Position with count" << Count << endl;
+				myActor->SaveState(Count);
+			}
+		}
+		this->TargetLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				cout << "Call myLMActor Save Position with count" << Count << endl;
+				myActor->SaveState(Count);
+			}
+		}
+		this->NodeLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				cout << "Call myLMActor Save Position with count" << Count << endl;
+				myActor->SaveState(Count);
+			}
+		}
+		this->HandleLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
 				cout << "Call myLMActor Save Position with count" << Count << endl;
@@ -1039,16 +1165,50 @@ void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 	//cout << "selected nva:" << nva << endl;
 	//cout << "start  lm com:" << endl;
 	//Conception weakness : call COM before VN otherwise computation may not have been triggered!!
-	double *comlm = this->LandmarkCollection->GetCenterOfMassOfSelectedActors();
-	int nvlm = this->LandmarkCollection->GetGlobalSelectedVN();
-	if (nvlm > 0) {
+	nv = nva;
+	double *Normalcomlm = this->NormalLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Normalnvlm = this->NormalLandmarkCollection->GetGlobalSelectedVN();
+	if (Normalnvlm > 0) {
 		//cout << "nvlm>0" << endl;
 		
-		com[0] += comlm[0] * nvlm;
-		com[1] += comlm[1] * nvlm;
-		com[2] += comlm[2] * nvlm;
+		com[0] += Normalcomlm[0] * Normalnvlm;
+		com[1] += Normalcomlm[1] * Normalnvlm;
+		com[2] += Normalcomlm[2] * Normalnvlm;
 	}
-	nv = nvlm + nva;
+	nv += Normalnvlm;
+
+	double *Targetcomlm = this->TargetLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Targetnvlm = this->TargetLandmarkCollection->GetGlobalSelectedVN();
+	if (Targetnvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Targetcomlm[0] * Targetnvlm;
+		com[1] += Targetcomlm[1] * Targetnvlm;
+		com[2] += Targetcomlm[2] * Targetnvlm;
+	}
+	nv += Targetnvlm;
+
+	double *Nodecomlm = this->NodeLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Nodenvlm = this->NodeLandmarkCollection->GetGlobalSelectedVN();
+	if (Nodenvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Nodecomlm[0] * Nodenvlm;
+		com[1] += Nodecomlm[1] * Nodenvlm;
+		com[2] += Nodecomlm[2] * Nodenvlm;
+	}
+	nv += Nodenvlm;
+
+	double *Handlecomlm = this->HandleLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Handlenvlm = this->HandleLandmarkCollection->GetGlobalSelectedVN();
+	if (Handlenvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Handlecomlm[0] * Handlenvlm;
+		com[1] += Handlecomlm[1] * Handlenvlm;
+		com[2] += Handlecomlm[2] * Handlenvlm;
+	}
+	nv += Handlenvlm;
 
 	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
 	}
@@ -1061,9 +1221,16 @@ double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
 {
 	double boundsa[6];
 	this->ActorCollection->GetBoundingBoxSelected(boundsa);
-	double boundslm[6];
-	this->LandmarkCollection->GetBoundingBoxSelected(boundslm);
-	
+	double Normalboundslm[6];
+	this->NormalLandmarkCollection->GetBoundingBoxSelected(Normalboundslm);
+	double Targetboundslm[6];
+	this->TargetLandmarkCollection->GetBoundingBoxSelected(Targetboundslm);
+	double Nodeboundslm[6];
+	this->NodeLandmarkCollection->GetBoundingBoxSelected(Nodeboundslm);
+	double Handleboundslm[6];
+	this->HandleLandmarkCollection->GetBoundingBoxSelected(Handleboundslm);
+
+
 	double largestboundsselected[6];
 	largestboundsselected[0] = DBL_MAX;
 	largestboundsselected[1] = -DBL_MAX;
@@ -1079,12 +1246,34 @@ double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
 	if (boundsa[4] < largestboundsselected[4]) { largestboundsselected[4] = boundsa[4]; }
 	if (boundsa[5] > largestboundsselected[5]) { largestboundsselected[5] = boundsa[5]; }
 
-	if (boundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = boundslm[0]; }
-	if (boundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = boundslm[1]; }
-	if (boundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = boundslm[2]; }
-	if (boundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = boundslm[3]; }
-	if (boundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = boundslm[4]; }
-	if (boundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = boundslm[5]; }
+	if (Normalboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Normalboundslm[0]; }
+	if (Normalboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Normalboundslm[1]; }
+	if (Normalboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Normalboundslm[2]; }
+	if (Normalboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Normalboundslm[3]; }
+	if (Normalboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Normalboundslm[4]; }
+	if (Normalboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Normalboundslm[5]; }
+
+	if (Targetboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Targetboundslm[0]; }
+	if (Targetboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Targetboundslm[1]; }
+	if (Targetboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Targetboundslm[2]; }
+	if (Targetboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Targetboundslm[3]; }
+	if (Targetboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Targetboundslm[4]; }
+	if (Targetboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Targetboundslm[5]; }
+
+	if (Nodeboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Nodeboundslm[0]; }
+	if (Nodeboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Nodeboundslm[1]; }
+	if (Nodeboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Nodeboundslm[2]; }
+	if (Nodeboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Nodeboundslm[3]; }
+	if (Nodeboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Nodeboundslm[4]; }
+	if (Nodeboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Nodeboundslm[5]; }
+
+	if (Handleboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Handleboundslm[0]; }
+	if (Handleboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Handleboundslm[1]; }
+	if (Handleboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Handleboundslm[2]; }
+	if (Handleboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Handleboundslm[3]; }
+	if (Handleboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Handleboundslm[4]; }
+	if (Handleboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Handleboundslm[5]; }
+
 	double A[3];
 	double B[3];
 	double diag[3];
@@ -1113,6 +1302,8 @@ void vtkMTInteractorStyle::TransformPoint(vtkMatrix4x4* matrix, double pointin[3
 	pointout[1] = pointNew[1];
 	pointout[2] = pointNew[2];
 }
+
+
 
 void vtkMTInteractorStyle::RotateActors()
 {
@@ -1238,61 +1429,72 @@ void vtkMTInteractorStyle::RotateActors()
 				myActor->SetChanged(1);
 			}
 		}
-		this->LandmarkCollection->InitTraversal();
-		for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+		this->NormalLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 		{
-			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
 			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-			
-			
 			if (myActor->GetSelected() == 1)
 			{
-				//cout << "Apply prop3Dtransform" << endl;
-				for (vtkIdType j = 0; j < 2; j++)
-				{
-					for (vtkIdType k = 0; k < 4; k++)
-					{
-						//cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
-
-					}
-				}
-
-				//cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
-
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);		
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->TargetLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+			if (myActor->GetSelected() == 1)
+			{
 				this->Prop3DTransform(myPropr,
 					rot_center,
 					2,
 					rotate,
 					scale);
-				//cout << "myPropr->Matrix()" << *myPropr->GetMatrix()<< endl;
 				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
-				/*vtkMatrix4x4 *mat = myPropr->GetMatrix();				
-				double init_pos=1;
-				double mult = 1;
-				if (myActor->GetLMType() == 2 || myActor->GetLMType() == 5)
-				{
-					mult = 1.1;
-				}
-				if (myActor->GetLMBodyType() == 0)
-				{
-					init_pos = 0.5*1.1*mult*myActor->GetLMSize();
-				}
-				else
-				{
-					init_pos = 3 * 1.1*mult*myActor->GetLMSize();
-				}
-
-				double ap[3] = { init_pos,
-					0,
-					0};
-
-				double apt[3];
-				
-				this->TransformPoint(mat, ap, apt);
-				myLabel->SetAttachmentPoint(apt);		*/
 				myActor->SetChanged(1);
-
+			}
+		}
+		this->NodeLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->HandleLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
 			}
 		}
 
@@ -1387,13 +1589,29 @@ void vtkMTInteractorStyle::SpinActors()
 		}
 		
 	}
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
 		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);			
+			myActor->SetChanged(1);
+		}
+	}
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -1402,12 +1620,42 @@ void vtkMTInteractorStyle::SpinActors()
 				rotate,
 				scale);
 			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
-			
-
-
 			myActor->SetChanged(1);
 		}
-
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+			myActor->SetChanged(1);
+		}
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+			myActor->SetChanged(1);
+		}
 	}
 
 
@@ -1482,10 +1730,97 @@ void vtkMTInteractorStyle::PanActors()
 			myActor->SetChanged(1);
 		}
 	}
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+
+			myActor->SetChanged(1);
+		}
+	}
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+
+			myActor->SetChanged(1);
+		}
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+
+			myActor->SetChanged(1);
+		}
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
 		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 

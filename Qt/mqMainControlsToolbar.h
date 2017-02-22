@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include <QToolBar>
+class Ui_mqMainControlsToolbar;
 
 /**
 * pqMainControlsToolbar is the toolbar with actions (and reactions) for the
@@ -58,10 +59,18 @@ public:
   {
     this->constructor();
   }
+  
+
+  public slots :
+  virtual void slotLandmarkNormalMode();
+  virtual void slotLandmarkTargetMode();
+  virtual void slotLandmarkNodeMode();
+  virtual void slotLandmarkHandleMode();
 
 private:
-  Q_DISABLE_COPY(mqMainControlsToolbar)
-
+	Q_DISABLE_COPY(mqMainControlsToolbar)
+  
+  Ui_mqMainControlsToolbar *ui;
   void constructor();
 };
 

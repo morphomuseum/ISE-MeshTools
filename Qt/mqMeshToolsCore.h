@@ -78,6 +78,10 @@ public:
 	int Getmui_DefaultLandmarkBodyType();
 	int Getmui_LandmarkBodyType();
 
+	void Setmui_LandmarkMode(int mode);
+	int Getmui_DefaultLandmarkMode();
+	int Getmui_LandmarkMode();
+
 	void Setmui_LandmarkRenderingSize(double size);
 	double Getmui_DefaultLandmarkRenderingSize();
 	double Getmui_LandmarkRenderingSize();
@@ -119,6 +123,7 @@ public:
   //static mqMeshToolsCore* New();
   static mqMeshToolsCore* instance();
   void UpdateLandmarkSettings();
+  void UpdateLandmarkSettings(vtkLMActor *myActor);
   void SetMainWindow(QMainWindow *_mainWindow);
   QMainWindow* GetMainWindow();
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
@@ -126,7 +131,11 @@ public:
   {
 	  this->RenderWindow = renwin;
   }
-  vtkSmartPointer<vtkLMActorCollection> getLandmarkCollection();
+  vtkSmartPointer<vtkLMActorCollection> getNormalLandmarkCollection();
+  vtkSmartPointer<vtkLMActorCollection> getTargetLandmarkCollection();
+  vtkSmartPointer<vtkLMActorCollection> getNodeLandmarkCollection();
+  vtkSmartPointer<vtkLMActorCollection> getHandleLandmarkCollection();
+
   vtkSmartPointer<vtkMTActorCollection> getActorCollection();
   //vtkMTActorCollection* getActorCollection();
   vtkSmartPointer<vtkRenderer> getRenderer();
@@ -161,7 +170,10 @@ protected:
 	~mqMeshToolsCore();
 	//vtkUndoStack* mUndoStack;
 	vtkSmartPointer<vtkMTActorCollection> ActorCollection;
-	vtkSmartPointer<vtkLMActorCollection> LandmarkCollection;
+	vtkSmartPointer<vtkLMActorCollection> NormalLandmarkCollection;
+	vtkSmartPointer<vtkLMActorCollection> TargetLandmarkCollection;
+	vtkSmartPointer<vtkLMActorCollection> NodeLandmarkCollection;
+	vtkSmartPointer<vtkLMActorCollection> HandleLandmarkCollection;
 	//vtkMTActorCollection *ActorCollection;
 	vtkSmartPointer<vtkRenderer> Renderer;
 	//vtkSmartPointer<vtkRenderWindow> RenderWindow;
@@ -210,6 +222,9 @@ protected:
 
 	int mui_DefaultFlagRenderingSize;
 	int mui_FlagRenderingSize;
+
+	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle
+	int mui_LandmarkMode;
 
 	vtkOrientationHelperWidget* OrientationHelperWidget;
 

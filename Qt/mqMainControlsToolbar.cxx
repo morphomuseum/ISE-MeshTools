@@ -42,56 +42,108 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QToolButton>
 
+
 //-----------------------------------------------------------------------------
 void mqMainControlsToolbar::constructor()
 {
-  Ui::mqMainControlsToolbar ui;
-  ui.setupUi(this);
-  new mqOpenDataReaction(ui.actionOpenData, 0);//0= open data (generic)
-  new mqCameraReaction(ui.actionCameraFront, 0); //0 = camera Front
-  new mqCameraReaction(ui.actionCameraBack, 1); //1 = camera Back
-  new mqCameraReaction(ui.actionCameraLeft, 2); //2 = camera Left
-  new mqCameraReaction(ui.actionCameraRight, 3); //3 = camera Right
-  new mqCameraReaction(ui.actionCameraAbove, 4); //4 = camera Above
-  new mqCameraReaction(ui.actionCameraBelow, 5); //5 = camera Below
+ // Ui::mqMainControlsToolbar ui;
+ // ui.setupUi(this);
+  this->ui = new Ui_mqMainControlsToolbar;
+  this->ui->setupUi(this);
+  new mqOpenDataReaction(this->ui->actionOpenData, 0);//0= open data (generic)
+  new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
+  new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back
+  new mqCameraReaction(this->ui->actionCameraLeft, 2); //2 = camera Left
+  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
+  new mqCameraReaction(this->ui->actionCameraAbove, 4); //4 = camera Above
+  new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
 
-  //new mqSaveDataReaction(ui.actionSaveData);
+  //new mqSaveDataReaction(this->ui->actionSaveData);
  
-  new mqUndoRedoReaction(ui.actionUndo, true);
-  new mqUndoRedoReaction(ui.actionRedo, false);
+  new mqUndoRedoReaction(this->ui->actionUndo, true);
+  new mqUndoRedoReaction(this->ui->actionRedo, false);
 
   if (mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin() == 0)
   {
 
-	  ui.actionCameraCentreOfMassToggle->setChecked(true);
+	  this->ui->actionCameraCentreOfMassToggle->setChecked(true);
   }
 
   if (mqMeshToolsCore::instance()->Getmui_CameraOrtho() == 0)
   {
 
-	  ui.actionCameraOrthoPerspectiveToggle->setChecked(true);
+	  this->ui->actionCameraOrthoPerspectiveToggle->setChecked(true);
   }
 
   if (mqMeshToolsCore::instance()->Getmui_Anaglyph() == 1)
   {
 
-	  ui.actionRendererAnaglyphToggle->setChecked(true);
+	  this->ui->actionRendererAnaglyphToggle->setChecked(true);
   }
 
   if (mqMeshToolsCore::instance()->Getmui_ShowGrid() == 1)
   {
 
-	  ui.actionGridToggle->setChecked(true);
+	  this->ui->actionGridToggle->setChecked(true);
   }
   if (mqMeshToolsCore::instance()->Getmui_ShowOrientationHelper() == 1)
   {
 
-	  ui.actionOrientationHelperToggle->setChecked(true);
+	  this->ui->actionOrientationHelperToggle->setChecked(true);
   }
-  new mqCameraReaction(ui.actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
-  new mqCameraReaction(ui.actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
+  new mqCameraReaction(this->ui->actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
+  new mqCameraReaction(this->ui->actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
 
-  new mqDisplayReaction(ui.actionGridToggle, 0); //0 = display Grid Toggle
-  new mqDisplayReaction(ui.actionOrientationHelperToggle, 1); //1 = display Orientation Helper Toggle
-  new mqDisplayReaction(ui.actionRendererAnaglyphToggle, 2); //2 = display Anaglyph mode Toggle
+  new mqDisplayReaction(this->ui->actionGridToggle, 0); //0 = display Grid Toggle
+  new mqDisplayReaction(this->ui->actionOrientationHelperToggle, 1); //1 = display Orientation Helper Toggle
+  new mqDisplayReaction(this->ui->actionRendererAnaglyphToggle, 2); //2 = display Anaglyph mode Toggle
+
+  int landmark_mode = mqMeshToolsCore::instance()->Getmui_LandmarkMode();
+  if (landmark_mode == 0) { this->ui->actionLandmarksModeNormal->setChecked(true); }
+  else if (landmark_mode == 1) { this->ui->actionLandmarksModeTarget->setChecked(true); }
+  else if (landmark_mode == 2) { this->ui->actionLandmarksModeNode->setChecked(true); }
+  else { this->ui->actionLandmarksModeHandle->setChecked(true); }
+
+  connect(this->ui->actionLandmarksModeNormal, SIGNAL(triggered()), this, SLOT(slotLandmarkNormalMode()));
+  connect(this->ui->actionLandmarksModeTarget, SIGNAL(triggered()), this, SLOT(slotLandmarkTargetMode()));
+  connect(this->ui->actionLandmarksModeHandle, SIGNAL(triggered()), this, SLOT(slotLandmarkHandleMode()));
+  connect(this->ui->actionLandmarksModeNode, SIGNAL(triggered()), this, SLOT(slotLandmarkNodeMode()));
+}
+
+void mqMainControlsToolbar::slotLandmarkNormalMode()
+{
+	cout << "Landmark setting mode: 0" << endl;
+	
+	this->ui->actionLandmarksModeTarget->setChecked(false);
+	this->ui->actionLandmarksModeNode->setChecked(false);
+	this->ui->actionLandmarksModeHandle->setChecked(false);
+	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);
+	
+}
+void mqMainControlsToolbar::slotLandmarkTargetMode()
+{
+	cout << "Landmark setting mode: 1" << endl;
+	this->ui->actionLandmarksModeNormal->setChecked(false);
+	this->ui->actionLandmarksModeNode->setChecked(false);
+	this->ui->actionLandmarksModeHandle->setChecked(false);
+	mqMeshToolsCore::instance()->Setmui_LandmarkMode(1);
+
+}
+void mqMainControlsToolbar::slotLandmarkNodeMode()
+{
+	cout << "Landmark setting mode: 2" << endl;
+	this->ui->actionLandmarksModeNormal->setChecked(false);
+	this->ui->actionLandmarksModeTarget->setChecked(false);
+	this->ui->actionLandmarksModeHandle->setChecked(false);
+	mqMeshToolsCore::instance()->Setmui_LandmarkMode(2);
+}
+void mqMainControlsToolbar::slotLandmarkHandleMode()
+{
+	cout << "Landmark setting mode: 3" << endl;
+	this->ui->actionLandmarksModeNormal->setChecked(false);
+	this->ui->actionLandmarksModeTarget->setChecked(false);
+	this->ui->actionLandmarksModeNode->setChecked(false);
+	mqMeshToolsCore::instance()->Setmui_LandmarkMode(3);
+	
+
 }

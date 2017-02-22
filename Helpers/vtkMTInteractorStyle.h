@@ -60,10 +60,13 @@ public:
   virtual void RotateActors();
   virtual void SpinActors();
   virtual void PanActors();
-
+  void EndLandmarkMovements(vtkLMActor *myActor);
   void EndLandmarkMovements();
   void SetActorCollection(vtkSmartPointer<vtkMTActorCollection>ActColl);
-  void SetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+  void SetNormalLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+  void SetTargetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+  void SetNodeLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+  void SetHandleLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
 protected:
   
   vtkMTInteractorStyle();
@@ -103,7 +106,10 @@ protected:
   int L;
   //vtkProp3D *InteractionProp;
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
-  vtkSmartPointer<vtkLMActorCollection> LandmarkCollection;
+  vtkSmartPointer<vtkLMActorCollection> NormalLandmarkCollection;
+  vtkSmartPointer<vtkLMActorCollection> TargetLandmarkCollection;
+  vtkSmartPointer<vtkLMActorCollection> NodeLandmarkCollection;
+  vtkSmartPointer<vtkLMActorCollection> HandleLandmarkCollection;
 private:
 
 	void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);

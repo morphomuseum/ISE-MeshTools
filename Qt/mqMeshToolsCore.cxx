@@ -38,6 +38,8 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mqMeshToolsCore::Instance = this;
 	this->MainWindow = NULL;
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
+	this->mui_DefaultLandmarkMode = this->mui_LandmarkMode = 0;
+
 	this->mui_LandmarkBodyType = this->mui_DefaultLandmarkBodyType = 0;
 	this->mui_LandmarkRenderingSize=this->mui_DefaultLandmarkRenderingSize=1;
 	this->mui_AdjustLandmarkRenderingSize= this->mui_DefaultAdjustLandmarkRenderingSize=1;
@@ -129,10 +131,14 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->SetRenderer(this->Renderer);
 
-	this->LandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
-	this->LandmarkCollection->SetRenderer(this->Renderer);
-	
-	
+	this->NormalLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->NormalLandmarkCollection->SetRenderer(this->Renderer);
+	this->TargetLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->TargetLandmarkCollection->SetRenderer(this->Renderer);
+	this->NodeLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->NodeLandmarkCollection->SetRenderer(this->Renderer);
+	this->HandleLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->HandleLandmarkCollection->SetRenderer(this->Renderer);
 
 	this->Renderer->SetUseDepthPeeling(1);
 	this->Renderer->SetMaximumNumberOfPeels(100);
@@ -193,7 +199,25 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 {
 
 	VTK_CREATE(vtkLMActor, myLM);
-	int num = this->LandmarkCollection->GetNextLandmarkNumber();
+	int num = 0;
+	if (mode == 0)
+	{
+		num = this->NormalLandmarkCollection->GetNextLandmarkNumber();
+	}
+	else if (mode == 1)
+	{
+		num = this->TargetLandmarkCollection->GetNextLandmarkNumber();
+	}
+	else if (mode == 2)
+	{
+		num = this->NodeLandmarkCollection->GetNextLandmarkNumber();
+	}
+	else
+	{
+		num = this->HandleLandmarkCollection->GetNextLandmarkNumber();
+	}
+
+
 	myLM->SetLMOriginAndOrientation(coord, ori);
 	//myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
 	//myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
@@ -205,7 +229,57 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 	{
 		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
 	}
-	myLM->SetLMType(0);
+	/*
+		double green[4] = { 0.5, 1, 0, 1 }; // LMType=0
+	double yellow[4] = { 1, 1, 0,0.5 }; // LMType = 1 (target LM)
+	double darkred[4] = { 0.5, 0, 0, 1 }; // LMType = 2 (curve node: dark red)
+	double orange[4] = { 1, 0.5, 0, 1 }; // LMType = 3 (curve handle : orange)
+	double red[4] = { 1, 0.4, 0.4, 1 }; // LMType=4 (curve starting point)
+	double blue[4] = { 0, 0.5, 1, 1 }; // LMType = 5 (curve milestone)
+	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
+	*/
+	if (mode == 0)
+	{
+		myLM->SetLMType(0);
+	}
+	else if (mode == 1)
+	{
+		myLM->SetLMType(1);
+	}
+	else if (mode == 2)
+	{
+		// to do : 
+		if (num > 1)
+		{
+			//@@TODO!
+			vtkLMActor *myPrecedingLM = NULL;
+			//vtkLMActor *myPrecedingLM = this->NodeLandmarkCollection->GetLMBefore(num);
+			if (myPrecedingLM != NULL)
+			{
+				if (myPrecedingLM->GetLMType() == 6)// if curve ending point
+				{
+					myLM->SetLMType(4); // curve starting point
+				}
+				else
+				{
+					myLM->SetLMType(2); // curve conventional node
+				}
+			}
+			else
+			{
+				myLM->SetLMType(2); // curve conventional node
+			}
+		}
+		else // num ==1
+		{
+			myLM->SetLMType(4); //curve starting point
+		}
+	}
+	else
+	{
+		myLM->SetLMType(3); //curve handle
+	}
+	
 	myLM->SetLMNumber(num);
 	myLM->SetLMBodyType(mqMeshToolsCore::instance()->Getmui_LandmarkBodyType());
 	myLM->SetSelected(0);
@@ -218,15 +292,54 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 
 
 	//myLM->PrintSelf(cout, vtkIndent(1));
-	this->LandmarkCollection->AddItem(myLM);
-	this->LandmarkCollection->SetChanged(1);
-	std::string action = "Create landmark";
-	int mCount = BEGIN_UNDO_SET(action);
-	mqMeshToolsCore::instance()->getLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+	
 
 	END_UNDO_SET();
-	//this->CurrentRenderer->AddActor(myLM);
-	//this->CurrentRenderer->AddActor(myLM->GetLMLabelActor2D());
+	if (mode == 0)
+	{
+		
+		
+		this->NormalLandmarkCollection->AddItem(myLM);
+		this->NormalLandmarkCollection->SetChanged(1);
+		std::string action = "Create Normal landmark";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getNormalLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+		END_UNDO_SET();
+		
+	}
+	else if (mode == 1)
+	{
+
+		this->TargetLandmarkCollection->AddItem(myLM);
+		this->TargetLandmarkCollection->SetChanged(1);
+		std::string action = "Create Target landmark";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getTargetLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+		END_UNDO_SET();
+		
+	}
+	else if (mode == 2)
+	{
+		this->NodeLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->SetChanged(1);
+		std::string action = "Create Curve Node";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getNodeLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+		END_UNDO_SET();
+		
+	}
+	else
+	{
+		this->HandleLandmarkCollection->AddItem(myLM);
+		this->HandleLandmarkCollection->SetChanged(1);
+		std::string action = "Create Curve Handle";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getHandleLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+		END_UNDO_SET();
+	}
+	
+	
+	
 }
 
 void mqMeshToolsCore::InitializeOrientationHelper()
@@ -551,16 +664,42 @@ void mqMeshToolsCore::UnselectAll(int Count)
 			myActor->SaveState(Count);
 		}
 	}
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 		if (myActor->GetSelected() == 1&&Count>0)
 		{
 			myActor->SaveState(Count);
 		}
 	}
-
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1 && Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1 && Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1 && Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
 
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -575,10 +714,49 @@ void mqMeshToolsCore::UnselectAll(int Count)
 
 
 	}
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
 			myActor->SetSelected(0);
@@ -639,6 +817,15 @@ void mqMeshToolsCore::Setmui_LandmarkBodyType(int type) {
 }
 int mqMeshToolsCore::Getmui_DefaultLandmarkBodyType() { return this->mui_DefaultLandmarkBodyType; }
 int mqMeshToolsCore::Getmui_LandmarkBodyType() { return this->mui_LandmarkBodyType; }
+
+
+void mqMeshToolsCore::Setmui_LandmarkMode(int mode) {
+	this->mui_LandmarkMode = mode;
+	//this->UpdateLandmarkSettings();
+}
+int mqMeshToolsCore::Getmui_DefaultLandmarkMode() { return this->mui_DefaultLandmarkMode; }
+int mqMeshToolsCore::Getmui_LandmarkMode() { return this->mui_LandmarkMode; }
+
 
 void mqMeshToolsCore::Setmui_LandmarkRenderingSize(double size)
 { this->mui_LandmarkRenderingSize = size;
@@ -879,27 +1066,54 @@ double mqMeshToolsCore::AdjustedLandmarkSize()
 	}
 
 }
+void mqMeshToolsCore::UpdateLandmarkSettings(vtkLMActor *myActor)
+{
+	myActor->SetLMBodyType(this->Getmui_LandmarkBodyType());
+	if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+	{
+		//myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+		myActor->SetLMSize(this->AdjustedLandmarkSize());
+	}
+	else
+	{
+		myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+	}
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(myActor->getLMBody());
+	mapper->Update();
+	myActor->SetMapper(mapper);
+
+}
 void mqMeshToolsCore::UpdateLandmarkSettings()
 {
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
-		myActor->SetLMBodyType ( this->Getmui_LandmarkBodyType());
-		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
-		{
-			//myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
-			myActor->SetLMSize(this->AdjustedLandmarkSize());
-		}
-		else
-		{
-			myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
-		}
-		vtkSmartPointer<vtkPolyDataMapper> mapper =
-			vtkSmartPointer<vtkPolyDataMapper>::New();
-		mapper->SetInputData(myActor->getLMBody());
-		mapper->Update();
-		myActor->SetMapper(mapper);
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		UpdateLandmarkSettings(myActor);
+		
+	}
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		UpdateLandmarkSettings(myActor);
+
+	}
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		UpdateLandmarkSettings(myActor);
+
+	}
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		UpdateLandmarkSettings(myActor);
+
 	}
 
 }
@@ -926,16 +1140,46 @@ void mqMeshToolsCore::Undo(int Count)
 	}
 	this->ActorCollection->Undo(Count);
 
-	//@@TODO! 
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 		cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
-	this->LandmarkCollection->Undo(Count);
+	this->NormalLandmarkCollection->Undo(Count);
+
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Undo(Count);
+	}
+	// To update to take into account reorder!
+	this->TargetLandmarkCollection->Undo(Count);
+
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Undo(Count);
+	}
+	// To update to take into account reorder!
+	this->NodeLandmarkCollection->Undo(Count);
+
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Undo(Count);
+	}
+	// To update to take into account reorder!
+	this->HandleLandmarkCollection->Undo(Count);
 
 }
 void mqMeshToolsCore::Redo()
@@ -957,16 +1201,46 @@ void mqMeshToolsCore::Redo(int Count)
 	}
 	this->ActorCollection->Redo(Count);
 
-	//@@TODO! 
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
-		cout << "MyLMActor redo!" << endl;
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor redo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
-	this->LandmarkCollection->Redo(Count);
+	this->NormalLandmarkCollection->Redo(Count);
+
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Redo(Count);
+	}
+	// To update to take into account reorder!
+	this->TargetLandmarkCollection->Redo(Count);
+
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Redo(Count);
+	}
+	// To update to take into account reorder!
+	this->NodeLandmarkCollection->Redo(Count);
+
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Redo(Count);
+	}
+	// To update to take into account reorder!
+	this->HandleLandmarkCollection->Redo(Count);
 
 }
 
@@ -983,15 +1257,47 @@ void mqMeshToolsCore::Erase(int Count)
 	}
 	this->ActorCollection->Erase(Count);
 
-	this->LandmarkCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->LandmarkCollection->GetNumberOfItems(); i++)
+	this->NormalLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
-		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->LandmarkCollection->GetNextActor());
-		cout << "MyLMActor Erase!" << endl;
-		//@@ TO IMPLEMENT
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor redo from core!" << endl;
 		myActor->Erase(Count);
 	}
-	this->LandmarkCollection->Erase(Count);
+	// To update to take into account reorder!
+	this->NormalLandmarkCollection->Erase(Count);
+
+	this->TargetLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Erase(Count);
+	}
+	// To update to take into account reorder!
+	this->TargetLandmarkCollection->Erase(Count);
+
+	this->NodeLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Erase(Count);
+	}
+	// To update to take into account reorder!
+	this->NodeLandmarkCollection->Erase(Count);
+
+	this->HandleLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Erase(Count);
+	}
+	// To update to take into account reorder!
+	this->HandleLandmarkCollection->Erase(Count);
+
+
 
 }
 void mqMeshToolsCore::setUndoStack(mqUndoStack* stack)
@@ -1031,9 +1337,21 @@ vtkSmartPointer<vtkMTActorCollection> mqMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;
 }
-vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getLandmarkCollection()
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getNormalLandmarkCollection()
 {
-	return this->LandmarkCollection;
+	return this->NormalLandmarkCollection;
+}
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getTargetLandmarkCollection()
+{
+	return this->TargetLandmarkCollection;
+}
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getNodeLandmarkCollection()
+{
+	return this->NodeLandmarkCollection;
+}
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getHandleLandmarkCollection()
+{
+	return this->HandleLandmarkCollection;
 }
 /*
 vtkMTActorCollection* mqMeshToolsCore::getActorCollection()
