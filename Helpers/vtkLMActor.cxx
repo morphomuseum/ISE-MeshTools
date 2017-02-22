@@ -161,7 +161,14 @@ void vtkLMActor::SetLMOrientation(double orientation[3])
 }
 void vtkLMActor::SetLMSize(double size)
 {
+	if (this->LMType == 1 || this->LMType == 3)
+	{
+	}
 	this->LMSize = size;
+	/*if (this->LMType == 1 || this->LMType == 3)
+	{
+		this->LMSize = 1.2*size;
+	}*/
 	this->Modified();
 	this->UpdateProps();
 }
@@ -207,9 +214,9 @@ void vtkLMActor::CreateLMLabelText()
 
 	double init_pos[3] = { 0,0,0 };
 	double mult = 1;
-	if (this->LMType == 2 || this->LMType == 5)
+	if (this->LMType == 1 || this->LMType == 3)
 	{
-		mult = 1.1;
+		mult = 1.2;
 	}
 	if (this->LMBodyType == 0)
 	{
@@ -319,7 +326,7 @@ void vtkLMActor::CreateLMBody()
 		sphereSource->SetRadius(0.5*this->LMSize);
 		if (this->LMType == 1 || this->LMType == 3)
 		{
-			sphereSource->SetRadius(0.5*1.1*this->LMSize);
+			sphereSource->SetRadius(0.5*1.2*this->LMSize);
 		}
 		sphereSource->Update();
 		this->LMBody = sphereSource->GetOutput();
@@ -333,7 +340,7 @@ void vtkLMActor::CreateLMBody()
 		probeSource->SetArrowLength(3*this->LMSize);
 		if (this->LMType == 1 || this->LMType == 3)
 		{
-			probeSource->SetArrowLength(3*1.1*this->LMSize);
+			probeSource->SetArrowLength(3*1.2*this->LMSize);
 		}
 		probeSource->Update();
 		this->LMBody = probeSource->GetOutput();
@@ -353,12 +360,12 @@ void vtkLMActor::SetLMColor()
 
 	double yellow[4] = { 1, 1, 0,0.5 }; 
 	double darkred[4] = { 0.5, 0, 0, 1 }; 
-	double orange[4] = { 1, 0.5, 0, 1 }; 
+	double orange[4] = { 1, 0.5, 0, 0.5 }; 
 	double green[4] = { 0.5, 1, 0, 1 };  
 	double blue[4] = { 0, 0.5, 1, 1 }; 
 	
 	double cyan[4] = { 0, 1, 1, 1 }; 
-	double violet[4] = { 0.7, 0, 1, 1 }; 
+	double violet[4] = { 0.7, 0, 1, 0.5 }; 
 	if (this->LMType == 0) { this->SetmColor(green); }// LMType = 0 (normal LM) vert
 	if (this->LMType == 1) { this->SetmColor(orange); }// LMType = 1 (target LM) jaune
 	if (this->LMType == 2) { this->SetmColor(red); }// LMType = 2( curve node LM) rosé
