@@ -107,7 +107,7 @@ void mqOpenDataReaction::OpenPOS(int mode)
 	if (mode < 1) { mode = 1; }
 	// mode : 1 for all selected meshes
 	// mode : 2 for all selected landmarks/flags
-	// mode : 3 for all selected landmarks/flags and meshes
+	
 
 	//open and applies position 
 	//mqMeshToolsCore::instance()->getUndoStack();
@@ -122,6 +122,28 @@ void mqOpenDataReaction::OpenPOS(int mode)
 	this->OpenPOS(fileName,mode);
 	
 }
+
+void mqOpenDataReaction::OpenPOSTrans(int mode)
+{
+	if (mode < 1) { mode = 1; }
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+
+
+	//open and applies transpoed position 
+	//mqMeshToolsCore::instance()->getUndoStack();
+	cout << "Open transposed POS" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load transposed position file"), QDir::currentPath(),
+		tr("transposed position file (*.pos)"));
+
+	cout << fileName.toStdString() << endl;
+	if (fileName.isEmpty()) return;
+	this->OpenPOSTrans(fileName, mode);
+
+}
+
 void mqOpenDataReaction::OpenORI()
 {
 	
@@ -131,7 +153,7 @@ void mqOpenDataReaction::OpenORI()
 		tr("Load orientation file"), QDir::currentPath(),
 		tr("orientation file (*.ori)"));
 
-	cout << fileName.toStdString();
+	cout << fileName.toStdString() << endl;;
 	if (fileName.isEmpty()) return;
 	this->OpenORI(fileName);
 
@@ -145,7 +167,7 @@ void mqOpenDataReaction::OpenFLG()
 		tr("Load flag file"), QDir::currentPath(),
 		tr("flag file (*.flg)"));
 
-	cout << fileName.toStdString();
+	cout << fileName.toStdString() << endl;;
 	if (fileName.isEmpty()) return;
 	this->OpenFLG(fileName);
 
@@ -159,7 +181,7 @@ void mqOpenDataReaction::OpenCUR()
 		tr("Load CUR file"), QDir::currentPath(),
 		tr("curve file (*.cur)"));
 
-	cout << fileName.toStdString();
+	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
 	this->OpenCUR(fileName);
 
@@ -173,7 +195,7 @@ void mqOpenDataReaction::OpenTAG()
 		tr("Load TAG file"), QDir::currentPath(),
 		tr("tag file (*.tag)"));
 
-	cout << fileName.toStdString();
+	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
 	this->OpenTAG(fileName);
 
@@ -187,7 +209,7 @@ void mqOpenDataReaction::OpenData()
 		tr("Load data"), QDir::currentPath(),
 		tr("meshtools data or project (*.ntw *.ver *.cur *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
 
-	cout << fileName.toStdString();
+	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
 
 	std::string STLext(".stl");
@@ -624,7 +646,155 @@ void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 	// mode : 0 for last inserted mesh
 	// mode : 1 for all selected meshes
 	// mode : 2 for all selected landmarks/flags
-	// mode : 3 for all selected landmarks/flags and meshes
+
+
+	//Open a position file!
+
+	int i, j, l;
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	union {
+		float f;
+		char c[4];
+	} u; // holds one float or 4 characters (bytes)
+
+
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string MAText(".mat");
+			std::string MAText2(".MAT");
+			std::string POSext(".pos");
+			std::string POSext2(".POS");
+
+			int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File or simple .MAT file
+
+			std::size_t found = fileName.toStdString().find(MAText);
+			std::size_t found2 = fileName.toStdString().find(MAText2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//MAT
+			}
+
+			found = fileName.toStdString().find(POSext);
+			found2 = fileName.toStdString().find(POSext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 0; //POS
+			}
+
+
+
+
+			int Ok = 1;
+			vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+
+
+
+			if (type == 1)
+			{
+				FILE	*filein;									// Filename To Open
+
+
+				filein = fopen(fileName.toStdString().c_str(), "rb");
+				for (i = 0; i<4; i++)
+					for (j = 0; j<4; j++)
+					{
+
+						for (l = 3; l >= 0; l--)
+						{
+							u.c[l] = fgetc(filein);
+						}
+						//Mat1[j][i] = u.f;
+						//My_Obj->Mat1[i][j] = u.f;
+					}
+
+
+				for (i = 0; i<4; i++)
+					for (j = 0; j<4; j++)
+					{
+						for (l = 3; l >= 0; l--)
+						{
+							u.c[l] = fgetc(filein);
+						}
+						Mat->SetElement(j, i, double(u.f));
+
+					}
+
+			}
+			else
+			{
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+
+					// first matrix is useless (for the moment)	
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+
+					}
+					//
+					for (i = 0; i < 4; i++)
+					{
+						QString line = in.readLine();
+						double n1, n2, n3, n4;
+						QTextStream myteststream(&line);
+						myteststream >> n1 >> n2 >> n3 >> n4;
+
+						Mat->SetElement(0, i, n1);
+						Mat->SetElement(1, i, n2);
+						Mat->SetElement(2, i, n3);
+						Mat->SetElement(3, i, n4);
+
+
+					}
+					inputFile.close();
+
+				}
+			}//fin if	
+			
+
+
+			//cout << "call meshtools apply mat" << &Mat << endl;
+			mqMeshToolsCore::instance()->ApplyMatrix(Mat, mode);
+		}//file exists...
+	}	//length
+
+}
+
+void mqOpenDataReaction::OpenPOSTrans(QString fileName, int mode)
+{
+	// mode : 0 for last inserted mesh
+	// mode : 1 for all selected meshes
+	// mode : 2 for all selected landmarks/flags
+
 
 	//Open a position file!
 
@@ -716,7 +886,7 @@ void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 						{
 							u.c[l] = fgetc(filein);
 						}
-						Mat->SetElement(j, i, double(u.f));
+						Mat->SetElement(i, j, double(u.f));
 
 					}
 
@@ -745,22 +915,53 @@ void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 						QTextStream myteststream(&line);
 						myteststream >> n1 >> n2 >> n3 >> n4;
 
-						Mat->SetElement(0, i, n1);
-						Mat->SetElement(1, i, n2);
-						Mat->SetElement(2, i, n3);
-						Mat->SetElement(3, i, n4);
+						Mat->SetElement(i,0, n1);
+						Mat->SetElement(i,1, n2);
+						Mat->SetElement(i,2, n3);
+						Mat->SetElement(i,3, n4);
 
 
 					}
 					inputFile.close();
 
 				}
-			}//fin if																		
+			}//fin if		
+			
+			 double N1, N2, N3;
+			 N1 = -(Mat->GetElement(3,0) * Mat->GetElement(0, 0) +
+			 Mat->GetElement(3, 1) * Mat->GetElement(0, 1)
+			 + Mat->GetElement(3, 2) * Mat->GetElement(0, 2));
+			 			 
+
+			 
+			 Mat->SetElement(0, 3, N1);
+
+
+
+			 N2 =-(Mat->GetElement(3, 0) * Mat->GetElement(1, 0) +
+			 Mat->GetElement(3, 1) * Mat->GetElement(1, 1)
+			 + Mat->GetElement(3, 2) * Mat->GetElement(1, 2));
+			
+			 Mat->SetElement(1, 3, N2);
+
+			 N3 = -(Mat->GetElement(3, 0) * Mat->GetElement(2, 0) +
+			 Mat->GetElement(3, 1) * Mat->GetElement(2, 1)
+			 + Mat->GetElement(3, 2) * Mat->GetElement(2, 2));
+
+			 Mat->SetElement(2, 3, N3);
+
+
+			 Mat->SetElement(3,0, 0);
+			 Mat->SetElement(3, 1, 0);
+			 Mat->SetElement(3, 2, 0);
+			
+			 //cout << "call meshtools apply mat" << &Mat << endl;
 			mqMeshToolsCore::instance()->ApplyMatrix(Mat, mode);
 		}//file exists...
 	}	//length
 
 }
+
 void mqOpenDataReaction::OpenLMK(QString fileName, int mode)
 {// mode : 0 for normal landmarks
  // mode : 1 for target landmarks

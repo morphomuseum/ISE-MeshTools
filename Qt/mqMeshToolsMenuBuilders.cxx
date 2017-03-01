@@ -43,16 +43,27 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   menu.setObjectName(objectName);
  // QAction *openNtw = menu.addAction("Open Project");
   //new mqOpenDataReaction(openNtw, 1);//1= open NTW 
+  QMenu* submenuProject = menu.addMenu("Project");
+  QMenu* submenuSurface = menu.addMenu("Surface");
+  QMenu* submenuPosition = menu.addMenu("Position");
+  QMenu* submenuLandmark = menu.addMenu("Landmark");
+  QMenu* submenuCurves = menu.addMenu("Curves");
+  QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
+  QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
+  QMenu* submenuOrientationLables = menu.addMenu("Orientation helper labels");
+  new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
+  new mqOpenDataReaction(submenuProject->addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Landmark") << mqSetName("actionOpenNormalLMK"), 3);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Target Landmark") << mqSetName("actionOpenNormalLMK"), 4);
+  new mqOpenDataReaction(submenuCurves->addAction("Open Curve") << mqSetName("actionOpenCUR"), 5);
+  new mqOpenDataReaction(submenuPosition->addAction("Open position for selected surfaces") << mqSetName("actionOpenPOS"), 8);
+  new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);
+  new mqOpenDataReaction(submenuPosition->addAction("Open position for selected landmarks") << mqSetName("actionOpenPOS3"), 11);
+  new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected landmarks") << mqSetName("actionOpenPOS4"), 12);
 
-  new mqOpenDataReaction(menu.addAction("Open Mesh") << mqSetName("actionOpenMesh"), 2);
-  new mqOpenDataReaction(menu.addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
-  new mqOpenDataReaction(menu.addAction("Open Landmark") << mqSetName("actionOpenNormalLMK"), 3);
-  new mqOpenDataReaction(menu.addAction("Open Target Landmark") << mqSetName("actionOpenNormalLMK"), 4);
-  new mqOpenDataReaction(menu.addAction("Open Curve") << mqSetName("actionOpenCUR"), 5);
-  new mqOpenDataReaction(menu.addAction("Open Position") << mqSetName("actionOpenPOS"), 8);
-  new mqOpenDataReaction(menu.addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
-  new mqOpenDataReaction(menu.addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);
-  new mqOpenDataReaction(menu.addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
+  new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
+  new mqOpenDataReaction(submenuOrientationLables->addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);
+  new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
   
 }

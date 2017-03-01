@@ -428,6 +428,28 @@ void vtkLMActor::SetLMNumber(int num)
 
 }
 
+void vtkLMActor::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat)
+{
+	double init_pos[3] = { this->LMOrigin[0], this->LMOrigin[1],this->LMOrigin[2] };
+	double final_pos[3];
+	this->TransformPoint(Mat, init_pos, final_pos);
+
+	double init_npos[3] =
+	{ this->LMOrigin[0] + this->LMOrientation[0] ,
+		this->LMOrigin[1] + this->LMOrientation[1] ,
+		this->LMOrigin[2] + this->LMOrientation[2] ,
+	};
+
+	double final_npos[3];
+	this->TransformPoint(Mat, init_npos, final_npos);
+
+	final_npos[0] = final_npos[0] - final_pos[0];
+	final_npos[1] = final_npos[1] - final_pos[1];
+	final_npos[2] = final_npos[2] - final_pos[2];
+	this->SetLMOriginAndOrientation(final_pos, final_npos);
+
+}
+
 void vtkLMActor::Undo(int mCount)
 {
 

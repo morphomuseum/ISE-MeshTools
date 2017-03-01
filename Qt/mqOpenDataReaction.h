@@ -32,6 +32,7 @@ public:
    void OpenNTW();
    void OpenMesh();
    void OpenPOS(int mode);
+   void OpenPOSTrans(int mode);
    void OpenLMK_or_VER(int mode);
    void OpenFLG();
    void OpenCUR();
@@ -47,6 +48,7 @@ public:
    void OpenLMK(QString fileName, int mode);
    void OpenMesh(QString fileName);
    void OpenPOS(QString fileName, int mode);
+   void OpenPOSTrans(QString fileName, int mode);
 protected:
   /**
   * Called when the action is triggered.
@@ -85,18 +87,26 @@ protected:
 	else if (this->Mode == 7)
 	{
 		this->OpenORI();
-	}
-	else if (this->Mode == 8)
-	{
-		this->OpenPOS(0);
-	}
+	}	
 	else if (this->Mode == 9)
 	{
 		this->OpenTAG();
 	}
+	else if (this->Mode == 8)
+	{
+		this->OpenPOS(1);
+	}
 	else if (this->Mode == 10)
 	{
+		this->OpenPOSTrans(1);
+	}
+	else if (this->Mode == 11)
+	{
 		this->OpenPOS(2);
+	}
+	else if (this->Mode == 12)
+	{
+		this->OpenPOSTrans(2);
 	}
   }
 

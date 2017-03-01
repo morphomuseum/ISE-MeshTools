@@ -98,7 +98,7 @@ public:
 	void SetLMOrientation(double orientation[3]);
 	void GetLMOrientation(double orientation[3]);
 	double * GetLMOrientation();
-	
+	void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat);
 
 protected:
 	vtkLMActor();

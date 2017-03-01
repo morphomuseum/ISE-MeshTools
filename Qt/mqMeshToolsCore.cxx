@@ -601,7 +601,7 @@ void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 	// mode : 0 for last inserted mesh
 	// mode : 1 for all selected meshes
 	// mode : 2 for all selected landmarks/flags
-	// mode : 3 for all selected landmarks/flags and meshes
+	
 	if (mode == 0)
 	{
 		vtkMTActor *actor = this->GetLastActor();
@@ -609,11 +609,65 @@ void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 	}
 	else
 	{
-		if (mode == 1 || mode == 3)
+		if (mode == 1 )
 		{
+			this->ActorCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+			{
+				vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+				if (myActor->GetSelected() == 1)
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
 
 		}
-		//@@TODO!
+		else // mode ==2
+		{
+
+			this->NormalLandmarkCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+				if (myActor->GetSelected() == 1 )
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
+			this->TargetLandmarkCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+				if (myActor->GetSelected() == 1)
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
+			this->NodeLandmarkCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+				if (myActor->GetSelected() == 1)
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
+			this->HandleLandmarkCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+				if (myActor->GetSelected() == 1)
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
+			
+		}
 	}
 }
 
