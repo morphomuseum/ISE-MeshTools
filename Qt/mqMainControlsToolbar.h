@@ -66,6 +66,7 @@ public:
   virtual void slotLandmarkTargetMode();
   virtual void slotLandmarkNodeMode();
   virtual void slotLandmarkHandleMode();
+  virtual void slotFlagMode();
 
 private:
 	Q_DISABLE_COPY(mqMainControlsToolbar)

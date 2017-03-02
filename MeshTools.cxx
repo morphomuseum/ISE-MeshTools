@@ -111,6 +111,8 @@ void RubberBandSelect(vtkObject* caller,
 {
 	std::cout << "Pick." << std::endl;
 	vtkRenderedAreaPicker* areaPicker = static_cast<vtkRenderedAreaPicker*>(caller);
+	
+	//vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
 	vtkPropCollection *pcoll = areaPicker->GetPickList();
 	pcoll->GetNumberOfItems();
 	cout << "Pcoll Number of items:" << pcoll->GetNumberOfItems() << endl;
@@ -431,6 +433,7 @@ MeshTools::MeshTools()
 	 style->SetTargetLandmarkCollection(this->MeshToolsCore->getTargetLandmarkCollection());
 	 style->SetNodeLandmarkCollection(this->MeshToolsCore->getNodeLandmarkCollection());
 	 style->SetHandleLandmarkCollection(this->MeshToolsCore->getHandleLandmarkCollection());
+	 style->SetFlagLandmarkCollection(this->MeshToolsCore->getFlagLandmarkCollection());
 	/*vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
 		vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New(); //like paraview*/
 	//vtkSmartPointer<vtkInteractorStyleTrackballActor> style =

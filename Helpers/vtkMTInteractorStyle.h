@@ -67,6 +67,7 @@ public:
   void SetTargetLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
   void SetNodeLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
   void SetHandleLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+  void SetFlagLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
 protected:
   
   vtkMTInteractorStyle();
@@ -110,6 +111,7 @@ protected:
   vtkSmartPointer<vtkLMActorCollection> TargetLandmarkCollection;
   vtkSmartPointer<vtkLMActorCollection> NodeLandmarkCollection;
   vtkSmartPointer<vtkLMActorCollection> HandleLandmarkCollection;
+  vtkSmartPointer<vtkLMActorCollection> FlagLandmarkCollection;
 private:
 
 	void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);

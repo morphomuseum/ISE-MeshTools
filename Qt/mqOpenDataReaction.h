@@ -34,13 +34,16 @@ public:
    void OpenPOS(int mode);
    void OpenPOSTrans(int mode);
    void OpenLMK_or_VER(int mode);
+   
    void OpenFLG();
    void OpenCUR();
+   void OpenSTV();
    void OpenTAG();
    void OpenORI();
    
    void OpenFLG(QString fileName);
    void OpenCUR(QString fileName);
+   void OpenSTV(QString fileName);
    void OpenTAG(QString fileName);
    void OpenORI(QString fileName);
    void OpenNTW(QString fileName);
@@ -107,6 +110,22 @@ protected:
 	else if (this->Mode == 12)
 	{
 		this->OpenPOSTrans(2);
+	}
+	else if (this->Mode == 13)
+	{
+		this->OpenSTV();
+	}
+	else if (this->Mode == 14)
+	{
+		this->OpenLMK_or_VER(2);
+	}
+	else if (this->Mode == 15)
+	{
+		this->OpenLMK_or_VER(3);
+	}
+	else if (this->Mode == 16)
+	{
+		this->OpenSTV();
 	}
   }
 

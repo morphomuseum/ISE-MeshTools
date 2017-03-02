@@ -59,6 +59,10 @@ void mqOpenDataReaction::OpenMesh()
 }
 void mqOpenDataReaction::OpenLMK_or_VER(int mode)
 {
+	//mode 0=> inside normal landmarks
+	// 1 => inside target landmarks
+	//2 => inside node landmarks
+	//3 => inside handle landmarks
 	//mqMeshToolsCore::instance()->getUndoStack();
 	cout << "Open LMK or VER!" << endl;
 
@@ -102,6 +106,231 @@ void mqOpenDataReaction::OpenLMK_or_VER(int mode)
 	}
 
 }
+void mqOpenDataReaction::OpenSTV()
+{
+	//mqMeshToolsCore::instance()->getUndoStack();
+	cout << "Open STV!" << endl;
+
+	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load meshtool landmarks/curve files"), QDir::currentPath(),
+		tr("Landmark files(*.stv)"));
+
+	cout << fileName.toStdString();
+	if (fileName.isEmpty()) return;
+
+
+	std::string STVext(".stv");
+	std::string STVext2(".STV");
+	
+
+	int type = 0;
+	std::size_t found = fileName.toStdString().find(STVext);
+	std::size_t found2 = fileName.toStdString().find(STVext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 0; //STV
+	}
+
+
+
+	if (type == 0)
+	{
+
+		this->OpenSTV(fileName);
+	}
+	
+
+}
+void mqOpenDataReaction::OpenSTV(QString fileName)
+{
+	double  x, y, z, nx, ny, nz;
+	QString LMKName;
+	//Open a STV file!
+
+
+	size_t  length;
+
+	int type = 1;
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+
+			std::string STVext(".stv");
+			std::string STVext2(".STV");
+
+		
+			std::size_t found = fileName.toStdString().find(STVext);
+			std::size_t found2 = fileName.toStdString().find(STVext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//STV
+			}
+		
+			if (type == 1)			
+			{
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;		
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+					int landmark_mode=0;
+					int number = 0;
+					int cpt_line = 0;
+					while (!in.atEnd())
+					{
+
+						QString line = in.readLine();
+						QTextStream myteststream(&line);			
+						if (cpt_line==0)
+						{
+							myteststream >> landmark_mode >> number ;
+						}
+						else
+						{
+							// To do : type = 2 => information 
+							int lmtype = -1;
+							if (type == 2)// curve node!
+							{
+								myteststream >> LMKName >> x >> y >> z >> nx >> ny >> nz >> lmtype;
+								//lmtype: 1 curve starting point
+								//lmtype: 0 normal node
+								//lmtype: 2 curve milestone
+								//lmtype: 3 connect to preceding starting point
+							}
+							else
+							{
+								myteststream >> LMKName >> x >> y >> z >> nx >> ny >> nz;
+							}
+							double coord[3] = { x,y,z };
+							double ncoord[3] = { nx,ny,nz };
+							double ori[3];
+
+							double length = nx*nx + ny*ny + nz*nz;
+							if (length == 1)
+							{
+								ori[0] = ncoord[0];
+								ori[1] = ncoord[1];
+								ori[2] = ncoord[2];
+							}
+							else
+							{
+								vtkMath::Subtract(ncoord, coord, ori);
+								vtkMath::Normalize(ori);
+							}
+							mqMeshToolsCore::instance()->CreateLandmark(coord, ori, landmark_mode, lmtype);
+						}
+						cpt_line++;
+						if (cpt_line == number + 1) {
+							cpt_line = 0;
+							
+						}
+					}
+					/**/
+
+					inputFile.close();
+
+
+				}
+			}//fin if																		
+
+		}//file exists...
+	}	//length
+
+
+
+	/*float  param2, param3, param4, param5, param6, param7;
+	float m_ve[3], m_ven[3], leng;
+	char param1[50];
+	FILE	*filein;// Filename To Open
+	char	oneline[255];
+	int landmark_mode;
+
+
+	int file_exists = 1;
+	ifstream file(filename.c_str());
+
+	if (file)
+	{
+		file.close();
+	}
+	else
+	{
+		cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+		file_exists = 0;
+	}
+
+	if (file_exists == 1)
+	{
+		std::string STVext(".stv");
+		std::string STVext2(".STV");
+
+		int type = 1; //VER
+
+		filein = fopen(filename.c_str(), "r");
+		readstr(filein, oneline);
+		feof(filein);
+		std::cout << "Try open landmark file " << std::endl;
+		std::cout << "feof(filein)" << feof(filein) << std::endl;
+		int ind = 0;
+		vtkSmartPointer<vtkFloatArray> param_list = vtkSmartPointer<vtkFloatArray>::New();
+		param_list->SetNumberOfComponents(1);
+		int number = 0;
+		int cpt_line = 0;
+		while (!feof(filein))
+		{
+			if (cpt_line == 0) {
+				sscanf(oneline, "%d %d\n", &landmark_mode, &number);
+			}
+			else {
+				sscanf(oneline, "%s %f %f %f %f %f %f %d\n", param1, &param2, &param3, &param4, &param5, &param6, &param7, &ind);
+				param_list->InsertNextTuple1(param2);
+				param_list->InsertNextTuple1(param3);
+				param_list->InsertNextTuple1(param4);
+				param_list->InsertNextTuple1(param5);
+				param_list->InsertNextTuple1(param6);
+				param_list->InsertNextTuple1(param7);
+
+				create_landmarks(landmark_mode, param_list, type);
+
+				param_list = vtkSmartPointer<vtkFloatArray>::New();
+				param_list->SetNumberOfComponents(1);
+
+			}
+			readstr(filein, oneline); //read next line
+			cpt_line++;
+
+			if (cpt_line == number + 1 && landmark_mode == 0) {
+				cpt_line = 0;
+				landmark_mode++;
+			}
+		}//While scanff...
+		fclose(filein);
+	}
+	*/
+
+}
+
 void mqOpenDataReaction::OpenPOS(int mode)
 {
 	if (mode < 1) { mode = 1; }
@@ -207,7 +436,7 @@ void mqOpenDataReaction::OpenData()
 	
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
 		tr("Load data"), QDir::currentPath(),
-		tr("meshtools data or project (*.ntw *.ver *.cur *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
+		tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
 
 	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
@@ -230,8 +459,16 @@ void mqOpenDataReaction::OpenData()
 	std::string FLGext2(".FLG");
 	std::string LMKext(".lmk");
 	std::string LMKext2(".LMK");
+	std::string TAGext(".tag");
+	std::string TAGext2(".TAG");
+	std::string STVext(".stv");
+	std::string STVext2(".STV");
+	std::string ORIext(".ori");
+	std::string ORIext2(".ORI");
+	std::string POSext(".pos");
+	std::string POSext2(".POS");
 
-	int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
+	int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk, 8 tag, 9 stv, 10 ori, 11 pos
 	std::size_t found = fileName.toStdString().find(STLext);
 	std::size_t found2 = fileName.toStdString().find(STLext2);
 	if (found != std::string::npos || found2 != std::string::npos)
@@ -293,6 +530,32 @@ void mqOpenDataReaction::OpenData()
 	{
 		type = 7; //LMK
 	}
+	found = fileName.toStdString().find(TAGext);
+	found2 = fileName.toStdString().find(TAGext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 8; //TAG
+	}
+	found = fileName.toStdString().find(STVext);
+	found2 = fileName.toStdString().find(STVext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 9; //STV
+	}
+	//8 tag, 9 stv, 10 ori, 11 pos
+	found = fileName.toStdString().find(ORIext);
+	found2 = fileName.toStdString().find(ORIext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 10; //ORI
+	}
+	found = fileName.toStdString().find(POSext);
+	found2 = fileName.toStdString().find(POSext2);
+	if (found != std::string::npos || found2 != std::string::npos)
+	{
+		type = 11; //POS
+	}
+
 
 	if (type < 3)
 	{
@@ -318,6 +581,22 @@ void mqOpenDataReaction::OpenData()
 	{
 		this->OpenLMK(fileName, 0);
 	}
+	else if (type == 8)
+	{
+		this->OpenTAG(fileName);
+	}
+	else if (type == 9)
+	{
+		this->OpenSTV(fileName);
+	}
+	else if (type == 10)
+	{
+		this->OpenORI(fileName);
+	}
+	else if (type == 11)
+	{
+		this->OpenPOS(fileName, 1);
+	}
 }
 
 void mqOpenDataReaction::OpenNTW()
@@ -336,7 +615,265 @@ void mqOpenDataReaction::OpenNTW()
 }
 
 void mqOpenDataReaction::OpenFLG(QString fileName) {}
-void mqOpenDataReaction::OpenCUR(QString fileName) {}
+void mqOpenDataReaction::OpenCUR(QString fileName)
+
+{
+	double  xn, yn, zn, xh, yh, zh;// coordinates of curve nodes and curve handles
+	int node_type;
+	QString LMKName;
+	//Open a landmark file!
+
+
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string CURext(".cur");
+			std::string CURext2(".CUR");
+			
+
+			int type = 0;
+
+			std::size_t found = fileName.toStdString().find(CURext);
+			std::size_t found2 = fileName.toStdString().find(CURext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//CUR
+			}
+
+			
+
+			if (type == 1)
+			{
+
+			//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+
+					while (!in.atEnd())
+					{
+
+						QString line = in.readLine();
+						QTextStream myteststream(&line);
+						myteststream >> LMKName >> xn >> yn >> zn >> xh >> yh >> zh>> node_type;
+						double coordn[3] = { xn,yn,zn };
+						double coordh[3] = { xh,yh,zh };
+						double ori[3];
+
+						
+							ori[0] = 0;
+							ori[1] = 0;
+							ori[2] = 1;
+						
+						mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, node_type);
+						mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+					}
+					/**/
+
+					inputFile.close();
+
+
+				}
+			}//fin if																		
+
+		}//file exists...
+	}	//length
+
+	/*
+		float  param2, param3, param4, param5, param6, param7;
+		int param8;
+		float m_ved[3], m_veh[3], m_ven[3], leng; //ved is first landmarks // veh is handles
+		char param1[10];
+		FILE	*filein;									// Filename To Open
+		OBJECT_LANDMARK * My_LandmarkD;
+		OBJECT_LANDMARK * My_LandmarkH;
+		char	oneline[255];
+		int start;
+
+		int file_exists = 1;
+		ifstream file(filename.c_str());
+			if (file)
+			{
+				//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+				file.close();
+			}
+			else
+			{
+
+				std::cout << "file:" << filename.c_str() << " does not exists." << std::endl;
+				file_exists = 0;
+			}
+
+			if (file_exists == 1)
+			{
+
+				//filein = fopen(szFile, "rt");
+				filein = fopen(filename.c_str(), "rt");
+				readstr(filein, oneline);
+				while (!feof(filein))
+				{
+					//sscanf_s(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
+					sscanf(oneline, "%s %f %f %f %f %f %f %d\n", &param1, &param2, &param3, &param4, &param5, &param6, &param7, &param8);
+					m_ved[0] = param2; m_ved[1] = param3; m_ved[2] = param4;
+					m_veh[0] = param5; m_veh[1] = param6; m_veh[2] = param7;
+					start = param8;
+					//if (start !=1){start=0;}
+					m_ven[0] = 0; m_ven[1] = 0; m_ven[2] = 1;
+					leng = sqrt(m_ven[0] * m_ven[0] + m_ven[1] * m_ven[1] + m_ven[2] * m_ven[2]);
+					if (leng != 0)
+					{
+						m_ven[0] /= leng;
+						m_ven[1] /= leng;
+						m_ven[2] /= leng;
+					}
+					//m_ven[0] = param5;m_ven[1] = param6;m_ven[2] = param7;
+					My_LandmarkD = new OBJECT_LANDMARK;
+					My_LandmarkH = new OBJECT_LANDMARK;
+					glMatrix M1, M2;
+					glPushMatrix();
+					glLoadIdentity();
+					//getMatrix((GLfloat*) M1);
+					getmatrix(M2);
+					getmatrix(M1);
+					glPopMatrix();
+					M1[0][0] = M1[1][1] = M1[2][2] = g_landmark_size;
+					// transl. components:
+					M2[3][0] = m_ved[0]; M2[3][1] = m_ved[1]; M2[3][2] = m_ved[2];
+					// rot. components:
+					// assume rot. about x and z axes:
+					// -> values sinx,cosx,sinz,cosz
+					float cosx = m_ven[2];
+					float sinx = sqrt(1.0 - (cosx*cosx));
+					float cosz, sinz;
+					if (sinx == 0.0)
+					{
+						cosz = 1.0; sinz = 0.0;	// no rotation around z
+					}
+					else
+					{
+						cosz = -m_ven[1] / sinx;
+						sinz = m_ven[0] / sinx;
+					}
+					M2[0][0] = cosz; M2[0][1] = sinz; M2[0][2] = 0;
+					M2[1][0] = -cosx*sinz; M2[1][1] = cosx*cosz; M2[1][2] = sinx;
+					M2[2][0] = m_ven[0]; M2[2][1] = m_ven[1]; M2[2][2] = m_ven[2];
+					My_LandmarkD->curve_start = start;
+					My_LandmarkD->Mat1[0][0] = M1[0][0];
+					My_LandmarkD->Mat1[1][1] = M1[1][1];
+					My_LandmarkD->Mat1[2][2] = M1[2][2];
+
+					My_LandmarkD->Mat2[0][0] = M2[0][0];
+					My_LandmarkD->Mat2[0][1] = M2[0][1];
+					My_LandmarkD->Mat2[0][2] = M2[0][2];
+					My_LandmarkD->Mat2[0][3] = M2[0][3];
+					My_LandmarkD->Mat2[1][0] = M2[1][0];
+					My_LandmarkD->Mat2[1][1] = M2[1][1];
+					My_LandmarkD->Mat2[1][2] = M2[1][2];
+					My_LandmarkD->Mat2[1][3] = M2[1][3];
+					My_LandmarkD->Mat2[2][0] = M2[2][0];
+					My_LandmarkD->Mat2[2][1] = M2[2][1];
+					My_LandmarkD->Mat2[2][2] = M2[2][2];
+					My_LandmarkD->Mat2[2][3] = M2[2][3];
+					My_LandmarkD->Mat2[3][0] = M2[3][0];
+					My_LandmarkD->Mat2[3][1] = M2[3][1];
+					My_LandmarkD->Mat2[3][2] = M2[3][2];
+					My_LandmarkD->Mat2[3][3] = M2[3][3];
+
+
+					if (start == 0)
+					{
+						My_LandmarkD->color[0] = 1;
+						My_LandmarkD->color[1] = 0;
+						My_LandmarkD->color[2] = 0;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 1)
+					{
+						My_LandmarkD->color[0] = 0;
+						My_LandmarkD->color[1] = 1;
+						My_LandmarkD->color[2] = 0;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 2)
+					{
+						My_LandmarkD->color[0] = 0;
+						My_LandmarkD->color[1] = 0;
+						My_LandmarkD->color[2] = 1;
+						My_LandmarkD->color[3] = 1;
+					}
+					else if (start == 3)
+					{
+						My_LandmarkD->color[0] = 0.6;
+						My_LandmarkD->color[1] = 0.2;
+						My_LandmarkD->color[2] = 0.5;
+						My_LandmarkD->color[3] = 1;
+					}
+
+					M2[3][0] = m_veh[0]; M2[3][1] = m_veh[1]; M2[3][2] = m_veh[2];
+					My_LandmarkH->Mat1[0][0] = 1.5*M1[0][0];
+					My_LandmarkH->Mat1[1][1] = 1.5*M1[1][1];
+					My_LandmarkH->Mat1[2][2] = 1.5*M1[2][2];
+
+					My_LandmarkH->Mat2[0][0] = M2[0][0];
+					My_LandmarkH->Mat2[0][1] = M2[0][1];
+					My_LandmarkH->Mat2[0][2] = M2[0][2];
+					My_LandmarkH->Mat2[0][3] = M2[0][3];
+					My_LandmarkH->Mat2[1][0] = M2[1][0];
+					My_LandmarkH->Mat2[1][1] = M2[1][1];
+					My_LandmarkH->Mat2[1][2] = M2[1][2];
+					My_LandmarkH->Mat2[1][3] = M2[1][3];
+					My_LandmarkH->Mat2[2][0] = M2[2][0];
+					My_LandmarkH->Mat2[2][1] = M2[2][1];
+					My_LandmarkH->Mat2[2][2] = M2[2][2];
+					My_LandmarkH->Mat2[2][3] = M2[2][3];
+					My_LandmarkH->Mat2[3][0] = M2[3][0];
+					My_LandmarkH->Mat2[3][1] = M2[3][1];
+					My_LandmarkH->Mat2[3][2] = M2[3][2];
+					My_LandmarkH->Mat2[3][3] = M2[3][3];
+
+
+					My_LandmarkH->color[0] = 1.0;
+					My_LandmarkH->color[1] = 0.7;
+					My_LandmarkH->color[2] = 0.2;
+					My_LandmarkH->color[3] = 0.5;
+
+
+					Cont_Mesh.Add_Landmark(My_LandmarkD, 0);
+					Cont_Mesh.Add_Landmark(My_LandmarkH, 1);
+					readstr(filein, oneline); //read next line
+
+				}//While scanff...		
+				fclose(filein);
+			}//if file exists
+	*/
+}
 void mqOpenDataReaction::OpenTAG(QString fileName) {}
 void mqOpenDataReaction::OpenORI(QString fileName) {}
 
@@ -444,8 +981,7 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 					//TODO!
 					QString verfile(myline.c_str());
 					this->OpenVER(verfile, landmark_mode);
-					//this->Open_VER_File(landmark_mode, myline);
-					// Now open VER file !
+					
 
 				}
 
@@ -463,10 +999,9 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline = path.c_str();
 						myline.append(curfilename.c_str());
 					}
-					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
-					//@@TODO!
-					//this->Open_CUR_File(myline);
-
+					std::cout << "Try to load CUR curve file :<<" << myline.c_str() << std::endl;
+					QString curfile(myline.c_str());
+					this->OpenCUR(curfile);					
 
 				}
 
@@ -484,10 +1019,9 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline = path.c_str();
 						myline.append(stvfilename.c_str());
 					}
-					std::cout << "Try to load curve file :<<" << myline.c_str() << std::endl;
-					//@@TODO!
-					//this->Open_STV_File(myline);
-					// Now open CUR file !
+					std::cout << "Try to load STV curve file :<<" << myline.c_str() << std::endl;					
+					QString stvfile(myline.c_str());
+					this->OpenSTV(stvfile);					
 
 
 				}
@@ -506,10 +1040,8 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline.append(orifilename.c_str());
 					}
 					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
-					//@@TODO
-					//this->Open_ORI_File(myline);
-					// Now open CUR file !
-
+					QString orifile(myline.c_str());
+					this->OpenSTV(orifile);					
 
 				}
 
@@ -527,10 +1059,9 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline = path.c_str();
 						myline.append(tagfilename.c_str());
 					}
-					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
-					//@@TODO!
-					//this->Open_TAG_File(myline);
-					// Now open CUR file !
+					std::cout << "Try to load tag file :<<" << myline.c_str() << std::endl;
+					QString tagfile(myline.c_str());
+					this->OpenTAG(tagfile);
 
 
 				}
@@ -1044,7 +1575,9 @@ void mqOpenDataReaction::OpenLMK(QString fileName, int mode)
 }
 void mqOpenDataReaction::OpenVER(QString fileName, int mode)
 {// mode : 0 for normal landmarks
-	// mode : 1 for target landmarks
+ // mode : 1 for target landmarks
+ // mode : 2 for curve nodes
+ // mode : 3 for curve handles
 	double  x, y, z, nx, ny, nz;
 	QString LMKName;
 	//Open a landmark file!

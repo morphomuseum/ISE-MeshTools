@@ -20,6 +20,17 @@
 
 #include "mqUndoStack.h"
 
+#define NORMAL_LMK 0
+#define TARGET_LMK 1
+#define NODE_LMK 2
+#define HANDLE_LMK 3
+#define FLAG_LMK 4
+
+#define NORMAL_NODE 0
+#define STARTING_NODE 1
+#define MILESTONE_NODE 2
+#define CONNECT_NODE 3
+
 #define VTK_CREATE(type, name) \
   vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
 //-----------------------------------------------------------------------------
@@ -140,6 +151,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->HandleLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->HandleLandmarkCollection->SetRenderer(this->Renderer);
 
+	this->FlagLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->FlagLandmarkCollection->SetRenderer(this->Renderer);
+
 	this->Renderer->SetUseDepthPeeling(1);
 	this->Renderer->SetMaximumNumberOfPeels(100);
 	this->Renderer->SetOcclusionRatio(0.1);
@@ -161,28 +175,44 @@ mqMeshToolsCore::mqMeshToolsCore()
 }
 //should only be done after main window is initialized.
 
-void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
+void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
+	cout << "CreateLandmark:" << lmk_type <<", "<< node_type << endl;
+	// lmk_type : 0 for normal landmarks
+	// lmk_type : 1 for target landmarks
+	// lmk_type : 2 for curve nodes
+	// lmk_type : 3 for curve handles
+	// lmk_type : 4 for flag landmark
+
+
+	//node_type: only used if mode ==2, curve node
+	//node_type: 1 curve starting point 
+	//node_type: 0 normal node
+	//node_type: 2 curve milestone
+	//node_type: 3 connect to preceding starting point
 
 	VTK_CREATE(vtkLMActor, myLM);
 	int num = 0;
-	if (mode == 0)
+	if (lmk_type == NORMAL_LMK)
 	{
 		num = this->NormalLandmarkCollection->GetNextLandmarkNumber();
 	}
-	else if (mode == 1)
+	else if (lmk_type == TARGET_LMK)
 	{
 		num = this->TargetLandmarkCollection->GetNextLandmarkNumber();
 	}
-	else if (mode == 2)
+	else if (lmk_type == NODE_LMK)
 	{
 		num = this->NodeLandmarkCollection->GetNextLandmarkNumber();
 	}
-	else
+	else if (lmk_type == HANDLE_LMK)
 	{
 		num = this->HandleLandmarkCollection->GetNextLandmarkNumber();
 	}
-
+	else if (lmk_type== FLAG_LMK)
+	{
+		num = this->FlagLandmarkCollection->GetNextLandmarkNumber();
+	}
 
 	myLM->SetLMOriginAndOrientation(coord, ori);
 	//myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
@@ -204,46 +234,70 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 	double blue[4] = { 0, 0.5, 1, 1 }; // LMType = 5 (curve milestone)
 	double cyan[4] = { 0, 1, 1, 1 }; // LMType = 6 (curve ending point)
 	*/
-	if (mode == 0)
+	if (lmk_type == NORMAL_LMK)
 	{
-		myLM->SetLMType(0);
+		myLM->SetLMType(NORMAL_LMK);
 	}
-	else if (mode == 1)
+	else if (lmk_type== TARGET_LMK)
 	{
-		myLM->SetLMType(1);
+		myLM->SetLMType(TARGET_LMK);
 	}
-	else if (mode == 2)
+	else if (lmk_type == NODE_LMK)
 	{
 		// to do : 
-		if (num > 1)
-		{
-			//@@TODO!
-			vtkLMActor *myPrecedingLM = NULL;
-			//vtkLMActor *myPrecedingLM = this->NodeLandmarkCollection->GetLMBefore(num);
-			if (myPrecedingLM != NULL)
+		myLM->SetLMType(NODE_LMK);
+		if (node_type>-1)
+		{ 
+			//lmtype: 1 curve starting point
+			//lmtype: 0 normal node
+			//lmtype: 2 curve milestone
+			//lmtype: 3 connect to preceding starting point
+			if (node_type == NORMAL_NODE) { myLM->SetLMType(NODE_LMK);  myLM->SetLMNodeType(NORMAL_NODE);	}
+			if (node_type == STARTING_NODE) { myLM->SetLMType(NODE_LMK);  myLM->SetLMNodeType(STARTING_NODE); }
+			if (node_type == MILESTONE_NODE) { myLM->SetLMType(NODE_LMK);  myLM->SetLMNodeType(MILESTONE_NODE); }
+			if (node_type == CONNECT_NODE) { myLM->SetLMType(NODE_LMK);  myLM->SetLMNodeType(CONNECT_NODE); }
+			
+
+
+		}
+		else
+		{			
+			if (num > 1)
 			{
-				if (myPrecedingLM->GetLMType() == 6)// if curve ending point
+				vtkLMActor *myPrecedingLM = NULL;
+				//@implement GETLMBefore(num)
+				//vtkLMActor *myPrecedingLM = this->NodeLandmarkCollection->GetLMBefore(num);
+				if (myPrecedingLM != NULL)
 				{
-					myLM->SetLMType(4); // curve starting point
+					if (myPrecedingLM->GetLMNodeType() == CONNECT_NODE)// if curve ending point
+					{
+						myLM->SetLMNodeType(STARTING_NODE); // curve starting point
+					}
+					else
+					{
+						myLM->SetLMNodeType(NORMAL_NODE); // curve conventional node
+					}
 				}
 				else
 				{
-					myLM->SetLMType(2); // curve conventional node
+					myLM->SetLMNodeType(NORMAL_NODE); // curve conventional node
 				}
 			}
-			else
+			else // num ==1
 			{
-				myLM->SetLMType(2); // curve conventional node
+				myLM->SetLMNodeType(STARTING_NODE); //curve starting point
 			}
 		}
-		else // num ==1
-		{
-			myLM->SetLMType(4); //curve starting point
-		}
 	}
-	else
+	else if(lmk_type == HANDLE_LMK)
 	{
-		myLM->SetLMType(3); //curve handle
+		myLM->SetLMType(HANDLE_LMK); //curve handle
+	}
+	else 
+	{
+		cout << "Set LM TYPE TO FLAG!" << endl;
+		myLM->SetLMType(FLAG_LMK);
+
 	}
 	
 	myLM->SetLMNumber(num);
@@ -261,7 +315,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 	
 
 	END_UNDO_SET();
-	if (mode == 0)
+	if (lmk_type == NORMAL_LMK)
 	{
 		
 		
@@ -273,7 +327,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 		END_UNDO_SET();
 		
 	}
-	else if (mode == 1)
+	else if (lmk_type == TARGET_LMK)
 	{
 
 		this->TargetLandmarkCollection->AddItem(myLM);
@@ -284,7 +338,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 		END_UNDO_SET();
 		
 	}
-	else if (mode == 2)
+	else if (lmk_type == NODE_LMK)
 	{
 		this->NodeLandmarkCollection->AddItem(myLM);
 		this->NodeLandmarkCollection->SetChanged(1);
@@ -294,7 +348,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 		END_UNDO_SET();
 		
 	}
-	else
+	else if (lmk_type == HANDLE_LMK)
 	{
 		this->HandleLandmarkCollection->AddItem(myLM);
 		this->HandleLandmarkCollection->SetChanged(1);
@@ -303,7 +357,15 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int mode)
 		mqMeshToolsCore::instance()->getHandleLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
 		END_UNDO_SET();
 	}
-	
+	else if (lmk_type == FLAG_LMK)
+	{
+		this->FlagLandmarkCollection->AddItem(myLM);
+		this->FlagLandmarkCollection->SetChanged(1);
+		std::string action = "Create Flag Landmark";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getFlagLandmarkCollection()->CreateLoadUndoSet(mCount, 1);
+		END_UNDO_SET();
+	}
 	
 	
 }
@@ -666,7 +728,16 @@ void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 					myActor->SetSelected(0);
 				}
 			}
-			
+			this->FlagLandmarkCollection->InitTraversal();
+			for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+			{
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+				if (myActor->GetSelected() == 1)
+				{
+					myActor->ApplyMatrix(Mat);;
+					myActor->SetSelected(0);
+				}
+			}
 		}
 	}
 }
@@ -720,6 +791,15 @@ void mqMeshToolsCore::UnselectAll(int Count)
 			myActor->SaveState(Count);
 		}
 	}
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1 && Count>0)
+		{
+			myActor->SaveState(Count);
+		}
+	}
 
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -777,6 +857,19 @@ void mqMeshToolsCore::UnselectAll(int Count)
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+
+		}
+
+
+	}
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
 			myActor->SetSelected(0);
@@ -1144,7 +1237,13 @@ void mqMeshToolsCore::UpdateLandmarkSettings()
 		UpdateLandmarkSettings(myActor);
 
 	}
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		UpdateLandmarkSettings(myActor);
 
+	}
 }
 
 void mqMeshToolsCore::Undo()
@@ -1210,6 +1309,15 @@ void mqMeshToolsCore::Undo(int Count)
 	// To update to take into account reorder!
 	this->HandleLandmarkCollection->Undo(Count);
 
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Undo(Count);
+	}
+	// To update to take into account reorder!
+	this->FlagLandmarkCollection->Undo(Count);
 }
 void mqMeshToolsCore::Redo()
 {
@@ -1271,6 +1379,16 @@ void mqMeshToolsCore::Redo(int Count)
 	// To update to take into account reorder!
 	this->HandleLandmarkCollection->Redo(Count);
 
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Redo(Count);
+	}
+	// To update to take into account reorder!
+	this->FlagLandmarkCollection->Redo(Count);
+
 }
 
 void mqMeshToolsCore::Erase(int Count)
@@ -1326,6 +1444,15 @@ void mqMeshToolsCore::Erase(int Count)
 	// To update to take into account reorder!
 	this->HandleLandmarkCollection->Erase(Count);
 
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		cout << "Call MyLMActor undo from core!" << endl;
+		myActor->Erase(Count);
+	}
+	// To update to take into account reorder!
+	this->FlagLandmarkCollection->Erase(Count);
 
 
 }
@@ -1381,6 +1508,10 @@ vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getNodeLandmarkCollection
 vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getHandleLandmarkCollection()
 {
 	return this->HandleLandmarkCollection;
+}
+vtkSmartPointer<vtkLMActorCollection> mqMeshToolsCore::getFlagLandmarkCollection()
+{
+	return this->FlagLandmarkCollection;
 }
 /*
 vtkMTActorCollection* mqMeshToolsCore::getActorCollection()

@@ -46,16 +46,19 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   QMenu* submenuProject = menu.addMenu("Project");
   QMenu* submenuSurface = menu.addMenu("Surface");
   QMenu* submenuPosition = menu.addMenu("Position");
-  QMenu* submenuLandmark = menu.addMenu("Landmark");
-  QMenu* submenuCurves = menu.addMenu("Curves");
+  QMenu* submenuLandmark = menu.addMenu("Landmarks and curves");
+  
   QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
   QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
   QMenu* submenuOrientationLables = menu.addMenu("Orientation helper labels");
   new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
   new mqOpenDataReaction(submenuProject->addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
-  new mqOpenDataReaction(submenuLandmark->addAction("Open Landmark") << mqSetName("actionOpenNormalLMK"), 3);
-  new mqOpenDataReaction(submenuLandmark->addAction("Open Target Landmark") << mqSetName("actionOpenNormalLMK"), 4);
-  new mqOpenDataReaction(submenuCurves->addAction("Open Curve") << mqSetName("actionOpenCUR"), 5);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Landmarks") << mqSetName("actionOpenNormalLMK"), 3);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Target Landmarks") << mqSetName("actionOpenNormalLMK"), 4);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve Node Landmarks") << mqSetName("actionOpenNodeLMK"), 14);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve Handle Landmarks") << mqSetName("actionOpenHandleLMK"), 15);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open MeshTools Landmark/Curve file (STV)") << mqSetName("actionOpenSTV"), 16);
+  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve (.CUR)") << mqSetName("actionOpenCUR"), 5);
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected surfaces") << mqSetName("actionOpenPOS"), 8);
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected landmarks") << mqSetName("actionOpenPOS3"), 11);

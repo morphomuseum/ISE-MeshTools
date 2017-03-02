@@ -102,12 +102,14 @@ void mqMainControlsToolbar::constructor()
   if (landmark_mode == 0) { this->ui->actionLandmarksModeNormal->setChecked(true); }
   else if (landmark_mode == 1) { this->ui->actionLandmarksModeTarget->setChecked(true); }
   else if (landmark_mode == 2) { this->ui->actionLandmarksModeNode->setChecked(true); }
-  else { this->ui->actionLandmarksModeHandle->setChecked(true); }
+  else if (landmark_mode == 3) { this->ui->actionLandmarksModeHandle->setChecked(true); }
+  else { this->ui->actionLandmarksModeFlag->setChecked(true); }//4
 
   connect(this->ui->actionLandmarksModeNormal, SIGNAL(triggered()), this, SLOT(slotLandmarkNormalMode()));
   connect(this->ui->actionLandmarksModeTarget, SIGNAL(triggered()), this, SLOT(slotLandmarkTargetMode()));
   connect(this->ui->actionLandmarksModeHandle, SIGNAL(triggered()), this, SLOT(slotLandmarkHandleMode()));
   connect(this->ui->actionLandmarksModeNode, SIGNAL(triggered()), this, SLOT(slotLandmarkNodeMode()));
+  connect(this->ui->actionLandmarksModeFlag, SIGNAL(triggered()), this, SLOT(slotFlagMode()));
 }
 
 void mqMainControlsToolbar::slotLandmarkNormalMode()
@@ -117,6 +119,7 @@ void mqMainControlsToolbar::slotLandmarkNormalMode()
 	this->ui->actionLandmarksModeTarget->setChecked(false);
 	this->ui->actionLandmarksModeNode->setChecked(false);
 	this->ui->actionLandmarksModeHandle->setChecked(false);
+	this->ui->actionLandmarksModeFlag->setChecked(false);
 	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);
 	
 }
@@ -126,6 +129,7 @@ void mqMainControlsToolbar::slotLandmarkTargetMode()
 	this->ui->actionLandmarksModeNormal->setChecked(false);
 	this->ui->actionLandmarksModeNode->setChecked(false);
 	this->ui->actionLandmarksModeHandle->setChecked(false);
+	this->ui->actionLandmarksModeFlag->setChecked(false);
 	mqMeshToolsCore::instance()->Setmui_LandmarkMode(1);
 
 }
@@ -135,6 +139,7 @@ void mqMainControlsToolbar::slotLandmarkNodeMode()
 	this->ui->actionLandmarksModeNormal->setChecked(false);
 	this->ui->actionLandmarksModeTarget->setChecked(false);
 	this->ui->actionLandmarksModeHandle->setChecked(false);
+	this->ui->actionLandmarksModeFlag->setChecked(false);
 	mqMeshToolsCore::instance()->Setmui_LandmarkMode(2);
 }
 void mqMainControlsToolbar::slotLandmarkHandleMode()
@@ -143,7 +148,20 @@ void mqMainControlsToolbar::slotLandmarkHandleMode()
 	this->ui->actionLandmarksModeNormal->setChecked(false);
 	this->ui->actionLandmarksModeTarget->setChecked(false);
 	this->ui->actionLandmarksModeNode->setChecked(false);
+	this->ui->actionLandmarksModeFlag->setChecked(false);
 	mqMeshToolsCore::instance()->Setmui_LandmarkMode(3);
 	
+
+}
+void mqMainControlsToolbar::slotFlagMode()
+{
+	cout << "Landmark setting mode: 4=flags" << endl;
+	this->ui->actionLandmarksModeNormal->setChecked(false);
+	this->ui->actionLandmarksModeTarget->setChecked(false);
+	this->ui->actionLandmarksModeNode->setChecked(false);
+	this->ui->actionLandmarksModeHandle->setChecked(false);
+	
+	mqMeshToolsCore::instance()->Setmui_LandmarkMode(4);
+
 
 }

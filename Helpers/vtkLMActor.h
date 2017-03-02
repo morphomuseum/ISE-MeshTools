@@ -18,6 +18,7 @@ Module:    vtkLMActor.h
 #include <vtkCaptionActor2D.h>
 #include <vtkSmartPointer.h>
 #include <vector>
+#include <QString>
 
 class vtkLMActorUndoRedo
 {
@@ -28,8 +29,9 @@ public:
 		double Color[4];
 		int Selected;
 		int Type;
+		int NodeType;
 		int UndoCount;
-		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int type, int Count)
+		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int type, int nodetype, int Count)
 		{
 			this->Matrix =m;
 			this->UndoCount = Count;
@@ -39,6 +41,7 @@ public:
 			this->Color[3] = c[3];
 			this->Selected = selected;
 			this->Type = type;
+			this->NodeType = nodetype;
 		}
 	};
 	typedef std::vector<Element> VectorOfElements;
@@ -78,10 +81,16 @@ public:
 	vtkGetStringMacro(LMLabelText);
 	vtkSmartPointer<vtkPolyData> getLMBody() { return this->LMBody; }
 	// Enable/disable drawing the axis labels.
+
+	vtkGetMacro(LMText, std::string);
+	void SetLMText(std::string lm_text);
+
 	vtkSetMacro(LMDrawLabel, int);
 	vtkGetMacro(LMDrawLabel, int);
 	vtkGetMacro(LMType, int);
 	void SetLMType(int type);
+	vtkGetMacro(LMNodeType, int);
+	void SetLMNodeType(int nodetype);
 	vtkGetMacro(LMBodyType, int);
 	void SetLMBodyType(int type);
 	vtkGetMacro(LMSize, double);
@@ -93,7 +102,7 @@ public:
 	void GetLMOrigin(double origin[3]);
 	void SetLMOriginAndOrientation(double origin[3], double orientation[3]);
 	double * GetLMOrigin();
-	void SetLMColor();
+	void ResetLMColor();
 	void SetLMOrientation(double x, double y, double z);
 	void SetLMOrientation(double orientation[3]);
 	void GetLMOrientation(double orientation[3]);
@@ -112,12 +121,20 @@ protected:
 	int LMNumber; // landmark number in sequence
 	int LMBodyType; //0; sphere //1 needle needle 
 	int LMType; // 0; normal landmark (red) // 1 target landmark (yellow)
-				// 2; curve node (dark red) // 3; curve handle (orange) // 4 curve starting point (green)
+				// 2; curve node (depends on LMNodeType) // 3; curve handle (orange) // 4 curve starting point (green)
 				// 5 curve milestone (blue) // 6 curve ending point (cyann)
+	int LMNodeType;
+				//-1 : NOT a curve node=> color according to LMType
+				// 0; curve normal node (dark red) 
+				// 1 curve starting point (green)
+				// 2 curve milestone (blue) 
+				// 3 curve ending point (cyann)
 	int                LMDrawLabel;
 	double		     LMSize;
 	double			LMOrigin[3];
 	double			LMOrientation[3];
+	
+	std::string LMText;
 
 private:
 	vtkLMActor(const vtkLMActor&);  // Not implemented.

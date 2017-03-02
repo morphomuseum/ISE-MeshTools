@@ -5,6 +5,7 @@ Module:    vtkLMActor.cxx
 =========================================================================*/
 #include "vtkLMActor.h"
 #include  "vtkProbeSource.h"
+#include  "mqMeshToolsCore.h"
 
 #include <vtkTextProperty.h>
 #include <vtkSphereSource.h>
@@ -17,6 +18,17 @@ Module:    vtkLMActor.cxx
 #include <vtkTransform.h>
 vtkStandardNewMacro(vtkLMActor);
 
+#define NORMAL_LMK 0
+#define TARGET_LMK 1
+#define NODE_LMK 2
+#define HANDLE_LMK 3
+#define FLAG_LMK 4
+
+#define NORMAL_NODE 0
+#define STARTING_NODE 1
+#define MILESTONE_NODE 2
+#define CONNECT_NODE 3
+
 
 
 //----------------------------------------------------------------------------
@@ -26,13 +38,14 @@ vtkLMActor::vtkLMActor()
 	this->Selected = 0;
 	this->Changed = 0;
 	this->LMBodyType = 0;
-
+	this->LMText = "Flag 0";
 	this->LMBody = vtkSmartPointer<vtkPolyData>::New();
 	this->LMLabel = vtkCaptionActor2D::New();
 	
 	this->LMDrawLabel = 1;//Draws the label
-	this->LMType = 0;
-	this->SetLMColor(); //Set color according to LMType
+	this->LMType = NORMAL_LMK;
+	this->LMNodeType = -1; //NOT a curve node ...
+	this->ResetLMColor(); //Set color according to LMType if LMType !=2, otherwise according to LMNodeType
 	this->LMBodyType = 0; //sphere by default
 	this->LMSize = 0.1; // 0.1mm by default 
 	this->LMNumber = 1; //1
@@ -89,7 +102,11 @@ void vtkLMActor::SetLMOriginAndOrientation(double origin[3], double orientation[
 	}
 }
 
-
+void vtkLMActor::SetLMText(std::string lm_text)
+{
+	this->LMText = lm_text;
+	this->UpdateProps();
+}
 void vtkLMActor::SetLMOrigin(double x, double y, double z)
 {
 	double origin[3];
@@ -161,14 +178,8 @@ void vtkLMActor::SetLMOrientation(double orientation[3])
 }
 void vtkLMActor::SetLMSize(double size)
 {
-	if (this->LMType == 1 || this->LMType == 3)
-	{
-	}
+
 	this->LMSize = size;
-	/*if (this->LMType == 1 || this->LMType == 3)
-	{
-		this->LMSize = 1.2*size;
-	}*/
 	this->Modified();
 	this->UpdateProps();
 }
@@ -241,8 +252,16 @@ void vtkLMActor::CreateLMLabelText()
 
 
 	std::string myStrLabel;
-	myStrLabel = std::to_string(this->LMNumber);
-	mproperty->SetColor(color);
+	if (this->GetLMType() != FLAG_LMK)
+	{
+		myStrLabel = std::to_string(this->LMNumber);
+	}
+	else
+	{
+
+		myStrLabel = this->LMText;
+	}
+		mproperty->SetColor(color);
 
 
 
@@ -347,14 +366,13 @@ void vtkLMActor::CreateLMBody()
 	}
 
 
-
-
 }
 
 
 
-void vtkLMActor::SetLMColor()
+void vtkLMActor::ResetLMColor()
 {
+	cout << "ResetLMColor" << this->LMType << endl;
 	// Create six colors - one for each line
 	double red[4] = { 1, 0.4, 0.4, 1 };// LMType=0 VERT
 
@@ -366,42 +384,78 @@ void vtkLMActor::SetLMColor()
 	
 	double cyan[4] = { 0, 1, 1, 1 }; 
 	double violet[4] = { 0.7, 0, 1, 0.5 }; 
-	if (this->LMType == 0) { this->SetmColor(green); }// LMType = 0 (normal LM) vert
-	if (this->LMType == 1) { this->SetmColor(orange); }// LMType = 1 (target LM) jaune
-	if (this->LMType == 2) { this->SetmColor(red); }// LMType = 2( curve node LM) rosé
-	if (this->LMType == 3) { this->SetmColor(violet); }// LMType = 3( curve handle) violet
-	if (this->LMType == 4) { this->SetmColor(darkred); }// LMType = 4( curve starting point) rouge sombre
-	if (this->LMType == 5) { this->SetmColor(blue); } // LMType=5 (curve milestone) bleu
-	if (this->LMType == 6) { this->SetmColor(cyan); }// LMType=6 (curve end point start to 0) cyan
+	double *flgcolor = mqMeshToolsCore::instance()->Getmui_FlagColor();
+	double flagcolor[4] = { flgcolor[0], flgcolor[1], flgcolor[2], 1 };// LMType=0 VERT
+	if (this->LMType == NORMAL_LMK) { this->SetmColor(green); }// LMType = 0 (normal LM) vert
+	if (this->LMType == TARGET_LMK) { this->SetmColor(orange); }// LMType = 1 (target LM) jaune
+	
+	if (this->LMType == NODE_LMK) {
+		if (this->LMNodeType == -1 || this->LMNodeType == NORMAL_NODE) {
+			this->SetmColor(red);
+		}
+		if (this->LMNodeType == STARTING_NODE) {
+			this->SetmColor(darkred);
+		}
+		if (this->LMNodeType == MILESTONE_NODE) {
+			this->SetmColor(blue);
+		}
+		if (this->LMNodeType == CONNECT_NODE) {
+			this->SetmColor(cyan);
+		}
+	}
+	if (this->LMType == HANDLE_LMK) { this->SetmColor(violet); }
+
+	if (this->LMType == FLAG_LMK) { 
+		
+		this->SetmColor(flagcolor); }
+
+
+	
 }
 
 //----------------------------------------------------------------------------
 void vtkLMActor::SetLMType(int type)
 {
 	this->LMType = type;
-	this->SetLMColor();
-	if (this->LMType != type && type >= 0 && type <= 6)
+	if (type == FLAG_LMK)
+	{	
+		this->LMBodyType = 1; // only arrows for flags!
+	}
+
+	this->ResetLMColor();	
+	this->Modified();
+	this->UpdateProps();
+	
+
+
+}
+
+void vtkLMActor::SetLMNodeType(int nodetype)
+{
+	if (nodetype < 0) { nodetype = NORMAL_NODE; }
+	if (this->LMType == NODE_LMK)
 	{
-
-
-		
-		this->LMType = type;
+		this->LMNodeType = nodetype;
+		this->ResetLMColor();
 		this->Modified();
 		this->UpdateProps();
 	}
+	
 
 
 }
 
 void vtkLMActor::SetLMBodyType(int type)
 {
-	if (this->LMBodyType != type && type >= 0 && type <= 1)
+	if (this->LMType != FLAG_LMK)
 	{
-		this->LMBodyType = type;
-		this->Modified();
-		this->UpdateProps();
+		if (this->LMBodyType != type && type >= 0 && type <= 1)
+		{
+			this->LMBodyType = type;
+			this->Modified();
+			this->UpdateProps();
+		}
 	}
-
 
 }
 /*
@@ -543,6 +597,7 @@ void vtkLMActor::PopUndoStack()
 	myCurrentColor[2] = this->mColor[2];
 	myCurrentColor[3] = this->mColor[3];
 	int myCurrentType = this->LMType;
+	int myCurrentNodeType = this->LMNodeType;
 	this->LMType = this->UndoRedo->UndoStack.back().Type;
 	this->mColor[0] = this->UndoRedo->UndoStack.back().Color[0];
 	this->mColor[1] = this->UndoRedo->UndoStack.back().Color[1];
@@ -550,7 +605,7 @@ void vtkLMActor::PopUndoStack()
 	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
 	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected,myCurrentType, this->UndoRedo->UndoStack.back().UndoCount));
+	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected,myCurrentType, myCurrentNodeType, this->UndoRedo->UndoStack.back().UndoCount));
 	this->UndoRedo->UndoStack.pop_back();
 	this->CreateLMLabelText();
 	this->Modified();
@@ -586,6 +641,7 @@ void vtkLMActor::PopRedoStack()
 	myCurrentColor[2] = this->mColor[2];
 	myCurrentColor[3] = this->mColor[3];
 	int myCurrentType = this->LMType;
+	int myCurrentNodeType = this->LMNodeType;
 	this->LMType = this->UndoRedo->RedoStack.back().Type;
 	this->mColor[0] = this->UndoRedo->RedoStack.back().Color[0];
 	this->mColor[1] = this->UndoRedo->RedoStack.back().Color[1];
@@ -593,7 +649,7 @@ void vtkLMActor::PopRedoStack()
 	this->mColor[3] = this->UndoRedo->RedoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
 	cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, myCurrentType, this->UndoRedo->RedoStack.back().UndoCount));
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, myCurrentType, myCurrentNodeType, this->UndoRedo->RedoStack.back().UndoCount));
 	this->UndoRedo->RedoStack.pop_back();
 	this->CreateLMLabelText();
 	this->Modified();
@@ -620,10 +676,11 @@ void vtkLMActor::SaveState(int mCount)
 	myColor[3] = this->mColor[3];
 	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
 	int mType = this->LMType;
+	int mNodeType = this->LMNodeType;
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	cout << "Saved current LM state: " << endl;
-	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myColor, mSelected, mType, mCount));
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myColor, mSelected, mType, mNodeType, mCount));
 
 }
 //----------------------------------------------------------------------------

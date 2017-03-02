@@ -135,6 +135,7 @@ public:
   vtkSmartPointer<vtkLMActorCollection> getTargetLandmarkCollection();
   vtkSmartPointer<vtkLMActorCollection> getNodeLandmarkCollection();
   vtkSmartPointer<vtkLMActorCollection> getHandleLandmarkCollection();
+  vtkSmartPointer<vtkLMActorCollection> getFlagLandmarkCollection();
 
   vtkSmartPointer<vtkMTActorCollection> getActorCollection();
   //vtkMTActorCollection* getActorCollection();
@@ -164,7 +165,7 @@ public:
   vtkMTActor* GetLastActor();
   void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
   void InitializeOrientationHelper();
-  void CreateLandmark(double coord[3], double ori[3], int mode);
+  void CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type = -1);
 protected:
 	
 	~mqMeshToolsCore();
@@ -174,6 +175,7 @@ protected:
 	vtkSmartPointer<vtkLMActorCollection> TargetLandmarkCollection;
 	vtkSmartPointer<vtkLMActorCollection> NodeLandmarkCollection;
 	vtkSmartPointer<vtkLMActorCollection> HandleLandmarkCollection;
+	vtkSmartPointer<vtkLMActorCollection> FlagLandmarkCollection;
 	//vtkMTActorCollection *ActorCollection;
 	vtkSmartPointer<vtkRenderer> Renderer;
 	//vtkSmartPointer<vtkRenderWindow> RenderWindow;
@@ -223,7 +225,7 @@ protected:
 	int mui_DefaultFlagRenderingSize;
 	int mui_FlagRenderingSize;
 
-	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle
+	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle 4flag
 	int mui_LandmarkMode;
 
 	vtkOrientationHelperWidget* OrientationHelperWidget;

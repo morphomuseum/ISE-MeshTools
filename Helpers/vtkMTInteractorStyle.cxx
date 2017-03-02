@@ -68,6 +68,7 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 	this->TargetLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->NodeLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->HandleLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
+	this->FlagLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->ActorsPositionsSaved = 0;
 	this->NumberOfSelectedActors = 0;
 }
@@ -91,6 +92,10 @@ void vtkMTInteractorStyle::SetNodeLandmarkCollection(vtkSmartPointer<vtkLMActorC
 void vtkMTInteractorStyle::SetHandleLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
 {
 	this->HandleLandmarkCollection = LmkColl;
+}
+void vtkMTInteractorStyle::SetFlagLandmarkCollection(vtkSmartPointer<vtkLMActorCollection> LmkColl)
+{
+	this->FlagLandmarkCollection = LmkColl;
 }
 //--------------------------------------------------------------------------
 vtkMTInteractorStyle::~vtkMTInteractorStyle()
@@ -178,7 +183,12 @@ void vtkMTInteractorStyle::EndLandmarkMovements()
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 		this->EndLandmarkMovements(myActor);
 	}
-	
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		this->EndLandmarkMovements(myActor);
+	}
 
 }
 
@@ -271,6 +281,15 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SaveState(Count);
 					}
 				}
+				this->FlagLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+					}
+				}
 				END_UNDO_SET();
 				//cout << "a and CTRL pressed!" << endl;
 				this->ActorCollection->InitTraversal();
@@ -326,7 +345,16 @@ void vtkMTInteractorStyle::StartSelect()
 						myActor->SetChanged(1);
 					}
 				}
-
+				this->FlagLandmarkCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SetSelected(1);
+						myActor->SetChanged(1);
+					}
+				}
 				vtkRenderWindowInteractor *rwi = this->Interactor;
 				rwi->Render();
 			}
@@ -616,6 +644,7 @@ void vtkMTInteractorStyle::DeleteSelectedActors()
 	this->TargetLandmarkCollection->DeleteSelectedActors();
 	this->NodeLandmarkCollection->DeleteSelectedActors();
 	this->HandleLandmarkCollection->DeleteSelectedActors();
+	this->FlagLandmarkCollection->DeleteSelectedActors();
 	this->Interactor->Render();
 }
 int vtkMTInteractorStyle::getNumberOfSelectedActors()
@@ -674,6 +703,18 @@ int vtkMTInteractorStyle::getNumberOfSelectedActors()
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+
+		if (myActor->GetSelected() == 1)
+		{
+			cpt++;
+		}
+
+	}
+	this->FlagLandmarkCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 
 		if (myActor->GetSelected() == 1)
 		{
@@ -753,6 +794,17 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 		for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				cout << "Call myLMActor Save Position with count" << Count << endl;
+				myActor->SaveState(Count);
+			}
+		}
+
+		this->FlagLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
 				cout << "Call myLMActor Save Position with count" << Count << endl;
@@ -1210,6 +1262,17 @@ void vtkMTInteractorStyle::GetCenterOfMassOfSelectedActors(double com[3])
 	}
 	nv += Handlenvlm;
 
+	double *Flagcomlm = this->FlagLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Flagnvlm = this->FlagLandmarkCollection->GetGlobalSelectedVN();
+	if (Flagnvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Flagcomlm[0] * Flagnvlm;
+		com[1] += Flagcomlm[1] * Flagnvlm;
+		com[2] += Flagcomlm[2] * Flagnvlm;
+	}
+	nv += Flagnvlm;
+
 	if (nv > 0) { com[0] /= nv; com[1] /= nv; com[2] /= nv;
 	}
 	//cout << "global selected com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
@@ -1229,6 +1292,9 @@ double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
 	this->NodeLandmarkCollection->GetBoundingBoxSelected(Nodeboundslm);
 	double Handleboundslm[6];
 	this->HandleLandmarkCollection->GetBoundingBoxSelected(Handleboundslm);
+	double Flagboundslm[6];
+	this->FlagLandmarkCollection->GetBoundingBoxSelected(Flagboundslm);
+
 
 
 	double largestboundsselected[6];
@@ -1273,6 +1339,13 @@ double vtkMTInteractorStyle::GetBoundingBoxLengthOfSelectedActors()
 	if (Handleboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Handleboundslm[3]; }
 	if (Handleboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Handleboundslm[4]; }
 	if (Handleboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Handleboundslm[5]; }
+
+	if (Flagboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Flagboundslm[0]; }
+	if (Flagboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Flagboundslm[1]; }
+	if (Flagboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Flagboundslm[2]; }
+	if (Flagboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Flagboundslm[3]; }
+	if (Flagboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Flagboundslm[4]; }
+	if (Flagboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Flagboundslm[5]; }
 
 	double A[3];
 	double B[3];
@@ -1497,6 +1570,23 @@ void vtkMTInteractorStyle::RotateActors()
 				myActor->SetChanged(1);
 			}
 		}
+		this->FlagLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
 
 		delete[] rotate[0];
 		delete[] rotate[1];
@@ -1657,7 +1747,23 @@ void vtkMTInteractorStyle::SpinActors()
 			myActor->SetChanged(1);
 		}
 	}
-
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
+		if (myActor->GetSelected() == 1)
+		{
+			this->Prop3DTransform(myPropr,
+				spin_center,
+				1,
+				rotate,
+				scale);
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+			myActor->SetChanged(1);
+		}
+	}
 
 	delete[] rotate[0];
 	delete[] rotate;
@@ -1846,7 +1952,35 @@ void vtkMTInteractorStyle::PanActors()
 			myActor->SetChanged(1);
 		}
 	}
+	this->FlagLandmarkCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 
+		if (myActor->GetSelected() == 1)
+		{
+			if (myPropr->GetUserMatrix() != NULL)
+			{
+				vtkTransform *t = vtkTransform::New();
+				t->PostMultiply();
+				t->SetMatrix(myPropr->GetUserMatrix());
+				t->Translate(motion_vector[0], motion_vector[1], motion_vector[2]);
+				myPropr->GetUserMatrix()->DeepCopy(t->GetMatrix());
+				t->Delete();
+			}
+			else
+			{
+				myPropr->AddPosition(motion_vector[0],
+					motion_vector[1],
+					motion_vector[2]);
+			}
+			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+
+			myActor->SetChanged(1);
+		}
+	}
 	
 
 	if (this->AutoAdjustCameraClippingRange)
