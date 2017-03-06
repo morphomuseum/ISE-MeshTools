@@ -33,7 +33,8 @@
 #include <vtkUnsignedCharArray.h>
 #include <vtkAbstractPropPicker.h>
 #include <vtkAssemblyPath.h>
-#include <vtkAreaPicker.h>
+//#include <vtkAreaPicker.h>
+#include <vtkRenderedAreaPicker.h>
 #include <vtkCallbackCommand.h>
 #include <vtkSmartPointer.h>
 #include <vtkPropPicker.h>
@@ -1165,14 +1166,17 @@ void vtkMTInteractorStyle::Pick()
       vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
     if ( picker != NULL )
     {
-      vtkAreaPicker *areaPicker = vtkAreaPicker::SafeDownCast(picker);
+      //vtkRenderedAreaPicker *areaPicker = vtkRenderedAreaPicker::SafeDownCast(picker);
+		vtkAreaPicker *areaPicker = vtkAreaPicker::SafeDownCast(picker);
       if (areaPicker != NULL)
       {
+		  cout << "AreaPick from interactor style" << endl;
         areaPicker->AreaPick(min[0], min[1], max[0], max[1],
                              this->CurrentRenderer);
       }
       else
       {
+		  cout << "Picker pick from interactor style" << endl;
         picker->Pick(rbcenter[0], rbcenter[1],
                      0.0, this->CurrentRenderer);
       }

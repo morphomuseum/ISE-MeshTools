@@ -59,6 +59,34 @@ public:
 	int Getmui_DefaultCameraOrtho();
 	int Getmui_CameraOrtho();
 
+	void Setmui_X1Label(QString label);
+	QString Getmui_DefaultX1Label();
+	QString Getmui_X1Label();
+
+
+	void Setmui_X2Label(QString label);
+	QString Getmui_DefaultX2Label();
+	QString Getmui_X2Label();
+
+	void Setmui_Y1Label(QString label);
+	QString Getmui_DefaultY1Label();
+	QString Getmui_Y1Label();
+
+
+	void Setmui_Y2Label(QString label);
+	QString Getmui_DefaultY2Label();
+	QString Getmui_Y2Label();
+
+	void Setmui_Z1Label(QString label);
+	QString Getmui_DefaultZ1Label();
+	QString Getmui_Z1Label();
+
+
+	void Setmui_Z2Label(QString label);
+	QString Getmui_DefaultZ2Label();
+	QString Getmui_Z2Label();
+
+
 	double* Getmui_MeshColor();
 	void Getmui_MeshColor(double c[4]);
 	double* Getmui_DefaultMeshColor();
@@ -163,8 +191,10 @@ public:
   void SetOrientationHelperVisibility();
   std::string CheckingName(std::string name_obj, int cpt_name);
   vtkMTActor* GetLastActor();
+  vtkLMActor* GetLastLandmark(int mode);
   void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
   void InitializeOrientationHelper();
+  void SetOrientationHelperLabels(std::string X1, std::string X2, std::string Y1, std::string Y2, std::string Z1, std::string Z2);
   void CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type = -1);
 protected:
 	
@@ -193,6 +223,20 @@ protected:
 	int mui_ShowOrientationHelper;
 	int mui_CameraCentreOfMassAtOrigin;
 	int mui_CameraOrtho;
+
+	QString mui_X1Label;
+	QString mui_X2Label;
+	QString mui_Y1Label;
+	QString mui_Y2Label;
+	QString mui_Z1Label;
+	QString mui_Z2Label;
+
+	QString mui_DefaultX1Label;
+	QString mui_DefaultX2Label;
+	QString mui_DefaultY1Label;
+	QString mui_DefaultY2Label;
+	QString mui_DefaultZ1Label;
+	QString mui_DefaultZ2Label;
 
 	int mui_DefaultShowGrid;
 	int mui_DefaultAnaglyph;

@@ -21,6 +21,7 @@
 
 #include <vtkSmartPointer.h>    // Required for smart pointer internal ivars.
 #include <vtkRenderedAreaPicker.h>   
+#include <vtkAreaPicker.h>   
 
 #include <vtkRenderer.h>
 #include <vtkImageData.h>
@@ -51,7 +52,8 @@ public:
   
   mqMeshToolsCore* MeshToolsCore;
   
-  vtkSmartPointer<vtkRenderedAreaPicker> AreaPicker;
+  //vtkSmartPointer<vtkRenderedAreaPicker> AreaPicker;
+ vtkSmartPointer<vtkAreaPicker> AreaPicker;
 
   
   

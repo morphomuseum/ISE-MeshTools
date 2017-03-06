@@ -24,6 +24,7 @@
 #include <sstream>
 #include <iostream>
 
+#include <vtkPoints.h>
 #include <vtkPlaneSource.h>
 #include <vtkTextProperty.h>
 #include <vtkDataObjectToTable.h>
@@ -110,21 +111,33 @@ void RubberBandSelect(vtkObject* caller,
 	void* vtkNotUsed(callData))
 {
 	std::cout << "Pick." << std::endl;
-	vtkRenderedAreaPicker* areaPicker = static_cast<vtkRenderedAreaPicker*>(caller);
+	//vtkRenderedAreaPicker* areaPicker = static_cast<vtkRenderedAreaPicker*>(caller);
 	
-	//vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
-	vtkPropCollection *pcoll = areaPicker->GetPickList();
-	pcoll->GetNumberOfItems();
-	cout << "Pcoll Number of items:" << pcoll->GetNumberOfItems() << endl;
+	vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
+	//vtkPropCollection *pcoll = areaPicker->GetPickList();
 
-	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
+	/*vtkSmartPointer<vtkPoints> myPoints = areaPicker->GetClipPoints();
+	for (vtkIdType i = 0; i < myPoints->GetNumberOfPoints(); i++)
+	{
+		double pt[3];
+		double ori[3] = { 0,0,1 };
+		myPoints->GetPoint(i, pt);
+		mqMeshToolsCore::instance()->CreateLandmark(pt, ori, 0);
+
+	}*/
+
+	//pcoll->GetNumberOfItems();
 	
+	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
+	cout << "Props Number of items:" << props->GetNumberOfItems() << endl;
+	
+		
 	//props->PrintSelf(cout, vtkIndent(2));
 	
 	std::string action = "Rubber band actor selection-unselection";
 	int something_to_store = 0;
 	if (props->GetNumberOfItems() > 0) { something_to_store = 1; }
-	cout << "Number of items:" << props->GetNumberOfItems()<<endl;
+	
 	props->InitTraversal();
 	int Count = 0;
 
@@ -220,6 +233,14 @@ MeshTools::MeshTools()
 	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", 
 		this->MeshToolsCore->Getmui_DefaultShowOrientationHelper()
 		).toInt());
+	
+	this->MeshToolsCore->Setmui_X1Label(settings.value("X1Label", this->MeshToolsCore->Getmui_DefaultX1Label()).toString());
+	this->MeshToolsCore->Setmui_X1Label(settings.value("X2Label", this->MeshToolsCore->Getmui_DefaultX2Label()).toString());
+	this->MeshToolsCore->Setmui_X1Label(settings.value("Y1Label", this->MeshToolsCore->Getmui_DefaultY1Label()).toString());
+	this->MeshToolsCore->Setmui_X1Label(settings.value("Y2Label", this->MeshToolsCore->Getmui_DefaultY2Label()).toString());
+	this->MeshToolsCore->Setmui_X1Label(settings.value("Z1Label", this->MeshToolsCore->Getmui_DefaultZ1Label()).toString());
+	this->MeshToolsCore->Setmui_X1Label(settings.value("Z2Label", this->MeshToolsCore->Getmui_DefaultZ2Label()).toString());
+
 	this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(settings.value("CameraCentreOfMassAtOrigin", 
 		this->MeshToolsCore->Getmui_DefaultCameraCentreOfMassAtOrigin()
 		).toInt());
@@ -445,8 +466,10 @@ MeshTools::MeshTools()
 
 	 pickCallback->SetCallback(RubberBandSelect);
 	 this->AreaPicker =
-		 vtkSmartPointer<vtkRenderedAreaPicker>::New();
+		 vtkSmartPointer<vtkAreaPicker>::New();
 
+		/*  this->AreaPicker =
+		 vtkSmartPointer<vtkRenderedAreaPicker>::New();*/
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
 	
 // style->SetCurrentRenderer(this->MeshToolsCore->getRenderer());
@@ -581,6 +604,19 @@ void MeshTools::saveSettings()
 	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());
 	settings.setValue("CameraCentreOfMassAtOrigin", this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	settings.setValue("CameraOrtho", this->MeshToolsCore->Getmui_CameraOrtho());
+
+	cout << "X1=" << this->MeshToolsCore->Getmui_X1Label().toStdString() << endl;
+	cout << "X2=" << this->MeshToolsCore->Getmui_X2Label().toStdString() << endl;
+	cout << "Y1=" << this->MeshToolsCore->Getmui_Y1Label().toStdString() << endl;
+	cout << "Y2=" << this->MeshToolsCore->Getmui_Y2Label().toStdString() << endl;
+	cout << "Z1=" << this->MeshToolsCore->Getmui_Z1Label().toStdString() << endl;
+	cout << "Z2=" << this->MeshToolsCore->Getmui_Z2Label().toStdString() << endl;
+	settings.setValue("X1Label", this->MeshToolsCore->Getmui_X1Label());
+	settings.setValue("X2Label", this->MeshToolsCore->Getmui_X2Label());
+	settings.setValue("Y1Label", this->MeshToolsCore->Getmui_Y1Label());
+	settings.setValue("Y2Label", this->MeshToolsCore->Getmui_Y2Label());
+	settings.setValue("Z1Label", this->MeshToolsCore->Getmui_Z1Label());
+	settings.setValue("Z2Label", this->MeshToolsCore->Getmui_Z2Label());
 	settings.endGroup();	
 
 	settings.beginGroup("color_settings");

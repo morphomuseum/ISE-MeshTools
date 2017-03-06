@@ -68,7 +68,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->mui_MeshColor[1] = this->mui_DefaultMeshColor[1] = 0.572549;
 	this->mui_MeshColor[2] = this->mui_DefaultMeshColor[2] = 0.372549;
 	this->mui_MeshColor[3] = this->mui_DefaultMeshColor[3] = 1;
-	cout << "mui_DefaultMeshColor[3] (alpha)=" << mui_DefaultMeshColor[3] << endl;
+	
 	this->mui_BackGroundColor2[0] = this->mui_DefaultBackGroundColor2[0] = 0;
 	this->mui_BackGroundColor2[1] = this->mui_DefaultBackGroundColor2[1] = 0;
 	this->mui_BackGroundColor2[2] = this->mui_DefaultBackGroundColor2[2] = 0;
@@ -78,6 +78,15 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->mui_BackGroundColor[2] = this->mui_DefaultBackGroundColor[2] = 1;
 
 	this->mui_ShowOrientationHelper = this->mui_DefaultShowOrientationHelper = 1;
+
+	this->mui_X1Label = this->mui_DefaultX1Label = "X";
+	this->mui_X2Label = this->mui_DefaultX2Label = "-X";
+
+	this->mui_Y1Label = this->mui_DefaultY1Label = "Y";
+	this->mui_Y2Label = this->mui_DefaultY2Label = "-Y";
+	this->mui_Z1Label = this->mui_DefaultZ1Label = "Z";
+	this->mui_Z2Label = this->mui_DefaultZ2Label = "-Z";
+
 	this->mui_CameraOrtho = this->mui_DefaultCameraOrtho = 1;
 	this->mui_CameraCentreOfMassAtOrigin = this->mui_DefaultCameraCentreOfMassAtOrigin = 0;
 	//this->UndoStack = vtkSmartPointer<vtkUndoStack>::New();
@@ -174,6 +183,33 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 }
 //should only be done after main window is initialized.
+
+void mqMeshToolsCore::Setmui_X1Label(QString label) { this->mui_X1Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultX1Label() { return this->mui_DefaultX1Label; }
+QString mqMeshToolsCore::Getmui_X1Label() { return this->mui_X1Label; }
+
+
+void mqMeshToolsCore::Setmui_X2Label(QString label) { this->mui_X2Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultX2Label() { return this->mui_DefaultX2Label; }
+QString mqMeshToolsCore::Getmui_X2Label() { return this->mui_X2Label; }
+
+void mqMeshToolsCore::Setmui_Y1Label(QString label) { this->mui_Y1Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultY1Label() { return this->mui_DefaultY1Label; }
+QString mqMeshToolsCore::Getmui_Y1Label() { return this->mui_Y1Label; }
+
+
+void mqMeshToolsCore::Setmui_Y2Label(QString label) { this->mui_Y2Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultY2Label() { return this->mui_DefaultY2Label; }
+QString mqMeshToolsCore::Getmui_Y2Label() { return this->mui_Y2Label; }
+
+void mqMeshToolsCore::Setmui_Z1Label(QString label) { this->mui_Z1Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultZ1Label() { return this->mui_DefaultZ1Label; }
+QString mqMeshToolsCore::Getmui_Z1Label() { return this->mui_Z1Label; }
+
+
+void mqMeshToolsCore::Setmui_Z2Label(QString label) { this->mui_Z2Label = label; }
+QString mqMeshToolsCore::Getmui_DefaultZ2Label() { return this->mui_DefaultZ2Label; }
+QString mqMeshToolsCore::Getmui_Z2Label() { return this->mui_Z2Label; }
 
 void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
@@ -297,11 +333,16 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	{
 		cout << "Set LM TYPE TO FLAG!" << endl;
 		myLM->SetLMType(FLAG_LMK);
-
+		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_FlagRenderingSize() / 3);
+		std::string flag = "Flag ";
+		std::string flag_num = flag + std::to_string(num);
+		myLM->SetLMText(flag_num);
 	}
 	
 	myLM->SetLMNumber(num);
+	
 	myLM->SetLMBodyType(mqMeshToolsCore::instance()->Getmui_LandmarkBodyType());
+	
 	myLM->SetSelected(0);
 
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -369,7 +410,16 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	
 	
 }
-
+void mqMeshToolsCore::SetOrientationHelperLabels(std::string X1, std::string X2, std::string Y1, std::string Y2, std::string Z1, std::string Z2 )
+{
+	vtkSmartPointer<vtkOrientationHelperActor> axes = vtkOrientationHelperActor::SafeDownCast(this->OrientationHelperWidget->GetOrientationMarker());
+	axes->SetXAxisLabelText(X1.c_str());
+	axes->SetX2AxisLabelText(X2.c_str());
+	axes->SetYAxisLabelText(Y1.c_str());
+	axes->SetY2AxisLabelText(Y2.c_str());
+	axes->SetZAxisLabelText(Z1.c_str());
+	axes->SetZ2AxisLabelText(Z2.c_str());
+}
 void mqMeshToolsCore::InitializeOrientationHelper()
 {
 	vtkSmartPointer<vtkOrientationHelperActor> axes =
@@ -389,6 +439,7 @@ void mqMeshToolsCore::InitializeOrientationHelper()
 	this->OrientationHelperWidget->SetEnabled(1);
 	this->OrientationHelperWidget->InteractiveOff();
 	this->OrientationHelperWidget->PickingManagedOn();
+	
 
 
 }
@@ -658,6 +709,26 @@ vtkMTActor* mqMeshToolsCore::GetLastActor()
 {
 	return vtkMTActor::SafeDownCast(this->getActorCollection()->GetLastActor());
 }
+
+vtkLMActor* mqMeshToolsCore::GetLastLandmark(int mode)
+{
+	if (mode == 0) {return vtkLMActor::SafeDownCast(this->getNormalLandmarkCollection()->GetLastActor());
+	}
+	else if (mode == 1) {
+		return vtkLMActor::SafeDownCast(this->getTargetLandmarkCollection()->GetLastActor());
+	}
+	else if (mode == 2) {
+		return vtkLMActor::SafeDownCast(this->getNodeLandmarkCollection()->GetLastActor());
+	}
+	else if (mode == 3) {
+		return vtkLMActor::SafeDownCast(this->getHandleLandmarkCollection()->GetLastActor());
+	}
+	else if (mode == 4) {
+		return vtkLMActor::SafeDownCast(this->getFlagLandmarkCollection()->GetLastActor());
+	}
+	
+}
+
 void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 {
 	// mode : 0 for last inserted mesh
@@ -970,7 +1041,7 @@ void mqMeshToolsCore::Setmui_FlagRenderingSize(double size) {
 double mqMeshToolsCore::Getmui_DefaultFlagRenderingSize() { return this->mui_DefaultFlagRenderingSize; }
 
 double mqMeshToolsCore::Getmui_FlagRenderingSize() { return this->mui_FlagRenderingSize; 
-cout << "Default f r z" << this->mui_FlagRenderingSize<<endl;
+//cout << "Default f r z" << this->mui_FlagRenderingSize<<endl;
 }
 
 
@@ -1251,19 +1322,19 @@ void mqMeshToolsCore::Undo()
 	// a Set is only a label (action) and an id
 	//vtkUndoSet *MyUndoSet = this->UndoStack->GetNextUndoSet();
 	//this->ActorCollection->Undo(MySet);
-	cout << "Root Undo!" << endl;
+	//cout << "Root Undo!" << endl;
 	this->UndoStack->undo(); // removes the next undo set.. 
 
 }
 void mqMeshToolsCore::Undo(int Count)
 {
-	cout << "Undo(" <<Count<<")"<< endl;
+	//cout << "Undo(" <<Count<<")"<< endl;
 	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		cout << "MyActor undo!" << endl;
+	//	cout << "MyActor undo!" << endl;
 		myActor->Undo(Count);		
 	}
 	this->ActorCollection->Undo(Count);
@@ -1273,7 +1344,7 @@ void mqMeshToolsCore::Undo(int Count)
 	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
@@ -1283,7 +1354,7 @@ void mqMeshToolsCore::Undo(int Count)
 	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
@@ -1293,7 +1364,7 @@ void mqMeshToolsCore::Undo(int Count)
 	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
@@ -1303,7 +1374,7 @@ void mqMeshToolsCore::Undo(int Count)
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
@@ -1313,7 +1384,7 @@ void mqMeshToolsCore::Undo(int Count)
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
 	// To update to take into account reorder!
@@ -1321,19 +1392,19 @@ void mqMeshToolsCore::Undo(int Count)
 }
 void mqMeshToolsCore::Redo()
 {
-	cout << "Root Redo!" << endl;
+	//cout << "Root Redo!" << endl;
 	this->UndoStack->redo(); // removes the next undo set.. 
 }
 
 void mqMeshToolsCore::Redo(int Count)
 {
-	cout << "Redo(" << Count << ")" << endl;
+	//cout << "Redo(" << Count << ")" << endl;
 	//Calls for the Undo method in vtkActorCollection for this particular Count etc.. 
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		cout << "MyActor Redo!" << endl;
+		//cout << "MyActor Redo!" << endl;
 		myActor->Redo(Count);
 	}
 	this->ActorCollection->Redo(Count);
@@ -1343,7 +1414,7 @@ void mqMeshToolsCore::Redo(int Count)
 	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor redo from core!" << endl;
+		//cout << "Call MyLMActor redo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
@@ -1353,7 +1424,7 @@ void mqMeshToolsCore::Redo(int Count)
 	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
@@ -1363,7 +1434,7 @@ void mqMeshToolsCore::Redo(int Count)
 	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
@@ -1373,7 +1444,7 @@ void mqMeshToolsCore::Redo(int Count)
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
@@ -1383,7 +1454,7 @@ void mqMeshToolsCore::Redo(int Count)
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Redo(Count);
 	}
 	// To update to take into account reorder!
@@ -1408,7 +1479,7 @@ void mqMeshToolsCore::Erase(int Count)
 	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor redo from core!" << endl;
+		//cout << "Call MyLMActor redo from core!" << endl;
 		myActor->Erase(Count);
 	}
 	// To update to take into account reorder!
@@ -1418,7 +1489,7 @@ void mqMeshToolsCore::Erase(int Count)
 	for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Erase(Count);
 	}
 	// To update to take into account reorder!
@@ -1428,7 +1499,7 @@ void mqMeshToolsCore::Erase(int Count)
 	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Erase(Count);
 	}
 	// To update to take into account reorder!
@@ -1438,7 +1509,7 @@ void mqMeshToolsCore::Erase(int Count)
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Erase(Count);
 	}
 	// To update to take into account reorder!
@@ -1448,7 +1519,7 @@ void mqMeshToolsCore::Erase(int Count)
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
-		cout << "Call MyLMActor undo from core!" << endl;
+		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Erase(Count);
 	}
 	// To update to take into account reorder!

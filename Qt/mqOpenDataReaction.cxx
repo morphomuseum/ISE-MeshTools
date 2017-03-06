@@ -614,7 +614,119 @@ void mqOpenDataReaction::OpenNTW()
 	this->OpenNTW(NTWfile);
 }
 
-void mqOpenDataReaction::OpenFLG(QString fileName) {}
+void mqOpenDataReaction::OpenFLG(QString fileName)
+{
+	cout << "OpenFLG " << fileName.toStdString() << endl;
+	double  x, y, z, nx, ny, nz, flength, r,g,b;
+
+	QString FLGName;
+
+	//Open a landmark file!
+
+
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string FLGext(".flg");
+			std::string FLGext2(".FLG");
+			
+
+			int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File or simple .MAT file
+
+			std::size_t found = fileName.toStdString().find(FLGext);
+			std::size_t found2 = fileName.toStdString().find(FLGext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//FLG
+			}
+
+
+
+			if (type == 1)
+			{
+
+				
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+					int cpt = 1;
+					while (!in.atEnd())
+					{
+						QString line = in.readLine();
+						QTextStream myteststream(&line);
+						if (cpt % 2 == 0)
+						{
+							
+							myteststream >> x >> y >> z >> nx >> ny >> nz>>flength>>r>>g>>b;
+							double coord[3] = { x,y,z };
+							double ncoord[3] = { nx,ny,nz };
+							double ori[3];
+
+							double length = nx*nx + ny*ny + nz*nz;
+							if (length == 1)
+							{
+								ori[0] = ncoord[0];
+								ori[1] = ncoord[1];
+								ori[2] = ncoord[2];
+							}
+							else
+							{
+								vtkMath::Subtract(ncoord, coord, ori);
+								vtkMath::Normalize(ori);
+							}
+							mqMeshToolsCore::instance()->CreateLandmark(coord, ori, 4);
+							vtkLMActor *myLastFlag = mqMeshToolsCore::instance()->GetLastLandmark(4);
+							myLastFlag->SetmColor(r, g, b, 1);
+							myLastFlag->SetLMText(FLGName.toStdString());
+							myLastFlag->SetLMSize(flength);
+							myLastFlag->SetChanged(1);
+						}
+						else
+						{
+							FLGName= line;
+						}
+						cpt++;
+
+					}
+					/**/
+
+					inputFile.close();
+
+
+				}
+			}//fin if																		
+
+		}//file exists...
+	}
+
+}
 void mqOpenDataReaction::OpenCUR(QString fileName)
 
 {
@@ -875,7 +987,99 @@ void mqOpenDataReaction::OpenCUR(QString fileName)
 	*/
 }
 void mqOpenDataReaction::OpenTAG(QString fileName) {}
-void mqOpenDataReaction::OpenORI(QString fileName) {}
+void mqOpenDataReaction::OpenORI(QString fileName) 
+{
+
+	QString X1,X2,Y1,Y2,Z1,Z2;
+
+	
+	
+
+	
+	size_t  length;
+
+
+	length = fileName.toStdString().length();
+
+	int done = 0;
+	if (length>0)
+	{
+		int file_exists = 1;
+		ifstream file(fileName.toStdString().c_str());
+		if (file)
+		{
+			//std::cout<<"file:"<<filename.c_str()<<" exists."<<std::endl;
+			file.close();
+		}
+		else
+		{
+
+			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			file_exists = 0;
+		}
+
+		if (file_exists == 1)
+		{
+
+			std::string ORIext(".ori");
+			std::string ORIext2(".ORI");
+			
+
+			int type = 0; // 0 = .POS Ascii File //1 = .MAT binary File or simple .MAT file
+
+			std::size_t found = fileName.toStdString().find(ORIext);
+			std::size_t found2 = fileName.toStdString().find(ORIext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 1;
+				//ORI
+			}
+
+			int cpt = 0;
+
+
+			if (type == 1)
+			{
+				
+				//filein = fopen(fileName.toStdString().c_str(), "rt");
+				QFile inputFile(fileName);
+				int ok = 0;
+
+				if (inputFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream in(&inputFile);
+					
+					while (!in.atEnd())
+					{
+
+						QString line = in.readLine();
+						if (cpt == 0) { Z1 = line; }
+						if (cpt == 1) { Z2 = line; }
+						if (cpt == 2) { Y1 = line; }
+						if (cpt == 3) { Y2 = line; }
+						if (cpt == 4) { X1 = line; }
+						if (cpt == 5) { X2 = line; }
+						cpt++;						
+						
+					}
+
+
+					inputFile.close();
+					mqMeshToolsCore::instance()->Setmui_X1Label(X1);
+					mqMeshToolsCore::instance()->Setmui_X2Label(X2);
+					mqMeshToolsCore::instance()->Setmui_Y1Label(Y1);
+					mqMeshToolsCore::instance()->Setmui_Y2Label(Y2);
+					mqMeshToolsCore::instance()->Setmui_Z1Label(Z1);
+					mqMeshToolsCore::instance()->Setmui_Z2Label(Z2);
+					mqMeshToolsCore::instance()->SetOrientationHelperLabels(X1.toStdString(), X2.toStdString(), Y1.toStdString(), Y2.toStdString(), Z1.toStdString(), Z2.toStdString());
+					
+
+				}
+			}//fin if																		
+
+		}//file exists...
+	}	//length*/
+}
 
 //-----------------------------------------------------------------------------
 void mqOpenDataReaction::OpenNTW(QString fileName)
@@ -957,8 +1161,9 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline.append(flgfilename.c_str());
 					}
 					std::cout << "Try to load flag file :<<" << myline.c_str() << std::endl;
-					//@@TODO
-					//this->Open_FLG_File(myline);
+					
+					QString flgfile(myline.c_str());
+					this->OpenFLG(flgfile);
 
 				}
 
@@ -978,7 +1183,7 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 						myline.append(verfilename.c_str());
 					}
 					std::cout << "Try to load landmark file :<<" << myline.c_str() << std::endl;
-					//TODO!
+					
 					QString verfile(myline.c_str());
 					this->OpenVER(verfile, landmark_mode);
 					
@@ -1041,7 +1246,7 @@ void mqOpenDataReaction::OpenNTW(QString fileName)
 					}
 					std::cout << "Try to load orientaiton file :<<" << myline.c_str() << std::endl;
 					QString orifile(myline.c_str());
-					this->OpenSTV(orifile);					
+					this->OpenORI(orifile);					
 
 				}
 

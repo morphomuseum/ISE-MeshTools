@@ -97,7 +97,7 @@ void vtkLMActor::SetLMOriginAndOrientation(double origin[3], double orientation[
 
 
 		this->Modified();
-		cout << "Update proprs" << endl;
+		//cout << "Update proprs" << endl;
 		this->UpdateProps();
 	}
 }
@@ -217,10 +217,7 @@ void vtkLMActor::CreateLMLabelText()
 {
 	//instantiates the label
 
-	// LMType : 
-	// 0 : -x x -y y
-	// 1 :  -x x -z z
-	// 2 : -y y -z z
+
 	// Position of the label can be computed using this matrix!
 
 	double init_pos[3] = { 0,0,0 };
@@ -228,6 +225,11 @@ void vtkLMActor::CreateLMLabelText()
 	if (this->LMType == 1 || this->LMType == 3)
 	{
 		mult = 1.2;
+	}
+	else if (this->LMType == 4)
+	{
+		// FLAG => Lenght = real length, some correction should be applied.
+		mult = 0.33;
 	}
 	if (this->LMBodyType == 0)
 	{
@@ -361,6 +363,10 @@ void vtkLMActor::CreateLMBody()
 		{
 			probeSource->SetArrowLength(3*1.2*this->LMSize);
 		}
+		else if (this->LMType == 4 )
+		{
+			probeSource->SetArrowLength(1 * 1.2*this->LMSize);
+		}
 		probeSource->Update();
 		this->LMBody = probeSource->GetOutput();
 	}
@@ -372,7 +378,7 @@ void vtkLMActor::CreateLMBody()
 
 void vtkLMActor::ResetLMColor()
 {
-	cout << "ResetLMColor" << this->LMType << endl;
+	//cout << "ResetLMColor" << this->LMType << endl;
 	// Create six colors - one for each line
 	double red[4] = { 1, 0.4, 0.4, 1 };// LMType=0 VERT
 
@@ -507,7 +513,7 @@ void vtkLMActor::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat)
 void vtkLMActor::Undo(int mCount)
 {
 
-	cout << "Inside LM actor Undo" << endl;
+	//cout << "Inside LM actor Undo" << endl;
 	if (this->UndoRedo->UndoStack.empty())
 	{
 		return;
@@ -516,7 +522,7 @@ void vtkLMActor::Undo(int mCount)
 	{
 		//cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
 		// ici : faire l'appel global à undo de ce count là!!  
-		cout << "Call Pop Undo Stack from LMActor" << endl;
+		//cout << "Call Pop Undo Stack from LMActor" << endl;
 		this->PopUndoStack();
 	}
 	
@@ -529,7 +535,7 @@ void vtkLMActor::Redo(int mCount)
 	//cout << "Inside actor Undo, try to undo " <<mCount<< endl;
 	if (this->UndoRedo->RedoStack.empty())
 	{
-		cout << "Redo Stack empty!" << endl;
+		//cout << "Redo Stack empty!" << endl;
 		return;
 	}
 	//cout << "Youngest redo count= " << this->UndoRedo->RedoStack.back().UndoCount<< endl;
@@ -557,7 +563,7 @@ void vtkLMActor::Erase(int mCount)
 
 void vtkLMActor::PopUndoStack()
 {
-	cout << "Current LM PopUndoStack: " << endl;
+	//cout << "Current LM PopUndoStack: " << endl;
 	if (this->UndoRedo->UndoStack.empty())
 	{
 		return;
@@ -571,8 +577,8 @@ void vtkLMActor::PopUndoStack()
 	// Now put undo Matrix inside object : 
 	Mat->DeepCopy(this->UndoRedo->UndoStack.back().Matrix);
 	
-	std::cout << "Matrix about to be saved: " << endl << *SavedMat << std::endl;
-	std::cout << "Matrix retrieved in stack, about to be set: " << endl << *Mat << std::endl;
+	//std::cout << "Matrix about to be saved: " << endl << *SavedMat << std::endl;
+	//std::cout << "Matrix retrieved in stack, about to be set: " << endl << *Mat << std::endl;
 	/*
 	vtkProp3D *prop3D = vtkProp3D::SafeDownCast(this);
 	vtkTransform *newTransform = vtkTransform::New();
@@ -586,7 +592,7 @@ void vtkLMActor::PopUndoStack()
 	this->SetUserMatrix(Mat);
 	this->GetMatrix(Mat);
 	
-	std::cout << "Matrix after setting : " << endl << *Mat << std::endl;
+	//std::cout << "Matrix after setting : " << endl << *Mat << std::endl;
 
 	
 	
@@ -604,7 +610,7 @@ void vtkLMActor::PopUndoStack()
 	this->mColor[2] = this->UndoRedo->UndoStack.back().Color[2];
 	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
-	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
+//	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
 	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected,myCurrentType, myCurrentNodeType, this->UndoRedo->UndoStack.back().UndoCount));
 	this->UndoRedo->UndoStack.pop_back();
 	this->CreateLMLabelText();
@@ -648,7 +654,7 @@ void vtkLMActor::PopRedoStack()
 	this->mColor[2] = this->UndoRedo->RedoStack.back().Color[2];
 	this->mColor[3] = this->UndoRedo->RedoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
-	cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
+	//cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
 	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, myCurrentType, myCurrentNodeType, this->UndoRedo->RedoStack.back().UndoCount));
 	this->UndoRedo->RedoStack.pop_back();
 	this->CreateLMLabelText();
@@ -679,7 +685,7 @@ void vtkLMActor::SaveState(int mCount)
 	int mNodeType = this->LMNodeType;
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
-	cout << "Saved current LM state: " << endl;
+	//cout << "Saved current LM state: " << endl;
 	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myColor, mSelected, mType, mNodeType, mCount));
 
 }
