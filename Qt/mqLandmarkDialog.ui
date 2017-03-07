@@ -928,7 +928,7 @@
      <rect>
       <x>20</x>
       <y>120</y>
-      <width>251</width>
+      <width>241</width>
       <height>17</height>
      </rect>
     </property>
@@ -940,19 +940,19 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>190</y>
-      <width>151</width>
-      <height>16</height>
+      <y>180</y>
+      <width>181</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Landmark rendering size (mm)</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Landmark rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(sphere diameter / arrow head length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="LandmarkRenderingSizeValue">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>220</x>
       <y>190</y>
       <width>62</width>
       <height>22</height>
@@ -962,7 +962,7 @@
    <widget class="QDoubleSpinBox" name="AdjustScaleFactor">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>220</x>
       <y>148</y>
       <width>62</width>
       <height>22</height>
@@ -1429,11 +1429,11 @@
       <x>20</x>
       <y>60</y>
       <width>151</width>
-      <height>16</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Flag rendering size (mm)</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Flag rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(total arrow length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="FlagRenderingSizeValue">

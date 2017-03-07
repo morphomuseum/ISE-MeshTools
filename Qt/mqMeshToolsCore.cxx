@@ -79,13 +79,13 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->mui_ShowOrientationHelper = this->mui_DefaultShowOrientationHelper = 1;
 
-	this->mui_X1Label = this->mui_DefaultX1Label = "X";
-	this->mui_X2Label = this->mui_DefaultX2Label = "-X";
+	this->mui_X1Label = this->mui_DefaultX1Label = "Anterior";
+	this->mui_X2Label = this->mui_DefaultX2Label = "Posterior";
 
-	this->mui_Y1Label = this->mui_DefaultY1Label = "Y";
-	this->mui_Y2Label = this->mui_DefaultY2Label = "-Y";
-	this->mui_Z1Label = this->mui_DefaultZ1Label = "Z";
-	this->mui_Z2Label = this->mui_DefaultZ2Label = "-Z";
+	this->mui_Y1Label = this->mui_DefaultY1Label = "Left";
+	this->mui_Y2Label = this->mui_DefaultY2Label = "Right";
+	this->mui_Z1Label = this->mui_DefaultZ1Label = "Dorsal";
+	this->mui_Z2Label = this->mui_DefaultZ2Label = "Ventral";
 
 	this->mui_CameraOrtho = this->mui_DefaultCameraOrtho = 1;
 	this->mui_CameraCentreOfMassAtOrigin = this->mui_DefaultCameraCentreOfMassAtOrigin = 0;
@@ -184,21 +184,30 @@ mqMeshToolsCore::mqMeshToolsCore()
 }
 //should only be done after main window is initialized.
 
-void mqMeshToolsCore::Setmui_X1Label(QString label) { this->mui_X1Label = label; }
+void mqMeshToolsCore::Setmui_X1Label(QString label) { this->mui_X1Label = label;
+//cout << "this->mui_X1Label " << this->mui_X1Label.toStdString() << endl;
+}
 QString mqMeshToolsCore::Getmui_DefaultX1Label() { return this->mui_DefaultX1Label; }
 QString mqMeshToolsCore::Getmui_X1Label() { return this->mui_X1Label; }
 
 
-void mqMeshToolsCore::Setmui_X2Label(QString label) { this->mui_X2Label = label; }
+void mqMeshToolsCore::Setmui_X2Label(QString label) { this->mui_X2Label = label; 
+//cout << "this->mui_X2Label " << this->mui_X2Label.toStdString() << endl;
+}
 QString mqMeshToolsCore::Getmui_DefaultX2Label() { return this->mui_DefaultX2Label; }
 QString mqMeshToolsCore::Getmui_X2Label() { return this->mui_X2Label; }
 
-void mqMeshToolsCore::Setmui_Y1Label(QString label) { this->mui_Y1Label = label; }
+void mqMeshToolsCore::Setmui_Y1Label(QString label) { this->mui_Y1Label = label; 
+//cout << "this->mui_Y1Label " << this->mui_Y1Label.toStdString() << endl;
+}
 QString mqMeshToolsCore::Getmui_DefaultY1Label() { return this->mui_DefaultY1Label; }
 QString mqMeshToolsCore::Getmui_Y1Label() { return this->mui_Y1Label; }
 
 
-void mqMeshToolsCore::Setmui_Y2Label(QString label) { this->mui_Y2Label = label; }
+void mqMeshToolsCore::Setmui_Y2Label(QString label) { this->mui_Y2Label = label; 
+
+//cout << "this->mui_Y2Label " << this->mui_Y2Label.toStdString() << endl;
+}
 QString mqMeshToolsCore::Getmui_DefaultY2Label() { return this->mui_DefaultY2Label; }
 QString mqMeshToolsCore::Getmui_Y2Label() { return this->mui_Y2Label; }
 
@@ -229,6 +238,8 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 
 	VTK_CREATE(vtkLMActor, myLM);
 	int num = 0;
+	myLM->SetLMType(lmk_type);
+
 	if (lmk_type == NORMAL_LMK)
 	{
 		num = this->NormalLandmarkCollection->GetNextLandmarkNumber();
@@ -253,13 +264,20 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	myLM->SetLMOriginAndOrientation(coord, ori);
 	//myLM->SetLMOrigin(pos[0], pos[1], pos[2]);
 	//myLM->SetLMOrientation(norm[0], norm[1], norm[2]);
-	if (mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize() == 1)
+	if (lmk_type != FLAG_LMK)
 	{
-		myLM->SetLMSize(mqMeshToolsCore::instance()->AdjustedLandmarkSize());
+		if (mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			myLM->SetLMSize(mqMeshToolsCore::instance()->AdjustedLandmarkSize());
+		}
+		else
+		{
+			myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
+		}
 	}
 	else
 	{
-		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_LandmarkRenderingSize());
+		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_FlagRenderingSize());
 	}
 	/*
 		double green[4] = { 0.5, 1, 0, 1 }; // LMType=0
@@ -333,7 +351,6 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	{
 		cout << "Set LM TYPE TO FLAG!" << endl;
 		myLM->SetLMType(FLAG_LMK);
-		myLM->SetLMSize(mqMeshToolsCore::instance()->Getmui_FlagRenderingSize() / 3);
 		std::string flag = "Flag ";
 		std::string flag_num = flag + std::to_string(num);
 		myLM->SetLMText(flag_num);
@@ -410,6 +427,11 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	
 	
 }
+void mqMeshToolsCore::ResetOrientationHelperLabels()
+{
+	this->SetOrientationHelperLabels(this->mui_X1Label.toStdString(), this->mui_X2Label.toStdString(), this->mui_Y1Label.toStdString(), this->mui_Y2Label.toStdString(), this->mui_Z1Label.toStdString(), this->mui_Z2Label.toStdString());
+
+}
 void mqMeshToolsCore::SetOrientationHelperLabels(std::string X1, std::string X2, std::string Y1, std::string Y2, std::string Z1, std::string Z2 )
 {
 	vtkSmartPointer<vtkOrientationHelperActor> axes = vtkOrientationHelperActor::SafeDownCast(this->OrientationHelperWidget->GetOrientationMarker());
@@ -439,7 +461,7 @@ void mqMeshToolsCore::InitializeOrientationHelper()
 	this->OrientationHelperWidget->SetEnabled(1);
 	this->OrientationHelperWidget->InteractiveOff();
 	this->OrientationHelperWidget->PickingManagedOn();
-	
+	this->ResetOrientationHelperLabels();
 
 
 }
@@ -1262,15 +1284,28 @@ double mqMeshToolsCore::AdjustedLandmarkSize()
 void mqMeshToolsCore::UpdateLandmarkSettings(vtkLMActor *myActor)
 {
 	myActor->SetLMBodyType(this->Getmui_LandmarkBodyType());
-	if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+	if (myActor->GetLMType() != FLAG_LMK)
 	{
-		//myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
-		myActor->SetLMSize(this->AdjustedLandmarkSize());
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			//myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+			myActor->SetLMSize(this->AdjustedLandmarkSize());
+		}
+		else
+		{
+			myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+			//Change landmark size for all landmarks but flags.
+
+		}
 	}
 	else
 	{
-		myActor->SetLMSize(this->Getmui_LandmarkRenderingSize());
+		//Do not change size!!!
+		myActor->SetLMSize(myActor->GetLMSize());
 	}
+
+
 	vtkSmartPointer<vtkPolyDataMapper> mapper =
 		vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputData(myActor->getLMBody());

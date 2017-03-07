@@ -44,6 +44,16 @@
 vtkStandardNewMacro(vtkMTInteractorStyle);
 
 
+#define NORMAL_LMK 0
+#define TARGET_LMK 1
+#define NODE_LMK 2
+#define HANDLE_LMK 3
+#define FLAG_LMK 4
+
+#define SPHERE 0
+#define ARROW 1
+
+
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
 #define CTRL_RELEASED 0
@@ -2000,17 +2010,24 @@ void vtkMTInteractorStyle::ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActo
 	vtkCaptionActor2D *LMLabel = LMActor->GetLMLabelActor2D();
 	double init_pos = 1;
 	double mult = 1;
-	if (LMActor->GetLMType() == 2 || LMActor->GetLMType() == 5)
+	if (LMActor->GetLMType() == TARGET_LMK || LMActor->GetLMType() == HANDLE_LMK)
 	{
 		mult = 1.1;
 	}
-	if (LMActor->GetLMBodyType() == 0)
+	if (LMActor->GetLMBodyType() == SPHERE)
 	{
 		init_pos = 0.5*1.1*mult*LMActor->GetLMSize();
 	}
 	else
 	{
-		init_pos = 3 * 1.1*mult*LMActor->GetLMSize();
+		if (LMActor->GetLMType() == FLAG_LMK)
+		{
+			init_pos = 1.1*mult*LMActor->GetLMSize();
+		}
+		else
+		{
+			init_pos = 3 * 1.1*mult*LMActor->GetLMSize();
+		}
 	}
 
 	double ap[3] = { init_pos,

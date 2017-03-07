@@ -29,6 +29,9 @@ vtkStandardNewMacro(vtkLMActor);
 #define MILESTONE_NODE 2
 #define CONNECT_NODE 3
 
+#define SPHERE 0
+#define ARROW 1
+
 
 
 //----------------------------------------------------------------------------
@@ -37,7 +40,7 @@ vtkLMActor::vtkLMActor()
 	this->UndoRedo = new vtkLMActorUndoRedo;
 	this->Selected = 0;
 	this->Changed = 0;
-	this->LMBodyType = 0;
+	this->LMBodyType = SPHERE;
 	this->LMText = "Flag 0";
 	this->LMBody = vtkSmartPointer<vtkPolyData>::New();
 	this->LMLabel = vtkCaptionActor2D::New();
@@ -45,8 +48,6 @@ vtkLMActor::vtkLMActor()
 	this->LMDrawLabel = 1;//Draws the label
 	this->LMType = NORMAL_LMK;
 	this->LMNodeType = -1; //NOT a curve node ...
-	this->ResetLMColor(); //Set color according to LMType if LMType !=2, otherwise according to LMNodeType
-	this->LMBodyType = 0; //sphere by default
 	this->LMSize = 0.1; // 0.1mm by default 
 	this->LMNumber = 1; //1
 	this->LMOrigin[0] = 0;
@@ -58,7 +59,7 @@ vtkLMActor::vtkLMActor()
 	this->LMOrientation[2] = 0;
 
 	this->LMLabelText = NULL;
-	
+	this->ResetLMColor(); //Set color according to LMType if LMType !=2, otherwise according to LMNodeType	
 	this->UpdateProps();
 	
 }
@@ -178,9 +179,16 @@ void vtkLMActor::SetLMOrientation(double orientation[3])
 }
 void vtkLMActor::SetLMSize(double size)
 {
-
-	this->LMSize = size;
+	//if (this->LMType != FLAG_LMK)
+	//{
+		this->LMSize = size;
+	//}
+	//else
+	//{
+	//	this->LMSize = size*0.33;
+	//}
 	this->Modified();
+	this->UpdateProps();
 	this->UpdateProps();
 }
 void vtkLMActor::GetLMOrientation(double orientation[3])
@@ -222,22 +230,26 @@ void vtkLMActor::CreateLMLabelText()
 
 	double init_pos[3] = { 0,0,0 };
 	double mult = 1;
-	if (this->LMType == 1 || this->LMType == 3)
+	if (this->LMType == TARGET_LMK || this->LMType == HANDLE_LMK)
 	{
 		mult = 1.2;
 	}
-	else if (this->LMType == 4)
-	{
-		// FLAG => Lenght = real length, some correction should be applied.
-		mult = 0.33;
-	}
-	if (this->LMBodyType == 0)
+	
+
+	if (this->LMBodyType == SPHERE)
 	{
 		init_pos[0] += 0.5*1.1*mult*this->LMSize;
 	}
-	else
+	else //ARROW
 	{
-		init_pos[0] += 3*1.1*mult*this->LMSize;
+		if (this->LMType != FLAG_LMK)
+		{
+			init_pos[0] += 3 * 1.1*mult*this->LMSize;
+		}
+		else
+		{	
+			init_pos[0] += 1.1*mult*this->LMSize;
+		}
 	}
 
 	
@@ -338,14 +350,14 @@ void vtkLMActor::CreateLMBody()
 	this->GetPosition(pos);
 	
 	
-	if (this->LMBodyType == 0)
+	if (this->LMBodyType == SPHERE)
 	{
 		vtkSmartPointer<vtkSphereSource> sphereSource =
 			vtkSmartPointer<vtkSphereSource>::New();
 
 		sphereSource->SetCenter(0, 0, 0);
 		sphereSource->SetRadius(0.5*this->LMSize);
-		if (this->LMType == 1 || this->LMType == 3)
+		if (this->LMType == TARGET_LMK || this->LMType == HANDLE_LMK)
 		{
 			sphereSource->SetRadius(0.5*1.2*this->LMSize);
 		}
@@ -359,17 +371,23 @@ void vtkLMActor::CreateLMBody()
 
 		probeSource->SetInvert(true);		
 		probeSource->SetArrowLength(3*this->LMSize);
-		if (this->LMType == 1 || this->LMType == 3)
+		if (this->LMType == TARGET_LMK || this->LMType == HANDLE_LMK)
 		{
 			probeSource->SetArrowLength(3*1.2*this->LMSize);
 		}
-		else if (this->LMType == 4 )
+		else if (this->LMType == FLAG_LMK)
 		{
-			probeSource->SetArrowLength(1 * 1.2*this->LMSize);
+
+			//cout << "Probe source arrow length: " << this->LMSize <<this->LMLabelText<<endl;
+			probeSource->SetArrowLength(this->LMSize);
+			
 		}
+		probeSource->Modified();
 		probeSource->Update();
+		
 		this->LMBody = probeSource->GetOutput();
 	}
+	this->Modified();
 
 
 }
@@ -425,7 +443,7 @@ void vtkLMActor::SetLMType(int type)
 	this->LMType = type;
 	if (type == FLAG_LMK)
 	{	
-		this->LMBodyType = 1; // only arrows for flags!
+		this->LMBodyType = ARROW; // only arrows for flags!
 	}
 
 	this->ResetLMColor();	

@@ -52,7 +52,7 @@ public:
   
   mqMeshToolsCore* MeshToolsCore;
   
-  //vtkSmartPointer<vtkRenderedAreaPicker> AreaPicker;
+ // vtkSmartPointer<vtkRenderedAreaPicker> AreaPicker;
  vtkSmartPointer<vtkAreaPicker> AreaPicker;
 
   

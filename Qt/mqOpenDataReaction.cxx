@@ -703,8 +703,10 @@ void mqOpenDataReaction::OpenFLG(QString fileName)
 							}
 							mqMeshToolsCore::instance()->CreateLandmark(coord, ori, 4);
 							vtkLMActor *myLastFlag = mqMeshToolsCore::instance()->GetLastLandmark(4);
+							myLastFlag->SetLMType(4);
 							myLastFlag->SetmColor(r, g, b, 1);
 							myLastFlag->SetLMText(FLGName.toStdString());
+							cout << "Set LM Size:" << flength << endl;
 							myLastFlag->SetLMSize(flength);
 							myLastFlag->SetChanged(1);
 						}
@@ -718,7 +720,7 @@ void mqOpenDataReaction::OpenFLG(QString fileName)
 					/**/
 
 					inputFile.close();
-
+					mqMeshToolsCore::instance()->UpdateLandmarkSettings();
 
 				}
 			}//fin if																		
@@ -1071,7 +1073,7 @@ void mqOpenDataReaction::OpenORI(QString fileName)
 					mqMeshToolsCore::instance()->Setmui_Y2Label(Y2);
 					mqMeshToolsCore::instance()->Setmui_Z1Label(Z1);
 					mqMeshToolsCore::instance()->Setmui_Z2Label(Z2);
-					mqMeshToolsCore::instance()->SetOrientationHelperLabels(X1.toStdString(), X2.toStdString(), Y1.toStdString(), Y2.toStdString(), Z1.toStdString(), Z2.toStdString());
+					mqMeshToolsCore::instance()->ResetOrientationHelperLabels();
 					
 
 				}

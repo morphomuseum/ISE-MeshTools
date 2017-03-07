@@ -235,11 +235,11 @@ MeshTools::MeshTools()
 		).toInt());
 	
 	this->MeshToolsCore->Setmui_X1Label(settings.value("X1Label", this->MeshToolsCore->Getmui_DefaultX1Label()).toString());
-	this->MeshToolsCore->Setmui_X1Label(settings.value("X2Label", this->MeshToolsCore->Getmui_DefaultX2Label()).toString());
-	this->MeshToolsCore->Setmui_X1Label(settings.value("Y1Label", this->MeshToolsCore->Getmui_DefaultY1Label()).toString());
-	this->MeshToolsCore->Setmui_X1Label(settings.value("Y2Label", this->MeshToolsCore->Getmui_DefaultY2Label()).toString());
-	this->MeshToolsCore->Setmui_X1Label(settings.value("Z1Label", this->MeshToolsCore->Getmui_DefaultZ1Label()).toString());
-	this->MeshToolsCore->Setmui_X1Label(settings.value("Z2Label", this->MeshToolsCore->Getmui_DefaultZ2Label()).toString());
+	this->MeshToolsCore->Setmui_X2Label(settings.value("X2Label", this->MeshToolsCore->Getmui_DefaultX2Label()).toString());
+	this->MeshToolsCore->Setmui_Y1Label(settings.value("Y1Label", this->MeshToolsCore->Getmui_DefaultY1Label()).toString());
+	this->MeshToolsCore->Setmui_Y2Label(settings.value("Y2Label", this->MeshToolsCore->Getmui_DefaultY2Label()).toString());
+	this->MeshToolsCore->Setmui_Z1Label(settings.value("Z1Label", this->MeshToolsCore->Getmui_DefaultZ1Label()).toString());
+	this->MeshToolsCore->Setmui_Z2Label(settings.value("Z2Label", this->MeshToolsCore->Getmui_DefaultZ2Label()).toString());
 
 	this->MeshToolsCore->Setmui_CameraCentreOfMassAtOrigin(settings.value("CameraCentreOfMassAtOrigin", 
 		this->MeshToolsCore->Getmui_DefaultCameraCentreOfMassAtOrigin()
@@ -468,7 +468,7 @@ MeshTools::MeshTools()
 	 this->AreaPicker =
 		 vtkSmartPointer<vtkAreaPicker>::New();
 
-		/*  this->AreaPicker =
+		  /*this->AreaPicker =
 		 vtkSmartPointer<vtkRenderedAreaPicker>::New();*/
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
 	
