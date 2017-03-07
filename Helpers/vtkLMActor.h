@@ -141,7 +141,7 @@ private:
 	void operator=(const vtkLMActor&);  // Not implemented.
 	void CreateLMBody(); //instantiates LM Body (sphere or needle)
 	void CreateLMLabelText();//instantiates the  label actor
-	void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
+	
 	
 };
 

@@ -125,7 +125,7 @@ void RubberBandSelect(vtkObject* caller,
 		mqMeshToolsCore::instance()->CreateLandmark(pt, ori, 0);
 
 	}*/
-
+	
 	//pcoll->GetNumberOfItems();
 	
 	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
@@ -162,22 +162,23 @@ void RubberBandSelect(vtkObject* caller,
 		{
 			vtkLMActor *myActor;
 			myActor = vtkLMActor::SafeDownCast(myprop3D);
-	
 			
-			if (myActor->GetSelected() == 0)
-			{
-				myActor->SaveState(Count);
-				myActor->SetChanged(1);
-				myActor->SetSelected(1);
-				
-			}
-			else
-			{
-				myActor->SaveState(Count);
-				myActor->SetChanged(1);
-				myActor->SetSelected(0);
+
+				if (myActor->GetSelected() == 0)
+				{
+					myActor->SaveState(Count);
+					myActor->SetChanged(1);
+					myActor->SetSelected(1);
+
+				}
+				else
+				{
+					myActor->SaveState(Count);
+					myActor->SetChanged(1);
+					myActor->SetSelected(0);
+
+				}
 			
-			}
 		}
 		std::string str2("vtkMTActor");
 		if (str2.compare(myprop3D->GetClassName()) == 0)
@@ -186,19 +187,22 @@ void RubberBandSelect(vtkObject* caller,
 			myActor = vtkMTActor::SafeDownCast(myprop3D);
 			
 		
-			if (myActor->GetSelected() == 0)
+			if (myActor->IsInsideFrustum(areaPicker->GetFrustum()))
 			{
-				myActor->SaveState(Count);
-				myActor->SetChanged(1);
-				myActor->SetSelected(1);
-			
-			}
-			else
-			{
-				myActor->SaveState(Count);
-				myActor->SetChanged(1);
-				myActor->SetSelected(0);
-				
+				if (myActor->GetSelected() == 0)
+				{
+					myActor->SaveState(Count);
+					myActor->SetChanged(1);
+					myActor->SetSelected(1);
+
+				}
+				else
+				{
+					myActor->SaveState(Count);
+					myActor->SetChanged(1);
+					myActor->SetSelected(0);
+
+				}
 			}
 		}
 		

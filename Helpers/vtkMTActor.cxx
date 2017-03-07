@@ -10,9 +10,12 @@ Module:    vtkMTActor.cxx
 #include <vtkRenderer.h>
 #include <vtkProperty.h>
 #include <vtkTexture.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkTransform.h>
 #include <vtkPolyData.h>
+#include <vtkPlane.h>
 vtkStandardNewMacro(vtkMTActor);
 
 
@@ -35,6 +38,55 @@ vtkMTActor::~vtkMTActor()
 	
 
 }
+int vtkMTActor::IsInsideFrustum(vtkSmartPointer<vtkPlanes> myPlanes)
+{
+	int is_inside = 0;
+	int is_insideALL[6] = { 0,0,0,0,0,0 };
+	vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	this->GetMatrix(Mat);
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(this->GetMapper());
+	if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+	{
+		vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
+
+		//we have six planes
+		for (vtkIdType j = 0; j < myPD->GetNumberOfPoints(); j++)
+		{
+			is_insideALL[0] = 0;
+			is_insideALL[1] = 0;
+			is_insideALL[2] = 0;
+			is_insideALL[3] = 0;
+			is_insideALL[4] = 0;
+			is_insideALL[5] = 0;
+			double pt[3];
+			double ptwc[3];
+			double dist;
+			for (vtkIdType i = 0; i < myPlanes->GetNumberOfPlanes(); i++)
+			{
+				
+				vtkPlane *plane = myPlanes->GetPlane(i);
+			
+					myPD->GetPoint(j, pt);
+					vtkMTActor::TransformPoint(Mat, pt, ptwc);
+					 dist = plane->EvaluateFunction(ptwc);
+					 if (dist < 0) {						
+						 is_insideALL[i] = 1;}
+			}
+			if (is_insideALL[0] == 1 && is_insideALL[1] == 1 && is_insideALL[2] == 1 && is_insideALL[3] == 1 && is_insideALL[4] == 1 && is_insideALL[5] == 1)
+			{
+				is_inside = 1; 
+				cout << "found one inside point: " << j << ", x=" << ptwc[0] << ", y=" << ptwc[1] << ", z=" << ptwc[2] << endl;
+				break;
+				
+			}
+			
+		}
+	}
+	
+		return is_inside;
+	
+}
+
 vtkIdType vtkMTActor::GetNumberOfPoints()
 {
 	vtkIdType nv = 0;
@@ -273,7 +325,18 @@ void vtkMTActor::ShallowCopy(vtkProp *prop)
 	// Now do superclass
 	this->vtkOpenGLActor::ShallowCopy(prop);
 }
+void vtkMTActor::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]) {
+	double pointPred[4]; double pointNew[4] = { 0, 0, 0, 0 };
+	pointPred[0] = pointin[0];
+	pointPred[1] = pointin[1];
+	pointPred[2] = pointin[2];
+	pointPred[3] = 1;
 
+	matrix->MultiplyPoint(pointPred, pointNew);
+	pointout[0] = pointNew[0];
+	pointout[1] = pointNew[1];
+	pointout[2] = pointNew[2];
+}
 
 //----------------------------------------------------------------------------
 void vtkMTActor::PrintSelf(ostream& os, vtkIndent indent)
