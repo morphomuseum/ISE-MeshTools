@@ -10,6 +10,7 @@
 #include "mqUndoStack.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QTextStream>
 #include <vtkPLYReader.h>
 #include <vtkMath.h>
@@ -337,9 +338,34 @@ void mqOpenDataReaction::OpenPOS(int mode)
 	// mode : 1 for all selected meshes
 	// mode : 2 for all selected landmarks/flags
 	
+	if (mode == 1)
+	{
+		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+		if (num_selected_meshes == 0) {
+			QMessageBox msgBox;
+			msgBox.setText("No surface selected. Please select at least one surface to use this option.");
+			msgBox.exec();
+			return;
+		}
+	}
+	else
+	{
+		vtkIdType num_selected_landmarks = 0;
+		num_selected_landmarks+= mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
 
+		if (num_selected_landmarks == 0) {
+			QMessageBox msgBox;
+			msgBox.setText("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+			msgBox.exec();
+			return;
+		}
+	}
 	//open and applies position 
-	//mqMeshToolsCore::instance()->getUndoStack();
+	
 	cout << "Open POS" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
@@ -357,6 +383,33 @@ void mqOpenDataReaction::OpenPOSTrans(int mode)
 	if (mode < 1) { mode = 1; }
 	// mode : 1 for all selected meshes
 	// mode : 2 for all selected landmarks/flags
+
+	if (mode == 1)
+	{
+		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+		if (num_selected_meshes == 0) {
+			QMessageBox msgBox;
+			msgBox.setText("No surface selected. Please select at least one surface to use this option.");
+			msgBox.exec();
+			return;
+		}
+	}
+	else
+	{
+		vtkIdType num_selected_landmarks = 0;
+		num_selected_landmarks += mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfSelectedActors();
+		num_selected_landmarks += mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+
+		if (num_selected_landmarks == 0) {
+			QMessageBox msgBox;
+			msgBox.setText("No landmark/flag selected. Please select at least one landmark or flag to use this option.");
+			msgBox.exec();
+			return;
+		}
+	}
 
 
 	//open and applies transpoed position 

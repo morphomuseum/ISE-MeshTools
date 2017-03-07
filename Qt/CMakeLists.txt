@@ -12,6 +12,8 @@ set (Qt_SRCS
   mqOpenDataReaction.cxx
   mqOpenDataReaction.h
   mqSetName.cxx
+  mqSaveDataReaction.cxx
+  mqSaveDataReaction.h
   mqSetName.h
   mqMeshToolsMenuBuilders.cxx
   mqMeshToolsMenuBuilders.h
@@ -37,7 +39,10 @@ set (Qt_SRCS
   mqMainControlsToolbar.cxx
   mqMeshToolsCore.h
   mqMeshToolsCore.cxx
-
+  mqSavePLYDialog.cxx
+  mqSavePLYDialog.h
+  mqSavePLYDialogReaction.cxx
+  mqSavePLYDialogReaction.h
 
 )
 
@@ -46,7 +51,7 @@ set (Qt_MOC_HDRS
   mqAboutDialog.h
 )
 
-set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqLandmarkDialog.ui  mqMainControlsToolbar.ui)
+set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqLandmarkDialog.ui  mqMainControlsToolbar.ui mqSavePlyDialog.ui)
 
 set( Qt_RCs ../Icons/icons.qrc )
 

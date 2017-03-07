@@ -50,7 +50,7 @@ int vtkMTActor::IsInsideFrustum(vtkSmartPointer<vtkPlanes> myPlanes)
 		vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
 
 		//we have six planes
-		for (vtkIdType j = 0; j < myPD->GetNumberOfPoints(); j++)
+		for (vtkIdType j = 0; j < myPD->GetNumberOfPoints(); j+=20)
 		{
 			is_insideALL[0] = 0;
 			is_insideALL[1] = 0;

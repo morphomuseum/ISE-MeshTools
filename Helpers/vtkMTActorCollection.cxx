@@ -62,6 +62,26 @@ vtkMTActorCollection::vtkMTActorCollection()
 	this->Changed = 0;
 }
 
+vtkIdType vtkMTActorCollection::GetNumberOfSelectedActors()
+{
+	vtkIdType cpt = 0;
+	this->InitTraversal();	
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkActor *act = this->GetNextActor();
+		std::string str1("vtkMTActor");
+		if (str1.compare(act->GetClassName()) == 0)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(act);
+			if ( myActor->GetSelected() == 1) {
+				cpt++;
+			}
+		}
+	}
+	return cpt;
+
+
+}
 //----------------------------------------------------------------------------
 vtkMTActorCollection::~vtkMTActorCollection()
 {

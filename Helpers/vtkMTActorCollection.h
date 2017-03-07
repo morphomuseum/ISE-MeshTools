@@ -65,7 +65,7 @@ public:
 	void PrintSelf(ostream& os, vtkIndent indent);
 	
 	void ApplyProperties(vtkProperty *p);
-	
+	virtual vtkIdType GetNumberOfSelectedActors();
 	void GetCenterOfMass(double center[3]);
 	void GetCenterOfMassOfSelectedActors(double center[3]);
 	double * GetCenterOfMass();

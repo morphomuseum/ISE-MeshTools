@@ -31,7 +31,7 @@ public:
 	
 	
 	int GetNextLandmarkNumber();
-
+	vtkIdType GetNumberOfSelectedActors();
 
 
 protected:
