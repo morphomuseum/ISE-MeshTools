@@ -6,12 +6,16 @@
 ========================================================================*/
 #include "mqMeshToolsCore.h"
 #include "mqAboutDialogReaction.h"
+#include "mqSavePLYDialogReaction.h"
+#include "mqSaveVTPDialogReaction.h"
+#include "mqSaveSTLDialogReaction.h"
 #include "mqColorDialogReaction.h"
 #include "mqLandmarkDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqMainControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
 #include "mqOpenDataReaction.h"
+#include "mqSaveDataReaction.h"
 
 #include "mqSetName.h"
 
@@ -45,6 +49,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   //new mqOpenDataReaction(openNtw, 1);//1= open NTW 
   QMenu* submenuProject = menu.addMenu("Project");
   QMenu* submenuSurface = menu.addMenu("Surface");
+
   QMenu* submenuPosition = menu.addMenu("Position");
   QMenu* submenuLandmark = menu.addMenu("Landmarks and curves");
   
@@ -52,7 +57,11 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
   QMenu* submenuOrientationLables = menu.addMenu("Orientation helper labels");
   new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
+  new mqSavePLYDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .PLY file") << mqSetName("actionSavePLY"));
+  new mqSaveVTPDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTP) file") << mqSetName("actionSaveVTP"));
+  new mqSaveSTLDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .STL file") << mqSetName("actionSaveSTL"));
   new mqOpenDataReaction(submenuProject->addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
+  
   new mqOpenDataReaction(submenuLandmark->addAction("Open Landmarks") << mqSetName("actionOpenNormalLMK"), 3);
   new mqOpenDataReaction(submenuLandmark->addAction("Open Target Landmarks") << mqSetName("actionOpenNormalLMK"), 4);
   new mqOpenDataReaction(submenuLandmark->addAction("Open Curve Node Landmarks") << mqSetName("actionOpenNodeLMK"), 14);
@@ -63,6 +72,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected landmarks") << mqSetName("actionOpenPOS3"), 11);
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected landmarks") << mqSetName("actionOpenPOS4"), 12);
+  new mqSaveDataReaction(submenuPosition->addAction("Save position for selected surface") << mqSetName("actionSavePOS"), 8);
 
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
   new mqOpenDataReaction(submenuOrientationLables->addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);

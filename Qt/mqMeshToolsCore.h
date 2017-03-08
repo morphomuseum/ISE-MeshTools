@@ -86,6 +86,7 @@ public:
 	QString Getmui_DefaultZ2Label();
 	QString Getmui_Z2Label();
 
+	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0);
 
 	double* Getmui_MeshColor();
 	void Getmui_MeshColor(double c[4]);
@@ -192,11 +193,13 @@ public:
   std::string CheckingName(std::string name_obj, int cpt_name);
   vtkMTActor* GetLastActor();
   vtkLMActor* GetLastLandmark(int mode);
+  vtkMTActor * GetFirstSelectedActor();
   void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode);
   void InitializeOrientationHelper();
   void SetOrientationHelperLabels(std::string X1, std::string X2, std::string Y1, std::string Y2, std::string Z1, std::string Z2);
   void ResetOrientationHelperLabels();
   void CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type = -1);
+  static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
 protected:
 	
 	~mqMeshToolsCore();

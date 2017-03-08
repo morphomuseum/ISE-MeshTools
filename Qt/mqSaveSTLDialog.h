@@ -4,33 +4,33 @@
    
 
 =========================================================================*/
-#ifndef _mqSavePLYDialog_h
-#define _mqSavePLYDialog_h
+#ifndef _mqSaveSTLDialog_h
+#define _mqSaveSTLDialog_h
 
 #include <QDialog>
 
 namespace Ui
 {
-class mqSavePLYDialog;
+class mqSaveSTLDialog;
 }
 
 
 
 
 /**
-* mqSavePLYDialog is the dialog used by MeshTools to save PLY files.
+* mqSaveSTLDialog is the dialog used by MeshTools to save STL files.
 */
-class  mqSavePLYDialog : public QDialog
+class  mqSaveSTLDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  mqSavePLYDialog(QWidget* Parent, QString fileName);
+  mqSaveSTLDialog(QWidget* Parent, QString fileName);
   
-  ~mqSavePLYDialog();
+  ~mqSaveSTLDialog();
 
   public slots:
-  virtual void slotSavePlyFile();
+  virtual void slotSaveSTLFile();
   
   
 
@@ -38,8 +38,8 @@ protected:
 	
 private:
 	QString m_fileName;
-  Q_DISABLE_COPY(mqSavePLYDialog)
-  Ui::mqSavePLYDialog* const Ui;
+  Q_DISABLE_COPY(mqSaveSTLDialog)
+  Ui::mqSaveSTLDialog* const Ui;
   // Here we should have the file name, no ?
 };
 

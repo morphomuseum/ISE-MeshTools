@@ -9,8 +9,8 @@
 
 #include "mqReaction.h"
 #include <QMainWindow>
-
-
+#include <vtkSmartPointer.h>
+#include <vtkMatrix4x4.h>
 /**
 * @ingroup Reactions
 * Reaction for application undo-redo.
@@ -47,7 +47,7 @@ public:
    void SaveSTV(QString fileName);
    void SaveTAG(QString fileName);
    void SaveORI(QString fileName);   
-   void SavePOS(QString fileName);
+   void SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName);
   
 protected:
   /**

@@ -79,7 +79,7 @@ public:
 	virtual void PopUndoStack();
 	virtual void PopRedoStack();
 	virtual void ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat); // can be overriden in LMActor!
-	static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
+	
 
 protected:
 	vtkMTActor();

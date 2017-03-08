@@ -5,9 +5,9 @@
 
 
 ========================================================================*/
-#include "mqSavePLYDialogReaction.h"
+#include "mqSaveVTPDialogReaction.h"
 #include "mqCoreUtilities.h"
-#include "mqSavePLYDialog.h"
+#include "mqSaveVTPDialog.h"
 #include "mqReaction.h"
 #include "mqMeshToolsCore.h"
 #include <vtkType.h>
@@ -15,12 +15,12 @@
 #include <QMessageBox>
 
 //-----------------------------------------------------------------------------
-mqSavePLYDialogReaction::mqSavePLYDialogReaction(QAction* parentObject)
+mqSaveVTPDialogReaction::mqSaveVTPDialogReaction(QAction* parentObject)
   : Superclass(parentObject)
 {
 }
 
-void mqSavePLYDialogReaction::onTriggered()
+void mqSaveVTPDialogReaction::onTriggered()
 {
 	
 		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
@@ -40,12 +40,12 @@ void mqSavePLYDialogReaction::onTriggered()
 			if (ret == QMessageBox::Cancel) { return; }
 
 		}
-		cout << "Save PLY Dialog Triggered!" << endl;
+		cout << "Save VTP Dialog Triggered!" << endl;
 
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save PLY files"), QDir::currentPath(),
-			tr("Ply file (*.ply)"), NULL
+			tr("Save VTK PolyData files"), QDir::currentPath(),
+			tr("VTK PolyData file (*.vtk *.vtp)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 
@@ -66,15 +66,15 @@ void mqSavePLYDialogReaction::onTriggered()
 
 		}*/
 
-		mqSavePLYDialogReaction::showSavePLYDialog(fileName);
+		mqSaveVTPDialogReaction::showSaveVTPDialog(fileName);
 }
 
 //-----------------------------------------------------------------------------
-void mqSavePLYDialogReaction::showSavePLYDialog(QString fileName)
+void mqSaveVTPDialogReaction::showSaveVTPDialog(QString fileName)
 {
-	// fonction statique. C'est à dire que lorsqu'on clique sur SAVE PLY, on crée un nouvel objet.
+	// fonction statique. C'est à dire que lorsqu'on clique sur SAVE VTP, on crée un nouvel objet.
 	// la réaction, elle, est bien instanciée à la création du menu, mais pas la fenêtre. 
 
-  mqSavePLYDialog SavePLY_dialog(mqCoreUtilities::mainWidget(), fileName);
-  SavePLY_dialog.exec();
+  mqSaveVTPDialog SaveVTP_dialog(mqCoreUtilities::mainWidget(), fileName);
+  SaveVTP_dialog.exec();
 }

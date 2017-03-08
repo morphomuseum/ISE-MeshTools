@@ -8,8 +8,8 @@
 
 #include "mqMeshToolsCore.h"
 #include "mqUndoStack.h"
-
 #include "mqMeshToolsCore.h"
+#include "vtkMTActor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -39,72 +39,7 @@ mqSaveDataReaction::mqSaveDataReaction(QAction* parentObject,  int _mode)
   
 }
 
-//@@TODO
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-/*
-void mqSaveDataReaction::SavePLY()
-{
-
-
-	
-		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
-		if (num_selected_meshes == 0) {
-			QMessageBox msgBox;
-			msgBox.setText("No surface selected. Please select at least one surface to use this option.");
-			msgBox.exec();
-			return;
-		}
-
-	
-
- //mqMeshToolsCore::instance()->getUndoStack();
-	cout << "Save PLY!" << endl;
-	//@@ TODO!	
-}
-void mqSaveDataReaction::SaveSTL()
-{
-
-
-
-	vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
-	if (num_selected_meshes == 0) {
-		QMessageBox msgBox;
-		msgBox.setText("No surface selected. Please select at least one surface to use this option.");
-		msgBox.exec();
-		return;
-	}
-
-
-
-	//mqMeshToolsCore::instance()->getUndoStack();
-	cout << "Save PLY!" << endl;
-	//@@ TODO!	
-}
-void mqSaveDataReaction::SaveVTP()
-{
-
-
-
-	vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
-	if (num_selected_meshes == 0) {
-		QMessageBox msgBox;
-		msgBox.setText("No surface selected. Please select at least one surface to use this option.");
-		msgBox.exec();
-		return;
-	}
-
-
-
-	//mqMeshToolsCore::instance()->getUndoStack();
-	cout << "Save PLY!" << endl;
-	//@@ TODO!	
-}
-*/
 void mqSaveDataReaction::SaveLMK_or_VER(int mode)
 {
 	//mode 0=> inside normal landmarks
@@ -161,18 +96,44 @@ void mqSaveDataReaction::SavePOS()
 {
 	
 	
+	vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+	if (num_selected_meshes == 0) {
+		QMessageBox msgBox;
+		msgBox.setText("No surface selected. Please select at one single surface to use this option.");
+		msgBox.exec();
+		return;
+	}
+	else if (num_selected_meshes > 1)
+	{
+		QMessageBox msgBox;
+		msgBox.setText("More than one surface are currently selected. Please select at one single surface to use this option.");		
+		int ret = msgBox.exec();
+		return;
 
-	//Save and applies position 
-	//mqMeshToolsCore::instance()->getUndoStack();
-	cout << "Save POS" << endl;
+	}
+	vtkMTActor *FirstSelectedActor = mqMeshToolsCore::instance()->GetFirstSelectedActor();
+	if (FirstSelectedActor != NULL) {	
 
-	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load position file"), QDir::currentPath(),
-		tr("position file (*.pos)"));
+		vtkSmartPointer<vtkMatrix4x4> Mat = FirstSelectedActor->GetMatrix();		
 
-	cout << fileName.toStdString();
-	if (fileName.isEmpty()) return;	
-	this->SavePOS(fileName);
+
+		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+			tr("Save POS files"), QDir::currentPath(),
+			tr("Pos file (*.pos)"), NULL
+			//, QFileDialog::DontConfirmOverwrite
+		);
+
+
+		cout << fileName.toStdString();
+		if (fileName.isEmpty()) return;
+	
+	
+		//Save and applies position 
+		//mqMeshToolsCore::instance()->getUndoStack();
+		cout << "Save POS" << endl;	
+		this->SavePOS(Mat, fileName);
+	}
+
 	
 }
 
@@ -276,15 +237,43 @@ void mqSaveDataReaction::SaveORI(QString fileName)
 //-----------------------------------------------------------------------------
 
 
-void mqSaveDataReaction::SavePOS(QString fileName)
+void mqSaveDataReaction::SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName)
 {
 	
+	std::string POSext = ".pos";
+	std::string POSext2 = ".POS";
+	std::size_t found = fileName.toStdString().find(POSext);
+	std::size_t found2 = fileName.toStdString().find(POSext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".pos");
+	}
 
-	int i, j, l;
-	size_t  length;
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		stream << "1 0 0 0" << endl;
+		stream << "0 1 0 0" << endl;
+		stream << "0 0 1 0" << endl;
+		stream << "0 0 0 1" << endl;
+	
+
+		stream << Mat->GetElement(0,0)<<" "<< Mat->GetElement(1, 0) << " "<< Mat->GetElement(2, 0) << " "<< Mat->GetElement(3, 0) << endl;
+		stream << Mat->GetElement(0, 1) << " " << Mat->GetElement(1, 1) << " " << Mat->GetElement(2, 1) << " " << Mat->GetElement(3, 1) <<  endl;
+		stream << Mat->GetElement(0, 2) << " " << Mat->GetElement(1, 2) << " " << Mat->GetElement(2, 2) << " " << Mat->GetElement(3, 2) <<  endl;
+		stream << Mat->GetElement(0, 3) << " " << Mat->GetElement(1, 3) << " " << Mat->GetElement(2, 3) << " " << Mat->GetElement(3, 3) <<  endl;
 
 
-	length = fileName.toStdString().length();
+	}
+	file.close();
+
+	
+	
+	
+
+	
 
 
 }

@@ -5,29 +5,29 @@
 
 
 ========================================================================*/
-#ifndef mqSavePLYDialogReaction_h
-#define mqSavePLYDialogReaction_h
+#ifndef mqSaveSTLDialogReaction_h
+#define mqSaveSTLDialogReaction_h
 
 
 #include "mqReaction.h"
 
 /**
 * @ingroup Reactions
-* mqSavePLYDialogReaction used to show the standard PLY Save dialog for the
+* mqSaveSTLDialogReaction used to show the standard STL Save dialog for the
 * application.
 */
-class  mqSavePLYDialogReaction : public mqReaction
+class  mqSaveSTLDialogReaction : public mqReaction
 {
   Q_OBJECT
   typedef mqReaction Superclass;
 
 public:
-  mqSavePLYDialogReaction(QAction* parent);
+  mqSaveSTLDialogReaction(QAction* parent);
 
   /**
-  * Shows the SavePLY dialog for the application.
+  * Shows the SaveSTL dialog for the application.
   */
-  static void showSavePLYDialog(QString fileName);
+  static void showSaveSTLDialog(QString fileName);
 
 protected:
   /**
@@ -37,7 +37,7 @@ protected:
 
 
 private:
-  Q_DISABLE_COPY(mqSavePLYDialogReaction)
+  Q_DISABLE_COPY(mqSaveSTLDialogReaction)
 };
 
 #endif

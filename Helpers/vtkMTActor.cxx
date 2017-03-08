@@ -3,6 +3,7 @@
 Program:   MeshTools
 Module:    vtkMTActor.cxx
 =========================================================================*/
+#include "mqMeshToolsCore.h"
 #include "vtkMTActor.h"
 
 #include <vtkObjectFactory.h>
@@ -67,7 +68,7 @@ int vtkMTActor::IsInsideFrustum(vtkSmartPointer<vtkPlanes> myPlanes)
 				vtkPlane *plane = myPlanes->GetPlane(i);
 			
 					myPD->GetPoint(j, pt);
-					vtkMTActor::TransformPoint(Mat, pt, ptwc);
+					mqMeshToolsCore::TransformPoint(Mat, pt, ptwc);
 					 dist = plane->EvaluateFunction(ptwc);
 					 if (dist < 0) {						
 						 is_insideALL[i] = 1;}
@@ -325,18 +326,7 @@ void vtkMTActor::ShallowCopy(vtkProp *prop)
 	// Now do superclass
 	this->vtkOpenGLActor::ShallowCopy(prop);
 }
-void vtkMTActor::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]) {
-	double pointPred[4]; double pointNew[4] = { 0, 0, 0, 0 };
-	pointPred[0] = pointin[0];
-	pointPred[1] = pointin[1];
-	pointPred[2] = pointin[2];
-	pointPred[3] = 1;
 
-	matrix->MultiplyPoint(pointPred, pointNew);
-	pointout[0] = pointNew[0];
-	pointout[1] = pointNew[1];
-	pointout[2] = pointNew[2];
-}
 
 //----------------------------------------------------------------------------
 void vtkMTActor::PrintSelf(ostream& os, vtkIndent indent)

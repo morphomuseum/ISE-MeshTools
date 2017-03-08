@@ -4,33 +4,33 @@
    
 
 =========================================================================*/
-#ifndef _mqSavePLYDialog_h
-#define _mqSavePLYDialog_h
+#ifndef _mqSaveVTPDialog_h
+#define _mqSaveVTPDialog_h
 
 #include <QDialog>
 
 namespace Ui
 {
-class mqSavePLYDialog;
+class mqSaveVTPDialog;
 }
 
 
 
 
 /**
-* mqSavePLYDialog is the dialog used by MeshTools to save PLY files.
+* mqSaveVTPDialog is the dialog used by MeshTools to save VTP files.
 */
-class  mqSavePLYDialog : public QDialog
+class  mqSaveVTPDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  mqSavePLYDialog(QWidget* Parent, QString fileName);
+  mqSaveVTPDialog(QWidget* Parent, QString fileName);
   
-  ~mqSavePLYDialog();
+  ~mqSaveVTPDialog();
 
   public slots:
-  virtual void slotSavePlyFile();
+  virtual void slotSaveVTPFile();
   
   
 
@@ -38,8 +38,8 @@ protected:
 	
 private:
 	QString m_fileName;
-  Q_DISABLE_COPY(mqSavePLYDialog)
-  Ui::mqSavePLYDialog* const Ui;
+  Q_DISABLE_COPY(mqSaveVTPDialog)
+  Ui::mqSaveVTPDialog* const Ui;
   // Here we should have the file name, no ?
 };
 

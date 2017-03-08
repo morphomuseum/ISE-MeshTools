@@ -11,8 +11,15 @@
 #include "vtkOrientationHelperActor.h"
 #include "vtkOrientationHelperWidget.h"
 #include <vtkProperty.h>
-#include <vtkCubeAxesActor.h>
+#include <vtkPointData.h>
+#include <vtkCellData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkSTLWriter.h>
+#include <vtkPLYWriter.h>
+#include <vtkPolyDataWriter.h>
 
+#include <vtkCubeAxesActor.h>
+#include <vtkAppendPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -183,6 +190,231 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 }
 //should only be done after main window is initialized.
+
+int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms)
+{
+	// Write_Type 0 : Binary LE or "Default Binary"
+	// Write_Type 1 : Binary BE 
+	// Write_Type 2 : ASCII
+	
+
+	// Position_mode 0 : orignal position
+	// Position_mode 1 : moved position
+
+	// File_type 0 : stl
+	// File_type 1 : vtk-vtp
+	// File_type 2 : ply
+	
+
+
+
+	std::string STLext(".stl");
+	std::string STLext2(".STL");
+	std::string VTPext(".vtk");
+	std::string VTPext2(".VTK");
+	std::string VTPext3(".vtp");
+	std::string VTPext4(".VTP");
+	std::string PLYext(".ply");
+	std::string PLYext2(".PLY");
+
+
+	vtkSmartPointer<vtkAppendPolyData> mergedObjects = vtkSmartPointer<vtkAppendPolyData>::New();
+	int Ok = 1;
+
+	
+			
+
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			if (position_mode == 0)
+			{
+				vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+				if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+				{
+					mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
+				}
+			}
+			else
+			{
+				vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+				if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+				{
+					vtkSmartPointer<vtkPolyData> toSave = vtkSmartPointer<vtkPolyData>::New();
+					toSave->DeepCopy(vtkPolyData::SafeDownCast(mapper->GetInput()));
+					double ve_init_pos[3];;
+					double ve_final_pos[3];
+					vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+					
+
+					for (vtkIdType i = 0; i < toSave->GetNumberOfPoints(); i++) {
+						// for every triangle 
+						toSave->GetPoint(i, ve_init_pos);
+						mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);						
+
+						toSave->GetPoints()->SetPoint((vtkIdType)i, ve_final_pos);
+					}
+					mergedObjects->AddInputData(toSave);
+				}
+				
+			}
+		}		
+	}
+	
+	Ok = 1;
+	mergedObjects->Update();
+	if (save_norms == 0)
+	{
+		mergedObjects->GetOutput()->GetPointData()->SetNormals(NULL);
+		mergedObjects->GetOutput()->GetCellData()->SetNormals(NULL);
+	}
+	if (file_type == 0)
+	{
+		vtkSmartPointer<vtkSTLWriter> Writer =
+			vtkSmartPointer<vtkSTLWriter>::New();
+		if (write_type == 0)
+		{
+			Writer->SetFileTypeToBinary();
+			
+		}
+
+		else
+		{
+			Writer->SetFileTypeToASCII();
+		}
+		// test if "extension exists!"
+		//
+		std::size_t found = fileName.toStdString().find(STLext);
+		std::size_t found2 = fileName.toStdString().find(STLext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			fileName.append(".stl");
+
+		}
+		
+			Writer->SetFileName(fileName.toStdString().c_str());
+			Writer->SetInputData(mergedObjects->GetOutput());
+			//  stlWrite->Update();
+			Writer->Write();
+		
+	}
+
+	if (file_type == 1)
+	{
+		vtkSmartPointer<vtkPolyDataWriter> Writer =
+			vtkSmartPointer<vtkPolyDataWriter>::New();
+		if (write_type == 0)
+		{
+			Writer->SetFileTypeToBinary();
+			
+		}
+		else
+		{
+			Writer->SetFileTypeToASCII();
+		}
+		std::size_t found = fileName.toStdString().find(VTPext);
+		std::size_t found2 = fileName.toStdString().find(VTPext2);
+		std::size_t found3 = fileName.toStdString().find(VTPext3);
+		std::size_t found4 = fileName.toStdString().find(VTPext4);
+		if (found == std::string::npos && found2 == std::string::npos && found3 == std::string::npos && found4 == std::string::npos)
+		{
+			fileName.append(".vtp");
+		}
+		
+		Writer->SetFileName(fileName.toStdString().c_str());
+		Writer->SetInputData(mergedObjects->GetOutput());
+		//  stlWrite->Update();
+		Writer->Write();
+		
+	}
+
+	if (file_type == 2)
+	{
+		vtkSmartPointer<vtkPLYWriter> Writer =
+			vtkSmartPointer<vtkPLYWriter>::New();
+		if (write_type == 0)
+		{
+			Writer->SetFileTypeToBinary();
+			Writer->SetDataByteOrderToLittleEndian();
+			//std::cout << "\nBinary Little endian";
+		}
+		else if (write_type == 1)
+		{
+			Writer->SetFileTypeToBinary();
+			Writer->SetDataByteOrderToBigEndian();
+			// std::cout << "\nBinary Big endian";
+
+		}
+		else
+		{
+			Writer->SetFileTypeToASCII();
+			//std::cout << "\nASCII";
+		}
+		
+		vtkPolyData *MyMergedObject = mergedObjects->GetOutput();
+
+		// Test if RGB scalar exists.
+		vtkUnsignedCharArray* test = (vtkUnsignedCharArray*)MyMergedObject->GetPointData()->GetScalars("RGB");
+		if (test != NULL)
+		{
+			// std::cout<<"Colors found!"<<std::endl;
+
+			vtkSmartPointer<vtkUnsignedCharArray> colors =
+				vtkSmartPointer<vtkUnsignedCharArray>::New();
+			colors->SetNumberOfComponents(4);
+			colors = (vtkUnsignedCharArray*)MyMergedObject->GetPointData()->GetScalars("RGB");
+
+			vtkSmartPointer<vtkUnsignedCharArray> colorsRGB =
+				vtkSmartPointer<vtkUnsignedCharArray>::New();
+			colorsRGB->SetNumberOfComponents(3);
+			colorsRGB->SetNumberOfTuples(MyMergedObject->GetNumberOfPoints());
+			for (int i = 0; i<MyMergedObject->GetNumberOfPoints(); i++)	// for each vertex 
+			{			//@@@@@
+
+				int nr, ng, nb;
+
+				nr = colors->GetTuple(i)[0];
+				ng = colors->GetTuple(i)[1];
+				nb = colors->GetTuple(i)[2];
+
+
+				colorsRGB->InsertTuple3(i, nr, ng, nb);
+			}
+			colorsRGB->SetName("Colors");
+			MyMergedObject->GetPointData()->AddArray(colorsRGB);
+			//colors->SetName("Colors");	  
+			std::cout << "Colors num of tuples :" << colors->GetNumberOfTuples() << std::endl;
+			for (int i = 0; i<10; i++)
+			{
+				//std::cout<<"RGB stuff i:"<<colors->GetTuple(i)[0]<<","<<colors->GetTuple(i)[1]<<","<<colors->GetTuple(i)[2]<<std::endl;
+				//std::cout<<"RGB "<<i<<"="<<cur_r<<","<<cur_g<<","<<cur_b<<std::endl;
+			}
+			Writer->SetArrayName("Colors");
+		}
+
+
+		std::size_t found = fileName.toStdString().find(PLYext);
+		std::size_t found2 = fileName.toStdString().find(PLYext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			fileName.append(".ply");
+		}
+		ifstream file(fileName.toStdString().c_str());
+		
+		
+			Writer->SetFileName(fileName.toStdString().c_str());
+			//
+			Writer->SetInputData(MyMergedObject);
+			//Writer->SetInputData((vtkPolyData*)My_Obj);	
+			Writer->Write();
+		
+		//std::cout << "\nWriter should have written : "<<filename.c_str();
+	}
+	return 1;
+}
 
 void mqMeshToolsCore::Setmui_X1Label(QString label) { this->mui_X1Label = label;
 //cout << "this->mui_X1Label " << this->mui_X1Label.toStdString() << endl;
@@ -727,6 +959,22 @@ void mqMeshToolsCore::SetOrientationHelperVisibility()
 	}
 	this->Render();
 }
+
+vtkMTActor * mqMeshToolsCore::GetFirstSelectedActor()
+{
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			return myActor;
+		}
+	}
+
+	return NULL;
+}
+
 vtkMTActor* mqMeshToolsCore::GetLastActor()
 {
 	return vtkMTActor::SafeDownCast(this->getActorCollection()->GetLastActor());
@@ -745,7 +993,8 @@ vtkLMActor* mqMeshToolsCore::GetLastLandmark(int mode)
 	else if (mode == 3) {
 		return vtkLMActor::SafeDownCast(this->getHandleLandmarkCollection()->GetLastActor());
 	}
-	else if (mode == 4) {
+	//else if (mode == 4) {
+	else  {
 		return vtkLMActor::SafeDownCast(this->getFlagLandmarkCollection()->GetLastActor());
 	}
 	
@@ -1638,3 +1887,15 @@ vtkSmartPointer<vtkGridActor> mqMeshToolsCore::getGridActor()
 	return this->GridActor;
 }
 
+void mqMeshToolsCore::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]) {
+	double pointPred[4]; double pointNew[4] = { 0, 0, 0, 0 };
+	pointPred[0] = pointin[0];
+	pointPred[1] = pointin[1];
+	pointPred[2] = pointin[2];
+	pointPred[3] = 1;
+
+	matrix->MultiplyPoint(pointPred, pointNew);
+	pointout[0] = pointNew[0];
+	pointout[1] = pointNew[1];
+	pointout[2] = pointNew[2];
+}

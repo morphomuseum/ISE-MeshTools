@@ -43,7 +43,14 @@ set (Qt_SRCS
   mqSavePLYDialog.h
   mqSavePLYDialogReaction.cxx
   mqSavePLYDialogReaction.h
-
+  mqSaveVTPDialog.cxx
+  mqSaveVTPDialog.h
+  mqSaveVTPDialogReaction.cxx
+  mqSaveVTPDialogReaction.h
+  mqSaveSTLDialog.cxx
+  mqSaveSTLDialog.h
+  mqSaveSTLDialogReaction.cxx
+  mqSaveSTLDialogReaction.h
 )
 
 set (Qt_MOC_HDRS
@@ -51,7 +58,7 @@ set (Qt_MOC_HDRS
   mqAboutDialog.h
 )
 
-set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqLandmarkDialog.ui  mqMainControlsToolbar.ui mqSavePlyDialog.ui)
+set (Qt_UIs mqAboutDialog.ui mqColorDialog.ui mqLandmarkDialog.ui  mqMainControlsToolbar.ui mqSavePLYDialog.ui mqSaveVTPDialog.ui mqSaveSTLDialog.ui)
 
 set( Qt_RCs ../Icons/icons.qrc )
 

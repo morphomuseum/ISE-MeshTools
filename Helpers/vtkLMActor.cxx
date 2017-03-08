@@ -246,7 +246,7 @@ void vtkLMActor::CreateLMLabelText()
 
 	
 
-	vtkMTActor::TransformPoint(this->GetMatrix(), init_pos, final_pos);
+	mqMeshToolsCore::TransformPoint(this->GetMatrix(), init_pos, final_pos);
 
 
 	vtkSmartPointer<vtkTextProperty> mproperty = vtkSmartPointer<vtkTextProperty>::New();
@@ -499,7 +499,7 @@ void vtkLMActor::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat)
 {
 	double init_pos[3] = { this->LMOrigin[0], this->LMOrigin[1],this->LMOrigin[2] };
 	double final_pos[3];
-	vtkMTActor::TransformPoint(Mat, init_pos, final_pos);
+	mqMeshToolsCore::TransformPoint(Mat, init_pos, final_pos);
 
 	double init_npos[3] =
 	{ this->LMOrigin[0] + this->LMOrientation[0] ,
@@ -508,7 +508,7 @@ void vtkLMActor::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat)
 	};
 
 	double final_npos[3];
-	vtkMTActor::TransformPoint(Mat, init_npos, final_npos);
+	mqMeshToolsCore::TransformPoint(Mat, init_npos, final_npos);
 
 	final_npos[0] = final_npos[0] - final_pos[0];
 	final_npos[1] = final_npos[1] - final_pos[1];

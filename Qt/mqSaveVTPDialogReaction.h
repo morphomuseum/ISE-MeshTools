@@ -1,33 +1,33 @@
 /*=========================================================================
 
    Program: MeshTools
-   Module:    mqSavePLYDialogReaction.h
+   Module:    mqSaveVTPDialogReaction.h
 
 
 ========================================================================*/
-#ifndef mqSavePLYDialogReaction_h
-#define mqSavePLYDialogReaction_h
+#ifndef mqSaveVTPDialogReaction_h
+#define mqSaveVTPDialogReaction_h
 
 
 #include "mqReaction.h"
 
 /**
 * @ingroup Reactions
-* mqSavePLYDialogReaction used to show the standard PLY Save dialog for the
+* mqSaveVTPDialogReaction used to show the standard VTP Save dialog for the
 * application.
 */
-class  mqSavePLYDialogReaction : public mqReaction
+class  mqSaveVTPDialogReaction : public mqReaction
 {
   Q_OBJECT
   typedef mqReaction Superclass;
 
 public:
-  mqSavePLYDialogReaction(QAction* parent);
+  mqSaveVTPDialogReaction(QAction* parent);
 
   /**
-  * Shows the SavePLY dialog for the application.
+  * Shows the SaveVTP dialog for the application.
   */
-  static void showSavePLYDialog(QString fileName);
+  static void showSaveVTPDialog(QString fileName);
 
 protected:
   /**
@@ -37,7 +37,7 @@ protected:
 
 
 private:
-  Q_DISABLE_COPY(mqSavePLYDialogReaction)
+  Q_DISABLE_COPY(mqSaveVTPDialogReaction)
 };
 
 #endif
