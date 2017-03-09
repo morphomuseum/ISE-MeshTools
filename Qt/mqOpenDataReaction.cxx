@@ -1760,7 +1760,7 @@ void mqOpenDataReaction::OpenLMK(QString fileName, int mode)
 	QString LMKName;
 	//Open a landmark file!
 
-
+	cout << "Open a lmk file" << endl;
 	size_t  length;
 
 
@@ -1786,7 +1786,7 @@ void mqOpenDataReaction::OpenLMK(QString fileName, int mode)
 		if (file_exists == 1)
 		{
 
-			std::string LMKext(".LMK");
+			std::string LMKext(".lmk");
 			std::string LMKext2(".LMK");
 
 			std::size_t found = fileName.toStdString().find(LMKext);

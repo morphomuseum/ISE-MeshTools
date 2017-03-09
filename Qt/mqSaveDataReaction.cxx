@@ -49,6 +49,47 @@ void mqSaveDataReaction::SaveLMK_or_VER(int mode)
 	//mqMeshToolsCore::instance()->getUndoStack();
 	cout << "Save LMK or VER!" << endl;
 	
+	vtkIdType num_selected_landmarks = 0;
+	/*if (mode == 0)
+	{
+	= mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+	if (num_selected_meshes == 0) {
+		QMessageBox msgBox;
+		msgBox.setText("No surface selected. Please select at one single surface to use this option.");
+		msgBox.exec();
+		return;
+	}
+	else if (num_selected_meshes > 1)
+	{
+		QMessageBox msgBox;
+		msgBox.setText("More than one surface are currently selected. Please select at one single surface to use this option.");
+		int ret = msgBox.exec();
+		return;
+
+	}
+	vtkMTActor *FirstSelectedActor = mqMeshToolsCore::instance()->GetFirstSelectedActor();
+	if (FirstSelectedActor != NULL) {
+
+		vtkSmartPointer<vtkMatrix4x4> Mat = FirstSelectedActor->GetMatrix();
+
+
+		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+			tr("Save POS files"), QDir::currentPath(),
+			tr("Pos file (*.pos)"), NULL
+			//, QFileDialog::DontConfirmOverwrite
+		);
+
+
+		cout << fileName.toStdString();
+		if (fileName.isEmpty()) return;
+
+
+		//Save and applies position 
+		//mqMeshToolsCore::instance()->getUndoStack();
+		cout << "Save POS" << endl;
+		this->SavePOS(Mat, fileName);
+	}*/
+
 
 }
 void mqSaveDataReaction::SaveSTV()

@@ -87,7 +87,7 @@ public:
 	QString Getmui_Z2Label();
 
 	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0);
-
+	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
 	double* Getmui_MeshColor();
 	void Getmui_MeshColor(double c[4]);
 	double* Getmui_DefaultMeshColor();

@@ -24,6 +24,8 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 
+#include <QFile>
+#include <QTextStream>
 
 #include "mqUndoStack.h"
 
@@ -190,6 +192,79 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 }
 //should only be done after main window is initialized.
+
+int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected)
+{
+
+	if (file_type == 0)
+	{
+		std::string VERext = ".ver";
+		std::string VERext2 = ".VER";
+		std::size_t found = fileName.toStdString().find(VERext);
+		std::size_t found2 = fileName.toStdString().find(VERext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			fileName.append(".ver");
+		}
+	}
+
+	if (file_type == 1)
+	{
+		std::string LMKext = ".lmk";
+		std::string LMKext2 = ".LMK";
+		std::size_t found = fileName.toStdString().find(LMKext);
+		std::size_t found2 = fileName.toStdString().find(LMKext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			fileName.append(".lmk");
+		}
+	}
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		if (lm_type == 0) { myColl = this->NormalLandmarkCollection; }
+		else if (lm_type == 1) { myColl = this->TargetLandmarkCollection; }
+		else if (lm_type == 2) { myColl = this->NodeLandmarkCollection; }
+		else  { myColl = this->HandleLandmarkCollection; }
+		
+		myColl->InitTraversal();
+		for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+			if (myActor->GetSelected() == 1 || save_only_selected==0)
+			{
+				
+				double lmpos[3];
+				myActor->GetLMOrigin(lmpos);
+				double ori[3];
+				myActor->GetLMOrientation(ori);
+				double lmori[3] = { lmpos[0] + ori[0],lmpos[1] + ori[1] ,lmpos[2] + ori[2] };
+				if (file_type == 0)
+				{
+					stream << "Landmark" << i << ": " << lmpos[0]<<" "<<lmpos[1]<<" "<<lmpos[2]<<" "<<lmori[0]<< " "<< lmori[1] << " " <<  lmori[2] << " " << endl;
+				}
+				else
+				{
+					stream << "Landmark" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << endl;
+				}
+
+			}
+
+		}
+		
+		
+
+
+	}
+	file.close();
+
+
+}
+
 
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms)
 {

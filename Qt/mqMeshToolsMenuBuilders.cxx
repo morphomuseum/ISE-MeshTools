@@ -16,6 +16,7 @@
 #include "mqDesktopServicesReaction.h"
 #include "mqOpenDataReaction.h"
 #include "mqSaveDataReaction.h"
+#include "mqSaveLandmarksDialogReaction.h"
 
 #include "mqSetName.h"
 
@@ -51,7 +52,8 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   QMenu* submenuSurface = menu.addMenu("Surface");
 
   QMenu* submenuPosition = menu.addMenu("Position");
-  QMenu* submenuLandmark = menu.addMenu("Landmarks and curves");
+  QMenu* submenuLandmark = menu.addMenu("Landmarks");
+  QMenu* submenuCurves = menu.addMenu("Curves");
   
   QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
   QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
@@ -64,10 +66,20 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   
   new mqOpenDataReaction(submenuLandmark->addAction("Open Landmarks") << mqSetName("actionOpenNormalLMK"), 3);
   new mqOpenDataReaction(submenuLandmark->addAction("Open Target Landmarks") << mqSetName("actionOpenNormalLMK"), 4);
-  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve Node Landmarks") << mqSetName("actionOpenNodeLMK"), 14);
-  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve Handle Landmarks") << mqSetName("actionOpenHandleLMK"), 15);
+  
+  new mqSaveLandmarksDialogReaction(submenuLandmark->addAction("Save Normal Landmarks") << mqSetName("actionSaveNormalLMK"), 0);
+  new mqSaveLandmarksDialogReaction(submenuLandmark->addAction("Save Target Landmarks") << mqSetName("actionSaveTargetLMK"), 1);
+  
   new mqOpenDataReaction(submenuLandmark->addAction("Open MeshTools Landmark/Curve file (STV)") << mqSetName("actionOpenSTV"), 16);
-  new mqOpenDataReaction(submenuLandmark->addAction("Open Curve (.CUR)") << mqSetName("actionOpenCUR"), 5);
+  
+  new mqOpenDataReaction(submenuCurves->addAction("Open Curve (.CUR)") << mqSetName("actionOpenCUR"), 5);
+  new mqOpenDataReaction(submenuCurves->addAction("Open MeshTools Landmark/Curve file (STV)") << mqSetName("actionOpenSTV2"), 16);
+  new mqOpenDataReaction(submenuCurves->addAction("Open Curve Node Landmarks") << mqSetName("actionOpenNodeLMK"), 14);
+  new mqOpenDataReaction(submenuCurves->addAction("Open Curve Handle Landmarks") << mqSetName("actionOpenHandleLMK"), 15);
+  new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Nodes Landmarks") << mqSetName("actionSaveNodeLMK"), 2);
+  new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Handle Landmarks") << mqSetName("actionSaveHandleLMK"), 3);
+
+
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected surfaces") << mqSetName("actionOpenPOS"), 8);
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected landmarks") << mqSetName("actionOpenPOS3"), 11);
