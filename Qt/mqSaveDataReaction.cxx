@@ -257,8 +257,8 @@ void mqSaveDataReaction::SaveCUR(QString fileName)
 {
 	double  xn, yn, zn, xh, yh, zh;// coordinates of curve nodes and curve handles
 	int node_type;
-	QString LMKName;
-	//Open a landmark file!
+	QString CURName;
+	
 
 
 	

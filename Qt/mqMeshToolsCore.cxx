@@ -261,7 +261,7 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 
 	}
 	file.close();
-
+	return 1;
 
 }
 
