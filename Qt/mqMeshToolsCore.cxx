@@ -192,6 +192,68 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 }
 //should only be done after main window is initialized.
+int mqMeshToolsCore::SaveFlagFile(QString fileName, int save_only_selected)
+{
+
+	
+		std::string FLGext = ".flg";
+		std::string FLGext2 = ".FLG";
+		std::size_t found = fileName.toStdString().find(FLGext);
+		std::size_t found2 = fileName.toStdString().find(FLGext2);
+		if (found == std::string::npos && found2 == std::string::npos)
+		{
+			fileName.append(".flg");
+		}
+	
+
+	
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		 myColl = this->FlagLandmarkCollection; 
+		
+
+		myColl->InitTraversal();
+		for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+			if (myActor->GetSelected() == 1 || save_only_selected == 0)
+			{
+
+				double lmpos[3];
+				myActor->GetLMOrigin(lmpos);
+				double ori[3];
+				myActor->GetLMOrientation(ori);
+				double lmori[3] = { lmpos[0] + ori[0],lmpos[1] + ori[1] ,lmpos[2] + ori[2] };
+				
+				stream << myActor->GetLMLabelText()<< endl;
+				stream << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " 
+					<< lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << 
+					myActor->GetLMSize()<<" "<<
+					myActor->GetmColor()[0] << " "<<
+					myActor->GetmColor()[1] << " " <<
+					myActor->GetmColor()[2] << " " <<
+					endl;
+				
+					
+				
+
+			}
+
+		}
+
+
+
+
+	}
+	file.close();
+	return 1;
+
+}
 
 int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected)
 {

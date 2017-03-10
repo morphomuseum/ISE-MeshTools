@@ -17,7 +17,7 @@
 #include "mqOpenDataReaction.h"
 #include "mqSaveDataReaction.h"
 #include "mqSaveLandmarksDialogReaction.h"
-
+#include "mqSaveFlagsDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -87,6 +87,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveDataReaction(submenuPosition->addAction("Save position for selected surface") << mqSetName("actionSavePOS"), 8);
 
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
+  new mqSaveFlagsDialogReaction(submenuTagsAndFlags->addAction("SaveFlags") << mqSetName("actionSaveFLG"));
   new mqOpenDataReaction(submenuOrientationLables->addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
