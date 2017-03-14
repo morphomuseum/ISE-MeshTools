@@ -211,9 +211,10 @@ void mqOpenDataReaction::OpenSTV(QString fileName)
 						{
 							// To do : type = 2 => information 
 							int lmtype = -1;
-							if (type == 2)// curve node!
+							if (landmark_mode == 2)// curve node!
 							{
 								myteststream >> LMKName >> x >> y >> z >> nx >> ny >> nz >> lmtype;
+								//cout << "lmtype!" << lmtype << endl;
 								//lmtype: 1 curve starting point
 								//lmtype: 0 normal node
 								//lmtype: 2 curve milestone
@@ -239,6 +240,10 @@ void mqOpenDataReaction::OpenSTV(QString fileName)
 								vtkMath::Subtract(ncoord, coord, ori);
 								vtkMath::Normalize(ori);
 							}
+							/*if (lmtype != 0)
+							{
+								cout << "landmark_mode: " << landmark_mode << " lmtype: " << lmtype << endl;
+							}*/
 							mqMeshToolsCore::instance()->CreateLandmark(coord, ori, landmark_mode, lmtype);
 						}
 						cpt_line++;

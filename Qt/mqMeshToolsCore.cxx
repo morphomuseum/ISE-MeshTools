@@ -255,6 +255,114 @@ int mqMeshToolsCore::SaveFlagFile(QString fileName, int save_only_selected)
 
 }
 
+int mqMeshToolsCore::SaveSTVFile(QString fileName, int save_only_selected)
+{
+
+
+	std::string STVext = ".stv";
+	std::string STVext2 = ".STV";
+	std::size_t found = fileName.toStdString().find(STVext);
+	std::size_t found2 = fileName.toStdString().find(STVext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".stv");
+	}
+
+
+
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		
+		for (int j = 0; j < 4; j++)
+		{
+			if (j == 0)
+			{
+				myColl = this->NormalLandmarkCollection;
+			}
+			else if (j == 1)
+			{
+				myColl = this->TargetLandmarkCollection;
+			}
+			else if (j == 2)
+			{
+				myColl = this->NodeLandmarkCollection;
+			}
+			else if (j == 3)
+			{
+				myColl = this->HandleLandmarkCollection;
+			}
+
+
+			
+
+			if (myColl->GetNumberOfItems() > 0)
+			{
+				if (save_only_selected == 0)
+				{
+					stream <<j<<" "<< myColl->GetNumberOfItems() << endl;
+				}
+				else
+				{
+					stream << j << " " << myColl->GetNumberOfSelectedActors() << endl;
+				}
+				myColl->InitTraversal();
+
+				for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+				{
+					vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+					
+					
+
+					if (myActor->GetSelected() == 1 || save_only_selected == 0) 
+					{
+
+						double lmpos[3];
+						myActor->GetLMOrigin(lmpos);
+						
+						
+						myActor->GetLMOrigin(lmpos);
+						double ori[3];
+						myActor->GetLMOrientation(ori);
+						double lmori[3] = { lmpos[0] + ori[0],lmpos[1] + ori[1] ,lmpos[2] + ori[2] };
+						
+						if (j < 2)
+						{
+							stream << "Landmark" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
+						}
+						else if (j==2)
+						{
+							int lmnodetype = myActor->GetLMNodeType();
+							stream << "CurveNode" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << lmnodetype <<endl;
+						}
+						else
+						{
+							stream << "CurveHandle" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
+						}
+
+						
+						
+
+					}
+
+				}
+			}
+		}
+
+
+
+
+	}
+	file.close();
+	return 1;
+
+}
+
+
 //should only be done after main window is initialized.
 int mqMeshToolsCore::SaveCURFile(QString fileName, int save_only_selected)
 {

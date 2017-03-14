@@ -85,6 +85,7 @@ public:
 	void Setmui_Z2Label(QString label);
 	QString Getmui_DefaultZ2Label();
 	QString Getmui_Z2Label();
+	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
 	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
