@@ -18,6 +18,7 @@
 #include "mqSaveDataReaction.h"
 #include "mqSaveLandmarksDialogReaction.h"
 #include "mqSaveFlagsDialogReaction.h"
+#include "mqSaveCURDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -76,6 +77,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqOpenDataReaction(submenuCurves->addAction("Open MeshTools Landmark/Curve file (STV)") << mqSetName("actionOpenSTV2"), 16);
   new mqOpenDataReaction(submenuCurves->addAction("Open Curve Node Landmarks") << mqSetName("actionOpenNodeLMK"), 14);
   new mqOpenDataReaction(submenuCurves->addAction("Open Curve Handle Landmarks") << mqSetName("actionOpenHandleLMK"), 15);
+  new mqSaveCURDialogReaction(submenuCurves->addAction("Save .CUR File ") << mqSetName("actionSaveCURLMK"));
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Nodes Landmarks") << mqSetName("actionSaveNodeLMK"), 2);
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Handle Landmarks") << mqSetName("actionSaveHandleLMK"), 3);
 

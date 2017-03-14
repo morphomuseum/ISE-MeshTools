@@ -255,6 +255,66 @@ int mqMeshToolsCore::SaveFlagFile(QString fileName, int save_only_selected)
 
 }
 
+//should only be done after main window is initialized.
+int mqMeshToolsCore::SaveCURFile(QString fileName, int save_only_selected)
+{
+
+
+	std::string CURext = ".cur";
+	std::string CURext2 = ".CUR";
+	std::size_t found = fileName.toStdString().find(CURext);
+	std::size_t found2 = fileName.toStdString().find(CURext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".cur");
+	}
+
+
+
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		vtkSmartPointer<vtkLMActorCollection> myCollN = vtkSmartPointer<vtkLMActorCollection>::New();
+		vtkSmartPointer<vtkLMActorCollection> myCollH = vtkSmartPointer<vtkLMActorCollection>::New();
+		myCollN = this->NodeLandmarkCollection;
+		myCollH = this->HandleLandmarkCollection;
+
+		if (myCollN->GetNumberOfItems() != myCollH->GetNumberOfItems()) { return 0; }
+		myCollN->InitTraversal();
+		myCollH->InitTraversal();
+		for (vtkIdType i = 0; i < myCollH->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActorN = vtkLMActor::SafeDownCast(myCollN->GetNextActor());
+			vtkLMActor *myActorH = vtkLMActor::SafeDownCast(myCollH->GetNextActor());
+			if (myActorN->GetSelected() == 1 || save_only_selected == 0) // we do not care if H is selected or not. We follow "N".
+			{
+
+				double lmposN[3];
+				myActorN->GetLMOrigin(lmposN);
+				double lmposH[3];
+				myActorH->GetLMOrigin(lmposH);
+				
+				int lmnodetype = myActorN->GetLMNodeType();
+				stream << "CurvePart"<<i+1<<": "<< lmposN[0] << " " << lmposN[1] << " " << lmposN[2] << " "
+					<< lmposH[0] << " " << lmposH[1] << " " << lmposH[2] << " " << lmnodetype<<
+					endl;
+
+			}
+
+		}
+
+
+
+
+	}
+	file.close();
+	return 1;
+
+}
+
 int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected)
 {
 

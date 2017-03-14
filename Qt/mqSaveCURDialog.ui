@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mqSaveFlagsDialog</class>
- <widget class="QDialog" name="mqSaveFlagsDialog">
+ <class>mqSaveCURDialog</class>
+ <widget class="QDialog" name="mqSaveCURDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -426,7 +426,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Save flags</string>
+   <string>Save curves</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -450,7 +450,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="FlgToBeSaved">
+  <widget class="QGroupBox" name="CURToBeSaved">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -460,7 +460,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Which flags should be saved ?</string>
+    <string>Which curve parts should be saved ?</string>
    </property>
    <widget class="QWidget" name="verticalLayoutWidget_8">
     <property name="geometry">
@@ -475,14 +475,14 @@
      <item>
       <widget class="QRadioButton" name="SaveAll">
        <property name="text">
-        <string>Save all flags</string>
+        <string>Save all curve parts</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QRadioButton" name="SaveOnlySelected">
        <property name="text">
-        <string>Save only selected flags</string>
+        <string>Save only selected curve nodes/handles</string>
        </property>
       </widget>
      </item>
@@ -495,7 +495,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>mqSaveFlagsDialog</receiver>
+   <receiver>mqSaveCURDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -511,7 +511,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>mqSaveFlagsDialog</receiver>
+   <receiver>mqSaveCURDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

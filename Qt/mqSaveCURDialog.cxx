@@ -6,8 +6,8 @@
  
 =========================================================================*/
 
-#include "mqSaveLandmarksDialog.h"
-#include "ui_mqSaveLandmarksDialog.h"
+#include "mqSaveCURDialog.h"
+#include "ui_mqSaveCURDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
 
@@ -42,25 +42,23 @@
 #endif
 
 //-----------------------------------------------------------------------------
-mqSaveLandmarksDialog::mqSaveLandmarksDialog(QWidget* Parent, int lmtype)
+mqSaveCURDialog::mqSaveCURDialog(QWidget* Parent)
   : QDialog(Parent)
-  , Ui(new Ui::mqSaveLandmarksDialog())
+  , Ui(new Ui::mqSaveCURDialog())
 {
 
 	this->Ui->setupUi(this);
-	this->setObjectName("mqSaveLandmarksDialog");
+	this->setObjectName("mqSaveCURDialog");
 	
-	this->m_lmtype = lmtype;
+	
 	// This is where we 
   //
  
- 
- this->Ui->VER->setChecked(true);
  this->Ui->SaveAll->setChecked(true);
  
   // Should connect...
   
- connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotSaveLandmarkFile()));
+ connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotSaveCURFile()));
 
 }
 
@@ -68,50 +66,38 @@ mqSaveLandmarksDialog::mqSaveLandmarksDialog(QWidget* Parent, int lmtype)
 
 
 //-----------------------------------------------------------------------------
-mqSaveLandmarksDialog::~mqSaveLandmarksDialog()
+mqSaveCURDialog::~mqSaveCURDialog()
 {
 
  //depending on what is 
 	
   delete this->Ui;
 }
-void mqSaveLandmarksDialog::slotSaveLandmarkFile()
+void mqSaveCURDialog::slotSaveCURFile()
 {
-	cout << "Landmark File Saved!" << endl;
+	cout << "CUR File Saved!" << endl;
 	
 	QString fileName;
 	
-	if (this->Ui->VER->isChecked())
-	{
+	
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), QDir::currentPath(),
-			tr("Landmark file (*.ver)"), NULL
+			tr("Save CUR files"), QDir::currentPath(),
+			tr("CUR file (*.cur)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
-	}
-	if (this->Ui->LMK->isChecked())
-	{
-		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), QDir::currentPath(),
-			tr("Landmark file (*.lmk)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-	}
+	
 	
 	if (fileName.isEmpty()) return;
 
-	int file_type = 0; // 0 VER 1 LMK, 2 => to implement!
 	int save_only_selected = 0; //0 no= save all landmark, 1 yes, save only selected landmarks
 	
-	if (this->Ui->VER->isChecked()) { file_type = 0; }
-	else if (this->Ui->LMK->isChecked()) { file_type = 1; }
 	
 
 	if (this->Ui->SaveOnlySelected->isChecked()) { save_only_selected = 1; }
 	else if (this->Ui->SaveAll->isChecked()) { save_only_selected = 0; }
 	
 
-	mqMeshToolsCore::instance()->SaveLandmarkFile(fileName, this->m_lmtype, file_type, save_only_selected);
+	mqMeshToolsCore::instance()->SaveCURFile(fileName, save_only_selected);
 
 }
 
