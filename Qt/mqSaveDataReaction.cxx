@@ -269,7 +269,32 @@ void mqSaveDataReaction::SaveORI(QString fileName)
 
 	QString X1,X2,Y1,Y2,Z1,Z2;
 
-	
+	std::string ORIext = ".ori";
+	std::string ORIext2 = ".ORI";
+	std::size_t found = fileName.toStdString().find(ORIext);
+	std::size_t found2 = fileName.toStdString().find(ORIext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".ori");
+	}
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+		
+		stream << mqMeshToolsCore::instance()->Getmui_Z1Label() << endl;
+		stream << mqMeshToolsCore::instance()->Getmui_Z2Label() << endl;
+		stream << mqMeshToolsCore::instance()->Getmui_Y1Label() << endl;
+		stream << mqMeshToolsCore::instance()->Getmui_Y2Label() << endl;
+		stream << mqMeshToolsCore::instance()->Getmui_X1Label() << endl;
+		stream << mqMeshToolsCore::instance()->Getmui_X2Label() << endl;
+		
+
+	}
+	file.close();
+
+
 	
 
 	

@@ -59,7 +59,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   
   QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
   QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
-  QMenu* submenuOrientationLables = menu.addMenu("Orientation helper labels");
+  QMenu* submenuOrientationLabels = menu.addMenu("Orientation helper labels");
   new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
   new mqSavePLYDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .PLY file") << mqSetName("actionSavePLY"));
   new mqSaveVTPDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTP) file") << mqSetName("actionSaveVTP"));
@@ -94,7 +94,8 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
 
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Flag") << mqSetName("actionOpenFLG"), 6);
   new mqSaveFlagsDialogReaction(submenuTagsAndFlags->addAction("SaveFlags") << mqSetName("actionSaveFLG"));
-  new mqOpenDataReaction(submenuOrientationLables->addAction("Open Orientation") << mqSetName("actionOpenORI"), 7);
+  new mqOpenDataReaction(submenuOrientationLabels->addAction("Open Orientation Labels") << mqSetName("actionOpenORI"), 7);
+  new mqSaveDataReaction(submenuOrientationLabels->addAction("Save Orientation Labels") << mqSetName("actionSaveORI"), 7);
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
   
