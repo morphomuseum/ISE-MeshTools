@@ -23,18 +23,18 @@ mqSaveSTVDialogReaction::mqSaveSTVDialogReaction(QAction* parentObject)
 
 void mqSaveSTVDialogReaction::onTriggered()
 {
-	vtkIdType num_CURNorm = 0;
-	vtkIdType num_CURT = 0;
-	vtkIdType num_CURNode = 0;
-	vtkIdType num_CURH = 0;
+	vtkIdType num_Norm = 0;
+	vtkIdType num_T = 0;
+	vtkIdType num_Node = 0;
+	vtkIdType num_H = 0;
 	
-		num_CURNorm = mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfItems();
-		num_CURH = mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfItems();
-		num_CURNode = mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfItems();
-		num_CURH = mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfItems();
+		num_Norm = mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfItems();
+		num_H = mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfItems();
+		num_Node = mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfItems();
+		num_H = mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfItems();
 	
 	
-		if (num_CURNorm==0&& num_CURT&&num_CURNode&&num_CURH == 0) {
+		if (num_Norm==0&& num_T==0&&num_Node==0&&num_H == 0) {
 			QMessageBox msgBox;
 			msgBox.setText("No landmark nor curve element  exist...");
 			msgBox.exec();

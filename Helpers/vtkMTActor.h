@@ -63,6 +63,9 @@ public:
 	vtkGetMacro(Changed, int);
 	vtkBooleanMacro(Changed, int);
 
+	vtkGetMacro(Name, std::string);
+	vtkSetMacro(Name, std::string);
+
 	//vtkSetVector4Macro(mColor, double);
 	vtkGetVector4Macro(mColor, double);
 	void SetmColor(double r, double g, double b, double a);
@@ -90,7 +93,7 @@ protected:
 	//of selected objects etc... 
 	double mColor[4]; // mesh "uniform" color (no vertex coloring) and transparency.
 	vtkMTActorUndoRedo* UndoRedo;
-
+	std::string Name;
 
 private:
 	vtkMTActor(const vtkMTActor&);  // Not implemented.

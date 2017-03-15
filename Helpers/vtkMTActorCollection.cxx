@@ -628,7 +628,7 @@ void vtkMTActorCollection::ComputeBoundingBoxLength()
 
 void vtkMTActorCollection::ApplyChanges()
 {
-	cout << "Compute center of mass" << endl;
+	//cout << "Compute center of mass" << endl;
 	this->ComputeCenterOfMass();
 	//cout << "that?" << endl;
 	this->ComputeBoundingBoxLength();

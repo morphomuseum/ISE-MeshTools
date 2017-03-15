@@ -29,25 +29,19 @@ public:
 
   //mode
   
-   void SaveNTW();
+  
   /* void SavePLY();
    void SaveSTL();
    void SaveVTP();*/
    void SavePOS();
-   void SaveLMK_or_VER(int mode);
    
-   void SaveFLG();
-   void SaveCUR();
-   void SaveSTV();
-   void SaveTAG();
+   
+   
    void SaveORI();
    
-   void SaveFLG(QString fileName);
-   void SaveCUR(QString fileName);
-   void SaveSTV(QString fileName);
-   void SaveTAG(QString fileName);
-   void SaveORI(QString fileName);   
-   void SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName);
+   
+   
+   
   
 protected:
   /**
@@ -55,29 +49,28 @@ protected:
   */
   virtual void onTriggered()
   {
-    if (this->Mode == 1)
-    {
-     this->SaveNTW();
-    }
+	  if (this->Mode == 1)
+	  {
+	  }
 	/*else if (this->Mode == 2)
 	{
 		this->SavePLY();
 	}*/
 	else if (this->Mode == 3)
 	{
-		this->SaveLMK_or_VER(0);
+		
 	}
 	else if (this->Mode == 4)
 	{
-		this->SaveLMK_or_VER(1);
+	
 	}
 	else if (this->Mode == 5)
 	{
-		this->SaveCUR();
+	
 	}
 	else if (this->Mode == 6)
 	{
-		this->SaveFLG();
+		
 	}
 	else if (this->Mode == 7)
 	{
@@ -85,7 +78,7 @@ protected:
 	}	
 	else if (this->Mode == 9)
 	{
-		this->SaveTAG();
+		
 	}
 	else if (this->Mode == 8)
 	{
@@ -101,19 +94,19 @@ protected:
 	}*/
 	else if (this->Mode == 13)
 	{
-		this->SaveSTV();
+		
 	}
 	else if (this->Mode == 14)
 	{
-		this->SaveLMK_or_VER(2);
+		
 	}
 	else if (this->Mode == 15)
 	{
-		this->SaveLMK_or_VER(3);
+		
 	}
 	else if (this->Mode == 16)
 	{
-		this->SaveSTV();
+		
 	}
   }
 

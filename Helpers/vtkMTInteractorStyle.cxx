@@ -1410,7 +1410,7 @@ void vtkMTInteractorStyle::RotateActors()
 	
 	this->GetCenterOfMassOfSelectedActors(rot_center);
 	//cout << "rotation center: " << rot_centerendl;
-	cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
+	//cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
 	//cout << "bb length...." << endl;
 	double boundRadius = this->GetBoundingBoxLengthOfSelectedActors();
 	//cout << "Bound Radius: " << boundRadius << endl;

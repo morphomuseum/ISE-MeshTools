@@ -2043,8 +2043,8 @@ void mqOpenDataReaction::OpenMesh(QString fileName)
 			reader->Update();
 			MyPolyData = reader->GetOutput();
 		}
-		std::cout << "\nNumber of points 1:" << MyPolyData->GetNumberOfPoints() << std::endl;
-		std::cout << "\nNumber of cells 1:" << MyPolyData->GetNumberOfCells() << std::endl;
+		//std::cout << "\nNumber of points 1:" << MyPolyData->GetNumberOfPoints() << std::endl;
+		//std::cout << "\nNumber of cells 1:" << MyPolyData->GetNumberOfCells() << std::endl;
 
 
 		vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
@@ -2067,55 +2067,62 @@ void mqOpenDataReaction::OpenMesh(QString fileName)
 
 		MyPolyData = cleanPolyDataFilter->GetOutput();
 
-		cout << "\nNumber of points:" << MyPolyData->GetNumberOfPoints() << std::endl;
-		cout << "\nNumber of cells:" << MyPolyData->GetNumberOfCells() << std::endl;
+		//cout << "\nNumber of points:" << MyPolyData->GetNumberOfPoints() << std::endl;
+		//cout << "\nNumber of cells:" << MyPolyData->GetNumberOfCells() << std::endl;
 
 		MyPolyData->GetCellData();
 
 		vtkFloatArray* norms = vtkFloatArray::SafeDownCast(MyPolyData->GetCellData()->GetNormals());
-		cout << "Safe cell downcast done ! " << endl;
+	//	cout << "Safe cell downcast done ! " << endl;
 		if (norms)
 		{
 
-			cout << "There are here " << norms->GetNumberOfTuples()
-				<< " Float Cell normals in norms" << endl;
+			//cout << "There are here " << norms->GetNumberOfTuples()
+			//	<< " Float Cell normals in norms" << endl;
 		}
 		else
 		{
-			cout << "FloatNorms CELL is null " << endl;
+			//cout << "FloatNorms CELL is null " << endl;
 		}
 
 		norms = vtkFloatArray::SafeDownCast
 			(MyPolyData->GetPointData()->GetNormals());
-		cout << "Safe point downcast done ! " << endl;
+		//cout << "Safe point downcast done ! " << endl;
 		if (norms)
 		{
 
-			cout << "There are  " << norms->GetNumberOfTuples()
-				<< " Float POINT normals in norms" << endl;
+			//cout << "There are  " << norms->GetNumberOfTuples()
+			//	<< " Float POINT normals in norms" << endl;
 		}
 		else
 		{
-			cout << "FloatNorms POINTS is null " << endl;
+			//cout << "FloatNorms POINTS is null " << endl;
 		}
 
 		if (MyPolyData->GetNumberOfPoints() > 10)
 		{
 
 			VTK_CREATE(vtkMTActor, actor);
-			std::string newname = name.toStdString();
+			
 
-			size_t nPos = newname.find_first_of(".");
-			if (nPos > -1)
+			QFileInfo fileInfo(fileName);
+			QString onlyfilename(fileInfo.fileName());
+			std::string only_filename = onlyfilename.toStdString();
+			std::string newname = only_filename.c_str();
+			size_t nPos = newname.find_last_of(".");
+			if (nPos > 0)
 			{
+				
 				newname = newname.substr(0, nPos);
 			}
+			
 			//@@TODO! 
-			newname = mqMeshToolsCore::instance()->CheckingName(newname, 0);
+			newname = mqMeshToolsCore::instance()->CheckingName(newname);
+			cout << "Object Name= " << newname << endl;
 			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
 			{
 				MyPolyData->GetPointData()->SetScalars(NULL);
-				cout << "found RGB colours! " << endl;
+			//	cout << "found RGB colours! " << endl;
 			}
 			/*
 			vtkSmartPointer<vtkUnsignedCharArray> newcolors =
@@ -2156,6 +2163,7 @@ void mqOpenDataReaction::OpenMesh(QString fileName)
 
 			actor->SetmColor(mqMeshToolsCore::instance()->Getmui_MeshColor());
 			actor->SetSelected(1);
+			actor->SetName(newname);
 			actor->SetMapper(mapper);
 			mqMeshToolsCore::instance()->getActorCollection()->AddItem(actor);
 			std::string action = "Load mesh file";
@@ -2169,7 +2177,7 @@ void mqOpenDataReaction::OpenMesh(QString fileName)
 
 			//double BoundingBoxLength = MyPolyData->GetLength();
 			mqMeshToolsCore::instance()->AdjustCameraAndGrid();
-			cout << "camera and grid adjusted" << endl;
+			//cout << "camera and grid adjusted" << endl;
 
 			if (mqMeshToolsCore::instance()->Getmui_AdjustLandmarkRenderingSize() == 1)
 			{

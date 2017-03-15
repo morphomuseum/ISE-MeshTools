@@ -1,7 +1,7 @@
 /*=========================================================================
 
 Program:   MeshTools
-Module:    vtkMTActorCollection.cxx
+Module:    vtkLMActorCollection.cxx
 =========================================================================*/
 #include "vtkLMActorCollection.h"
 #include "vtkLMActor.h"
@@ -56,15 +56,20 @@ void vtkLMActorCollection::AddItem(vtkActor *a)
 
 vtkIdType vtkLMActorCollection::GetNumberOfSelectedActors()
 {
+	
 	vtkIdType cpt = 0;
 	this->InitTraversal();
+	
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
+		
 		vtkActor *act = this->GetNextActor();
+
 		std::string str1("vtkLMActor");
 		if (str1.compare(act->GetClassName()) == 0)
 		{
-			vtkMTActor *myActor = vtkMTActor::SafeDownCast(act);
+		
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
 			if (myActor->GetSelected() == 1) {
 				cpt++;
 			}
@@ -252,7 +257,7 @@ int vtkLMActorCollection::GetNextLandmarkNumber()
 }*/
 void vtkLMActorCollection::ComputeCenterOfMass()
 {
-	cout << "LM Compute center of mass" << endl;
+	//cout << "LM Compute center of mass" << endl;
 	this->centerOfMass[0] = 0;
 	this->centerOfMass[1] = 0;
 	this->centerOfMass[2] = 0;
@@ -302,8 +307,8 @@ void vtkLMActorCollection::ComputeCenterOfMass()
 	}
 	this->SetGlobalSelectedVN(nSelectedLM);
 	this->SetGlobalVN(nLM);
-	cout << "New LM Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;
-	cout << "New LM Coll sVn:" << nSelectedLM << endl;
+	//cout << "New LM Coll sCOM:" << centerOfMassOfSelectedActors[0] << "," << centerOfMassOfSelectedActors[1] << "," << centerOfMassOfSelectedActors[2] << endl;
+	//cout << "New LM Coll sVn:" << nSelectedLM << endl;
 
 }
 

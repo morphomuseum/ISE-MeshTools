@@ -27,7 +27,7 @@ vtkMTActor::vtkMTActor()
 	this->UndoRedo = new vtkMTActorUndoRedo;
 	this->Selected = 1;
 	this->Changed = 0;
-	
+	this->Name = "New Mesh";
 }
 
 //----------------------------------------------------------------------------

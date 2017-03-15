@@ -110,7 +110,7 @@ void RubberBandSelect(vtkObject* caller,
 	void* vtkNotUsed(clientData),
 	void* vtkNotUsed(callData))
 {
-	std::cout << "Pick." << std::endl;
+	//std::cout << "Pick." << std::endl;
 	//vtkRenderedAreaPicker* areaPicker = static_cast<vtkRenderedAreaPicker*>(caller);
 	
 	vtkAreaPicker* areaPicker = static_cast<vtkAreaPicker*>(caller);
@@ -129,7 +129,7 @@ void RubberBandSelect(vtkObject* caller,
 	//pcoll->GetNumberOfItems();
 	
 	vtkProp3DCollection* props = areaPicker->GetProp3Ds();
-	cout << "Props Number of items:" << props->GetNumberOfItems() << endl;
+	//cout << "Props Number of items:" << props->GetNumberOfItems() << endl;
 	
 		
 	//props->PrintSelf(cout, vtkIndent(2));
@@ -155,7 +155,7 @@ void RubberBandSelect(vtkObject* caller,
 		
 		
 		vtkProp3D *myprop3D = props->GetNextProp3D();
-		std::cout << "Actor prop:  class name:" << myprop3D->GetClassName() << std::endl;
+		//std::cout << "Actor prop:  class name:" << myprop3D->GetClassName() << std::endl;
 
 		std::string str1("vtkLMActor");
 		if (str1.compare(myprop3D->GetClassName()) == 0)
@@ -344,9 +344,9 @@ MeshTools::MeshTools()
 			this->MeshToolsCore->Getmui_DefaultAdjustScaleFactor()
 			).toDouble()
 		);
-	cout << settings.value("AdjustScaleFactor",
-		this->MeshToolsCore->Getmui_DefaultAdjustScaleFactor()
-		).toDouble() << endl;
+	//cout << settings.value("AdjustScaleFactor",
+	//	this->MeshToolsCore->Getmui_DefaultAdjustScaleFactor()
+	//	).toDouble() << endl;
 	settings.endGroup();
 
 	

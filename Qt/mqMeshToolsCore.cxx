@@ -25,6 +25,8 @@
 #include <vtkRenderWindow.h>
 
 #include <QFile>
+#include <QFileInfo>
+#include <QMessageBox>
 #include <QTextStream>
 
 #include "mqUndoStack.h"
@@ -189,6 +191,471 @@ mqMeshToolsCore::mqMeshToolsCore()
 	
 
 	
+
+}
+void mqMeshToolsCore::ComputeSelectedNamesLists()
+{
+	
+		g_selected_names.clear();
+		g_distinct_selected_names.clear();
+	
+		this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			g_selected_names.push_back(myActor->GetName());
+
+			int already = 0;
+
+			for (int j = 0; j<g_distinct_selected_names.size(); j++)
+			{
+				//std::cout<<"i"<<i<<std::endl;
+				std::size_t found = g_distinct_selected_names.at(j).find(myActor->GetName());
+				size_t length1 = myActor->GetName().length();
+				size_t length2 = g_distinct_selected_names.at(j).length();
+				if (length1 == length2 && found != std::string::npos)
+				{
+					already = 1;
+				}
+			}
+			if (already == 0)
+			{
+				g_distinct_selected_names.push_back(myActor->GetName());
+			}
+
+
+		}
+	}
+	
+}
+
+int mqMeshToolsCore::context_file_exists(std::string path, std::string ext, std::string postfix)
+{
+	// used by the save NTW function : 
+	//looks whether a non-mesh related file = context file (.ori, .flg, .tag, .ver, .cur, .stv) constructed with only a postfix + extension (project name) already exists 
+	std::string filename;
+	int exists = 0;
+
+	filename = path.c_str();
+	if (postfix.length()>0)
+	{
+		filename.append(postfix.c_str());
+	}
+	filename.append(ext.c_str());
+	ifstream file(filename.c_str());
+	if (file)
+	{
+		file.close();
+		exists = 1;
+	}
+	return exists;
+}
+
+int mqMeshToolsCore::selected_file_exists(std::string path, std::string ext, std::string postfix)
+{
+	// used by the save NTW function : 
+	//looks whether mesh related files (vtk, vtp, stl, ply, pos) constructed with a prefix (object name) and a postfix (project name) already exist 
+	std::string filename;
+	int exists = 0;
+	for (int i = 0; i<g_distinct_selected_names.size(); i++)
+	{
+		filename = path.c_str();
+		filename.append(g_distinct_selected_names.at(i).c_str());
+		if (postfix.length()>0)
+		{
+			filename.append(postfix.c_str());
+		}
+		filename.append(ext.c_str());
+		ifstream file(filename.c_str());
+		if (file)
+		{
+			file.close();
+			exists = 1;
+			break;
+		}
+	}
+
+	return exists;
+
+}
+
+void mqMeshToolsCore::SaveORI(QString fileName)
+{
+
+	QString X1, X2, Y1, Y2, Z1, Z2;
+
+	std::string ORIext = ".ori";
+	std::string ORIext2 = ".ORI";
+	std::size_t found = fileName.toStdString().find(ORIext);
+	std::size_t found2 = fileName.toStdString().find(ORIext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".ori");
+	}
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		stream << this->Getmui_Z1Label() << endl;
+		stream << this->Getmui_Z2Label() << endl;
+		stream << this->Getmui_Y1Label() << endl;
+		stream << this->Getmui_Y2Label() << endl;
+		stream << this->Getmui_X1Label() << endl;
+		stream << this->Getmui_X2Label() << endl;
+
+
+	}
+	file.close();
+
+
+
+
+
+}
+
+int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply)
+{
+	std::string NTWext = ".ntw";
+	std::string NTWext2 = ".NTW";
+	std::size_t found = fileName.toStdString().find(NTWext);
+	std::size_t found2 = fileName.toStdString().find(NTWext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".ntw");
+	}
+
+	QFileInfo fileInfo(fileName);
+	QString onlyfilename(fileInfo.fileName());
+
+
+
+	QFile file(fileName);
+	QTextStream stream(&file);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		std::string only_filename = onlyfilename.toStdString();
+		std::string project_name = only_filename.c_str();
+		size_t nPos = project_name.find_last_of(".");
+		if (nPos >0 && nPos<= project_name.length())
+		{
+			project_name = project_name.substr(0, nPos);
+		}
+		std::string path = fileName.toStdString().substr(0, (fileName.toStdString().length() - only_filename.length()));
+		std::string posExt = ".pos";
+		std::string vtpExt = ".vtp";
+		std::string plyExt = ".vtp";
+		std::string tagExt = ".tag";
+		std::string oriExt = ".ori";
+		std::string flgExt = ".flg";
+		std::string verExt = ".ver";
+		std::string stvExt = ".stv";
+		std::string curExt = ".cur";
+		int overwrite_pos = 1;
+		int overwrite_mesh = 1;
+		int overwrite_ori = 1;
+		int overwrite_tag = 1;
+		int overwrite_flg = 1;
+		int overwrite_ver = 1;
+		int overwrite_cur = 1;
+		int overwrite_stv = 1;
+
+		this->ComputeSelectedNamesLists();
+		std::string postfix = "_";
+		postfix.append(project_name.c_str());
+		std::string no_postfix = "";
+		int pos_exists = this->selected_file_exists(path, posExt, postfix);
+
+		int mesh_exists = 0;
+		if (save_surfaces_as_ply == 0)
+		{
+			mesh_exists = this->selected_file_exists(path, vtpExt, no_postfix);
+		}
+		else
+		{
+			mesh_exists = this->selected_file_exists(path, plyExt, no_postfix);
+		}
+
+		if (save_ori == 1)
+		{
+			std::string _ori_fullpath;
+			std::string _ori_file;
+			int ori_exists = this->context_file_exists(path, oriExt, project_name);
+			if (ori_exists == 1)
+			{
+				QMessageBox msgBox;
+				msgBox.setText("Ori file already exists: overwrite existing orientation file ?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Yes);
+				int ret = msgBox.exec();
+				if (ret == QMessageBox::Cancel) { overwrite_ori=0; }
+
+			}
+			
+
+			_ori_file = project_name.c_str();
+			_ori_file.append(".ori");
+			_ori_fullpath = path.c_str();
+			_ori_fullpath.append(_ori_file.c_str());
+			int write = 1;
+			QString qori(_ori_fullpath.c_str());
+			
+			if (overwrite_ori == 1)
+			{
+				//write or overwrite ORI file without further question (0)
+				this->SaveORI(qori);
+			}
+			stream << _ori_file.c_str() << endl;
+
+		}
+		if (mesh_exists == 1)
+		{
+			QMessageBox msgBox;
+			msgBox.setText("At least one mesh file already exists: update existing mesh files?");
+			msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+			msgBox.setDefaultButton(QMessageBox::Yes);
+			int ret = msgBox.exec();
+			if (ret == QMessageBox::Cancel) { overwrite_mesh = 0; }
+
+			
+		}
+		if (pos_exists == 1)
+		{
+			QMessageBox msgBox;
+			msgBox.setText("At least one position file already exists: update existing position files?");
+			msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+			msgBox.setDefaultButton(QMessageBox::Yes);
+			int ret = msgBox.exec();
+			if (ret == QMessageBox::Cancel) { overwrite_pos = 0; }
+
+			
+		}
+
+		if (save_tag == 1)
+		{
+			std::string _tag_fullpath;
+			std::string _tag_file;
+			int tag_exists = this->context_file_exists(path, tagExt, project_name);
+			if (tag_exists == 1)
+			{
+				QMessageBox msgBox;
+				msgBox.setText("Tag file already exists: overwrite existing tag colours and labels file ?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Yes);
+				int ret = msgBox.exec();
+				if (ret == QMessageBox::Cancel) { overwrite_tag = 0; }
+				
+			}
+
+			_tag_file = project_name.c_str();
+			_tag_file.append(".tag");
+			_tag_fullpath = path.c_str();
+			_tag_fullpath.append(_tag_file.c_str());
+			int write = 1;
+			
+			if (overwrite_tag == 1)
+			{
+				//write or overwrite TAG file without further question (0)
+				//@@ TODO!
+				//this->SaveTAG(_tag_fullpath);
+			}
+			stream << _tag_file.c_str() << endl;
+			
+
+		}
+		
+		//flags 
+		vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+		if (selectedflags>0)
+		{
+			std::string _flg_fullpath;
+			std::string _flg_file;
+			int flg_exists = this->context_file_exists(path, flgExt, project_name);
+			if (flg_exists == 1)
+			{
+				QMessageBox msgBox;
+				msgBox.setText("Flag file already exists: overwrite existing flag file ?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Yes);
+				int ret = msgBox.exec();
+				if (ret == QMessageBox::Cancel) { overwrite_flg = 0; }
+				
+			}
+
+			_flg_file = project_name.c_str();
+			_flg_file.append(".flg");
+			_flg_fullpath = path.c_str();
+			_flg_fullpath.append(_flg_file.c_str());
+			if (overwrite_flg == 1)			
+			{
+				cout << "Try to save FLG file" << endl;
+				//write or overwrite FLG file without further question (0)
+				QString qflg(_flg_fullpath.c_str());
+				this->SaveFlagFile(qflg, 1);
+			}
+			stream << _flg_file.c_str() << endl;
+
+		}
+
+		int nselnor = this->NormalLandmarkCollection->GetNumberOfSelectedActors();
+		int nseltar = this->TargetLandmarkCollection->GetNumberOfSelectedActors();
+		int nselnod = this->NodeLandmarkCollection->GetNumberOfSelectedActors();
+		int nselhan = this->HandleLandmarkCollection->GetNumberOfSelectedActors();
+		if (nselnor > 0 || nseltar > 0|| nselnod > 0|| nselhan > 0)
+		{
+			std::string _stv_fullpath;
+			std::string _stv_file;
+			int stv_exists = this->context_file_exists(path, stvExt, project_name);
+			if (stv_exists == 1)
+			{
+				QMessageBox msgBox;
+				msgBox.setText("Landmark/Curve file already exists: overwrite existing STV file ?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+				msgBox.setDefaultButton(QMessageBox::Yes);
+				int ret = msgBox.exec();
+				if (ret == QMessageBox::Cancel) { overwrite_stv = 0; }
+				
+			}
+
+			_stv_file = project_name.c_str();
+			_stv_file.append(".stv");
+			_stv_fullpath = path.c_str();
+			_stv_fullpath.append(_stv_file.c_str());
+			int write = 1;
+			if (overwrite_stv == 1)
+			{
+				//write or overwrite stv file without further question (0)
+				QString qstv(_stv_fullpath.c_str());
+				this->SaveSTVFile(qstv,1);
+			}
+			stream << _stv_file.c_str() << endl;
+			
+		}
+
+		this->ActorCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				std::string _mesh_fullpath;
+				std::string _pos_fullpath;
+				std::string _mesh_file;
+				std::string _pos_file;												
+				_mesh_file = myActor->GetName();
+				_pos_file = myActor->GetName();
+				if (save_surfaces_as_ply == 0)
+				{
+					_mesh_file.append(".vtp");
+				}
+				else
+				{
+					_mesh_file.append(".ply");
+				}
+				_pos_file.append(postfix.c_str());
+				_pos_file.append(".pos");
+
+				_mesh_fullpath = path.c_str();
+					_mesh_fullpath.append(_mesh_file.c_str());
+
+				_pos_fullpath = path.c_str();
+				_pos_fullpath.append(_pos_file.c_str());
+
+				int write = 1;
+				if (overwrite_mesh == 0)
+				{
+					// in that case, check if file exists...								
+					ifstream file2(_mesh_fullpath.c_str());
+					if (file2)
+					{
+						write = 0;
+						file2.close();
+					}
+				}
+				if (write == 1)
+				{
+					//int write_type = 0 : binary or binary LE;
+					int File_type = 1; //: vtk-vtp
+
+					if (save_surfaces_as_ply == 1) { File_type = 2; }//2 = PLY
+	
+					this->SaveSurfaceFile(QString(_mesh_fullpath.c_str()), 0, 0, File_type, 0, myActor);
+				}
+
+				
+
+				write = 1;
+				if (overwrite_pos == 0)
+				{
+					// in that case, check if file exists...								
+					ifstream file2(_pos_fullpath.c_str());
+					if (file2)
+					{
+						write = 0;
+						file2.close();
+					}
+				}
+
+				if (write == 1)
+				{
+					vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+					this->SavePOS(Mat, QString(_pos_fullpath.c_str()));
+				}
+				stream << _mesh_file.c_str() << endl;
+				stream << _pos_file.c_str() << endl;
+				
+				double colors[4];
+				myActor->GetmColor(colors);
+				stream << colors[0]<<" "<< colors[1]<<" "<< colors[2]<<" "<< colors[3] << endl;
+
+					
+				}
+				
+
+			}
+				
+	}
+	file.close();
+	return 1;
+}
+
+void mqMeshToolsCore::SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName)
+{
+
+	std::string POSext = ".pos";
+	std::string POSext2 = ".POS";
+	std::size_t found = fileName.toStdString().find(POSext);
+	std::size_t found2 = fileName.toStdString().find(POSext2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".pos");
+	}
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+
+		stream << "1 0 0 0" << endl;
+		stream << "0 1 0 0" << endl;
+		stream << "0 0 1 0" << endl;
+		stream << "0 0 0 1" << endl;
+
+
+		stream << Mat->GetElement(0, 0) << " " << Mat->GetElement(1, 0) << " " << Mat->GetElement(2, 0) << " " << Mat->GetElement(3, 0) << endl;
+		stream << Mat->GetElement(0, 1) << " " << Mat->GetElement(1, 1) << " " << Mat->GetElement(2, 1) << " " << Mat->GetElement(3, 1) << endl;
+		stream << Mat->GetElement(0, 2) << " " << Mat->GetElement(1, 2) << " " << Mat->GetElement(2, 2) << " " << Mat->GetElement(3, 2) << endl;
+		stream << Mat->GetElement(0, 3) << " " << Mat->GetElement(1, 3) << " " << Mat->GetElement(2, 3) << " " << Mat->GetElement(3, 3) << endl;
+
+
+	}
+	file.close();
+
+
 
 }
 //should only be done after main window is initialized.
@@ -496,7 +963,7 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 }
 
 
-int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms)
+int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
 {
 	// Write_Type 0 : Binary LE or "Default Binary"
 	// Write_Type 1 : Binary BE 
@@ -510,7 +977,8 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 	// File_type 1 : vtk-vtp
 	// File_type 2 : ply
 	
-
+	// If myActor is NULL : => what will be saved is an aggregation of all selected surface objects.
+	// If myActor is not NULL: => what will be saved is the underlying surface object.
 
 
 	std::string STLext(".stl");
@@ -527,48 +995,58 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 	int Ok = 1;
 
 	
-			
-
-	this->ActorCollection->InitTraversal();
-	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	if (myActor == NULL)
 	{
-		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
-		if (myActor->GetSelected() == 1)
+
+		this->ActorCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 		{
-			if (position_mode == 0)
+			vtkMTActor *myActor2 = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor2->GetSelected() == 1)
 			{
-				vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
-				if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+				if (position_mode == 0)
 				{
-					mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
-				}
-			}
-			else
-			{
-				vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
-				if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
-				{
-					vtkSmartPointer<vtkPolyData> toSave = vtkSmartPointer<vtkPolyData>::New();
-					toSave->DeepCopy(vtkPolyData::SafeDownCast(mapper->GetInput()));
-					double ve_init_pos[3];;
-					double ve_final_pos[3];
-					vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
-					
-
-					for (vtkIdType i = 0; i < toSave->GetNumberOfPoints(); i++) {
-						// for every triangle 
-						toSave->GetPoint(i, ve_init_pos);
-						mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);						
-
-						toSave->GetPoints()->SetPoint((vtkIdType)i, ve_final_pos);
+					vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor2->GetMapper());
+					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+					{
+						mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
 					}
-					mergedObjects->AddInputData(toSave);
 				}
-				
+				else
+				{
+					vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor2->GetMapper());
+					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+					{
+						vtkSmartPointer<vtkPolyData> toSave = vtkSmartPointer<vtkPolyData>::New();
+						toSave->DeepCopy(vtkPolyData::SafeDownCast(mapper->GetInput()));
+						double ve_init_pos[3];;
+						double ve_final_pos[3];
+						vtkSmartPointer<vtkMatrix4x4> Mat = myActor2->GetMatrix();
+
+
+						for (vtkIdType i = 0; i < toSave->GetNumberOfPoints(); i++) {
+							// for every triangle 
+							toSave->GetPoint(i, ve_init_pos);
+							mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);
+
+							toSave->GetPoints()->SetPoint((vtkIdType)i, ve_final_pos);
+						}
+						mergedObjects->AddInputData(toSave);
+					}
+
+				}
 			}
-		}		
+		}
 	}
-	
+	else
+	{
+		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		{
+			mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
+		}
+	}
+
 	Ok = 1;
 	mergedObjects->Update();
 	if (save_norms == 0)
@@ -1190,40 +1668,47 @@ void mqMeshToolsCore::DollyCameraForPerspectiveMode()
 
 //On ajoute un indice au nom si le nom existe déjà.
 //fonction recurente pour savoir quel indice lui donner.
-std::string  mqMeshToolsCore::CheckingName(std::string name_obj, int cpt_name) {
+std::string  mqMeshToolsCore::CheckingName(std::string name_obj) {
+	//cout << "check: " << name_obj << endl;
+	int cpt_name = 1;
 	std::string s_cpt_name = std::to_string(cpt_name);
-	std::string name = name_obj + "(" + s_cpt_name + ")";
-	// to do!!!
-	/*
-	string name = *name_obj + "(" + s_cpt_name + ")";
-	OBJECT_MESH *object;
-
-	if (cpt_name == 0){
-	name = *name_obj;
-	}
-
-	if (Cont_Mesh.OBJECTS_ROOT->OBJECTS != NULL){
-	int cpt = 0;
-	object = Cont_Mesh.OBJECTS_ROOT->OBJECTS;
-	while (object != NULL)// on parcours tous les objets
+	std::string name_base = name_obj;
+	std::string postfix = "";
+	size_t nPos = name_obj.find_first_of("(");
+	if (nPos >0 &&nPos<= name_obj.length())
 	{
-	if (object->name == name){// si il existe déjà, on augmente l'indice
-	cpt_name++;
-	cpt++;
-	s_cpt_name = std::to_string(cpt_name);
-	name = *name_obj + "(" + s_cpt_name + ")";
+		//cout << "nPos=" << nPos << endl;		
+		name_base = name_base.substr(0, nPos);
+	}
+	//cout << "name_base: " << name_base << endl;
+	
+	this->ActorCollection->InitTraversal();
+	
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		std::string a_name_base = myActor->GetName();
+		//cout << "actor name: " << a_name_base << endl;
+		std::string apostfix = "";
+		size_t anPos = a_name_base.find_first_of("(");
+		//cout << "AnPos:" << anPos << endl;
+		if (anPos > 0 && anPos <= a_name_base.length())
+		{
+			a_name_base = a_name_base.substr(0, anPos);
+			
+		}
+		//cout << "a_name_base: " << a_name_base<<endl;
+		if (a_name_base.compare(name_base) ==0) {// si il existe déjà, on augmente l'indice
+			
+			cpt_name++;			
+			s_cpt_name = std::to_string(cpt_name);
+			name_obj = name_base + "(" + s_cpt_name+")";
+		}
+
 	}
 
-	object = object->nextobj;
-	}//fin while
-
-	if (cpt == 0)
-	*name_obj = name;
-	else{
-	CheckingName(name_obj, cpt_name);
-	}
-	}
-	*/
+	
+	
 	return name_obj;
 }
 

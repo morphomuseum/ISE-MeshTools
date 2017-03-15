@@ -85,9 +85,12 @@ public:
 	void Setmui_Z2Label(QString label);
 	QString Getmui_DefaultZ2Label();
 	QString Getmui_Z2Label();
+	void SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName);
+	void SaveORI(QString fileName);
+	int SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply);
 	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
-	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0);
+	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0, vtkMTActor *myActor = NULL);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
 	int SaveFlagFile(QString fileName, int save_only_selected);
 	double* Getmui_MeshColor();
@@ -192,7 +195,7 @@ public:
   void ResetCameraOrthoPerspective();
   void SetGridVisibility();
   void SetOrientationHelperVisibility();
-  std::string CheckingName(std::string name_obj, int cpt_name);
+  std::string CheckingName(std::string name_obj);
   vtkMTActor* GetLastActor();
   vtkLMActor* GetLastLandmark(int mode);
   vtkMTActor * GetFirstSelectedActor();
@@ -202,6 +205,7 @@ public:
   void ResetOrientationHelperLabels();
   void CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type = -1);
   static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
+
 protected:
 	
 	~mqMeshToolsCore();
@@ -282,6 +286,11 @@ protected:
 
 private:
 	static mqMeshToolsCore* Instance;
+	std::vector<std::string> g_selected_names;
+	std::vector<std::string> g_distinct_selected_names;
+	void ComputeSelectedNamesLists();
+	int selected_file_exists(std::string path, std::string ext, std::string postfix);
+	int context_file_exists(std::string path, std::string ext, std::string postfix);
 
 };
 
