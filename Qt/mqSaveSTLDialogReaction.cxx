@@ -44,7 +44,7 @@ void mqSaveSTLDialogReaction::onTriggered()
 
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save STL files"), QDir::currentPath(),
+			tr("Save STL files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("STL file (*.stl)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -52,6 +52,8 @@ void mqSaveSTLDialogReaction::onTriggered()
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;
+		QFileInfo fileInfo(fileName);
+		mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
 		/*if (QFile::exists(fileName))
 		{

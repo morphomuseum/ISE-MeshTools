@@ -44,7 +44,7 @@ void mqSavePLYDialogReaction::onTriggered()
 
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save PLY files"), QDir::currentPath(),
+			tr("Save PLY files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("Ply file (*.ply)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -52,6 +52,8 @@ void mqSavePLYDialogReaction::onTriggered()
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;
+		QFileInfo fileInfo(fileName);
+		mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
 		/*if (QFile::exists(fileName))
 		{

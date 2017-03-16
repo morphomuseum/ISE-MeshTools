@@ -81,13 +81,16 @@ void mqSaveFlagsDialog::slotSaveFlagFile()
 	
 	
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Flag files"), QDir::currentPath(),
+			tr("Save Flag files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("Flag file (*.flg)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 	
 	
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 
 	int save_only_selected = 0; //0 no= save all landmark, 1 yes, save only selected landmarks
 	

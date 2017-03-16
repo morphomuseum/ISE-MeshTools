@@ -70,14 +70,18 @@ void mqSaveCURDialogReaction::onTriggered()
 		mqSaveCURDialogReaction::showSaveCURDialog();
 		
 		/*QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save CUR files"), QDir::currentPath(),
+			tr("Save CUR files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("CUR file (*.lmk *.ver)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 
 
 		cout << fileName.toStdString();
-		if (fileName.isEmpty()) return;*/
+		if (fileName.isEmpty()) return;
+		QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
+		*/
 		
 }
 

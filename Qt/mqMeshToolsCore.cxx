@@ -1199,6 +1199,9 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 	return 1;
 }
 
+void mqMeshToolsCore::Setmui_LastUsedDir(QString dir) { this->mui_LastUsedDir = dir; }
+
+QString mqMeshToolsCore::Getmui_LastUsedDir() { return this->mui_LastUsedDir; }
 void mqMeshToolsCore::Setmui_X1Label(QString label) { this->mui_X1Label = label;
 //cout << "this->mui_X1Label " << this->mui_X1Label.toStdString() << endl;
 }
@@ -1237,6 +1240,7 @@ QString mqMeshToolsCore::Getmui_Z2Label() { return this->mui_Z2Label; }
 
 void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
+	
 	cout << "CreateLandmark:" << lmk_type <<", "<< node_type << endl;
 	// lmk_type : 0 for normal landmarks
 	// lmk_type : 1 for target landmarks

@@ -81,13 +81,16 @@ void mqSaveCURDialog::slotSaveCURFile()
 	
 	
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save CUR files"), QDir::currentPath(),
+			tr("Save CUR files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("CUR file (*.cur)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 	
 	
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 
 	int save_only_selected = 0; //0 no= save all landmark, 1 yes, save only selected landmarks
 	

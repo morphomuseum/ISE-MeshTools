@@ -59,6 +59,9 @@ public:
 	int Getmui_DefaultCameraOrtho();
 	int Getmui_CameraOrtho();
 
+	void Setmui_LastUsedDir(QString dir);
+	QString Getmui_LastUsedDir();
+
 	void Setmui_X1Label(QString label);
 	QString Getmui_DefaultX1Label();
 	QString Getmui_X1Label();
@@ -228,6 +231,8 @@ protected:
 	//vtkUndoStack* UndoStack;
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
+
+	QString mui_LastUsedDir;
 	int mui_ShowGrid;
 	int mui_Anaglyph;
 	int mui_ShowOrientationHelper;

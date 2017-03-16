@@ -69,7 +69,7 @@ void mqSaveDataReaction::SavePOS()
 
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save POS files"), QDir::currentPath(),
+			tr("Save POS files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("Pos file (*.pos)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -77,7 +77,9 @@ void mqSaveDataReaction::SavePOS()
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;
-	
+		QFileInfo fileInfo(fileName);
+		mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 	
 		//Save and applies position 
 		//mqMeshToolsCore::instance()->getUndoStack();
@@ -96,11 +98,14 @@ void mqSaveDataReaction::SaveORI()
 	cout << "Save ORI" << endl;
 
 	QString fileName = QFileDialog::getSaveFileName(this->MainWindow,
-		tr("Save orientation file"), QDir::currentPath(),
+		tr("Save orientation file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("orientation file (*.ori)"));
 
 	cout << fileName.toStdString() << endl;;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 	mqMeshToolsCore::instance()->SaveORI(fileName);
 	
 

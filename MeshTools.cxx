@@ -10,6 +10,7 @@
 #include "mqOpenDataReaction.h"
 #include "vtkBezierSurfaceWidget.h"
 #include "vtkBezierSurfaceSource.h"
+#include "vtkBezierCurveSource.h"
 #include "vtkMTActor.h"
 #include "vtkLMActor.h"
 #include "mqMeshToolsCore.h"
@@ -230,6 +231,9 @@ MeshTools::MeshTools()
 
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	cout<<".ini file path"<<  settings.fileName().toStdString()<<endl;
+	settings.beginGroup("paths");
+	this->MeshToolsCore->Setmui_LastUsedDir(settings.value("LastUsedDir", QDir::currentPath()).toString());
+	settings.endGroup();
 	settings.beginGroup("display_options");
 	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
 		this->MeshToolsCore->Getmui_DefaultShowGrid()
@@ -237,6 +241,7 @@ MeshTools::MeshTools()
 	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", 
 		this->MeshToolsCore->Getmui_DefaultShowOrientationHelper()
 		).toInt());
+
 	
 	this->MeshToolsCore->Setmui_X1Label(settings.value("X1Label", this->MeshToolsCore->Getmui_DefaultX1Label()).toString());
 	this->MeshToolsCore->Setmui_X2Label(settings.value("X2Label", this->MeshToolsCore->Getmui_DefaultX2Label()).toString());
@@ -480,6 +485,75 @@ MeshTools::MeshTools()
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
+  double coordn[3], coordh[3];
+  int ntype = 0;
+  double ori[3] = { 0,0,1 };
+  coordn[0] = 1.354248; coordn[1] = -0.626438; coordn[2] = -2.178385; coordh[0] = 1.222689; coordh[1] = -1.005416; coordh[2] = -2.406389; ntype = 1;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn,ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+
+  coordn[0] = 1.464251; coordn[1] = -2.226982; coordn[2] = -2.690520; coordh[0] = 1.860638; coordh[1] = -2.838709; coordh[2] = -2.657773; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+
+
+
+  coordn[0] = 3.013098; coordn[1] = -3.070650; coordn[2] = -1.459866; coordh[0] = 3.224785; coordh[1] = -2.966082; coordh[2] = -0.929692; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+  coordn[0] = 2.836300; coordn[1] = -1.708131; coordn[2] = -0.513360; coordh[0] = 2.564425; coordh[1] = -1.082297; coordh[2] = -0.668335; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+
+  coordn[0] = 2.233098; coordn[1] = -1.087932; coordn[2] = -1.550617; coordh[0] = 2.156392; coordh[1] = -1.129672; coordh[2] = -1.959908; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+
+  coordn[0] = 2.585093; coordn[1] = -1.806201; coordn[2] = -2.384466; coordh[0] = 2.823141; coordh[1] = -2.073554; coordh[2] = -2.431467; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+
+  coordn[0] = 3.445487; coordn[1] = -2.191431; coordn[2] = -1.786449; coordh[0] = 3.575496; coordh[1] = -2.091201; coordh[2] = -1.419548; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+  coordn[0] = 3.336603; coordn[1] = -1.352946; coordn[2] = -1.254958; coordh[0] = 3.188802; coordh[1] = -0.972883; coordh[2] = -1.352247; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+  coordn[0] = 2.974864; coordn[1] = -0.970507; coordn[2] = -1.917987; coordh[0] = 2.945096; coordh[1] = -1.024377; coordh[2] = -2.128181; ntype = 0;
+  mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
+  mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
+
+
+  vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
+	  vtkSmartPointer<vtkBezierCurveSource>::New();
+
+  vtkSmartPointer<vtkPolyDataMapper> Bmapper =
+	  vtkSmartPointer<vtkPolyDataMapper>::New();
+  Bmapper->SetInputConnection(bezierCurve->GetOutputPort());
+
+  vtkSmartPointer<vtkActor> Bactor =
+	  vtkSmartPointer<vtkActor>::New();
+  Bactor->SetMapper(Bmapper);
+
+
+  this->MeshToolsCore->getRenderer()->AddActor(Bactor);
+
   //EXAMPLE vtkBoxWidget
   /*
   vtkSmartPointer<vtkConeSource> coneSource =
@@ -603,18 +677,18 @@ void MeshTools::saveSettings()
 {
 	QSettings settings(QSettings::IniFormat, QSettings::UserScope, "MorphoMuseuM", "MeshTools");
 	//cout<<"try save settings:" << m_sSettingsFile.toStdString();
+
+	settings.beginGroup("paths");
+	settings.setValue("LastUsedDir", this->MeshToolsCore->Getmui_LastUsedDir());
+	settings.endGroup();
+
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->MeshToolsCore->Getmui_ShowGrid());
 	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());
 	settings.setValue("CameraCentreOfMassAtOrigin", this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	settings.setValue("CameraOrtho", this->MeshToolsCore->Getmui_CameraOrtho());
 
-	cout << "X1=" << this->MeshToolsCore->Getmui_X1Label().toStdString() << endl;
-	cout << "X2=" << this->MeshToolsCore->Getmui_X2Label().toStdString() << endl;
-	cout << "Y1=" << this->MeshToolsCore->Getmui_Y1Label().toStdString() << endl;
-	cout << "Y2=" << this->MeshToolsCore->Getmui_Y2Label().toStdString() << endl;
-	cout << "Z1=" << this->MeshToolsCore->Getmui_Z1Label().toStdString() << endl;
-	cout << "Z2=" << this->MeshToolsCore->Getmui_Z2Label().toStdString() << endl;
+	
 	settings.setValue("X1Label", this->MeshToolsCore->Getmui_X1Label());
 	settings.setValue("X2Label", this->MeshToolsCore->Getmui_X2Label());
 	settings.setValue("Y1Label", this->MeshToolsCore->Getmui_Y1Label());

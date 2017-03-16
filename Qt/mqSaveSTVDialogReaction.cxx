@@ -61,15 +61,7 @@ void mqSaveSTVDialogReaction::onTriggered()
 
 		mqSaveSTVDialogReaction::showSaveSTVDialog();
 		
-		/*QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save STV files"), QDir::currentPath(),
-			tr("STV file (*.lmk *.ver)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
-
-		cout << fileName.toStdString();
-		if (fileName.isEmpty()) return;*/
+		
 		
 }
 

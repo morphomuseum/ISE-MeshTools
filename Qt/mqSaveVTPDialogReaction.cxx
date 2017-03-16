@@ -44,7 +44,7 @@ void mqSaveVTPDialogReaction::onTriggered()
 
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save VTK PolyData files"), QDir::currentPath(),
+			tr("Save VTK PolyData files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("VTK PolyData file (*.vtk *.vtp)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -52,6 +52,9 @@ void mqSaveVTPDialogReaction::onTriggered()
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;
+		QFileInfo fileInfo(fileName);
+		mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 
 		/*if (QFile::exists(fileName))
 		{

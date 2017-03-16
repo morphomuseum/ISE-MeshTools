@@ -84,7 +84,7 @@ void mqSaveLandmarksDialog::slotSaveLandmarkFile()
 	if (this->Ui->VER->isChecked())
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), QDir::currentPath(),
+			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("Landmark file (*.ver)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -92,13 +92,16 @@ void mqSaveLandmarksDialog::slotSaveLandmarkFile()
 	if (this->Ui->LMK->isChecked())
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), QDir::currentPath(),
+			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("Landmark file (*.lmk)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 	}
 	
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 
 	int file_type = 0; // 0 VER 1 LMK, 2 => to implement!
 	int save_only_selected = 0; //0 no= save all landmark, 1 yes, save only selected landmarks

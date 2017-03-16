@@ -13,6 +13,8 @@ vtkUndoStackBuilder.cxx
 vtkProbeSource.cxx 
 vtkBezierSurfaceSource.cxx
 vtkBezierSurfaceWidget.cxx
+vtkBezierCurveSource.cxx
+
 
 )
 
@@ -31,6 +33,7 @@ vtkUndoStackInternal.h
 vtkProbeSource.h 
 vtkBezierSurfaceSource.h
 vtkBezierSurfaceWidget.h
+vtkBezierCurveSource.h
 )
 
 #Sorry but we need QT for the undo stack stuff... 

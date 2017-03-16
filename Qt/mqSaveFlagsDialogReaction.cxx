@@ -56,15 +56,7 @@ void mqSaveFlagsDialogReaction::onTriggered()
 
 		mqSaveFlagsDialogReaction::showSaveFlagsDialog();
 		
-		/*QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Flag files"), QDir::currentPath(),
-			tr("Flag file (*.lmk *.ver)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
-
-		cout << fileName.toStdString();
-		if (fileName.isEmpty()) return;*/
+		
 		
 }
 

@@ -84,13 +84,15 @@ void mqSaveNTWDialog::slotSaveNTWFile()
 	
 	
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save NTW files"), QDir::currentPath(),
+			tr("Save NTW files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 			tr("NTW file (*.ntw)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
 	
 	
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
 	int save_ori = 0; //0 no= save all landmark, 1 yes, save only selected landmarks
 	int save_tag = 0;

@@ -50,12 +50,18 @@ void mqOpenDataReaction::OpenMesh()
 	cout << "Open mesh!" << endl;
 	
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load surface"), QDir::currentPath(),
+		tr("Load surface"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("surfaces (*.ply *.stl *.vtk)"));
+
+	
 
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;
+	
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
+	
 	this->OpenMesh(fileName);
 }
 void mqOpenDataReaction::OpenLMK_or_VER(int mode)
@@ -68,12 +74,13 @@ void mqOpenDataReaction::OpenLMK_or_VER(int mode)
 	cout << "Open LMK or VER!" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load landmarks"), QDir::currentPath(),
+		tr("Load landmarks"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("landmark files(*.ver *.lmk)"));
 
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;
-
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 	
 	std::string VERext(".ver");
 	std::string VERext2(".VER");	
@@ -113,12 +120,14 @@ void mqOpenDataReaction::OpenSTV()
 	cout << "Open STV!" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load meshtool landmarks/curve files"), QDir::currentPath(),
+		tr("Load meshtool landmarks/curve files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("Landmark files(*.stv)"));
 
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;
 
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
 	std::string STVext(".stv");
 	std::string STVext2(".STV");
@@ -374,11 +383,13 @@ void mqOpenDataReaction::OpenPOS(int mode)
 	cout << "Open POS" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load position file"), QDir::currentPath(),
+		tr("Load position file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("position file (*.pos)"));
 
 	cout << fileName.toStdString();
 	if (fileName.isEmpty()) return;	
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 	this->OpenPOS(fileName,mode);
 	
 }
@@ -422,11 +433,14 @@ void mqOpenDataReaction::OpenPOSTrans(int mode)
 	cout << "Open transposed POS" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load transposed position file"), QDir::currentPath(),
+		tr("Load transposed position file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("transposed position file (*.pos)"));
 
 	cout << fileName.toStdString() << endl;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 	this->OpenPOSTrans(fileName, mode);
 
 }
@@ -437,11 +451,14 @@ void mqOpenDataReaction::OpenORI()
 	cout << "Open ORI" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load orientation file"), QDir::currentPath(),
+		tr("Load orientation file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("orientation file (*.ori)"));
 
 	cout << fileName.toStdString() << endl;;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 	this->OpenORI(fileName);
 
 }
@@ -451,11 +468,13 @@ void mqOpenDataReaction::OpenFLG()
 	cout << "Open FLG" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load flag file"), QDir::currentPath(),
+		tr("Load flag file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("flag file (*.flg)"));
 
 	cout << fileName.toStdString() << endl;;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 	this->OpenFLG(fileName);
 
 }
@@ -465,11 +484,13 @@ void mqOpenDataReaction::OpenCUR()
 	cout << "Open CUR" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load CUR file"), QDir::currentPath(),
+		tr("Load CUR file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("curve file (*.cur)"));
 
 	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 	this->OpenCUR(fileName);
 
 }
@@ -479,11 +500,14 @@ void mqOpenDataReaction::OpenTAG()
 	cout << "Open CUR" << endl;
 
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load TAG file"), QDir::currentPath(),
+		tr("Load TAG file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("tag file (*.tag)"));
 
 	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
 	this->OpenTAG(fileName);
 
 }
@@ -493,11 +517,13 @@ void mqOpenDataReaction::OpenData()
 	cout << "Open Data!" << endl;
 	
 	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load data"), QDir::currentPath(),
+		tr("Load data"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
 
 	cout << fileName.toStdString()<<endl;
 	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
 	std::string STLext(".stl");
 	std::string STLext2(".STL");
@@ -659,16 +685,25 @@ void mqOpenDataReaction::OpenData()
 
 void mqOpenDataReaction::OpenNTW()
 {
-	cout << "Open NTW!" << endl;
-	//char param1[1000];
+//char param1[1000];
 	int i = 0;
-	
-	QString NTWfile = QFileDialog::getOpenFileName(this->MainWindow,
-		tr("Load project"), QDir::currentPath(),
-		tr("NTW (*.ntw)"));
+	/*
+	mqMeshToolsCore::instance()->Getmui_LastUsedDir()
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
+	*/
+	QString NTWfile = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load project"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+		tr("NTW (*.ntw)"));
+	
 	cout << NTWfile.toStdString() << endl;
 	if (NTWfile.isEmpty()) return;
+	
+	QFileInfo fileInfo(NTWfile);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+	
+
 	this->OpenNTW(NTWfile);
 }
 

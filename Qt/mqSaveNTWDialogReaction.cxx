@@ -95,15 +95,7 @@ void mqSaveNTWDialogReaction::onTriggered()
 
 		mqSaveNTWDialogReaction::showSaveNTWDialog();
 		
-		/*QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save NTW files"), QDir::currentPath(),
-			tr("NTW file (*.lmk *.ver)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
-
-		cout << fileName.toStdString();
-		if (fileName.isEmpty()) return;*/
+		
 		
 }
 

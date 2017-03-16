@@ -70,15 +70,7 @@ void mqSaveLandmarksDialogReaction::onTriggered()
 
 		mqSaveLandmarksDialogReaction::showSaveLandmarksDialog(this->m_lmktype);
 		
-		/*QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), QDir::currentPath(),
-			tr("Landmark file (*.lmk *.ver)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
-
-		cout << fileName.toStdString();
-		if (fileName.isEmpty()) return;*/
+		
 		
 }
 
