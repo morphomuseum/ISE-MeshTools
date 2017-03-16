@@ -21,9 +21,9 @@ public:
 
   void SetNodes(vtkSmartPointer<vtkLMActorCollection> Nodes);
   void SetHandles(vtkSmartPointer<vtkLMActorCollection> Handles);
-  void CreateLandmark(double coord[3], int lmk_type, int node_type = -1);
+  
 protected:
-  vtkBezierCurveSource(vtkSmartPointer<vtkLMActorCollection> Nodes, vtkSmartPointer<vtkLMActorCollection> Handles);
+
   vtkBezierCurveSource();
   ~vtkBezierCurveSource();
   int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);

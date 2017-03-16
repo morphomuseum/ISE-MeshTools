@@ -543,6 +543,10 @@ MeshTools::MeshTools()
   vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
 	  vtkSmartPointer<vtkBezierCurveSource>::New();
 
+  bezierCurve->SetHandles(mqMeshToolsCore::instance()->getHandleLandmarkCollection());
+  bezierCurve->SetNodes(mqMeshToolsCore::instance()->getNodeLandmarkCollection());
+
+  bezierCurve->Update();
   vtkSmartPointer<vtkPolyDataMapper> Bmapper =
 	  vtkSmartPointer<vtkPolyDataMapper>::New();
   Bmapper->SetInputConnection(bezierCurve->GetOutputPort());
