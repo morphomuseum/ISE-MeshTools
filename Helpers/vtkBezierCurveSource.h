@@ -16,7 +16,8 @@ public:
   vtkTypeMacro(vtkBezierCurveSource, vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  vtkPolyData* GetControlPointsOutput();
+  vtkPolyData* GetNodeHandleConnexionOutput();// Output 2
+  vtkPolyData* GetSelectedBezierCurveOutput();// Output 1
   vtkPolyData* GetBezierCurveOutput(); // same as GetOutput()
 
   void SetNodes(vtkSmartPointer<vtkLMActorCollection> Nodes);
@@ -32,8 +33,9 @@ private:
   vtkBezierCurveSource(const vtkBezierCurveSource&);  // Not implemented.
   void operator=(const vtkBezierCurveSource&);  // Not implemented.
 
-  void UpdateControlPointsPolyData(vtkPolyData* pd);
+  void UpdadeNodeHandleConnexionPolyData(vtkPolyData* pd);
   void UpdateBezierCurvePolyData(vtkPolyData* pd);
+  void UpdateSelectedBezierCurvePolyData(vtkPolyData* pd);
 
 private:
 	vtkSmartPointer<vtkLMActorCollection> Nodes;

@@ -10,6 +10,9 @@
 #include "vtkLMActor.h"
 #include "vtkOrientationHelperActor.h"
 #include "vtkOrientationHelperWidget.h"
+#include "vtkBezierCurveSource.h"
+#include <vtkActor.h>
+
 #include <vtkProperty.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
@@ -162,6 +165,16 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->SetRenderer(this->Renderer);
 
+	this-> BezierCurveSource = vtkSmartPointer<vtkBezierCurveSource>::New();
+	this->BezierMapper=vtkSmartPointer<vtkPolyDataMapper>::New();
+
+	BezierMapper->SetInputConnection(this->BezierCurveSource->GetOutputPort(0));
+	BezierActor=vtkSmartPointer<vtkActor>::New();
+
+	BezierActor->SetMapper(BezierMapper);
+	BezierActor->GetProperty()->SetColor(0, 0.5, 0);
+	BezierActor->GetProperty()->SetLineWidth(2.0);
+	//vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
 	this->NormalLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->NormalLandmarkCollection->SetRenderer(this->Renderer);
 	this->TargetLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
@@ -1397,6 +1410,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 		
 		
 		this->NormalLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->ReorderLandmarks();
 		this->NormalLandmarkCollection->SetChanged(1);
 		std::string action = "Create Normal landmark";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1408,6 +1422,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	{
 
 		this->TargetLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->ReorderLandmarks();
 		this->TargetLandmarkCollection->SetChanged(1);
 		std::string action = "Create Target landmark";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1418,6 +1433,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	else if (lmk_type == NODE_LMK)
 	{
 		this->NodeLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->ReorderLandmarks();
 		this->NodeLandmarkCollection->SetChanged(1);
 		std::string action = "Create Curve Node";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1428,6 +1444,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	else if (lmk_type == HANDLE_LMK)
 	{
 		this->HandleLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->ReorderLandmarks();
 		this->HandleLandmarkCollection->SetChanged(1);
 		std::string action = "Create Curve Handle";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1437,6 +1454,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	else if (lmk_type == FLAG_LMK)
 	{
 		this->FlagLandmarkCollection->AddItem(myLM);
+		this->NodeLandmarkCollection->ReorderLandmarks();
 		this->FlagLandmarkCollection->SetChanged(1);
 		std::string action = "Create Flag Landmark";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1571,6 +1589,13 @@ void mqMeshToolsCore::AdjustCameraAndGrid()
 
 }
 
+/*void mqMeshToolsCore::RedrawBezierCurves()
+{
+	
+	//this->BezierCurveSource->Update();
+	cout << "Render" << endl;
+	this->Render();
+}*/
 void mqMeshToolsCore::ResetCameraOrthoPerspective()
 {
 	if (this->Getmui_CameraOrtho() == 1)
@@ -2445,8 +2470,11 @@ void mqMeshToolsCore::Undo(int Count)
 		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
+	//@@ dirty! Recompute bezier curve whatever we do!
 	// To update to take into account reorder!
 	this->NodeLandmarkCollection->Undo(Count);
+	this->NodeLandmarkCollection->ReorderLandmarks();
+	this->NodeLandmarkCollection->Modified();
 
 	this->HandleLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
@@ -2455,8 +2483,14 @@ void mqMeshToolsCore::Undo(int Count)
 		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Undo(Count);
 	}
+	
 	// To update to take into account reorder!
 	this->HandleLandmarkCollection->Undo(Count);
+
+	//@@ dirty! Recompute bezier curve whatever we do!
+	this->HandleLandmarkCollection->ReorderLandmarks();
+	this->HandleLandmarkCollection->Modified();
+
 
 	this->FlagLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
@@ -2517,6 +2551,9 @@ void mqMeshToolsCore::Redo(int Count)
 	}
 	// To update to take into account reorder!
 	this->NodeLandmarkCollection->Redo(Count);
+	//@@ dirty! Recompute bezier curve whatever we do!
+	this->NodeLandmarkCollection->ReorderLandmarks();
+	this->NodeLandmarkCollection->Modified();
 
 	this->HandleLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
@@ -2525,8 +2562,12 @@ void mqMeshToolsCore::Redo(int Count)
 		//cout << "Call MyLMActor undo from core!" << endl;
 		myActor->Redo(Count);
 	}
+
 	// To update to take into account reorder!
 	this->HandleLandmarkCollection->Redo(Count);
+	//@@ dirty! Recompute bezier curve whatever we do!
+	this->HandleLandmarkCollection->ReorderLandmarks();
+	this->HandleLandmarkCollection->Modified();
 
 	this->FlagLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
@@ -2637,7 +2678,15 @@ mqUndoStack* mqMeshToolsCore::getUndoStack()
 return this->UndoStack;
 }
 
+vtkSmartPointer<vtkActor> mqMeshToolsCore::getBezierActor()
+{
+	return this->BezierActor;
+}
 
+vtkSmartPointer<vtkBezierCurveSource> mqMeshToolsCore::getBezierCurveSource()
+{
+	return this->BezierCurveSource;
+}
 vtkSmartPointer<vtkMTActorCollection> mqMeshToolsCore::getActorCollection()
 {
 	return this->ActorCollection;

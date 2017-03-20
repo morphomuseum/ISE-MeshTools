@@ -92,11 +92,11 @@ vtkMTActorCollection::~vtkMTActorCollection()
 }
 void vtkMTActorCollection::AddItem(vtkActor *a)
 {
-	cout << "Add item" << endl;
+	//cout << "Add item" << endl;
 	this->Superclass::AddItem(a);
-	cout << "Item added" << endl;
+	//cout << "Item added" << endl;
 	this->Renderer->AddActor(a);
-	cout << "Actor added to renderer" << endl;
+	//cout << "Actor added to renderer" << endl;
 
 	
 
@@ -209,6 +209,7 @@ void vtkMTActorCollection::DeleteSelectedActors()
 				if (found == 0) { done = 1; }
 			}
 		}
+		this->InitTraversal();
 		// the is not a load call (-1)
 		this->UndoRedo->UndoStack.push_back(vtkMTCollectionUndoRedo::Element(undocoll,DELETE_EVENT, mCount));
 		END_UNDO_SET();

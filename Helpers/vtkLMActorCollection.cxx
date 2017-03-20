@@ -52,6 +52,9 @@ void vtkLMActorCollection::AddItem(vtkActor *a)
 		this->Renderer->AddActor(myActor->GetLMLabelActor2D());
 
 	}
+
+	//because for Bezier Curves, we are watching for a modification event!
+	//this->Modified();	
 }
 
 vtkIdType vtkLMActorCollection::GetNumberOfSelectedActors()
@@ -132,7 +135,27 @@ void vtkLMActorCollection::ReorderLandmarks()
 	}
 
 }
+vtkLMActor* vtkLMActorCollection::GetLandmarkAfter(int num)
+{
+	if (this->AreLandmarksWellOrdered() == 0)
+	{
+		ReorderLandmarks();
 
+	}
+	int next = 1;
+	this->InitTraversal();
+	if (this->GetNumberOfItems() == 0) { return NULL; }
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
+		next = myActor->GetLMNumber();
+		if (next > num) { return myActor; }
+		
+
+	}
+	
+	return NULL;
+}
 int vtkLMActorCollection::GetNextLandmarkNumber()
 {
 	//we assume here that landmarks are well ordered in the collection... 
@@ -321,6 +344,23 @@ void vtkLMActorCollection::PrintSelf(ostream& os, vtkIndent indent)
 	//os << indent << "Selected: "<< this->Selected;
 	
 
+}
+
+vtkLMActor* vtkLMActorCollection::GetNextSelectedActor()
+{
+	int ok = 0;
+	while (ok == 0)
+	{
+		vtkActor *act = this->GetNextActor();
+		if (act == NULL) { return NULL; }
+		std::string str1("vtkLMActor");
+		if (str1.compare(act->GetClassName()) == 0)
+		{
+
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
+			if (myActor->GetSelected() == 1) { return myActor; ok = 1; }
+		}
+	}
 }
 
 /*void vtkLMActorCollection::ApplyChanges()

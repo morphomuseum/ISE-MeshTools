@@ -92,7 +92,7 @@ int MeshTools::getTestInt()
 }*/
 
 
-class vtkMyCallback : public vtkCommand
+/*class vtkMyCallback : public vtkCommand
 {
 public:
 	static vtkMyCallback *New() { return new vtkMyCallback; }
@@ -103,7 +103,28 @@ public:
 		vtkBoxWidget *widget = reinterpret_cast<vtkBoxWidget*>(caller);
 		widget->GetTransform(t);    widget->GetProp3D()->SetUserTransform(t);
 	}
+};*/
+
+
+//When node landmarks or handle landmarks are modified : do this!
+class vtkMyNodeHandleCallBack : public vtkCommand
+{
+public:
+	static vtkMyNodeHandleCallBack *New() { return new vtkMyNodeHandleCallBack; }
+	virtual void Execute(vtkObject *caller, unsigned long, void*)
+	{  
+		
+		//vtkBezierSurfaceSource *surfacesource = reinterpret_cast<vtkBezierSurfaceSource*>(caller);
+		vtkLMActorCollection *node_or_handle = reinterpret_cast<vtkLMActorCollection*>(caller);
+		//cout << "node or handle modified!" << endl;
+		mqMeshToolsCore::instance()->getBezierCurveSource()->Modified();
+		//mqMeshToolsCore::instance()->getBezierCurveSource()->UpdateDataObject();
+		//mqMeshToolsCore::instance()->RedrawBezierCurves();
+		//mqMeshToolsCore::instance()->getBezierCurveSource()->Update();
+		//surfacesource->Update();
+	}
 };
+
 
 //Select meshes, landmarks and tags ... first try!
 void RubberBandSelect(vtkObject* caller,
@@ -485,7 +506,7 @@ MeshTools::MeshTools()
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
   
-  double coordn[3], coordh[3];
+  /*double coordn[3], coordh[3];
   int ntype = 0;
   double ori[3] = { 0,0,1 };
   coordn[0] = 1.354248; coordn[1] = -0.626438; coordn[2] = -2.178385; coordh[0] = 1.222689; coordh[1] = -1.005416; coordh[2] = -2.406389; ntype = 1;
@@ -539,24 +560,29 @@ MeshTools::MeshTools()
   mqMeshToolsCore::instance()->CreateLandmark(coordn, ori, 2, ntype);
   mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
 
+  */
 
-  vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
-	  vtkSmartPointer<vtkBezierCurveSource>::New();
+  mqMeshToolsCore::instance()->getBezierCurveSource()->SetHandles(mqMeshToolsCore::instance()->getHandleLandmarkCollection());
+  mqMeshToolsCore::instance()->getBezierCurveSource()->SetNodes(mqMeshToolsCore::instance()->getNodeLandmarkCollection());
+  
+  
 
-  bezierCurve->SetHandles(mqMeshToolsCore::instance()->getHandleLandmarkCollection());
-  bezierCurve->SetNodes(mqMeshToolsCore::instance()->getNodeLandmarkCollection());
-
-  bezierCurve->Update();
-  vtkSmartPointer<vtkPolyDataMapper> Bmapper =
-	  vtkSmartPointer<vtkPolyDataMapper>::New();
-  Bmapper->SetInputConnection(bezierCurve->GetOutputPort());
-
-  vtkSmartPointer<vtkActor> Bactor =
-	  vtkSmartPointer<vtkActor>::New();
-  Bactor->SetMapper(Bmapper);
+  mqMeshToolsCore::instance()->getBezierCurveSource()->Update();
 
 
-  this->MeshToolsCore->getRenderer()->AddActor(Bactor);
+  vtkSmartPointer<vtkMyNodeHandleCallBack> callback = vtkSmartPointer<vtkMyNodeHandleCallBack>::New();
+  mqMeshToolsCore::instance()->getNodeLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
+  mqMeshToolsCore::instance()->getHandleLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
+  vtkSmartPointer<vtkPolyDataMapper> BezierNHMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+
+  BezierNHMapper->SetInputConnection(mqMeshToolsCore::instance()->getBezierCurveSource()->GetOutputPort(2));
+  vtkSmartPointer<vtkActor> BezierNHActor = vtkSmartPointer<vtkActor>::New();
+
+  BezierNHActor->SetMapper(BezierNHMapper);
+  BezierNHActor->GetProperty()->SetColor(0, 1, 1);
+  
+  this->MeshToolsCore->getRenderer()->AddActor(BezierNHActor);
+  this->MeshToolsCore->getRenderer()->AddActor(mqMeshToolsCore::instance()->getBezierActor());
 
   //EXAMPLE vtkBoxWidget
   /*

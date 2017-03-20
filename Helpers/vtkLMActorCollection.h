@@ -29,10 +29,12 @@ public:
 
 	void PrintSelf(ostream& os, vtkIndent indent);
 	
+	vtkLMActor* GetNextSelectedActor();
 	
 	int GetNextLandmarkNumber();
+	vtkLMActor* GetLandmarkAfter(int num);
 	vtkIdType GetNumberOfSelectedActors();
-
+	void ReorderLandmarks();
 
 protected:
 	
@@ -41,7 +43,7 @@ protected:
 	
 	//virtual void ComputeBoundingBoxLength();
 	virtual void ComputeCenterOfMass();
-	void ReorderLandmarks();
+	
 	int AreLandmarksWellOrdered();
 	//virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
 

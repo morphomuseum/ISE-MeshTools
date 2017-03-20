@@ -181,19 +181,37 @@ void vtkMTInteractorStyle::EndLandmarkMovements()
 		this->EndLandmarkMovements(myActor);
 	}
 	//we reset LMOrigin and LMOrientation
+	int node_modified = 0;
 	this->NodeLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
-		this->EndLandmarkMovements(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			this->EndLandmarkMovements(myActor);
+			node_modified = 1;
+		}
+
 	}
+	if (node_modified == 1) { this->NodeLandmarkCollection->Modified(); }
 	//we reset LMOrigin and LMOrientation
+	
+	int handle_modified = 0;
 	this->HandleLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
-		this->EndLandmarkMovements(myActor);
+		if (myActor->GetSelected() == 1)
+		{
+			this->EndLandmarkMovements(myActor);
+			handle_modified = 1;
+		}
+
 	}
+	
+	if (handle_modified == 1) { this->HandleLandmarkCollection->Modified(); }
+	
+	
 	this->FlagLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
 	{
@@ -607,6 +625,7 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 				  else
 				  {
 					  mqMeshToolsCore::instance()->CreateLandmark(pos, norm, mqMeshToolsCore::instance()->Getmui_LandmarkMode());
+
 					  mqMeshToolsCore::instance()->Render();
 				  }
 
@@ -1914,7 +1933,7 @@ void vtkMTInteractorStyle::PanActors()
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
 		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
+		int nchanged = 0;
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -1935,7 +1954,9 @@ void vtkMTInteractorStyle::PanActors()
 			this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
 
 			myActor->SetChanged(1);
+			nchanged = 1;
 		}
+		//if (nchanged == 1) { this->NodeLandmarkCollection->SetChanged(1); }
 	}
 	this->HandleLandmarkCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)

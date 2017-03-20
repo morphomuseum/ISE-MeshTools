@@ -17,6 +17,7 @@
 #include <QPointer>
 #include "vtkOrientationHelperWidget.h"
 #include "vtkMTActorCollection.h"
+#include "vtkBezierCurveSource.h"
 #include "vtkLMActorCollection.h"
 #include "vtkGridActor.h"
 #include "vtkLMActor.h"
@@ -168,6 +169,9 @@ public:
   {
 	  this->RenderWindow = renwin;
   }
+  
+  vtkSmartPointer<vtkActor> getBezierActor();
+  vtkSmartPointer<vtkBezierCurveSource> getBezierCurveSource();
   vtkSmartPointer<vtkLMActorCollection> getNormalLandmarkCollection();
   vtkSmartPointer<vtkLMActorCollection> getTargetLandmarkCollection();
   vtkSmartPointer<vtkLMActorCollection> getNodeLandmarkCollection();
@@ -213,6 +217,13 @@ protected:
 	
 	~mqMeshToolsCore();
 	//vtkUndoStack* mUndoStack;
+	vtkSmartPointer<vtkBezierCurveSource> BezierCurveSource;
+
+	vtkSmartPointer<vtkPolyDataMapper> BezierMapper;
+
+	vtkSmartPointer<vtkActor> BezierActor;
+	//vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
+
 	vtkSmartPointer<vtkMTActorCollection> ActorCollection;
 	vtkSmartPointer<vtkLMActorCollection> NormalLandmarkCollection;
 	vtkSmartPointer<vtkLMActorCollection> TargetLandmarkCollection;
