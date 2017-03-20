@@ -417,6 +417,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd)
 	  int i= 0;
 	  while (ob_N1 != NULL && ob_N2 != NULL)
 	  {
+
 		  if (ob_N1->GetLMNodeType() == STARTING_NODE) { num_seg++; }
 		  //int selected = this->Is_Segment_Selected(num_seg);
 		  //std::cout<<"Num seg ="<<num_seg<<", selected="<<selected<<std::endl;
@@ -426,7 +427,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd)
 			  
 				  ls[0] = i; ls[1] = i + 1;
 				  cells->InsertNextCell(2, ls);
-				  i++;
+				  
 			  
 			
 		  }
@@ -445,8 +446,10 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd)
 		  
 	  }
 
-
+	  pd->SetLines(cells);
   }
+  
+
   /*else if (num_landmark_D >1 && num_landmark_D == num_landmark_H)
   {
 	  num_seg++;
@@ -657,7 +660,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd)
 		  MyNextActor = vtkLMActor::SafeDownCast(this->Nodes->GetNextActor());
 	  }
   }
-pd->SetLines(cells);
+
 cout << "End update bezier curve poly data!" << endl; 
 */
 
