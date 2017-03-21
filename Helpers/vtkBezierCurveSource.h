@@ -22,7 +22,8 @@ public:
 
   void SetNodes(vtkSmartPointer<vtkLMActorCollection> Nodes);
   void SetHandles(vtkSmartPointer<vtkLMActorCollection> Handles);
-  
+  int GetCurveSegmentNumber();
+  int IsSegmentSelected(int seg);
 protected:
 
   vtkBezierCurveSource();
@@ -32,10 +33,10 @@ protected:
 private:
   vtkBezierCurveSource(const vtkBezierCurveSource&);  // Not implemented.
   void operator=(const vtkBezierCurveSource&);  // Not implemented.
-
+  
   void UpdadeNodeHandleConnexionPolyData(vtkPolyData* pd);
-  void UpdateBezierCurvePolyData(vtkPolyData* pd);
-  void UpdateSelectedBezierCurvePolyData(vtkPolyData* pd);
+  void UpdateBezierCurvePolyData(vtkPolyData* pd, int selected_segments);
+  
 
 private:
 	vtkSmartPointer<vtkLMActorCollection> Nodes;

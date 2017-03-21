@@ -1444,7 +1444,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	else if (lmk_type == HANDLE_LMK)
 	{
 		this->HandleLandmarkCollection->AddItem(myLM);
-		this->NodeLandmarkCollection->ReorderLandmarks();
+		this->HandleLandmarkCollection->ReorderLandmarks();
 		this->HandleLandmarkCollection->SetChanged(1);
 		std::string action = "Create Curve Handle";
 		int mCount = BEGIN_UNDO_SET(action);
@@ -1453,8 +1453,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	}
 	else if (lmk_type == FLAG_LMK)
 	{
-		this->FlagLandmarkCollection->AddItem(myLM);
-		this->NodeLandmarkCollection->ReorderLandmarks();
+		this->FlagLandmarkCollection->AddItem(myLM);		
 		this->FlagLandmarkCollection->SetChanged(1);
 		std::string action = "Create Flag Landmark";
 		int mCount = BEGIN_UNDO_SET(action);
