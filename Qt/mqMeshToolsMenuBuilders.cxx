@@ -88,7 +88,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveSTVDialogReaction(submenuCurves->addAction("Save MeshTools Landmark/Curve file (STV)") << mqSetName("actionSaveSTV2"));
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Nodes Landmarks") << mqSetName("actionSaveNodeLMK"), 2);
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Handle Landmarks") << mqSetName("actionSaveHandleLMK"), 3);
-
+  new mqSaveDataReaction(submenuCurves->addAction("Save curve infos (length per curve segment)") << mqSetName("actionSaveCURInfos"), 17);
 
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected surfaces") << mqSetName("actionOpenPOS"), 8);
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);

@@ -36,7 +36,7 @@ public:
    void SavePOS();
    
    
-   
+   void SaveCURInfos();
    void SaveORI();
    
    
@@ -107,6 +107,10 @@ protected:
 	else if (this->Mode == 16)
 	{
 		
+	}
+	else if (this->Mode == 17)
+	{
+		this->SaveCURInfos();
 	}
   }
 

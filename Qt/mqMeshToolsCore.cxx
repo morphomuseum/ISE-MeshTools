@@ -165,15 +165,31 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->SetRenderer(this->Renderer);
 
-	this-> BezierCurveSource = vtkSmartPointer<vtkBezierCurveSource>::New();
+	this->BezierCurveSource = vtkSmartPointer<vtkBezierCurveSource>::New();
 	this->BezierMapper=vtkSmartPointer<vtkPolyDataMapper>::New();
-
+	this->BezierSelectedMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	BezierMapper->SetInputConnection(this->BezierCurveSource->GetOutputPort(0));
-	BezierActor=vtkSmartPointer<vtkActor>::New();
+	BezierSelectedMapper->SetInputConnection(this->BezierCurveSource->GetOutputPort(1));
+	BezierSelectedActor = vtkSmartPointer<vtkActor>::New();
+	this->BezierActor=vtkSmartPointer<vtkActor>::New();
 
-	BezierActor->SetMapper(BezierMapper);
-	BezierActor->GetProperty()->SetColor(0, 0.5, 0);
-	BezierActor->GetProperty()->SetLineWidth(2.0);
+	this->BezierActor->SetMapper(this->BezierMapper);
+	this->BezierActor->GetProperty()->SetColor(0, 0.5, 0);
+	this->BezierActor->GetProperty()->SetLineWidth(2.0);
+
+	this->BezierSelectedActor->SetMapper(this->BezierSelectedMapper);
+	this->BezierSelectedActor->GetProperty()->SetColor(0.8, 0.2, 0);
+	this->BezierSelectedActor->GetProperty()->SetLineWidth(3.0);
+
+	this->BezierNHMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	this->BezierNHMapper->SetInputConnection(this->BezierCurveSource->GetOutputPort(2));
+	this->BezierNHActor = vtkSmartPointer<vtkActor>::New();
+
+	this->BezierNHActor->SetMapper(this->BezierNHMapper);
+	this->BezierNHActor->GetProperty()->SetColor(0, 1, 1);
+
+	
+
 	//vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
 	this->NormalLandmarkCollection = vtkSmartPointer<vtkLMActorCollection>::New();
 	this->NormalLandmarkCollection->SetRenderer(this->Renderer);
@@ -1906,6 +1922,8 @@ void mqMeshToolsCore::SelectAll(int Count)
 {}
 void mqMeshToolsCore::UnselectAll(int Count)
 {
+	int node_handle_collections_changed = 0;
+	
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
@@ -1931,6 +1949,7 @@ void mqMeshToolsCore::UnselectAll(int Count)
 		if (myActor->GetSelected() == 1 && Count>0)
 		{
 			myActor->SaveState(Count);
+
 		}
 	}
 	this->NodeLandmarkCollection->InitTraversal();
@@ -1940,6 +1959,7 @@ void mqMeshToolsCore::UnselectAll(int Count)
 		if (myActor->GetSelected() == 1 && Count>0)
 		{
 			myActor->SaveState(Count);
+			node_handle_collections_changed = 1;
 		}
 	}
 	this->HandleLandmarkCollection->InitTraversal();
@@ -1949,6 +1969,7 @@ void mqMeshToolsCore::UnselectAll(int Count)
 		if (myActor->GetSelected() == 1 && Count>0)
 		{
 			myActor->SaveState(Count);
+			node_handle_collections_changed = 1;
 		}
 	}
 	this->FlagLandmarkCollection->InitTraversal();
@@ -2038,6 +2059,11 @@ void mqMeshToolsCore::UnselectAll(int Count)
 		}
 
 
+	}
+	if (node_handle_collections_changed == 1)
+	{
+		this->NodeLandmarkCollection->Modified();
+		this->HandleLandmarkCollection->Modified();
 	}
 }
 
@@ -2681,7 +2707,14 @@ vtkSmartPointer<vtkActor> mqMeshToolsCore::getBezierActor()
 {
 	return this->BezierActor;
 }
-
+vtkSmartPointer<vtkActor> mqMeshToolsCore::getBezierSelectedActor()
+{
+	return this->BezierSelectedActor;
+}
+vtkSmartPointer<vtkActor> mqMeshToolsCore::getBezierNHActor()
+{
+	return this->BezierNHActor;
+}
 vtkSmartPointer<vtkBezierCurveSource> mqMeshToolsCore::getBezierCurveSource()
 {
 	return this->BezierCurveSource;

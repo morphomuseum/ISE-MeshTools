@@ -172,6 +172,7 @@ void RubberBandSelect(vtkObject* caller,
 		
 	
 	props->InitTraversal();
+	int landmarks_have_changed = 0;
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		
@@ -199,7 +200,9 @@ void RubberBandSelect(vtkObject* caller,
 					myActor->SetChanged(1);
 					myActor->SetSelected(0);
 
+					
 				}
+				landmarks_have_changed = 1;
 			
 		}
 		std::string str2("vtkMTActor");
@@ -232,6 +235,14 @@ void RubberBandSelect(vtkObject* caller,
 	if (something_to_store == 1)
 	{
 		END_UNDO_SET();
+	}
+	
+	
+	//DIRTY
+	if (landmarks_have_changed == 1)
+	{
+		mqMeshToolsCore::instance()->getNodeLandmarkCollection()->Modified();
+		mqMeshToolsCore::instance()->getHandleLandmarkCollection()->Modified();
 	}
 }
 
@@ -573,7 +584,7 @@ MeshTools::MeshTools()
   vtkSmartPointer<vtkMyNodeHandleCallBack> callback = vtkSmartPointer<vtkMyNodeHandleCallBack>::New();
   mqMeshToolsCore::instance()->getNodeLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
   mqMeshToolsCore::instance()->getHandleLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
-  vtkSmartPointer<vtkPolyDataMapper> BezierNHMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+ /* vtkSmartPointer<vtkPolyDataMapper> BezierNHMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 
   BezierNHMapper->SetInputConnection(mqMeshToolsCore::instance()->getBezierCurveSource()->GetOutputPort(2));
   vtkSmartPointer<vtkActor> BezierNHActor = vtkSmartPointer<vtkActor>::New();
@@ -581,7 +592,9 @@ MeshTools::MeshTools()
   BezierNHActor->SetMapper(BezierNHMapper);
   BezierNHActor->GetProperty()->SetColor(0, 1, 1);
   
-  this->MeshToolsCore->getRenderer()->AddActor(BezierNHActor);
+  this->MeshToolsCore->getRenderer()->AddActor(BezierNHActor);*/
+  this->MeshToolsCore->getRenderer()->AddActor(mqMeshToolsCore::instance()->getBezierNHActor());
+  this->MeshToolsCore->getRenderer()->AddActor(mqMeshToolsCore::instance()->getBezierSelectedActor());
   this->MeshToolsCore->getRenderer()->AddActor(mqMeshToolsCore::instance()->getBezierActor());
 
   //EXAMPLE vtkBoxWidget

@@ -259,7 +259,7 @@ void vtkMTInteractorStyle::StartSelect()
 	if (key.compare("a") == 0)
 	{		
 			//cout << "a pressed!" << endl;
-
+		int node_handle_collections_changed = 0;
 			if (this->Ctrl == CTRL_PRESSED)
 			{
 				std::string action = "Select all actors";
@@ -299,6 +299,7 @@ void vtkMTInteractorStyle::StartSelect()
 					if (myActor->GetSelected() == 0)
 					{
 						myActor->SaveState(Count);
+						node_handle_collections_changed = 1;
 					}
 				}
 				this->HandleLandmarkCollection->InitTraversal();
@@ -308,6 +309,7 @@ void vtkMTInteractorStyle::StartSelect()
 					if (myActor->GetSelected() == 0)
 					{
 						myActor->SaveState(Count);
+						node_handle_collections_changed = 1;
 					}
 				}
 				this->FlagLandmarkCollection->InitTraversal();
@@ -385,6 +387,11 @@ void vtkMTInteractorStyle::StartSelect()
 					}
 				}
 				vtkRenderWindowInteractor *rwi = this->Interactor;
+				if (node_handle_collections_changed == 1)
+				{
+					this->NodeLandmarkCollection->Modified();
+					this->HandleLandmarkCollection->Modified();
+				}
 				rwi->Render();
 			}
 			
@@ -392,6 +399,7 @@ void vtkMTInteractorStyle::StartSelect()
 	}
 	if (key.compare("d") == 0)
 		{
+		
 			if (this->Ctrl == CTRL_PRESSED)
 			{
 

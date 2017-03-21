@@ -24,6 +24,7 @@ public:
   void SetHandles(vtkSmartPointer<vtkLMActorCollection> Handles);
   int GetCurveSegmentNumber();
   int IsSegmentSelected(int seg);
+  double GetCurveSegmentLength(int seg);
 protected:
 
   vtkBezierCurveSource();

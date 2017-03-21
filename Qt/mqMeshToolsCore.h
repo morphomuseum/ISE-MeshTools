@@ -171,6 +171,8 @@ public:
   }
   
   vtkSmartPointer<vtkActor> getBezierActor();
+  vtkSmartPointer<vtkActor> getBezierNHActor();
+  vtkSmartPointer<vtkActor> getBezierSelectedActor();
   vtkSmartPointer<vtkBezierCurveSource> getBezierCurveSource();
   vtkSmartPointer<vtkLMActorCollection> getNormalLandmarkCollection();
   vtkSmartPointer<vtkLMActorCollection> getTargetLandmarkCollection();
@@ -222,7 +224,13 @@ protected:
 	vtkSmartPointer<vtkPolyDataMapper> BezierMapper;
 
 	vtkSmartPointer<vtkActor> BezierActor;
-	//vtkSmartPointer<vtkBezierCurveSource> bezierCurve =
+	vtkSmartPointer<vtkPolyDataMapper> BezierNHMapper;
+
+	vtkSmartPointer<vtkActor> BezierNHActor;
+	vtkSmartPointer<vtkPolyDataMapper> BezierSelectedMapper;
+
+	vtkSmartPointer<vtkActor> BezierSelectedActor;
+	
 
 	vtkSmartPointer<vtkMTActorCollection> ActorCollection;
 	vtkSmartPointer<vtkLMActorCollection> NormalLandmarkCollection;

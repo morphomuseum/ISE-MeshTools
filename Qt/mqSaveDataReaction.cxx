@@ -111,6 +111,48 @@ void mqSaveDataReaction::SaveORI()
 
 }
 
+void mqSaveDataReaction::SaveCURInfos()
+{
+
+	cout << "Save CUR infos" << endl;
+
+	QString fileName = QFileDialog::getSaveFileName(this->MainWindow,
+		tr("Save curve infos (length per curve segment)"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+		tr("text file (*.txt)"));
+
+	cout << fileName.toStdString() << endl;;
+	if (fileName.isEmpty()) return;
+	QFileInfo fileInfo(fileName);
+	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
+	QString CurSegName;
+
+	std::string TXText = ".txt";
+	std::string TXText2 = ".TXT";
+	std::size_t found = fileName.toStdString().find(TXText);
+	std::size_t found2 = fileName.toStdString().find(TXText2);
+	if (found == std::string::npos && found2 == std::string::npos)
+	{
+		fileName.append(".txt");
+	}
+
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+		int num_seg = mqMeshToolsCore::instance()->getBezierCurveSource()->GetCurveSegmentNumber();
+		for (int i = 1; i <= num_seg; i++)
+		{
+			stream << "Curve_segment_" << i << "_length(mm):" << mqMeshToolsCore::instance()->getBezierCurveSource()->GetCurveSegmentLength(i)<<endl;
+		}
+
+	}
+	file.close();
+	
+
+
+}
+
 
 
 //-----------------------------------------------------------------------------

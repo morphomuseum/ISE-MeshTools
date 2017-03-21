@@ -289,14 +289,13 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
   int num_landmark_H = this->Handles->GetNumberOfItems(); 
   int num_landmark_N = this->Nodes->GetNumberOfItems();
   int nbp = num_landmark_H;
-  double vv[3], nn1[3], nn2[3], hh1[3], hh2[3], intvv[3], intvv2[3];
+  double  nn1[3], nn2[3], hh1[3], hh2[3], intvv[3], intvv2[3];
 
   int print = 0;
   num_seg = 0;
-  //if (num_landmark_T == num_landmark_D && num_landmark_T >0)
+  //if (num_landmark_T == num_landmark_N && num_landmark_T >0)
   if (num_landmark_N >1 && num_landmark_N != num_landmark_H)
   {	// in this case, just draw segments
-	  num_seg++;
 	  ob_N1 = this->Nodes->GetLandmarkAfter(0);
 	  ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
 	  ob_Nstart = this->Nodes->GetLandmarkAfter(0);
@@ -316,7 +315,6 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 		  vtkLMActor *MyActor = vtkLMActor::SafeDownCast(this->Nodes->GetNextActor());
 		  vtkMatrix4x4 *Mat = MyActor->GetMatrix();
 		  double lmorigin[3] = { Mat->GetElement(0, 3), Mat->GetElement(1, 3), Mat->GetElement(2, 3) };
-		  double coord[3];
 		  double pt[4];
 		  pt[0] = lmorigin[0];
 		  pt[1] = lmorigin[1];
@@ -329,8 +327,19 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 		  vtkSmartPointer<vtkCellArray>::New();
 	  int ia= 0;	 
 	  int istart=0;
+	  int selected = 0;
 	  while (ob_N1 != NULL)
 	  {
+		  
+		  if (ob_N1->GetLMNodeType() == STARTING_NODE) {
+			  num_seg++; selected = this->IsSegmentSelected(num_seg); 
+			  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		  }
+		  if (ob_N1->GetLMNodeType() == MILESTONE_NODE) { num_seg++; 
+		  num_seg++; selected = this->IsSegmentSelected(num_seg); 
+		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;}
+		  
+		  
 		  if (ob_N1->GetLMNodeType() == CONNECT_NODE) // in that case we should connect that node to the preceding starting point
 		  {
 			  ob_NA = ob_N1; 			  
@@ -346,13 +355,15 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 		  {
 			  if (! (ob_NA->GetLMNodeType() == NORMAL_NODE && ob_NB->GetLMNodeType() == STARTING_NODE))
 			  {
-				  vtkIdType ls[2];
-				  ls[0] = ia;
-				  if(ob_NA->GetLMNodeType() == CONNECT_NODE){ ls[1] = istart; }
-				  else { ls[1] = ia + 1; }
-				 // cout << "connect:" << ls[0] << "," << ls[1] << endl;
-				  cells->InsertNextCell(2, ls);
-
+				  if (selected == selected_segments)
+				  {
+					  vtkIdType ls[2];
+					  ls[0] = ia;
+					  if (ob_NA->GetLMNodeType() == CONNECT_NODE) { ls[1] = istart; }
+					  else { ls[1] = ia + 1; }
+					  // cout << "connect:" << ls[0] << "," << ls[1] << endl;
+					  cells->InsertNextCell(2, ls);
+				  }
 
 
 			  }
@@ -382,7 +393,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 	  vtkSmartPointer<vtkCellArray> cells =
 		  vtkSmartPointer<vtkCellArray>::New();
 	  int cpt = 0;
-	  num_seg++;
+	  cout << "here" << endl;
 	  ob_H1 = this->Handles->GetLandmarkAfter(0);
 	  ob_Hstart = ob_H1;
 	  ob_H2 = this->Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
@@ -390,13 +401,19 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 	  ob_Nstart = ob_N1;
 	  ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
 	  k = 0;
+	  int selected = 0;
+	  cout << "there" << endl;
 	  while (ob_N1 != NULL && ob_H1 != NULL)
 	  {
 
 		  //stop drawing if the second point is a "start" of a new curve
-		  if (ob_N1->GetLMNodeType() == STARTING_NODE) { num_seg++; }
-
-		  //int selected = this->Is_Segment_Selected(num_seg);
+		  if (ob_N1->GetLMNodeType() == STARTING_NODE) { num_seg++; selected = this->IsSegmentSelected(num_seg);
+		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		  }
+		  if (ob_N1->GetLMNodeType() == MILESTONE_NODE) { num_seg++; selected = this->IsSegmentSelected(num_seg);
+		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		  }
+		   
 
 		  if (ob_N1->GetLMNodeType() == CONNECT_NODE) // in that case we should connect that node to the preceding starting point
 		  {
@@ -447,7 +464,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 			  int compute = 1;
 
 			  if (ob_NA->GetLMNodeType() == NORMAL_NODE && ob_NB->GetLMNodeType() == STARTING_NODE) { compute = 0; }
-
+			  if (selected != selected_segments) { compute = 0; }
 			  if (compute == 1)
 			  {
 				  
@@ -481,10 +498,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 
 		  }
 
-		  if (ob_N2 != NULL && ob_N2->GetLMNodeType() == STARTING_NODE)
-		  {
-			  num_seg++;
-		  }
+		 
 		  
 
 		  ind = ob_N1->GetLMNumber();
@@ -533,7 +547,7 @@ int vtkBezierCurveSource::GetCurveSegmentNumber()
 		std::cout<<std::endl<<"Start count segments curve";
 	}
 	num_seg=0;
-	//if (num_landmark_T == num_landmark_D && num_landmark_T >0)
+	//if (num_landmark_T == num_landmark_N && num_landmark_T >0)
 	if (num_landmark_N >1)
 	{
 		ob_N1 = this->Nodes->GetLandmarkAfter(0);
@@ -550,70 +564,70 @@ int vtkBezierCurveSource::GetCurveSegmentNumber()
 	}
 	return num_seg;
 }
-/*
+
 int vtkBezierCurveSource::IsSegmentSelected(int seg)
 {
 	// Ici, on cherche à savoir si il y a au moins un node/handle
 	// sélectionnée pour le segment donné.
 
-	vtkLMActor *ob_H1, *ob_H2, *ob_D1, *ob_D2;
+	vtkLMActor *ob_H1, *ob_H2, *ob_N1, *ob_N2;
 	ob_H1 = NULL;
-	ob_D1 = NULL;
+	ob_N1 = NULL;
 	ob_H2 = NULL;
-	ob_D2 = NULL;
+	ob_N2 = NULL;
 
 
-	int selected = 0;
-	int k, m, num_seg, ind, ind2, indh, indh2;
+	int seg_selected = 0;
+	int k, num_seg, ind, ind2, indh, indh2;
 
 
 	int num_landmark_H = this->Handles->GetNumberOfItems();  //handle number
 	int num_landmark_N = this->Nodes->GetNumberOfItems(); 	//node number
 	int nbp = num_landmark_H;
 	
-	float vv[3], dd1[3], dd2[3], hh1[3], hh2[3], intvv[3], intvv2[3];
+	
 
 	int print = 0;
 	num_seg = 0;
-	//if (num_landmark_T == num_landmark_D && num_landmark_T >0)
+	//if (num_landmark_T == num_landmark_N && num_landmark_T >0)
 	if (num_landmark_N >1 && num_landmark_N != num_landmark_H)
 	{	// in this case only check nodes
-		num_seg++;
-		ob_D1 = landmarkafter(0, 0);
-		ob_D2 = landmarkafter(1, 0);
-
-		while (ob_D1 != NULL)
+		num_seg=1;
+		ob_N1 = this->Nodes->GetLandmarkAfter(0);
+		ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber()); 
+		int current_seg_selected = 0;
+		while (ob_N1 != NULL )
 		{
 
-			//stop drawing if the second point is a "start" of a new curve
-			if (ob_D1 != NULL && ob_D1->selected == 1) { selected = 1; }
+			
+			if (ob_N1 != NULL && ob_N1->GetSelected() == 1 ) { current_seg_selected =1; }
 
-			if (ob_D1->Is_Curve_Start() == 2) {
-				if (seg == num_seg) { return selected; }
-				num_seg++;
-				selected = 0;
+			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
+				if (seg == num_seg ) { return current_seg_selected; }//milestone involves 2 segments current+next
+				num_seg++;				
+				current_seg_selected = ob_N1->GetSelected();
 
 			}
 
-			if (ob_D2 != NULL && ob_D2->Is_Curve_Start() == 1)
+			if (ob_N2 != NULL && ob_N2->GetLMNodeType() == STARTING_NODE)
 			{
-				if (seg == num_seg) { return selected; }
+				if (seg == num_seg) { return current_seg_selected; }
 				num_seg++;
-				selected = 0;
+				current_seg_selected = 0;
 			}
-			ind = ob_D1->landmark_index;
+			ind = ob_N1->GetLMNumber();
 
-			ob_D1 = landmarkafter(ind, 0);
-			if (ob_D1 != NULL)
+			ob_N1 = this->Nodes->GetLandmarkAfter(ind); 
+			if (ob_N1 != NULL)
 			{
-				ind2 = ob_D1->landmark_index;
-				ob_D2 = landmarkafter(ind2, 0);
+				ind2 = ob_N1->GetLMNumber();
+				ob_N2 = this->Nodes->GetLandmarkAfter(ind2);
 			}
 
 		}
 		if (num_seg == seg)
 		{
-			return selected;
+			return current_seg_selected;
 		}
 		else
 		{
@@ -622,627 +636,327 @@ int vtkBezierCurveSource::IsSegmentSelected(int seg)
 
 
 	}
-	else if (num_landmark_D >1 && num_landmark_D == num_landmark_H)
+	else if (num_landmark_N >1 && num_landmark_N == num_landmark_H)
 	{
-		num_seg++;
-		ob_H1 = landmarkafter(0, 1);
-		ob_H2 = landmarkafter(1, 1);
-		ob_D1 = landmarkafter(0, 0);
-		ob_D2 = landmarkafter(1, 0);
+		
+		ob_H1 = this->Handles->GetLandmarkAfter(0);
+		ob_H2 = this->Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
+		ob_N1 = this->Nodes->GetLandmarkAfter(0);
+		ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
 		k = 0;
-
-		while (ob_D1 != NULL)
+		int current_seg_selected = 0;
+		num_seg = 1;
+		while (ob_N1 != NULL && ob_H1 != NULL)
 		{
 
-			//stop drawing if the second point is a "start" of a new curve
-			if (
-				ob_D1 != NULL&& ob_H1 != NULL && (
-					ob_H1->selected == 1 || ob_D1->selected == 1)
-				) {
-				selected = 1;
-			}
-
-			if (ob_D1->Is_Curve_Start() == 2) {
-				if (seg == num_seg) { return selected; }
-				num_seg++;
-				selected = 0;
-
-			}
-
-			if (ob_D2 != NULL && ob_D2->Is_Curve_Start() == 1)
+			if (ob_H1->GetSelected() == 1 || ob_N1->GetSelected() == 1)
 			{
-				if (seg == num_seg) { return selected; }
+				current_seg_selected = 1;
+			}						
+			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
+				if (seg == num_seg) { return current_seg_selected; }//milestone involves 2 segments current+next
 				num_seg++;
-				selected = 0;
-			}
-			ind = ob_D1->landmark_index;
-			indh = ob_H1->landmark_index;
+				current_seg_selected = ob_N1->GetSelected();
+				if (ob_H1->GetSelected() == 1) { current_seg_selected = 1; }
 
-			ob_H1 = landmarkafter(indh, 1);
-			ob_D1 = landmarkafter(ind, 0);
-			if (ob_D1 != NULL)
+			}
+
+			if (ob_N2 != NULL && ob_N2->GetLMNodeType() == STARTING_NODE)
 			{
-				ind2 = ob_D1->landmark_index;
-				ob_D2 = landmarkafter(ind2, 0);
+				if (seg == num_seg) { return current_seg_selected; }
+				num_seg++;
+				current_seg_selected = ob_N2->GetSelected();
+			}
+		
+
+			
+			
+			ind = ob_N1->GetLMNumber();
+			indh = ob_H1->GetLMNumber();
+
+			ob_H1 = this->Handles->GetLandmarkAfter(indh);
+			ob_N1 = this->Nodes->GetLandmarkAfter(ind);
+			if (ob_N1 != NULL)
+			{
+				ind2 = ob_N1->GetLMNumber();
+				ob_N2 = this->Nodes->GetLandmarkAfter(ind2);
 			}
 			if (ob_H1 != NULL)
 			{
-				indh2 = ob_H1->landmark_index;
-				ob_H2 = landmarkafter(indh2, 1);
+				indh2 = ob_H1->GetLMNumber();
+				ob_H2 = this->Handles->GetLandmarkAfter(indh2);
 			}
 
 		}
+		if (num_seg == seg)
+		{
+			return current_seg_selected;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
-	if (num_seg == seg)
-	{
-		return selected;
-	}
-	else
+	return 0;
+}
+
+
+double vtkBezierCurveSource::GetCurveSegmentLength(int seg)
+{
+	double length = 0;
+	
+
+	cout << "curve length!" << endl;
+	// First a rigid line between node landmarks.
+	if (this->Nodes == NULL)
 	{
 		return 0;
 	}
-}
-*/
-/*
-float CONTAINER_MESH::Get_Curve_Segment_Length(int seg)
-{
-
-float length=0;
-OBJECT_LANDMARK *ob_H1, *ob_H2, *ob_D1,*ob_D2, *ob_Dstart, *ob_Hstart, *ob_HA,*ob_HB, *ob_DA, *ob_DB;
-ob_H1=NULL;
-ob_D1=NULL;
-ob_H2=NULL;
-ob_D2=NULL;
-ob_Hstart=NULL;
-ob_Dstart=NULL;
-ob_DA=NULL;
-ob_DB=NULL;
-ob_HA=NULL;
-ob_HB=NULL;
-
-int k,m,num_seg, ind, ind2, indh, indh2;
-int nint=1002; // will iterate nint , to draw nint+1 lines, that is nint+2 points
-float t;
-
-int num_landmark_H = Get_Landmark_Number (1); //target
-int num_landmark_D = Get_Landmark_Number (0);	//def
-int nbp = num_landmark_H;
-glMatrix wc_mat;
-float vv[3], dd1[3],dd2[3], hh1[3], hh2[3], intvv[3],intvv2[3];
-
-int print = 0;
-
-num_seg=0;
-//if (num_landmark_T == num_landmark_D && num_landmark_T >0)
-if (num_landmark_D >1 && num_landmark_D == num_landmark_H)
-{
-num_seg++;
-
-
-ob_H1 = landmarkafter (0, 1);
-ob_Hstart = landmarkafter (0, 1);
-ob_H2 = landmarkafter (1, 1);
-ob_D1 = landmarkafter (0, 0);
-ob_Dstart = landmarkafter (0, 0);
-ob_D2 = landmarkafter (1, 0);
-k= 0;
-while ( ob_D1 != NULL )
-{
-//stop drawing if the second point is a "start" of a new curve
-if (ob_D1->Is_Curve_Start() ==2){num_seg++;}
-//Get world coordinates of landmark number ind on the target;
-if (ob_D1->Is_Curve_Start() ==3)
-{
-ob_DA=ob_D1;
-ob_HA=ob_H1;
-ob_DB=ob_Dstart;
-ob_HB=ob_Hstart;
-
-}
-else
-{
-ob_DA=ob_D1;
-ob_HA=ob_H1;
-if (ob_D2 !=NULL)
-{
-ob_DB=ob_D2;
-ob_HB=ob_H2;
-}
-else
-{
-ob_DB=ob_D1;
-ob_HB=ob_H1;
-}
-
-}
-
-ob_DA->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd1, wc_mat);
-
-
-ob_DB->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd2, wc_mat);
-
-ob_HA->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, hh1, wc_mat);
-
-ob_HB->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, hh2, wc_mat);
-
-//trick : second handle is mirrored relative to the second point!
-hh2[0]= dd2[0]-(hh2[0]-dd2[0]);
-hh2[1]= dd2[1]-(hh2[1]-dd2[1]);
-hh2[2]= dd2[2]-(hh2[2]-dd2[2]);
 
 
-// At this stage : we have all the input we need!
-// Just draw the Bezier curve between dd1 and dd2
 
-//we draw a negment in two cases
-// 1st point is "3" then we have to and next point is "
-//compute something in all cases except when
-//- D2 is 1 (clean start) and D1 is not a 3 (close curve)
-// D2 is null and D1 is not a 3.
-int compute = 1;
-if (ob_D2 ==NULL && ob_D1->Is_Curve_Start()!=3){compute =0;}
-if (ob_D2 !=NULL && ob_D2->Is_Curve_Start()==1&& ob_D1->Is_Curve_Start()!=3){compute =0;}
-
-
-if (compute==1)
-{
-
-
-for (m=0; m<=nint; m++)
-{
-
-// t is [0.. 1]
-t = (((float)m))/(((float)nint+1));
-intvv[0]=  (1-t)*(1-t)*(1-t)*dd1[0] +3*(1-t)*(1-t)*t*hh1[0]+3*(1-t)*t*t*hh2[0]+t*t*t*dd2[0];
-intvv[1]=  (1-t)*(1-t)*(1-t)*dd1[1] +3*(1-t)*(1-t)*t*hh1[1]+3*(1-t)*t*t*hh2[1]+t*t*t*dd2[1];
-intvv[2]=  (1-t)*(1-t)*(1-t)*dd1[2] +3*(1-t)*(1-t)*t*hh1[2]+3*(1-t)*t*t*hh2[2]+t*t*t*dd2[2];
-
-
-t = (((float)m+1))/(((float)nint+1));
-intvv2[0]=  (1-t)*(1-t)*(1-t)*dd1[0] +3*(1-t)*(1-t)*t*hh1[0]+3*(1-t)*t*t*hh2[0]+t*t*t*dd2[0];
-intvv2[1]=  (1-t)*(1-t)*(1-t)*dd1[1] +3*(1-t)*(1-t)*t*hh1[1]+3*(1-t)*t*t*hh2[1]+t*t*t*dd2[1];
-intvv2[2]=  (1-t)*(1-t)*(1-t)*dd1[2] +3*(1-t)*(1-t)*t*hh1[2]+3*(1-t)*t*t*hh2[2]+t*t*t*dd2[2];
-if (seg == num_seg)
-{
-length += sqrt ((intvv[0]-intvv2[0])*(intvv[0]-intvv2[0])+
-(intvv[1]-intvv2[1])*(intvv[1]-intvv2[1])+
-(intvv[2]-intvv2[2])*(intvv[2]-intvv2[2])
-);
-}
-
-
-}//end for
-
-
-}// end if start ==0
-
-
-if (ob_D2!=NULL && ob_D2->Is_Curve_Start() ==1 )
-{
-num_seg++;
-}
-
-
-ind = ob_D1->landmark_index;
-indh = ob_H1->landmark_index;
-
-ob_H1 = landmarkafter (indh, 1);
-ob_D1 = landmarkafter (ind, 0);
-if (ob_D1 !=NULL)
-{
-ind2 = ob_D1->landmark_index;
-ob_D2 = landmarkafter (ind2, 0);
-}
-if (ob_H1 !=NULL)
-{
-indh2 = ob_H1->landmark_index;
-ob_H2 = landmarkafter (indh2, 1);
-}
-if (ob_D1!=NULL&& ob_D1->Is_Curve_Start() ==1 ){
-ob_Hstart = ob_H1;
-ob_Dstart = ob_D1;
-
-}
-
-k++;
-}
-}
-return length;
-}
-
-int CONTAINER_MESH::Is_Segment_Selected(int seg)
-{
-// Ici, on cherche à savoir si il y a au moins un landmark/poignée
-// sélectionnée pour le segment donné.
-
-OBJECT_LANDMARK *ob_H1, *ob_H2, *ob_D1,*ob_D2;
-ob_H1=NULL;
-ob_D1=NULL;
-ob_H2=NULL;
-ob_D2=NULL;
-
-
-int selected =0;
-int k,m,num_seg, ind, ind2, indh, indh2;
-
-
-int num_landmark_H = Get_Landmark_Number (1); //target
-int num_landmark_D = Get_Landmark_Number (0);	//def
-int nbp = num_landmark_H;
-glMatrix wc_mat;
-float vv[3], dd1[3],dd2[3], hh1[3], hh2[3], intvv[3],intvv2[3];
-
-int print = 0;
-num_seg=0;
-//if (num_landmark_T == num_landmark_D && num_landmark_T >0)
-if (num_landmark_D >1 && num_landmark_D != num_landmark_H)
-{	// in this case, just draw segments
-num_seg++;
-ob_D1 = landmarkafter (0, 0);
-ob_D2 = landmarkafter (1, 0);
-
-while ( ob_D1 != NULL )
-{
-
-//stop drawing if the second point is a "start" of a new curve
-if (ob_D1 != NULL && ob_D1->selected ==1){selected =1;}
-
-if (ob_D1->Is_Curve_Start() ==2){
-if (seg == num_seg){return selected;}
-num_seg++;
-selected=0;
-
-}
-
-if (ob_D2!=NULL && ob_D2->Is_Curve_Start() ==1 )
-{
-if (seg == num_seg){return selected;}
-num_seg++;
-selected=0;
-}
-ind = ob_D1->landmark_index;
-
-ob_D1 = landmarkafter (ind, 0);
-if (ob_D1 !=NULL)
-{
-ind2 = ob_D1->landmark_index;
-ob_D2 = landmarkafter (ind2, 0);
-}
-
-}
-if (num_seg == seg)
-{
-return selected;
-}
-else
-{return 0;}
-
-
-}
-else if (num_landmark_D >1 && num_landmark_D == num_landmark_H)
-{
-num_seg++;
-ob_H1 = landmarkafter (0, 1);
-ob_H2 = landmarkafter (1, 1);
-ob_D1 = landmarkafter (0, 0);
-ob_D2 = landmarkafter (1, 0);
-k= 0;
-
-while ( ob_D1 != NULL )
-{
-
-//stop drawing if the second point is a "start" of a new curve
-if (
-ob_D1 != NULL&& ob_H1 != NULL &&(
-ob_H1->selected ==1 ||ob_D1->selected ==1)
-){selected =1;}
-
-if (ob_D1->Is_Curve_Start() ==2){
-if (seg == num_seg){return selected;}
-num_seg++;
-selected=0;
-
-}
-
-if (ob_D2!=NULL && ob_D2->Is_Curve_Start() ==1 )
-{
-if (seg == num_seg){return selected;}
-num_seg++;
-selected=0;
-}
-ind = ob_D1->landmark_index;
-indh = ob_H1->landmark_index;
-
-ob_H1 = landmarkafter (indh, 1);
-ob_D1 = landmarkafter (ind, 0);
-if (ob_D1 !=NULL)
-{
-ind2 = ob_D1->landmark_index;
-ob_D2 = landmarkafter (ind2, 0);
-}
-if (ob_H1 !=NULL)
-{
-indh2 = ob_H1->landmark_index;
-ob_H2 = landmarkafter (indh2, 1);
-}
-
-}
-}
-
-if (num_seg == seg)
-{
-return selected;
-}
-else
-{return 0;}
-}
-void CONTAINER_MESH::Mesh_Draw_Curve()
-{
-
-glLineWidth(2);
-glDisable(GL_LIGHTING);
-GLfloat green5[] = {0., .5, 0., 1.};
-GLfloat blue[] = {0.2, .2, .8, 1.};
-GLfloat red[] = {1.0, .2, .2, 1.};
-
-glColor3f(green5[0], green5[1], green5[2]);
-OBJECT_LANDMARK *ob_H1, *ob_H2, *ob_D1,*ob_D2, *ob_Dstart, *ob_Hstart, *ob_HA,*ob_HB, *ob_DA, *ob_DB;
-ob_H1=NULL;
-ob_D1=NULL;
-ob_H2=NULL;
-ob_D2=NULL;
-ob_Hstart=NULL;
-ob_Dstart=NULL;
-ob_DA=NULL;
-ob_DB=NULL;
-ob_HA=NULL;
-ob_HB=NULL;
-
-
-int k,m,num_seg, ind, ind2, indh, indh2;
-int nint=98; // will iterate nint , to draw nint+1 lines, that is nint+2 points
-float t;
-
-int num_landmark_H = Get_Landmark_Number (1); //target
-int num_landmark_D = Get_Landmark_Number (0);	//def
-int nbp = num_landmark_H;
-glMatrix wc_mat;
-float vv[3], dd1[3],dd2[3], hh1[3], hh2[3], intvv[3],intvv2[3];
-
-int print = 0;
-num_seg=0;
-//if (num_landmark_T == num_landmark_D && num_landmark_T >0)
-if (num_landmark_D >1 && num_landmark_D != num_landmark_H)
-{	// in this case, just draw segments
-num_seg++;
-ob_D1 = landmarkafter (0, 0);
-ob_D2 = landmarkafter (1, 0);
-k= 0;
-
-
-
-while ( ob_D1 != NULL && ob_D2 != NULL)
-{
-if (ob_D1->Is_Curve_Start() ==2){num_seg++;}
-int selected = this->Is_Segment_Selected(num_seg);
-//std::cout<<"Num seg ="<<num_seg<<", selected="<<selected<<std::endl;
-if (ob_D2->Is_Curve_Start() ==0 || ob_D2->Is_Curve_Start() ==2)
-{
-//Get world coordinates of landmark number ind on the target;
-ob_D1->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd1, wc_mat);
-
-ob_D2->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd2, wc_mat);
-if (selected ==0)
-{
-glLineWidth(2);
-glColor3f(green5[0], green5[1], green5[2]);
-}
-else
-{
-glLineWidth(4);
-glColor3f(red[0], red[1], red[2]);
-}
-glBegin (GL_LINES);
-glVertex3d(dd1[0],dd1[1],dd1[2]);
-glVertex3d(dd2[0],dd2[1],dd2[2]);
-glEnd();
-}
-if (ob_D2!=NULL && ob_D2->Is_Curve_Start() ==1 )
-{
-num_seg++;
-}
-ind = ob_D1->landmark_index;
-ob_D1 = landmarkafter (ind, 0);
-if (ob_D1 !=NULL)
-{
-ind2 = ob_D1->landmark_index;
-ob_D2 = landmarkafter (ind2, 0);
-}
-k++;
+	vtkLMActor  * ob_H1, *ob_H2, *ob_N1, *ob_N2, *ob_Nstart, *ob_Hstart, *ob_HA, *ob_HB, *ob_NA, *ob_NB;
+	ob_H1 = NULL;
+	ob_N1 = NULL;
+	ob_H2 = NULL;
+	ob_N2 = NULL;
+	ob_Hstart = NULL;
+	ob_Nstart = NULL;
+	ob_NA = NULL;
+	ob_NB = NULL;
+	ob_HA = NULL;
+	ob_HB = NULL;
+
+
+	int k, m, num_seg, ind, ind2, indh, indh2;
+	int nint = 98; // will iterate nint , to draw nint+1 lines, that is nint+2 points
+	double t;
+
+	int num_landmark_H = this->Handles->GetNumberOfItems();
+	int num_landmark_N = this->Nodes->GetNumberOfItems();
+	int nbp = num_landmark_H;
+	double  nn1[3], nn2[3], hh1[3], hh2[3], intvv[3], intvv2[3];
+
+	int print = 0;
+	num_seg = 0;
+	//if (num_landmark_T == num_landmark_N && num_landmark_T >0)
+	if (num_landmark_N >1 && num_landmark_N != num_landmark_H)
+	{	// in this case, just draw segments
+		ob_N1 = this->Nodes->GetLandmarkAfter(0);
+		ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
+		ob_Nstart = this->Nodes->GetLandmarkAfter(0);
+
+
+		k = 0;
+	
+
+		while (ob_N1 != NULL)
+		{
+
+			if (ob_N1->GetLMNodeType() == STARTING_NODE) {
+				num_seg++; 
+				cout << "num_seg:" << num_seg  << endl;
+			}
+			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
+				num_seg++;
+				num_seg++; 
+				cout << "num_seg:" << num_seg<< endl;
+			}
+
+
+			if (ob_N1->GetLMNodeType() == CONNECT_NODE) // in that case we should connect that node to the preceding starting point
+			{
+				ob_NA = ob_N1;
+				ob_NB = ob_Nstart;
+
+			}
+			else
+			{
+				ob_NA = ob_N1;
+				ob_NB = ob_N2;
+			}
+			if (ob_NB != NULL)
+			{
+				if (!(ob_NA->GetLMNodeType() == NORMAL_NODE && ob_NB->GetLMNodeType() == STARTING_NODE))
+				{
+					if (num_seg == seg)
+					{
+						double len = 0;
+						vtkMatrix4x4 *MatNA = ob_NA->GetMatrix();
+						nn1[0] = MatNA->GetElement(0, 3);
+						nn1[1] = MatNA->GetElement(1, 3);
+						nn1[2] = MatNA->GetElement(2, 3);
+
+						vtkMatrix4x4 *MatNB = ob_NB->GetMatrix();
+						nn2[0] = MatNB->GetElement(0, 3);
+						nn2[1] = MatNB->GetElement(1, 3);
+						nn2[2] = MatNB->GetElement(2, 3);
+						len = sqrt((nn1[0] - nn2[0])*(nn1[0] - nn2[0]) + (nn1[1] - nn2[1])*(nn1[1] - nn2[1]) + (nn1[2] - nn2[2])*(nn1[2] - nn2[2]));
+						
+						// cout << "connect:" << ls[0] << "," << ls[1] << endl;
+						length += len;
+					}
+
+
+				}
+
+
+			}
+			if (ob_N2 != NULL && ob_N2->GetLMNodeType() == STARTING_NODE) { ob_Nstart = ob_N2; }
+
+			ind = ob_N1->GetLMNumber();
+			ob_N1 = this->Nodes->GetLandmarkAfter(ind);
+			if (ob_N1 != NULL)
+			{
+				ind2 = ob_N1->GetLMNumber();
+				ob_N2 = this->Nodes->GetLandmarkAfter(ind2);
+
+			}
+			
+		}
+
+		
+	}
+
+	else if (num_landmark_N >1 && num_landmark_N == num_landmark_H)
+	{
+			int cpt = 0;
+		cout << "here" << endl;
+		ob_H1 = this->Handles->GetLandmarkAfter(0);
+		ob_Hstart = ob_H1;
+		ob_H2 = this->Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
+		ob_N1 = this->Nodes->GetLandmarkAfter(0);
+		ob_Nstart = ob_N1;
+		ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
+		k = 0;
+		
+		while (ob_N1 != NULL && ob_H1 != NULL)
+		{
+
+			//stop drawing if the second point is a "start" of a new curve
+			if (ob_N1->GetLMNodeType() == STARTING_NODE) {
+				num_seg++;
+				cout << "num_seg:" << num_seg  << endl;
+			}
+			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
+				num_seg++;
+				cout << "num_seg:" << num_seg  << endl;
+			}
+
+
+			if (ob_N1->GetLMNodeType() == CONNECT_NODE) // in that case we should connect that node to the preceding starting point
+			{
+				ob_NA = ob_N1;
+				ob_NB = ob_Nstart;
+				ob_HA = ob_H1;
+				ob_HB = ob_Hstart;
+
+			}
+			else
+			{
+				ob_NA = ob_N1;
+				ob_HA = ob_H1;
+				ob_NB = ob_N2;
+				ob_HB = ob_H2;
+			}
+
+			if (ob_NB != NULL && ob_HB != NULL)
+			{
+				vtkMatrix4x4 *MatNA = ob_NA->GetMatrix();
+				nn1[0] = MatNA->GetElement(0, 3);
+				nn1[1] = MatNA->GetElement(1, 3);
+				nn1[2] = MatNA->GetElement(2, 3);
+
+				vtkMatrix4x4 *MatNB = ob_NB->GetMatrix();
+				nn2[0] = MatNB->GetElement(0, 3);
+				nn2[1] = MatNB->GetElement(1, 3);
+				nn2[2] = MatNB->GetElement(2, 3);
+
+				vtkMatrix4x4 *MatHA = ob_HA->GetMatrix();
+				hh1[0] = MatHA->GetElement(0, 3);
+				hh1[1] = MatHA->GetElement(1, 3);
+				hh1[2] = MatHA->GetElement(2, 3);
+
+				vtkMatrix4x4 *MatHB = ob_HB->GetMatrix();
+				hh2[0] = MatHB->GetElement(0, 3);
+				hh2[1] = MatHB->GetElement(1, 3);
+				hh2[2] = MatHB->GetElement(2, 3);
+
+				//trick : second handle is mirrored relative to the second point!
+				hh2[0] = nn2[0] - (hh2[0] - nn2[0]);
+				hh2[1] = nn2[1] - (hh2[1] - nn2[1]);
+				hh2[2] = nn2[2] - (hh2[2] - nn2[2]);
+
+				// At this stage : we have all the input we need!
+				// Just draw the Bezier curve between nn1 and nn2
+
+				int compute = 1;
+
+				if (ob_NA->GetLMNodeType() == NORMAL_NODE && ob_NB->GetLMNodeType() == STARTING_NODE) { compute = 0; }
+				if (seg != num_seg) { compute = 0; }
+				if (compute == 1)
+				{
+
+					for (m = 0; m <= nint; m++)
+					{
+						// t is [0.. 1]
+						t = (((double)m)) / (((double)nint + 1));
+						// glBegin(GL_LINES);
+						intvv[0] = (1 - t)*(1 - t)*(1 - t)*nn1[0] + 3 * (1 - t)*(1 - t)*t*hh1[0] + 3 * (1 - t)*t*t*hh2[0] + t*t*t*nn2[0];
+						intvv[1] = (1 - t)*(1 - t)*(1 - t)*nn1[1] + 3 * (1 - t)*(1 - t)*t*hh1[1] + 3 * (1 - t)*t*t*hh2[1] + t*t*t*nn2[1];
+						intvv[2] = (1 - t)*(1 - t)*(1 - t)*nn1[2] + 3 * (1 - t)*(1 - t)*t*hh1[2] + 3 * (1 - t)*t*t*hh2[2] + t*t*t*nn2[2];
+						// glVertex3d(intvv[0], intvv[1], intvv[2]);
+
+
+						t = (((double)m + 1)) / (((double)nint + 1));
+						intvv2[0] = (1 - t)*(1 - t)*(1 - t)*nn1[0] + 3 * (1 - t)*(1 - t)*t*hh1[0] + 3 * (1 - t)*t*t*hh2[0] + t*t*t*nn2[0];
+						intvv2[1] = (1 - t)*(1 - t)*(1 - t)*nn1[1] + 3 * (1 - t)*(1 - t)*t*hh1[1] + 3 * (1 - t)*t*t*hh2[1] + t*t*t*nn2[1];
+						intvv2[2] = (1 - t)*(1 - t)*(1 - t)*nn1[2] + 3 * (1 - t)*(1 - t)*t*hh1[2] + 3 * (1 - t)*t*t*hh2[2] + t*t*t*nn2[2];
+						
+						double len = sqrt((intvv[0] - intvv2[0])*(intvv[0] - intvv2[0]) + (intvv[1] - intvv2[1])*(intvv[1] - intvv2[1]) + (intvv[2] - intvv2[2])*(intvv[2] - intvv2[2]));
+
+						// cout << "connect:" << ls[0] << "," << ls[1] << endl;
+						length += len;
+						//glVertex3d(intvv2[0], intvv2[1], intvv2[2]);
+						// glEnd();
+					}
+
+				}
+
+			}
+
+
+
+
+			ind = ob_N1->GetLMNumber();
+			indh = ob_H1->GetLMNumber();
+
+			ob_H1 = this->Handles->GetLandmarkAfter(indh);
+			ob_N1 = this->Nodes->GetLandmarkAfter(ind);
+			if (ob_N1 != NULL)
+			{
+				ind2 = ob_N1->GetLMNumber();
+				ob_N2 = this->Nodes->GetLandmarkAfter(ind2);
+			}
+			if (ob_H1 != NULL)
+			{
+				indh2 = ob_H1->GetLMNumber();
+				ob_H2 = this->Handles->GetLandmarkAfter(indh2);
+			}
+			if (ob_N1 != NULL&& ob_N1->GetLMNodeType() == STARTING_NODE) {
+				ob_Hstart = ob_H1;
+				ob_Nstart = ob_N1;
+
+			}
+
+			k++;
+		}
+	
+	}
+	return length;
 }
 
 
-}
-else if (num_landmark_D >1 && num_landmark_D == num_landmark_H)
-{
-num_seg++;
-ob_H1 = landmarkafter (0, 1);
-ob_Hstart = landmarkafter (0, 1);
-ob_H2 = landmarkafter (1, 1);
-ob_D1 = landmarkafter (0, 0);
-ob_Dstart = landmarkafter (0, 0);
-ob_D2 = landmarkafter (1, 0);
-k= 0;
-while ( ob_D1 != NULL )
-{
 
-//stop drawing if the second point is a "start" of a new curve
-
-//Get world coordinates of landmark number ind on the target;
-if (ob_D1->Is_Curve_Start() ==2){num_seg++;}
-int selected = this->Is_Segment_Selected(num_seg);
-
-//Get world coordinates of landmark number ind on the target;
-if (ob_D1->Is_Curve_Start() ==3)
-{
-ob_DA=ob_D1;
-ob_HA=ob_H1;
-ob_DB=ob_Dstart;
-ob_HB=ob_Hstart;
-
-}
-else
-{
-ob_DA=ob_D1;
-ob_HA=ob_H1;
-if (ob_D2 !=NULL)
-{
-ob_DB=ob_D2;
-ob_HB=ob_H2;
-}
-else
-{
-ob_DB=ob_D1;
-ob_HB=ob_H1;
-}
-}
-
-ob_DA->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd1, wc_mat);
-
-
-ob_DB->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, dd2, wc_mat);
-
-ob_HA->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, hh1, wc_mat);
-
-ob_HB->get_world_coordinates_matrix2(wc_mat);
-vv[0] =0;
-vv[1] =0;
-vv[2] =0;
-ApplyTransformation(vv, hh2, wc_mat);
-
-glLineWidth(1);
-glColor3f(blue[0], blue[1], blue[2]);
-glBegin (GL_LINES);
-glVertex3d(dd1[0],dd1[1],dd1[2]);
-glVertex3d(hh1[0],hh1[1],hh1[2]);
-glEnd();
-//trick : second handle is mirrored relative to the second point!
-hh2[0]= dd2[0]-(hh2[0]-dd2[0]);
-hh2[1]= dd2[1]-(hh2[1]-dd2[1]);
-hh2[2]= dd2[2]-(hh2[2]-dd2[2]);
-
-// At this stage : we have all the input we need!
-// Just draw the Bezier curve between dd1 and dd2
-
-int compute = 1;
-if (ob_D2 ==NULL && ob_D1->Is_Curve_Start()==0){compute =0;}
-if (ob_D2 ==NULL && ob_D1->Is_Curve_Start()!=3){compute =0;}
-if (ob_D2 !=NULL && ob_D2->Is_Curve_Start()==1&& ob_D1->Is_Curve_Start()!=3){compute =0;}
-
-
-if (compute==1)
-{
-if (selected ==0)
-{
-glLineWidth(2);
-glColor3f(green5[0], green5[1], green5[2]);
-}
-else
-{
-glLineWidth(4);
-glColor3f(red[0], red[1], red[2]);
-}
-for (m=0; m<=nint; m++)
-{
-// t is [0.. 1]
-t = (((float)m))/(((float)nint+1));
-glBegin (GL_LINES);
-intvv[0]=  (1-t)*(1-t)*(1-t)*dd1[0] +3*(1-t)*(1-t)*t*hh1[0]+3*(1-t)*t*t*hh2[0]+t*t*t*dd2[0];
-intvv[1]=  (1-t)*(1-t)*(1-t)*dd1[1] +3*(1-t)*(1-t)*t*hh1[1]+3*(1-t)*t*t*hh2[1]+t*t*t*dd2[1];
-intvv[2]=  (1-t)*(1-t)*(1-t)*dd1[2] +3*(1-t)*(1-t)*t*hh1[2]+3*(1-t)*t*t*hh2[2]+t*t*t*dd2[2];
-glVertex3d(intvv[0],intvv[1],intvv[2]);
-
-
-t = (((float)m+1))/(((float)nint+1));
-intvv2[0]=  (1-t)*(1-t)*(1-t)*dd1[0] +3*(1-t)*(1-t)*t*hh1[0]+3*(1-t)*t*t*hh2[0]+t*t*t*dd2[0];
-intvv2[1]=  (1-t)*(1-t)*(1-t)*dd1[1] +3*(1-t)*(1-t)*t*hh1[1]+3*(1-t)*t*t*hh2[1]+t*t*t*dd2[1];
-intvv2[2]=  (1-t)*(1-t)*(1-t)*dd1[2] +3*(1-t)*(1-t)*t*hh1[2]+3*(1-t)*t*t*hh2[2]+t*t*t*dd2[2];
-
-glVertex3d(intvv2[0],intvv2[1],intvv2[2]);
-glEnd();
-}
-
-}
-
-
-if (ob_D2!=NULL && ob_D2->Is_Curve_Start() ==1 )
-{
-num_seg++;
-}
-
-ind = ob_D1->landmark_index;
-indh = ob_H1->landmark_index;
-
-ob_H1 = landmarkafter (indh, 1);
-ob_D1 = landmarkafter (ind, 0);
-if (ob_D1 !=NULL)
-{
-ind2 = ob_D1->landmark_index;
-ob_D2 = landmarkafter (ind2, 0);
-}
-if (ob_H1 !=NULL)
-{
-indh2 = ob_H1->landmark_index;
-ob_H2 = landmarkafter (indh2, 1);
-}
-if (ob_D1!=NULL&& ob_D1->Is_Curve_Start() ==1 ){
-ob_Hstart = ob_H1;
-ob_Dstart = ob_D1;
-
-}
-k++;
-}
-}
-
-
-glEnable(GL_LIGHTING);
-}
-*/
 
