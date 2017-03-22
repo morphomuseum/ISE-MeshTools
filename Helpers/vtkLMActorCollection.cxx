@@ -361,6 +361,7 @@ vtkLMActor* vtkLMActorCollection::GetNextSelectedActor()
 			if (myActor->GetSelected() == 1) { return myActor; ok = 1; }
 		}
 	}
+	return NULL;
 }
 
 /*void vtkLMActorCollection::ApplyChanges()

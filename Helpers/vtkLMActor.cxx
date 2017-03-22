@@ -612,6 +612,7 @@ void vtkLMActor::PopUndoStack()
 	int myCurrentType = this->LMType;
 	int myCurrentNodeType = this->LMNodeType;
 	this->LMType = this->UndoRedo->UndoStack.back().Type;
+	this->LMNodeType = this->UndoRedo->UndoStack.back().NodeType;
 	this->mColor[0] = this->UndoRedo->UndoStack.back().Color[0];
 	this->mColor[1] = this->UndoRedo->UndoStack.back().Color[1];
 	this->mColor[2] = this->UndoRedo->UndoStack.back().Color[2];
@@ -656,6 +657,7 @@ void vtkLMActor::PopRedoStack()
 	int myCurrentType = this->LMType;
 	int myCurrentNodeType = this->LMNodeType;
 	this->LMType = this->UndoRedo->RedoStack.back().Type;
+	this->LMNodeType = this->UndoRedo->RedoStack.back().NodeType;
 	this->mColor[0] = this->UndoRedo->RedoStack.back().Color[0];
 	this->mColor[1] = this->UndoRedo->RedoStack.back().Color[1];
 	this->mColor[2] = this->UndoRedo->RedoStack.back().Color[2];

@@ -6,6 +6,7 @@
 ========================================================================*/
 #include "mqMeshToolsCore.h"
 #include "mqAboutDialogReaction.h"
+#include "mqChangeNodeReaction.h"
 #include "mqSavePLYDialogReaction.h"
 #include "mqSaveVTPDialogReaction.h"
 #include "mqSaveSTLDialogReaction.h"
@@ -19,6 +20,7 @@
 #include "mqSaveLandmarksDialogReaction.h"
 #include "mqSaveFlagsDialogReaction.h"
 #include "mqSaveCURDialogReaction.h"
+#include "mqSaveCURasVERDialogReaction.h"
 #include "mqSaveSTVDialogReaction.h"
 #include "mqSaveNTWDialogReaction.h"
 #include "mqSetName.h"
@@ -59,7 +61,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   QMenu* submenuCurves = menu.addMenu("Curves");
   
   QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
-  QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
+  //QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
   QMenu* submenuOrientationLabels = menu.addMenu("Orientation helper labels");
   new mqOpenDataReaction(submenuProject->addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
   new mqSaveNTWDialogReaction(submenuProject->addAction("Save Project") << mqSetName("actionSaveNTW"));
@@ -88,7 +90,9 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveSTVDialogReaction(submenuCurves->addAction("Save MeshTools Landmark/Curve file (STV)") << mqSetName("actionSaveSTV2"));
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Nodes Landmarks") << mqSetName("actionSaveNodeLMK"), 2);
   new mqSaveLandmarksDialogReaction(submenuCurves->addAction("Save Curve Handle Landmarks") << mqSetName("actionSaveHandleLMK"), 3);
+  new mqSaveCURasVERDialogReaction(submenuCurves->addAction("Export curve segments as landmark file") << mqSetName("actionExportCUR"));
   new mqSaveDataReaction(submenuCurves->addAction("Save curve infos (length per curve segment)") << mqSetName("actionSaveCURInfos"), 17);
+  
 
   new mqOpenDataReaction(submenuPosition->addAction("Open position for selected surfaces") << mqSetName("actionOpenPOS"), 8);
   new mqOpenDataReaction(submenuPosition->addAction("Open transposed position for selected surfaces") << mqSetName("actionOpenPOS2"), 10);
@@ -126,6 +130,23 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
   
 }
 
+void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
+{
+	QString objectName = menu.objectName();
+	std::cout << "Menu object name" << objectName.toStdString() << std::endl;
+	//Ui::mqFileMenuBuilder ui;// we do not have a ui file yet for the menu!
+	//ui.setupUi(&menu);
+	// since the UI file tends to change the name of the menu.
+	menu.setObjectName(objectName);
+	// QAction *openNtw = menu.addAction("Open Project");
+	//new mqOpenDataReaction(openNtw, 1);//1= open NTW 
+	QMenu* submenuLandmarksInvolved = menu.addMenu("Selected node and handle landmarks");
+	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Move curve handles semi-automatically") << mqSetName("actionMoveHandles"), 4);
+	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): change as starting nodes (dark red)") << mqSetName("actionStartingNode"), 1);
+	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): connect to preceding starting nodes (cyan)") << mqSetName("actionConnectNode"), 3);
+	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): define as milestone nodes (blue)") << mqSetName("actionMilestoneNode"), 2);
+	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Reset selected nodes to Normal nodes (red)") << mqSetName("actionNormalNode"), 0);
+}
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------

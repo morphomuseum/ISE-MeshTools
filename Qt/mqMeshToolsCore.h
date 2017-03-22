@@ -94,6 +94,7 @@ public:
 	int SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply);
 	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
+	int SaveCURasVERFile(QString fileName, int decimation, int save_format, int save_other_lmks);
 	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0, vtkMTActor *myActor = NULL);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
 	int SaveFlagFile(QString fileName, int save_only_selected);

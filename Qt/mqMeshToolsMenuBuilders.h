@@ -28,6 +28,8 @@ public:
   //static void buildFileMenu(QMenu& menu, QMainWindow* mainWindow = 0);
   static void buildFileMenu(QMenu& menu);
 
+  static void buildLandmarksMenu(QMenu& menu);
+
   /**
   * Builds the standard Edit menu.
   */

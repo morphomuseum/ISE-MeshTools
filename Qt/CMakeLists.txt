@@ -17,6 +17,8 @@ set (Qt_SRCS
   mqSetName.h
   mqMeshToolsMenuBuilders.cxx
   mqMeshToolsMenuBuilders.h
+  mqChangeNodeReaction.h
+  mqChangeNodeReaction.cxx
   mqColorChooserButton.cxx
   mqColorChooserButton.h
   mqColorDialogReaction.h
@@ -31,6 +33,8 @@ set (Qt_SRCS
   mqLandmarkDialogReaction.cxx
   mqLandmarkDialog.cxx
   mqLandmarkDialog.h
+  mqMoveCurveHandlesDialog.h
+  mqMoveCurveHandlesDialog.cxx
   mqUndoRedoReaction.h
   mqUndoRedoReaction.cxx
   mqUndoStack.h
@@ -63,6 +67,10 @@ set (Qt_SRCS
   mqSaveCURDialog.h
   mqSaveCURDialogReaction.cxx
   mqSaveCURDialogReaction.h
+  mqSaveCURasVERDialogReaction.cxx
+  mqSaveCURasVERDialogReaction.h
+  mqSaveCURasVERDialog.cxx
+  mqSaveCURasVERDialog.h
   mqSaveSTVDialog.cxx
   mqSaveSTVDialog.h
   mqSaveSTVDialogReaction.cxx
@@ -88,8 +96,10 @@ mqSaveSTLDialog.ui
 mqSaveLandmarksDialog.ui 
 mqSaveFlagsDialog.ui 
 mqSaveCURDialog.ui 
+mqSaveCURasVERDialog.ui 
 mqSaveSTVDialog.ui
 mqSaveNTWDialog.ui
+mqMoveCurveHandlesDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

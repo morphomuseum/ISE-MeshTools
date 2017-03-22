@@ -471,6 +471,7 @@ MeshTools::MeshTools()
 
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
 	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
+	mqMeshToolsMenuBuilders::buildLandmarksMenu(*this->ui->menuLandmarks);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);
 	mqMeshToolsMenuBuilders::buildToolbars(*this);
 
