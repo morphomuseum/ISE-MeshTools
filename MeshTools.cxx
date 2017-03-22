@@ -180,6 +180,7 @@ void RubberBandSelect(vtkObject* caller,
 		vtkProp3D *myprop3D = props->GetNextProp3D();
 		//std::cout << "Actor prop:  class name:" << myprop3D->GetClassName() << std::endl;
 
+		
 		std::string str1("vtkLMActor");
 		if (str1.compare(myprop3D->GetClassName()) == 0)
 		{
@@ -205,28 +206,32 @@ void RubberBandSelect(vtkObject* caller,
 				landmarks_have_changed = 1;
 			
 		}
-		std::string str2("vtkMTActor");
-		if (str2.compare(myprop3D->GetClassName()) == 0)
+
+		if (mqMeshToolsCore::instance()->Getmui_MoveAll() == 1)
 		{
-			vtkMTActor *myActor;
-			myActor = vtkMTActor::SafeDownCast(myprop3D);
-			
-		
-			if (myActor->IsInsideFrustum(areaPicker->GetFrustum()))
+			std::string str2("vtkMTActor");
+			if (str2.compare(myprop3D->GetClassName()) == 0)
 			{
-				if (myActor->GetSelected() == 0)
-				{
-					myActor->SaveState(Count);
-					myActor->SetChanged(1);
-					myActor->SetSelected(1);
+				vtkMTActor *myActor;
+				myActor = vtkMTActor::SafeDownCast(myprop3D);
 
-				}
-				else
-				{
-					myActor->SaveState(Count);
-					myActor->SetChanged(1);
-					myActor->SetSelected(0);
 
+				if (myActor->IsInsideFrustum(areaPicker->GetFrustum()))
+				{
+					if (myActor->GetSelected() == 0)
+					{
+						myActor->SaveState(Count);
+						myActor->SetChanged(1);
+						myActor->SetSelected(1);
+
+					}
+					else
+					{
+						myActor->SaveState(Count);
+						myActor->SetChanged(1);
+						myActor->SetSelected(0);
+
+					}
 				}
 			}
 		}
@@ -266,6 +271,12 @@ MeshTools::MeshTools()
 	settings.beginGroup("paths");
 	this->MeshToolsCore->Setmui_LastUsedDir(settings.value("LastUsedDir", QDir::currentPath()).toString());
 	settings.endGroup();
+	settings.beginGroup("interaction_mode");
+	this->MeshToolsCore->Setmui_MoveAll(settings.value("MoveAll",
+		this->MeshToolsCore->Getmui_DefaultMoveAll()
+	).toInt());
+	settings.endGroup();
+
 	settings.beginGroup("display_options");
 	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
 		this->MeshToolsCore->Getmui_DefaultShowGrid()
@@ -725,7 +736,9 @@ void MeshTools::saveSettings()
 	settings.beginGroup("paths");
 	settings.setValue("LastUsedDir", this->MeshToolsCore->Getmui_LastUsedDir());
 	settings.endGroup();
-
+	settings.beginGroup("interaction_mode");
+	settings.setValue("MoveAll", this->MeshToolsCore->Getmui_MoveAll());
+	settings.endGroup();
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->MeshToolsCore->Getmui_ShowGrid());
 	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());

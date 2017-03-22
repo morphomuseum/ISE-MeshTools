@@ -43,6 +43,10 @@ public:
 	int Getmui_DefaultAnaglyph();
 	int Getmui_Anaglyph();
 
+	void Setmui_MoveAll(int moveall);
+	int Getmui_MoveAll();
+	int Getmui_DefaultMoveAll();
+
 	void Setmui_ShowGrid(int showgrid);
 	int Getmui_ShowGrid();
 	int Getmui_DefaultShowGrid();
@@ -253,6 +257,7 @@ protected:
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
 
 	QString mui_LastUsedDir;
+	int mui_MoveAll;
 	int mui_ShowGrid;
 	int mui_Anaglyph;
 	int mui_ShowOrientationHelper;
@@ -274,6 +279,7 @@ protected:
 	QString mui_DefaultZ2Label;
 
 	int mui_DefaultShowGrid;
+	int mui_DefaultMoveAll;
 	int mui_DefaultAnaglyph;
 	int mui_DefaultShowOrientationHelper;
 	int mui_DefaultCameraCentreOfMassAtOrigin;

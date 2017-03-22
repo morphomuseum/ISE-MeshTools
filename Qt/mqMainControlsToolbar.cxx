@@ -91,6 +91,19 @@ void mqMainControlsToolbar::constructor()
 
 	  this->ui->actionOrientationHelperToggle->setChecked(true);
   }
+
+
+  if (mqMeshToolsCore::instance()->Getmui_MoveAll() == 1)
+  {
+
+	  this->ui->actionMoveAll->setChecked(true);
+  }
+  else
+  {
+	  this->ui->actionMoveOnlyLandmarks->setChecked(true);
+  }
+
+
   new mqCameraReaction(this->ui->actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
   new mqCameraReaction(this->ui->actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
 
@@ -110,6 +123,36 @@ void mqMainControlsToolbar::constructor()
   connect(this->ui->actionLandmarksModeHandle, SIGNAL(triggered()), this, SLOT(slotLandmarkHandleMode()));
   connect(this->ui->actionLandmarksModeNode, SIGNAL(triggered()), this, SLOT(slotLandmarkNodeMode()));
   connect(this->ui->actionLandmarksModeFlag, SIGNAL(triggered()), this, SLOT(slotFlagMode()));
+  connect(this->ui->actionMoveAll, SIGNAL(triggered()), this, SLOT(slotMoveAll()));
+  connect(this->ui->actionMoveOnlyLandmarks, SIGNAL(triggered()), this, SLOT(slotMoveOnlyLandmarks()));
+  
+}
+
+
+void mqMainControlsToolbar::slotMoveAll()
+{
+	
+		this->ui->actionMoveAll->setChecked(true);
+		this->ui->actionMoveOnlyLandmarks->setChecked(false);
+
+	
+	mqMeshToolsCore::instance()->Setmui_MoveAll(1);
+
+}
+
+void mqMainControlsToolbar::slotMoveOnlyLandmarks()
+{
+	
+
+		this->ui->actionMoveAll->setChecked(false);
+		this->ui->actionMoveOnlyLandmarks->setChecked(true);
+
+
+	
+
+	mqMeshToolsCore::instance()->Setmui_MoveAll(0);
+	mqMeshToolsCore::instance()->Render();
+
 }
 
 void mqMainControlsToolbar::slotLandmarkNormalMode()

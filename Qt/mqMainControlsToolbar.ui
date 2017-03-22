@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
+    <width>687</width>
     <height>34</height>
    </rect>
   </property>
@@ -299,10 +299,45 @@
     <string>Set Flag landmark</string>
    </property>
   </action>
+  <action name="actionMoveAll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/move.gif</normaloff>
+     <normalon>:/Icons/move.gif</normalon>:/Icons/move.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Move all objects</string>
+   </property>
+   <property name="toolTip">
+    <string>Allow to select (right click) and subsequently move all objects (CTRL + mouse move)</string>
+   </property>
+  </action>
+  <action name="actionMoveOnlyLandmarks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/landmarks2.gif</normaloff>
+     <normalon>:/Icons/landmarks2.gif</normalon>:/Icons/landmarks2.gif</iconset>
+   </property>
+   <property name="text">
+    <string>Move only landmarks</string>
+   </property>
+   <property name="toolTip">
+    <string>Allow to select (right click) and subsequently move only landmarks (CTRL + mouse move)</string>
+   </property>
+  </action>
   <addaction name="actionOpenData"/>
   <addaction name="separator"/>
   <addaction name="actionUndo"/>
   <addaction name="actionRedo"/>
+  <addaction name="separator"/>
+  <addaction name="actionMoveAll"/>
+  <addaction name="actionMoveOnlyLandmarks"/>
   <addaction name="separator"/>
   <addaction name="actionCameraFront"/>
   <addaction name="actionCameraBack"/>
@@ -325,7 +360,7 @@
  </widget>
  <resources>
   <include location="../Icons/icons.qrc"/>
-  <include location="Icons/icons.qrc"/>
+  <include location="../Icons/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

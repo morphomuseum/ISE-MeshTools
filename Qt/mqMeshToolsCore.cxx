@@ -73,7 +73,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
-	
+	this->mui_MoveAll = this->mui_DefaultMoveAll = 1;
 	this->mui_FlagColor[0] = this->mui_DefaultFlagColor[0] = 0;
 	this->mui_FlagColor[1] = this->mui_DefaultFlagColor[1] = 0.7;
 	this->mui_FlagColor[2] = this->mui_DefaultFlagColor[2] = 0.7;
@@ -2358,6 +2358,13 @@ int mqMeshToolsCore::Getmui_CameraOrtho() { return this->mui_CameraOrtho; }
 void mqMeshToolsCore::Setmui_ShowGrid(int showgrid) { this->mui_ShowGrid = showgrid; }
 int mqMeshToolsCore::Getmui_ShowGrid() { return this->mui_ShowGrid; }
 int mqMeshToolsCore::Getmui_DefaultShowGrid() { return this->mui_DefaultShowGrid; };
+
+void mqMeshToolsCore::Setmui_MoveAll(int moveall) { this->mui_MoveAll= moveall;
+if (moveall == 0) { this->UnselectAll(-1);  }
+}
+int mqMeshToolsCore::Getmui_MoveAll() { return this->mui_MoveAll; }
+int mqMeshToolsCore::Getmui_DefaultMoveAll() { return this->mui_DefaultMoveAll; };
+
 
 int mqMeshToolsCore::Getmui_DefaultAnaglyph() { return this->mui_DefaultAnaglyph; }
 int mqMeshToolsCore::Getmui_Anaglyph() { return this->mui_Anaglyph; }

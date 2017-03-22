@@ -1547,8 +1547,6 @@ void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 			if (type == 1)
 			{
 				FILE	*filein;									// Filename To Open
-
-
 				filein = fopen(fileName.toStdString().c_str(), "rb");
 				for (i = 0; i<4; i++)
 					for (j = 0; j<4; j++)
