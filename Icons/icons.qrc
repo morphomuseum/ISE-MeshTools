@@ -32,6 +32,9 @@
  <file>undo.png</file>
  <file>redo.png</file>
 <!-- landmarks related stuff. -->
+<file>Lmk_edit.png</file>
+<file>Lmk_xyz.png</file>
+<file>Flag02.png</file>
  <file>landmarks2.gif</file>
  <file>landmarks4.gif</file>
  <file>landmarks5.gif</file>
@@ -40,6 +43,8 @@
  <file>landmarks8.gif</file>
  <file>landmarks9.gif</file>
  <file>Flag01.png</file>
+ <file>s_right.gif</file>
+ <file>s_left.gif</file>
 
 
 
