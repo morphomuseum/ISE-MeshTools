@@ -17,6 +17,10 @@ set (Qt_SRCS
   mqEditLMKDialogReaction.cxx
   mqEditLMKDialog.h
   mqEditLMKDialog.cxx
+  mqEditFLGDialogReaction.h
+  mqEditFLGDialogReaction.cxx
+  mqEditFLGDialog.h
+  mqEditFLGDialog.cxx
   mqOpenDataReaction.cxx
   mqOpenDataReaction.h
   mqSetName.cxx
@@ -110,6 +114,7 @@ mqSaveNTWDialog.ui
 mqMoveCurveHandlesDialog.ui
 mqEditLMKDialog.ui
 mqCreateLMKDialog.ui
+mqEditFLGDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )
