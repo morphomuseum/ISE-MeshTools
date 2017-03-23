@@ -135,26 +135,58 @@ void vtkLMActorCollection::ReorderLandmarks()
 	}
 
 }
-vtkLMActor* vtkLMActorCollection::GetLandmarkAfter(int num)
+vtkLMActor* vtkLMActorCollection::GetLandmarkAfter(int num, int only_selected)
 {
+	//only_selected : 0 by default.
+	//only_selected : 1 => returns next selected landmark
 	if (this->AreLandmarksWellOrdered() == 0)
 	{
 		ReorderLandmarks();
 
 	}
-	int next = 1;
+	int next;
 	this->InitTraversal();
 	if (this->GetNumberOfItems() == 0) { return NULL; }
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->GetNextActor());
 		next = myActor->GetLMNumber();
-		if (next > num) { return myActor; }
-		
+		if (next>num  && (only_selected == 0|| myActor->GetSelected()==1))
+		{
+			 return myActor; 
+		}				
 
 	}
 	
 	return NULL;
+}
+vtkLMActor* vtkLMActorCollection::GetLandmarkBefore(int num, int only_selected)
+{
+	cout << "Get landmark before" << num << endl;
+	if (this->AreLandmarksWellOrdered() == 0)
+	{
+		ReorderLandmarks();
+
+	}
+	int curr = 1;	
+	this->InitTraversal();
+	if (this->GetNumberOfItems() == 0) { return NULL; }
+
+	vtkLMActor *myActor = NULL;
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myNextActor = vtkLMActor::SafeDownCast(this->GetNextActor());
+		curr = myNextActor->GetLMNumber();
+
+		if (curr<num && (only_selected == 0 || myActor->GetSelected() == 1))
+		{
+			myActor = myNextActor;
+		}
+		
+
+	}
+	// that way, we should get the greatest LMNumber which is still < num
+	return myActor;
 }
 int vtkLMActorCollection::GetNextLandmarkNumber()
 {
@@ -346,23 +378,29 @@ void vtkLMActorCollection::PrintSelf(ostream& os, vtkIndent indent)
 
 }
 
-vtkLMActor* vtkLMActorCollection::GetNextSelectedActor()
+vtkLMActor* vtkLMActorCollection::GetFirstSelectedActor()
 {
-	int ok = 0;
-	while (ok == 0)
+	this->InitTraversal();
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
-		vtkActor *act = this->GetNextActor();
-		if (act == NULL) { return NULL; }
-		std::string str1("vtkLMActor");
-		if (str1.compare(act->GetClassName()) == 0)
-		{
+		
+			vtkActor *act = this->GetNextActor();
+			if (act == NULL) { return NULL; }
+			std::string str1("vtkLMActor");
+			if (str1.compare(act->GetClassName()) == 0)
+			{
 
-			vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
-			if (myActor->GetSelected() == 1) { return myActor; ok = 1; }
-		}
+				vtkLMActor *myActor = vtkLMActor::SafeDownCast(act);
+				if (myActor->GetSelected() == 1) { return myActor; }
+			}
+		
 	}
+	
+
 	return NULL;
 }
+
+
 
 /*void vtkLMActorCollection::ApplyChanges()
 {

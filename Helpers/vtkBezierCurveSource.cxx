@@ -142,7 +142,7 @@ int vtkBezierCurveSource::RequestData(
 	}
 	else
 	{
-		cout << "no information object 2!" << endl;
+		//cout << "no information object 2!" << endl;
 	}
 
 
@@ -173,7 +173,7 @@ void vtkBezierCurveSource::UpdadeNodeHandleConnexionPolyData(vtkPolyData* pd)
 		return;
 	}
 
-	cout << "update Node Handle Connection!" << endl;
+	//cout << "update Node Handle Connection!" << endl;
 	// First a rigid line between node landmarks.
 	if (this->Nodes == NULL || this->Handles ==NULL)
 	{
@@ -185,12 +185,12 @@ void vtkBezierCurveSource::UpdadeNodeHandleConnexionPolyData(vtkPolyData* pd)
 	int nrN = this->Nodes->GetNumberOfItems();
 	int nrH = this->Handles->GetNumberOfItems();
 
-	cout << "nr of nodes:" << nrN << endl;
-	cout << "nr of Handles:" << nrH << endl;	
+	//cout << "nr of nodes:" << nrN << endl;
+	//cout << "nr of Handles:" << nrH << endl;	
 	
 	
 	int nrMin = std::min(nrH, nrN);
-	cout << "nr Min:" << nrH << endl;
+	//cout << "nr Min:" << nrH << endl;
 	points->SetNumberOfPoints(2*nrMin);
 	this->Nodes->InitTraversal();
 	this->Handles->InitTraversal();
@@ -247,7 +247,7 @@ void vtkBezierCurveSource::UpdadeNodeHandleConnexionPolyData(vtkPolyData* pd)
 
 	}
 	
-	cout << "End update handle node connexion!" << endl;
+	//cout << "End update handle node connexion!" << endl;
 
 	
 }
@@ -260,7 +260,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
     return;
     }
 
-  cout << "update bezier curve poly data!" << endl;
+  //cout << "update bezier curve poly data!" << endl;
   // First a rigid line between node landmarks.
   if (this->Nodes == NULL)
   {
@@ -306,7 +306,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 		  vtkSmartPointer<vtkPoints>::New();
 
 	  int nrPoints = nrPoints = num_landmark_N;
-	  cout << "nr of nodes:" << nrPoints << endl;
+	  //cout << "nr of nodes:" << nrPoints << endl;
 	  points->SetNumberOfPoints(nrPoints);
 	  this->Nodes->InitTraversal();
 	  
@@ -333,11 +333,12 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 		  
 		  if (ob_N1->GetLMNodeType() == STARTING_NODE) {
 			  num_seg++; selected = this->IsSegmentSelected(num_seg); 
-			  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+			//  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
 		  }
 		  if (ob_N1->GetLMNodeType() == MILESTONE_NODE) { num_seg++; 
 		  num_seg++; selected = this->IsSegmentSelected(num_seg); 
-		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;}
+		  //cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		  }
 		  
 		  
 		  if (ob_N1->GetLMNodeType() == CONNECT_NODE) // in that case we should connect that node to the preceding starting point
@@ -393,7 +394,7 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 	  vtkSmartPointer<vtkCellArray> cells =
 		  vtkSmartPointer<vtkCellArray>::New();
 	  int cpt = 0;
-	  cout << "here" << endl;
+	  //cout << "here" << endl;
 	  ob_H1 = this->Handles->GetLandmarkAfter(0);
 	  ob_Hstart = ob_H1;
 	  ob_H2 = this->Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
@@ -402,16 +403,16 @@ void vtkBezierCurveSource::UpdateBezierCurvePolyData(vtkPolyData* pd, int select
 	  ob_N2 = this->Nodes->GetLandmarkAfter(ob_N1->GetLMNumber());
 	  k = 0;
 	  int selected = 0;
-	  cout << "there" << endl;
+	//  cout << "there" << endl;
 	  while (ob_N1 != NULL && ob_H1 != NULL)
 	  {
 
 		  //stop drawing if the second point is a "start" of a new curve
 		  if (ob_N1->GetLMNodeType() == STARTING_NODE) { num_seg++; selected = this->IsSegmentSelected(num_seg);
-		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		//  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
 		  }
 		  if (ob_N1->GetLMNodeType() == MILESTONE_NODE) { num_seg++; selected = this->IsSegmentSelected(num_seg);
-		  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
+		//  cout << "num_seg:" << num_seg << ", selected:" << selected << endl;
 		  }
 		   
 
@@ -544,7 +545,7 @@ int vtkBezierCurveSource::GetCurveSegmentNumber()
 	int print = 0;
 	if (print == 1)
 	{
-		std::cout<<std::endl<<"Start count segments curve";
+		//std::cout<<std::endl<<"Start count segments curve";
 	}
 	num_seg=0;
 	//if (num_landmark_T == num_landmark_N && num_landmark_T >0)
@@ -707,7 +708,7 @@ double vtkBezierCurveSource::GetCurveSegmentLength(int seg)
 	double length = 0;
 	
 
-	cout << "curve length!" << endl;
+	//cout << "curve length!" << endl;
 	// First a rigid line between node landmarks.
 	if (this->Nodes == NULL)
 	{
@@ -756,12 +757,12 @@ double vtkBezierCurveSource::GetCurveSegmentLength(int seg)
 
 			if (ob_N1->GetLMNodeType() == STARTING_NODE) {
 				num_seg++; 
-				cout << "num_seg:" << num_seg  << endl;
+				//cout << "num_seg:" << num_seg  << endl;
 			}
 			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
 				num_seg++;
 				num_seg++; 
-				cout << "num_seg:" << num_seg<< endl;
+				//cout << "num_seg:" << num_seg<< endl;
 			}
 
 
@@ -822,7 +823,7 @@ double vtkBezierCurveSource::GetCurveSegmentLength(int seg)
 	else if (num_landmark_N >1 && num_landmark_N == num_landmark_H)
 	{
 			int cpt = 0;
-		cout << "here" << endl;
+		//cout << "here" << endl;
 		ob_H1 = this->Handles->GetLandmarkAfter(0);
 		ob_Hstart = ob_H1;
 		ob_H2 = this->Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
@@ -837,11 +838,11 @@ double vtkBezierCurveSource::GetCurveSegmentLength(int seg)
 			//stop drawing if the second point is a "start" of a new curve
 			if (ob_N1->GetLMNodeType() == STARTING_NODE) {
 				num_seg++;
-				cout << "num_seg:" << num_seg  << endl;
+				//cout << "num_seg:" << num_seg  << endl;
 			}
 			if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
 				num_seg++;
-				cout << "num_seg:" << num_seg  << endl;
+				//cout << "num_seg:" << num_seg  << endl;
 			}
 
 

@@ -219,6 +219,12 @@ public:
   void ResetOrientationHelperLabels();
   void CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type = -1);
   static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
+  void signal_lmSelectionChanged();
+
+signals:
+
+  void lmSelectionChanged();
+
 
 protected:
 	

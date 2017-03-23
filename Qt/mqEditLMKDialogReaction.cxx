@@ -15,14 +15,18 @@
 mqEditLMKDialogReaction::mqEditLMKDialogReaction(QAction* parentObject)
   : Superclass(parentObject)
 {
+	this->color_dialog = new mqEditLMKDialog(mqCoreUtilities::mainWidget());
+
+	
 }
 
+
 //-----------------------------------------------------------------------------
-void mqEditLMKDialogReaction::showEditLMKDialog()
+void mqEditLMKDialogReaction::showEditLMKDialog(mqEditLMKDialog *color_dialog)
 {
 	// fonction statique. C'est à dire que lorsqu'on clique sur "Color", on crée un nouvel objet.
 	// la réaction, elle, est bien instanciée à la création du menu, mais pas la fenêtre. 
 
-  mqEditLMKDialog color_dialog(mqCoreUtilities::mainWidget());
-  color_dialog.exec();
+  //mqEditLMKDialog color_dialog = new mqEditLMKDialog(mqCoreUtilities::mainWidget());
+  color_dialog->show();
 }

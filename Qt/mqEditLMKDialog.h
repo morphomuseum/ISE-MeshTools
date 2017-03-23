@@ -7,6 +7,9 @@
 #ifndef _mqEditLMKDialog_h
 #define _mqEditLMKDialog_h
 
+#include "vtkLMActor.h"
+#include "vtkLMActorCollection.h"
+
 #include <QDialog>
 
 namespace Ui
@@ -28,10 +31,18 @@ public:
   mqEditLMKDialog(QWidget* Parent);
   
   ~mqEditLMKDialog();
-
+  void saveLMK();
+  void GetFirstSelectedLandmark();
+  void GetFirstLandmark();
+  void GetNextLandmark();
+  void GetPrecedingLandmark();
+  void UpdateUI();
   public slots:
-  virtual void slotEditLMK();
   
+  virtual void slotRefreshDialog();
+  virtual void slotGetPrecedingLandmark();
+  virtual void slotGetNextLandmark();
+ 
   
 
 protected:
@@ -41,6 +52,10 @@ private:
 
   Q_DISABLE_COPY(mqEditLMKDialog)
   Ui::mqEditLMKDialog* const Ui;
+  vtkLMActor *LMK;
+  vtkLMActorCollection *LMK_Coll;
+  int current_coll;
+
   // Here we should have the file name, no ?
 };
 

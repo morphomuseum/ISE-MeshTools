@@ -521,7 +521,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 			_flg_fullpath.append(_flg_file.c_str());
 			if (overwrite_flg == 1)			
 			{
-				cout << "Try to save FLG file" << endl;
+				//cout << "Try to save FLG file" << endl;
 				//write or overwrite FLG file without further question (0)
 				QString qflg(_flg_fullpath.c_str());
 				this->SaveFlagFile(qflg, 1);
@@ -900,7 +900,7 @@ int mqMeshToolsCore::SaveCURasVERFile(QString fileName, int decimation, int save
 		double length = 0;
 
 
-		cout << "Export curves!" << endl;
+		//cout << "Export curves!" << endl;
 		// First a rigid line between node landmarks.
 		if (Nodes == NULL)
 		{
@@ -948,7 +948,7 @@ int mqMeshToolsCore::SaveCURasVERFile(QString fileName, int decimation, int save
 		{
 
 			int cpt = 0;
-			cout << "here" << endl;
+			//cout << "here" << endl;
 			ob_H1 = Handles->GetLandmarkAfter(0);
 			ob_Hstart = ob_H1;
 			ob_H2 = Handles->GetLandmarkAfter(ob_H1->GetLMNumber());
@@ -963,7 +963,7 @@ int mqMeshToolsCore::SaveCURasVERFile(QString fileName, int decimation, int save
 				//stop drawing if the second point is a "start" of a new curve
 				if (ob_N1->GetLMNodeType() == STARTING_NODE) {
 					num_seg++;
-					cout << "num_seg:" << num_seg << endl;
+				//	cout << "num_seg:" << num_seg << endl;
 					t2 = 0;
 					length_to_reach = 0;
 					current_length = 0;
@@ -973,7 +973,7 @@ int mqMeshToolsCore::SaveCURasVERFile(QString fileName, int decimation, int save
 				}
 				if (ob_N1->GetLMNodeType() == MILESTONE_NODE) {
 					num_seg++;
-					cout << "num_seg:" << num_seg << endl;
+				//	cout << "num_seg:" << num_seg << endl;
 					t2 = 0;
 					length_to_reach = 0;
 					current_length = 0;
@@ -1468,7 +1468,7 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 			colorsRGB->SetName("Colors");
 			MyMergedObject->GetPointData()->AddArray(colorsRGB);
 			//colors->SetName("Colors");	  
-			std::cout << "Colors num of tuples :" << colors->GetNumberOfTuples() << std::endl;
+			//std::cout << "Colors num of tuples :" << colors->GetNumberOfTuples() << std::endl;
 			for (int i = 0; i<10; i++)
 			{
 				//std::cout<<"RGB stuff i:"<<colors->GetTuple(i)[0]<<","<<colors->GetTuple(i)[1]<<","<<colors->GetTuple(i)[2]<<std::endl;
@@ -1540,7 +1540,7 @@ QString mqMeshToolsCore::Getmui_Z2Label() { return this->mui_Z2Label; }
 void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
 	
-	cout << "CreateLandmark:" << lmk_type <<", "<< node_type << endl;
+	//cout << "CreateLandmark:" << lmk_type <<", "<< node_type << endl;
 	// lmk_type : 0 for normal landmarks
 	// lmk_type : 1 for target landmarks
 	// lmk_type : 2 for curve nodes
@@ -1667,7 +1667,7 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	}
 	else 
 	{
-		cout << "Set LM TYPE TO FLAG!" << endl;
+		//cout << "Set LM TYPE TO FLAG!" << endl;
 		myLM->SetLMType(FLAG_LMK);
 		std::string flag = "Flag ";
 		std::string flag_num = flag + std::to_string(num);
@@ -2974,6 +2974,11 @@ mqMeshToolsCore::~mqMeshToolsCore()
 {
 	return this->UndoStack;
 }*/
+
+void mqMeshToolsCore::signal_lmSelectionChanged()
+{
+	emit this->lmSelectionChanged();
+}
 
 mqUndoStack* mqMeshToolsCore::getUndoStack()
 {

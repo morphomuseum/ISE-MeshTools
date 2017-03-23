@@ -9,7 +9,7 @@
 #define mqEditLMKDialogReaction_h
 
 #include "mqReaction.h"
-
+#include "mqEditLMKDialog.h"
 /**
 * @ingroup Reactions
 * mqEditLMKDialogReaction used to show the standard Color dialog for the
@@ -26,16 +26,17 @@ public:
   /**
   * Shows the Color dialog for the application.
   */
-  static void showEditLMKDialog();
+  static void showEditLMKDialog(mqEditLMKDialog *color_dialog);
 
 protected:
   /**
   * Called when the action is triggered.
   */
-  virtual void onTriggered() { mqEditLMKDialogReaction::showEditLMKDialog(); }
+  virtual void onTriggered() { mqEditLMKDialogReaction::showEditLMKDialog(this->color_dialog); }
 
 private:
-  Q_DISABLE_COPY(mqEditLMKDialogReaction)
+	Q_DISABLE_COPY(mqEditLMKDialogReaction)
+		mqEditLMKDialog *color_dialog;
 };
 
 #endif

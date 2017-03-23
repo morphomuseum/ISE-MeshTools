@@ -248,6 +248,8 @@ void RubberBandSelect(vtkObject* caller,
 	{
 		mqMeshToolsCore::instance()->getNodeLandmarkCollection()->Modified();
 		mqMeshToolsCore::instance()->getHandleLandmarkCollection()->Modified();
+		mqMeshToolsCore::instance()->signal_lmSelectionChanged();
+		
 	}
 }
 
@@ -791,7 +793,7 @@ void MeshTools::saveSettings()
 	settings.beginGroup("renderer_settings");
 	settings.setValue("Anaglyph", this->MeshToolsCore->Getmui_Anaglyph());	
 	settings.endGroup();
-	cout << "end save settings" << endl;
+	//cout << "end save settings" << endl;
 }
 
 

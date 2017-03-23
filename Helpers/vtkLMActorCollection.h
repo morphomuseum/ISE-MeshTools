@@ -29,10 +29,12 @@ public:
 
 	void PrintSelf(ostream& os, vtkIndent indent);
 	
-	vtkLMActor* GetNextSelectedActor();
+	vtkLMActor* GetFirstSelectedActor();
 	
 	int GetNextLandmarkNumber();
-	vtkLMActor* GetLandmarkAfter(int num);
+	vtkLMActor* GetLandmarkAfter(int num, int only_selected=0);
+	vtkLMActor* GetLandmarkBefore(int num, int only_selected=0);
+	
 	vtkIdType GetNumberOfSelectedActors();
 	void ReorderLandmarks();
 
