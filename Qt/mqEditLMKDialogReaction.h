@@ -12,7 +12,7 @@
 #include "mqEditLMKDialog.h"
 /**
 * @ingroup Reactions
-* mqEditLMKDialogReaction used to show the standard Color dialog for the
+* mqEditLMKDialogReaction used to show the standard lmk dialog for the
 * application.
 */
 class  mqEditLMKDialogReaction : public mqReaction
@@ -24,19 +24,19 @@ public:
   mqEditLMKDialogReaction(QAction* parent);
 
   /**
-  * Shows the Color dialog for the application.
+  * Shows the lmk dialog for the application.
   */
-  static void showEditLMKDialog(mqEditLMKDialog *color_dialog);
+  static void showEditLMKDialog(mqEditLMKDialog *lmk_dialog);
 
 protected:
   /**
   * Called when the action is triggered.
   */
-  virtual void onTriggered() { mqEditLMKDialogReaction::showEditLMKDialog(this->color_dialog); }
+  virtual void onTriggered() { mqEditLMKDialogReaction::showEditLMKDialog(this->lmk_dialog); }
 
 private:
 	Q_DISABLE_COPY(mqEditLMKDialogReaction)
-		mqEditLMKDialog *color_dialog;
+		mqEditLMKDialog *lmk_dialog;
 };
 
 #endif

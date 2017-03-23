@@ -1,30 +1,29 @@
 /*=========================================================================
 
    Program: MeshTools
-   Module:    mqEditLMKDialogReaction.cxx
+   Module:    mqCreateLMKDialogReaction.cxx
 
 
 ========================================================================*/
-#include "mqEditLMKDialogReaction.h"
+#include "mqCreateLMKDialogReaction.h"
 #include "mqCoreUtilities.h"
-#include "mqEditLMKDialog.h"
+#include "mqCreateLMKDialog.h"
 #include "mqReaction.h"
 
 
 //-----------------------------------------------------------------------------
-mqEditLMKDialogReaction::mqEditLMKDialogReaction(QAction* parentObject)
+mqCreateLMKDialogReaction::mqCreateLMKDialogReaction(QAction* parentObject)
   : Superclass(parentObject)
 {
-	this->lmk_dialog = new mqEditLMKDialog(mqCoreUtilities::mainWidget());
+	this->lmk_dialog = new mqCreateLMKDialog(mqCoreUtilities::mainWidget());
 
 	
 }
 
 
 //-----------------------------------------------------------------------------
-void mqEditLMKDialogReaction::showEditLMKDialog(mqEditLMKDialog *lmk_dialog)
+void mqCreateLMKDialogReaction::showCreateLMKDialog(mqCreateLMKDialog *lmk_dialog)
 {
 	
-  
-  lmk_dialog->show();
+	lmk_dialog->show();
 }
