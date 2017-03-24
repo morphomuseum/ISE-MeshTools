@@ -64,6 +64,28 @@ mqEditFLGDialog::mqEditFLGDialog(QWidget* Parent)
 	this->FLG_Coll = NULL;
 	this->FLG = NULL;
 	current_coll = -1;
+	QString mylabel("...");
+	this->Ui->FlagLabel->setText(mylabel);
+	
+	double flag_rendering_size = mqMeshToolsCore::instance()->Getmui_FlagRenderingSize();
+	this->Ui->FlagRenderingSizeValue->setMinimum(0);
+	this->Ui->FlagRenderingSizeValue->setSingleStep(1);
+	this->Ui->FlagRenderingSizeValue->setValue(flag_rendering_size);
+
+	QColor myFlagColor;
+
+	double flagcolor[4];
+
+	this->Ui->FlagColorButton->setShowAlphaChannel(false);
+	mqMeshToolsCore::instance()->Getmui_FlagColor(flagcolor);
+
+	myFlagColor.setRedF(flagcolor[0]);
+	myFlagColor.setGreenF(flagcolor[1]);
+	myFlagColor.setBlueF(flagcolor[2]);
+
+
+	this->Ui->FlagColorButton->setChosenColor(myFlagColor);
+
 	this->Ui->x->setDecimals(10);
 	this->Ui->y->setDecimals(10);
 	this->Ui->z->setDecimals(10);
@@ -101,8 +123,17 @@ void mqEditFLGDialog::saveFLG()
 	cout << "Save FLG!" << endl;
 	if (this->FLG != NULL)
 	{
+		QColor myFlagColor = this->Ui->FlagColorButton->chosenColor();
+		double flagcolor[4];
+		myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
+		this->FLG->SetmColor(flagcolor);
+		cout << "this->Ui->FlagLabel->text().toStdString().c_str()" << this->Ui->FlagLabel->text().toStdString().c_str() << endl;
+		this->FLG->SetLMLabelText(this->Ui->FlagLabel->text().toStdString().c_str());
+		double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
+		this->FLG->SetLMSize(flg_rendering_size);
 		this->FLG->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
 		this->FLG->Modified();
+		this->FLG_Coll->Modified();
 	}
 	
 }
@@ -115,41 +146,14 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 	this->FLG = NULL;
 	this->current_coll = -1;
 
-	this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
+	this->FLG_Coll = mqMeshToolsCore::instance()->getFlagLandmarkCollection();
 	int num_selected = 0;
 	num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
 	if (num_selected > 0) {
 		this->FLG = this->FLG_Coll->GetFirstSelectedActor();
-		current_coll = 0;
+		current_coll = 4;
 	}
-	else
-	{
-		this->FLG_Coll = mqMeshToolsCore::instance()->getTargetLandmarkCollection();
-		num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
-		if (num_selected > 0) {
-			this->FLG = this->FLG_Coll->GetFirstSelectedActor();
-			current_coll = 1;
-		}
-		else
-		{
-			this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
-			num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
-			if (num_selected > 0) {
-				this->FLG = this->FLG_Coll->GetFirstSelectedActor();
-				current_coll = 2;
-			}
-			else
-			{
-				this->FLG_Coll = mqMeshToolsCore::instance()->getHandleLandmarkCollection();
-				num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
-				if (num_selected > 0) {
-					this->FLG = this->FLG_Coll->GetFirstSelectedActor();
-					current_coll = 3;
-				}
-			}
-
-		}
-	}
+	
 
 	if (this->FLG != NULL)
 	{
@@ -161,7 +165,7 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 
 void mqEditFLGDialog::GetFirstFlag()
 {
-	this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
+	this->FLG_Coll = mqMeshToolsCore::instance()->getFlagLandmarkCollection();
 	int num = 0;
 	num = this->FLG_Coll->GetNumberOfItems();
 	if (num > 0) {
@@ -179,29 +183,7 @@ void mqEditFLGDialog::GetFirstFlag()
 			this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
 			current_coll = 1;
 		}
-		else
-		{
-			this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
-			num = 0;
-			num = this->FLG_Coll->GetNumberOfItems();
-			if (num > 0) {
-				this->FLG_Coll->InitTraversal();
-				this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
-				current_coll = 2;
-			}
-			else
-			{
-				this->FLG_Coll = mqMeshToolsCore::instance()->getHandleLandmarkCollection();
-				num = 0;
-				num = this->FLG_Coll->GetNumberOfItems();
-				if (num > 0) {
-					this->FLG_Coll->InitTraversal();
-					this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
-					current_coll = 3;
-				}
-			}
-
-		}
+		
 	}
 
 	if (this->FLG != NULL)
@@ -216,6 +198,23 @@ void mqEditFLGDialog::UpdateUI()
 {
 	if (this->FLG != NULL) {
 		this->Ui->FLGNumber->setValue(this->FLG->GetLMNumber());
+		
+		QString mylabel(this->FLG->GetLMLabelText());
+		this->Ui->FlagLabel->setText(mylabel);
+
+		double flag_rendering_size = this->FLG->GetLMSize();
+		this->Ui->FlagRenderingSizeValue->setValue(flag_rendering_size);
+
+		QColor myFlagColor;
+		double flagcolor[4];
+
+		this->FLG->GetmColor(flagcolor);
+
+		myFlagColor.setRedF(flagcolor[0]);
+		myFlagColor.setGreenF(flagcolor[1]);
+		myFlagColor.setBlueF(flagcolor[2]);
+		this->Ui->FlagColorButton->setChosenColor(myFlagColor);
+
 		double orig[3];
 		this->FLG->GetLMOrigin(orig);
 		cout << "orig[0]" << orig[0] << ", orig[1]" << orig[1] << ", orig[2]" << orig[2] << endl;
@@ -243,40 +242,15 @@ void mqEditFLGDialog::GetNextFlag()
 		this->FLG_Coll->Modified();
 		int num = this->FLG->GetLMNumber();
 		int cpt = 0;
-		while (cpt < 4)
+		
+		this->FLG = this->FLG_Coll->GetLandmarkAfter(num);
+		if (this->FLG != NULL) { this->FLG->SetSelected(1); this->FLG_Coll->Modified(); }
+		else
 		{
-			cpt++;
+			num = 0;
 			this->FLG = this->FLG_Coll->GetLandmarkAfter(num);
-			if (this->FLG != NULL) { this->FLG->SetSelected(1); this->FLG_Coll->Modified(); break; }
-			else
-			{
-
-				num = 0;
-				if (this->current_coll == 0 )
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getTargetLandmarkCollection();
-					this->current_coll = 1;
-				}
-				else if (this->current_coll == 1)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
-					this->current_coll = 2;
-				}
-				else if (this->current_coll == 2)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getHandleLandmarkCollection();
-					this->current_coll = 3;
-				}
-				else if (this->current_coll == 3)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getNormalLandmarkCollection();
-					this->current_coll = 0;
-				}
-
-			}
-
+				
 		}
-
 
 	}
 
@@ -294,48 +268,13 @@ void mqEditFLGDialog::GetPrecedingFlag()
 		this->FLG_Coll->Modified();
 		int num = this->FLG->GetLMNumber();
 		cout << "num=" << num << endl;
-		int cpt = 0;
-		while (cpt < 4)
+		this->FLG = this->FLG_Coll->GetLandmarkBefore(num);
+		if (this->FLG != NULL) { this->FLG->SetSelected(1); }
+		else
 		{
-			cpt++;
+			num = this->FLG_Coll->GetNumberOfItems()+1;
 			this->FLG = this->FLG_Coll->GetLandmarkBefore(num);
-			this->FLG_Coll->Modified();
-			if (this->FLG != NULL) { this->FLG->SetSelected(1); break; }
-			else
-			{
-
-				
-				if (this->current_coll == 0)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getHandleLandmarkCollection();
-					num = this->FLG_Coll->GetNumberOfItems()+1;
-					this->current_coll = 3;
-				}
-				else if (this->current_coll == 1)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getNormalLandmarkCollection();
-					num = this->FLG_Coll->GetNumberOfItems() + 1;
-					this->current_coll = 0;
-				}
-				else if (this->current_coll == 2)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getTargetLandmarkCollection();
-					num = this->FLG_Coll->GetNumberOfItems() + 1;
-					
-					this->current_coll = 1;
-				}
-				else if (this->current_coll == 3)
-				{
-					this->FLG_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
-					num = this->FLG_Coll->GetNumberOfItems() + 1;
-					this->current_coll = 2;
-				}
-
-			}
-
 		}
-
-
 	}
 
 }

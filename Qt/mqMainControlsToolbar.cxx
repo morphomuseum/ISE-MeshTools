@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "mqUndoRedoReaction.h"
 #include "mqEditLMKDialogReaction.h"
 #include "mqCreateLMKDialogReaction.h"
+#include "mqEditFLGDialogReaction.h"
 #include "mqMeshToolsCore.h"
 #include "mqOpenDataReaction.h"
 #include "mqCameraReaction.h"
@@ -61,6 +62,7 @@ void mqMainControlsToolbar::constructor()
   new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
   new mqEditLMKDialogReaction(this->ui->actionEditLandmarks);
   new mqCreateLMKDialogReaction(this->ui->actionCreateLandmark);
+  new mqEditFLGDialogReaction(this->ui->actionEditFlag);
   //new mqSaveDataReaction(this->ui->actionSaveData);
  
   new mqUndoRedoReaction(this->ui->actionUndo, true);

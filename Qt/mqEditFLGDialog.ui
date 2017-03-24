@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>446</width>
-    <height>158</height>
+    <height>229</height>
    </rect>
   </property>
   <property name="palette">
@@ -431,8 +431,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>120</y>
+     <x>110</x>
+     <y>190</y>
      <width>161</width>
      <height>25</height>
     </rect>
@@ -456,7 +456,7 @@
      <x>10</x>
      <y>10</y>
      <width>411</width>
-     <height>91</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
@@ -468,9 +468,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>80</x>
       <y>20</y>
-      <width>81</width>
+      <width>41</width>
       <height>22</height>
      </rect>
     </property>
@@ -485,13 +485,13 @@
      </rect>
     </property>
     <property name="text">
-     <string>Flag number</string>
+     <string>Flag Name</string>
     </property>
    </widget>
    <widget class="QPushButton" name="next">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>310</x>
       <y>20</y>
       <width>21</width>
       <height>23</height>
@@ -509,7 +509,7 @@
    <widget class="QPushButton" name="prec">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>290</x>
       <y>20</y>
       <width>21</width>
       <height>23</height>
@@ -583,6 +583,52 @@
      <string>y:</string>
     </property>
    </widget>
+   <widget class="mqColorChooserButton" name="FlagColorButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>100</y>
+      <width>101</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Flag color</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="FlagRenderingSizeValue">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>100</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>100</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Flag rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(total arrow length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="FlagLabel">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>20</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
@@ -598,6 +644,13 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>mqColorChooserButton</class>
+   <extends>QToolButton</extends>
+   <header location="global">mqcolorchooserbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../Icons/icons.qrc"/>
   <include location="../Icons/icons.qrc"/>
