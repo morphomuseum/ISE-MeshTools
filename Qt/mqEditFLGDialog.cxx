@@ -103,7 +103,7 @@ mqEditFLGDialog::mqEditFLGDialog(QWidget* Parent)
 	
  
   
- //connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotEditFLG()));
+ connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotsaveFLG()));
 
 }
 
@@ -127,13 +127,13 @@ void mqEditFLGDialog::saveFLG()
 		double flagcolor[4];
 		myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
 		this->FLG->SetmColor(flagcolor);
-		cout << "this->Ui->FlagLabel->text().toStdString().c_str()" << this->Ui->FlagLabel->text().toStdString().c_str() << endl;
-		this->FLG->SetLMLabelText(this->Ui->FlagLabel->text().toStdString().c_str());
+		this->FLG->SetLMText(this->Ui->FlagLabel->text().toStdString().c_str());
+		
 		double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
 		this->FLG->SetLMSize(flg_rendering_size);
 		this->FLG->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
 		this->FLG->Modified();
-		this->FLG_Coll->Modified();
+		mqMeshToolsCore::instance()->UpdateLandmarkSettings(this->FLG);// to update body size!
 	}
 	
 }
@@ -278,7 +278,10 @@ void mqEditFLGDialog::GetPrecedingFlag()
 	}
 
 }
-
+void mqEditFLGDialog::slotsaveFLG()
+{
+	this->saveFLG();
+}
 void mqEditFLGDialog::slotGetPrecedingFlag()
 {
 	this->saveFLG();

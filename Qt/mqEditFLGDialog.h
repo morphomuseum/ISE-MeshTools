@@ -42,7 +42,7 @@ public:
   virtual void slotRefreshDialog();
   virtual void slotGetPrecedingFlag();
   virtual void slotGetNextFlag();
- 
+  virtual void slotsaveFLG();
   
 
 protected:
