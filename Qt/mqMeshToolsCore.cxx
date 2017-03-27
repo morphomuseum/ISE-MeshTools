@@ -347,6 +347,39 @@ void mqMeshToolsCore::SaveORI(QString fileName)
 
 }
 
+void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size)
+{
+	vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+	if (selectedflags>0)
+	{
+		
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		myColl = this->FlagLandmarkCollection;
+
+
+		myColl->InitTraversal();
+		for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+			if (myActor->GetSelected() == 1 )
+			{
+
+				myActor->SetmColor(flagcolor);
+				myActor->SetLMSize(flag_rendering_size);
+				myActor->SetSelected(0);
+				this->UpdateLandmarkSettings(myActor);
+				
+
+
+			}
+
+		}
+
+
+	}
+
+}
+
 int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply)
 {
 	std::string NTWext = ".ntw";
@@ -1537,6 +1570,34 @@ void mqMeshToolsCore::Setmui_Z2Label(QString label) { this->mui_Z2Label = label;
 QString mqMeshToolsCore::Getmui_DefaultZ2Label() { return this->mui_DefaultZ2Label; }
 QString mqMeshToolsCore::Getmui_Z2Label() { return this->mui_Z2Label; }
 
+void mqMeshToolsCore::LandmarksMoveUp()
+{
+	this->NormalLandmarkCollection->LandmarksMoveUp();
+	this->TargetLandmarkCollection->LandmarksMoveUp();
+	this->NodeLandmarkCollection->LandmarksMoveUp();
+	this->HandleLandmarkCollection->LandmarksMoveUp();
+	this->Render();
+}
+void mqMeshToolsCore::LandmarksMoveDown()
+{
+	this->NormalLandmarkCollection->LandmarksMoveDown();
+	this->TargetLandmarkCollection->LandmarksMoveDown();
+	this->NodeLandmarkCollection->LandmarksMoveDown();
+	this->HandleLandmarkCollection->LandmarksMoveDown();
+	this->Render();
+}
+
+
+void mqMeshToolsCore::slotLandmarkMoveUp()
+{
+
+	this->LandmarksMoveUp();
+}
+void mqMeshToolsCore::slotLandmarkMoveDown()
+{
+
+	this->LandmarksMoveDown();
+}
 void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
 	

@@ -39,6 +39,116 @@ vtkLMActorCollection::~vtkLMActorCollection()
 	
 
 }
+
+void vtkLMActorCollection::LandmarksMoveUp()
+{
+// mode = 0 : user landmark move up (more than one can be selected
+	// mode = 0 is followed by a renumbering of landmark indices
+
+	// mode = 1 : called by "Reorder_Landmarks" (only one landmark is selected): 
+	// mode = 1 is not followed by a change of landmark indices...
+
+
+
+	
+	vtkLMActor *NewFirst =NULL;
+	vtkLMActor *B =NULL; // the one (the one we switch with C)
+	vtkLMActor *C =NULL; // the object we move up 
+	
+	if (this->GetNumberOfSelectedActors() > 0)
+	{
+		this->InitTraversal();
+		NewFirst = vtkLMActor::SafeDownCast(this->GetNextActor());
+		if (NewFirst != NULL)
+		{
+			C = this->GetLandmarkAfter(NewFirst->GetLMNumber());
+			B = NewFirst;			
+			// Maintenant on descend dans la liste
+			while (C != NULL)
+			{
+				B = NULL;
+				B = this->GetLandmarkBefore(C->GetLMNumber());								
+				if (C->GetSelected() == 1)
+				{
+					if (B != NULL && B->GetSelected() == 0)
+					{
+						
+							//A->nextobj = C;
+						int new_c = B->GetLMNumber();
+						int new_b = C->GetLMNumber();
+						C->SetLMNumber(new_c);
+						B->SetLMNumber(new_b);
+						this->ReorderLandmarks();
+
+						
+					}
+				}
+				C = this->GetLandmarkAfter(C->GetLMNumber());
+				
+
+			}
+
+		}
+
+	}
+	
+	this->Modified();
+}
+
+void vtkLMActorCollection::LandmarksMoveDown()
+{
+
+	// mode = 0 : user landmark move up (more than one can be selected
+	// mode = 0 is followed by a renumbering of landmark indices
+
+	// mode = 1 : called by "Reorder_Landmarks" (only one landmark is selected): 
+	// mode = 1 is not followed by a change of landmark indices...
+
+
+
+	vtkLMActor *LastOBJ = NULL;
+	vtkLMActor *NewFirst = NULL;
+	vtkLMActor *B = NULL; // the one we move down 
+	vtkLMActor *C = NULL; // the object we move up 
+
+	if (this->GetNumberOfSelectedActors() > 0)
+	{
+		this->InitTraversal();
+		LastOBJ = vtkLMActor::SafeDownCast(this->GetLastActor());
+		
+		if (LastOBJ != NULL)
+		{
+			B = this->GetLandmarkBefore(LastOBJ->GetLMNumber());
+			C = LastOBJ;			
+			// Maintenant on descend dans la liste
+			while (B != NULL)
+			{				
+				C = this->GetLandmarkAfter(B->GetLMNumber());
+				if (B->GetSelected() == 1)
+				{
+					if (C != NULL && C->GetSelected() == 0)
+					{
+
+						//A->nextobj = C;
+						int new_c = B->GetLMNumber();
+						int new_b = C->GetLMNumber();
+						C->SetLMNumber(new_c);
+						B->SetLMNumber(new_b);
+						this->ReorderLandmarks();
+
+
+					}
+				}
+				B = this->GetLandmarkBefore(B->GetLMNumber());
+
+
+			}
+
+		}
+
+	}
+}
+
 void vtkLMActorCollection::AddItem(vtkActor *a)
 {
 	//We only want vtkLMActors in this collection!

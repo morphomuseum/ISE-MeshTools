@@ -37,7 +37,8 @@ public:
 	
 	vtkIdType GetNumberOfSelectedActors();
 	void ReorderLandmarks();
-
+	void LandmarksMoveUp();
+	void LandmarksMoveDown();
 protected:
 	
 	vtkLMActorCollection();
@@ -47,6 +48,7 @@ protected:
 	virtual void ComputeCenterOfMass();
 	
 	int AreLandmarksWellOrdered();
+	
 	//virtual void ApplyChanges(); // when actors have been modified (actor themselves selection/unselection or list add, remove etc...)
 
 private:

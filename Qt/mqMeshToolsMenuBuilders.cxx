@@ -7,6 +7,7 @@
 #include "mqMeshToolsCore.h"
 #include "mqAboutDialogReaction.h"
 #include "mqChangeNodeReaction.h"
+#include "mqEditAllFLGDialogReaction.h"
 #include "mqSavePLYDialogReaction.h"
 #include "mqSaveVTPDialogReaction.h"
 #include "mqSaveSTLDialogReaction.h"
@@ -140,7 +141,17 @@ void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
 	menu.setObjectName(objectName);
 	// QAction *openNtw = menu.addAction("Open Project");
 	//new mqOpenDataReaction(openNtw, 1);//1= open NTW 
+	QAction *MoveUp = menu.addAction("Selected landmarks : move up (decrease landmark number)");
+	QAction *MoveDown = menu.addAction("Selected landmarks move down (increase landmark number)");
+	
+	QAction::connect(MoveUp, SIGNAL(triggered()), mqMeshToolsCore::instance() , SLOT(slotLandmarkMoveUp()));
+	QAction::connect(MoveDown, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotLandmarkMoveDown()));
+	//actionLandmarskMoveUp
+
+
 	QMenu* submenuLandmarksInvolved = menu.addMenu("Selected node and handle landmarks");
+	new mqEditAllFLGDialogReaction(menu.addAction("Edit all selected flags") << mqSetName("actionEditAllSelectedFlags"));
+	
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Move curve handles semi-automatically") << mqSetName("actionMoveHandles"), 4);
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): change as starting nodes (dark red)") << mqSetName("actionStartingNode"), 1);
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): connect to preceding starting nodes (cyan)") << mqSetName("actionConnectNode"), 3);

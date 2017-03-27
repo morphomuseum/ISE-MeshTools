@@ -99,7 +99,7 @@ public:
 	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
 	int SaveCURasVERFile(QString fileName, int decimation, int save_format, int save_other_lmks);
-	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms=0, vtkMTActor *myActor = NULL);
+	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms = 0, vtkMTActor *myActor = NULL);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
 	int SaveFlagFile(QString fileName, int save_only_selected);
 	double* Getmui_MeshColor();
@@ -109,7 +109,7 @@ public:
 	void Setmui_MeshColor(double c1, double c2, double c3, double c4);
 	void Setmui_MeshColor(double c[4]);
 
-	
+
 	double* Getmui_FlagColor();
 	void Getmui_FlagColor(double c[3]);
 	double* Getmui_DefaultFlagColor();
@@ -141,9 +141,9 @@ public:
 	void Setmui_FlagRenderingSize(double size);
 	double Getmui_DefaultFlagRenderingSize();
 	double Getmui_FlagRenderingSize();
-	
 
-	
+
+
 
 	double* Getmui_BackGroundColor();
 	void Getmui_BackGroundColor(double bg[3]);
@@ -152,9 +152,9 @@ public:
 	void Setmui_BackGroundColor(double bg1, double bg2, double bg3);
 	void Setmui_BackGroundColor(double background[3]);
 
-	
-	
-	
+
+
+
 
 	double* Getmui_BackGroundColor2();
 	void Getmui_BackGroundColor2(double bg[3]);
@@ -163,12 +163,16 @@ public:
 
 	void Setmui_BackGroundColor2(double bg1, double bg2, double bg3);
 	void Setmui_BackGroundColor2(double background[3]);
-  //static mqMeshToolsCore* New();
-  static mqMeshToolsCore* instance();
-  void UpdateLandmarkSettings();
-  void UpdateLandmarkSettings(vtkLMActor *myActor);
-  void SetMainWindow(QMainWindow *_mainWindow);
-  QMainWindow* GetMainWindow();
+	//static mqMeshToolsCore* New();
+	static mqMeshToolsCore* instance();
+	void UpdateLandmarkSettings();
+	void UpdateLandmarkSettings(vtkLMActor *myActor);
+	void SetMainWindow(QMainWindow *_mainWindow);
+	QMainWindow* GetMainWindow();
+	void LandmarksMoveUp();
+  
+	void LandmarksMoveDown();
+	void UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size);
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
   void SetRenderWindow(vtkRenderWindow *renwin)
   {
@@ -320,6 +324,9 @@ protected:
 	int mui_LandmarkMode;
 
 	vtkOrientationHelperWidget* OrientationHelperWidget;
+public slots:
+	virtual void slotLandmarkMoveUp();
+	virtual void slotLandmarkMoveDown();
 
 private:
 	static mqMeshToolsCore* Instance;

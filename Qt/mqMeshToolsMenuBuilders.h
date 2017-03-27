@@ -46,6 +46,11 @@ public:
   * Builds and adds all standard MeshTools toolbars.
   */
   static void buildToolbars(QMainWindow& mainWindow);
+
+  public slots:
+  virtual void slotLandmarkMoveUp();
+  virtual void slotLandmarkMoveDown();
+
   
 };
 
