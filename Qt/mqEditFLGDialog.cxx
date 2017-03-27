@@ -173,18 +173,7 @@ void mqEditFLGDialog::GetFirstFlag()
 		this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
 		current_coll = 0;
 	}
-	else
-	{
-		this->FLG_Coll = mqMeshToolsCore::instance()->getTargetLandmarkCollection();
-		num = 0;
-		num = this->FLG_Coll->GetNumberOfItems();
-		if (num > 0) {
-			this->FLG_Coll->InitTraversal();
-			this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
-			current_coll = 1;
-		}
-		
-	}
+	
 
 	if (this->FLG != NULL)
 	{

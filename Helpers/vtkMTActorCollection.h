@@ -13,6 +13,7 @@ Module:    vtkMTActorCollection.h
 
 
 #include <vtkActorCollection.h>
+#include <vtkMTActor.h>
 #include <vtkSmartPointer.h>
 #include <vector>
 
@@ -42,8 +43,12 @@ class  vtkMTActorCollection : public vtkActorCollection
 public:
 	static vtkMTActorCollection *New();
 	vtkTypeMacro(vtkMTActorCollection, vtkActorCollection);
-	
+
+
 	void AddItem(vtkActor *a);
+	vtkMTActor* GetFirstSelectedActor();
+	vtkMTActor *GetActorBefore(vtkMTActor *Actor);
+	vtkMTActor *GetActorAfter(vtkMTActor *Actor);
 	vtkSetMacro(BoundingBoxLength, double);
 	vtkSetMacro(BoundingBoxLengthOfSelectedActors, double);
 	double GetBoundingBoxLengthOfSelectedActors();

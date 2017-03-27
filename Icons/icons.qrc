@@ -13,6 +13,7 @@
 
     <!-- Help -->
     <file>help.png</file>
+    <file>name.png</file>
     <!-- Typical camera operations. -->
     <file>camera_above22_2.png</file>
     <file>camera_back22_2.png</file>

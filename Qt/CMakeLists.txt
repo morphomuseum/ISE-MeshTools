@@ -21,6 +21,10 @@ set (Qt_SRCS
   mqEditFLGDialogReaction.cxx
   mqEditFLGDialog.h
   mqEditFLGDialog.cxx
+  mqEditACTORDialogReaction.h
+  mqEditACTORDialogReaction.cxx
+  mqEditACTORDialog.h
+  mqEditACTORDialog.cxx
   mqEditAllFLGDialogReaction.h
   mqEditAllFLGDialogReaction.cxx
   mqEditAllFLGDialog.h
@@ -119,6 +123,7 @@ mqMoveCurveHandlesDialog.ui
 mqEditLMKDialog.ui
 mqCreateLMKDialog.ui
 mqEditFLGDialog.ui
+mqEditACTORDialog.ui
 mqEditAllFLGDialog.ui
 )
 

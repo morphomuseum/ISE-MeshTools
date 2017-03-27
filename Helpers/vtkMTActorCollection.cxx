@@ -82,6 +82,71 @@ vtkIdType vtkMTActorCollection::GetNumberOfSelectedActors()
 
 
 }
+
+vtkMTActor* vtkMTActorCollection::GetActorBefore(vtkMTActor *Actor)
+{
+	vtkMTActor *Before = NULL;
+	this->InitTraversal();
+	if (this->GetNumberOfItems() == 0) { return NULL; }
+
+	
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myNextActor = vtkMTActor::SafeDownCast(this->GetNextActor());
+		
+
+		if (myNextActor ==Actor)
+		{
+			return Before;
+		}
+
+
+	}
+	
+
+	return Before;
+}
+
+vtkMTActor *vtkMTActorCollection::GetActorAfter(vtkMTActor *Actor)
+{
+	vtkMTActor *After = NULL;
+	int actor_found = 0;
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+		After= vtkMTActor::SafeDownCast(this->GetNextActor());
+		if (actor_found == 1) { return After; }
+		if (After ==Actor)
+		{
+			actor_found = 1;
+		}
+
+	}
+	
+
+	return After;
+}
+
+vtkMTActor* vtkMTActorCollection::GetFirstSelectedActor()
+{
+	this->InitTraversal();
+	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
+	{
+
+		vtkActor *act = this->GetNextActor();
+		if (act == NULL) { return NULL; }
+		std::string str1("vtkMTActor");
+		if (str1.compare(act->GetClassName()) == 0)
+		{
+
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(act);
+			if (myActor->GetSelected() == 1) { return myActor; }
+		}
+
+	}
+
+
+	return NULL;
+}
 //----------------------------------------------------------------------------
 vtkMTActorCollection::~vtkMTActorCollection()
 {
