@@ -3036,6 +3036,10 @@ mqMeshToolsCore::~mqMeshToolsCore()
 	return this->UndoStack;
 }*/
 
+void mqMeshToolsCore::signal_actorSelectionChanged()
+{
+	emit this->actorSelectionChanged();
+}
 void mqMeshToolsCore::signal_lmSelectionChanged()
 {
 	emit this->lmSelectionChanged();

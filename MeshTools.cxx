@@ -173,6 +173,7 @@ void RubberBandSelect(vtkObject* caller,
 	
 	props->InitTraversal();
 	int landmarks_have_changed = 0;
+	int mesh_actors_have_changed = 0;
 	for (vtkIdType i = 0; i < props->GetNumberOfItems(); i++)
 	{
 		
@@ -232,6 +233,8 @@ void RubberBandSelect(vtkObject* caller,
 						myActor->SetSelected(0);
 
 					}
+					mesh_actors_have_changed = 1;
+
 				}
 			}
 		}
@@ -250,6 +253,10 @@ void RubberBandSelect(vtkObject* caller,
 		mqMeshToolsCore::instance()->getHandleLandmarkCollection()->Modified();
 		mqMeshToolsCore::instance()->signal_lmSelectionChanged();
 		
+	}
+	if (mesh_actors_have_changed == 1)
+	{
+		mqMeshToolsCore::instance()->signal_actorSelectionChanged();
 	}
 }
 

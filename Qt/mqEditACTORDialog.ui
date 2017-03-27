@@ -455,7 +455,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>411</width>
+     <width>421</width>
      <height>91</height>
     </rect>
    </property>
@@ -465,20 +465,20 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>20</y>
       <width>91</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Object Name</string>
+     <string>Object Name:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="next">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>390</x>
       <y>20</y>
       <width>21</width>
       <height>23</height>
@@ -496,7 +496,7 @@
    <widget class="QPushButton" name="prec">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>370</x>
       <y>20</y>
       <width>21</width>
       <height>23</height>
@@ -514,7 +514,7 @@
    <widget class="mqColorChooserButton" name="ActorColorButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>90</x>
       <y>50</y>
       <width>101</width>
       <height>19</height>
@@ -527,9 +527,9 @@
    <widget class="QLineEdit" name="ActorName">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>92</x>
       <y>20</y>
-      <width>113</width>
+      <width>271</width>
       <height>20</height>
      </rect>
     </property>
@@ -537,7 +537,7 @@
    <widget class="QDoubleSpinBox" name="ActorAlpha">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>310</x>
       <y>50</y>
       <width>62</width>
       <height>22</height>
@@ -547,9 +547,9 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>200</x>
       <y>50</y>
-      <width>101</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>

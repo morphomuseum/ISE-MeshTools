@@ -99,7 +99,7 @@ vtkMTActor* vtkMTActorCollection::GetActorBefore(vtkMTActor *Actor)
 		{
 			return Before;
 		}
-
+		Before = myNextActor;
 
 	}
 	
@@ -111,6 +111,7 @@ vtkMTActor *vtkMTActorCollection::GetActorAfter(vtkMTActor *Actor)
 {
 	vtkMTActor *After = NULL;
 	int actor_found = 0;
+	this->InitTraversal();
 	for (vtkIdType i = 0; i < this->GetNumberOfItems(); i++)
 	{
 		After= vtkMTActor::SafeDownCast(this->GetNextActor());
@@ -123,7 +124,7 @@ vtkMTActor *vtkMTActorCollection::GetActorAfter(vtkMTActor *Actor)
 	}
 	
 
-	return After;
+	return NULL;
 }
 
 vtkMTActor* vtkMTActorCollection::GetFirstSelectedActor()

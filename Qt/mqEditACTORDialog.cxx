@@ -64,7 +64,7 @@ mqEditACTORDialog::mqEditACTORDialog(QWidget* Parent)
 	
 	this->ACTOR_Coll = NULL;
 	this->ACTOR = NULL;
-	current_coll = -1;
+
 	QString mylabel("...");
 	this->Ui->ActorName->setText(mylabel);
 	
@@ -113,12 +113,13 @@ mqEditACTORDialog::~mqEditACTORDialog()
 }
 void mqEditACTORDialog::saveActor()
 {
-	cout << "Save ACTOR!" << endl;
+	//cout << "Save ACTOR!" << endl;
 	if (this->ACTOR != NULL)
 	{
 		QColor myActorColor = this->Ui->ActorColorButton->chosenColor();
 		double Actorcolor[4];
 		myActorColor.getRgbF(&Actorcolor[0], &Actorcolor[1], &Actorcolor[2], &Actorcolor[3]);
+		Actorcolor[3] = this->Ui->ActorAlpha->value();
 		this->ACTOR->SetmColor(Actorcolor);
 		this->ACTOR->SetName(this->Ui->ActorName->text().toStdString());
 				
@@ -135,14 +136,14 @@ void mqEditACTORDialog::GetFirstSelectedActor()
 {
 	this->ACTOR_Coll = NULL;
 	this->ACTOR = NULL;
-	this->current_coll = -1;
+
 
 	this->ACTOR_Coll = mqMeshToolsCore::instance()->getActorCollection();
 	int num_selected = 0;
 	num_selected = this->ACTOR_Coll->GetNumberOfSelectedActors();
 	if (num_selected > 0) {
 		this->ACTOR = this->ACTOR_Coll->GetFirstSelectedActor();
-		current_coll = 4;
+		
 	}
 	
 
@@ -156,13 +157,14 @@ void mqEditACTORDialog::GetFirstSelectedActor()
 
 void mqEditACTORDialog::GetFirstActor()
 {
+	//cout << "Get first actor!" << endl;
 	this->ACTOR_Coll = mqMeshToolsCore::instance()->getActorCollection();
 	int num = 0;
 	num = this->ACTOR_Coll->GetNumberOfItems();
 	if (num > 0) {
 		this->ACTOR_Coll->InitTraversal();
-		this->ACTOR = vtkLMActor::SafeDownCast(this->ACTOR_Coll->GetNextActor());
-		current_coll = 0;
+		this->ACTOR = vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetNextActor());
+		
 	}
 	
 
@@ -181,19 +183,21 @@ void mqEditACTORDialog::UpdateUI()
 		QString mylabel(this->ACTOR->GetName().c_str());
 		this->Ui->ActorName->setText(mylabel);
 
-	
+	//	cout << "Update UI!" << endl;
 		QColor myActorColor;
 		double Actorcolor[4];
 
+		//cout << "Name" <<mylabel.toStdString()<< endl;
 		this->ACTOR->GetmColor(Actorcolor);
 
 		myActorColor.setRedF(Actorcolor[0]);
 		myActorColor.setGreenF(Actorcolor[1]);
 		myActorColor.setBlueF(Actorcolor[2]);
+
 		this->Ui->ActorColorButton->setChosenColor(myActorColor);
 
-
-
+		this->Ui->ActorAlpha->setValue(Actorcolor[3]);
+		//cout << "Color" << Actorcolor[0]<<","<< Actorcolor[1] << "," << Actorcolor[2] << "," << Actorcolor[3] << "." << endl;
 	}
 
 }
@@ -240,6 +244,7 @@ void mqEditACTORDialog::GetPrecedingActor()
 		else
 		{
 			this->ACTOR= vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetLastActor());
+			this->ACTOR->SetSelected(1);
 		}
 	}
 
@@ -266,7 +271,7 @@ void mqEditACTORDialog::slotGetNextActor()
 
 void mqEditACTORDialog::slotRefreshDialog()
 {
-	cout << "Refresh ACTOR Dialog!" << endl;
+	//cout << "Refresh ACTOR Dialog!" << endl;
 	this->GetFirstSelectedActor();
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
