@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ui_mqMainControlsToolbar.h"
 
 // For later!
-
+#include "mqSaveNTWDialogReaction.h"
 #include "mqUndoRedoReaction.h"
 #include "mqEditLMKDialogReaction.h"
 #include "mqCreateLMKDialogReaction.h"
@@ -54,6 +54,7 @@ void mqMainControlsToolbar::constructor()
  // ui.setupUi(this);
   this->ui = new Ui_mqMainControlsToolbar;
   this->ui->setupUi(this);
+  new mqSaveNTWDialogReaction(this->ui->actionSaveData);
   new mqOpenDataReaction(this->ui->actionOpenData, 0);//0= open data (generic)
   new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
   new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back

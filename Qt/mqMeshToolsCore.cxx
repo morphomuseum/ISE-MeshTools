@@ -1587,6 +1587,65 @@ void mqMeshToolsCore::LandmarksMoveDown()
 	this->Render();
 }
 
+void mqMeshToolsCore::SelectLandmarkRange(int start, int end, int lm_type)
+{
+	//cout << "Select landmark range: " << start << ", " << end << ", " << lm_type << endl;
+	vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+	if (lm_type==0)
+	{ 
+		myColl = this->NormalLandmarkCollection;
+	}
+	else if (lm_type == 1)
+	{
+		myColl = this->TargetLandmarkCollection;
+	}
+	else if (lm_type == 2)
+	{
+		//cout << "Node landmark!" << endl;
+
+		
+		myColl = this->NodeLandmarkCollection;
+		//cout << "myColl->GetNumberOfItems()=" << myColl->GetNumberOfItems() << endl;
+	}
+	else //if (lm_type == 3)
+	{
+		myColl = this->HandleLandmarkCollection;
+	}
+	int coll_modified = 0;
+
+	myColl->InitTraversal();
+	for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			myActor->SetChanged(1);
+			coll_modified = 1;
+			//cout << "Unselect one landmark:" << myActor->GetLMNumber() << endl;
+
+		}
+	}
+	myColl->InitTraversal();
+	for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+	{
+		vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+		int mynum = myActor->GetLMNumber();
+		//cout << "Actor number: " << mynum << endl;
+		if (myActor->GetLMNumber()<=end && myActor->GetLMNumber() >=start)
+		{
+
+			myActor->SetSelected(1);
+			myActor->SetChanged(1);
+			coll_modified = 1;
+			//cout << "Select one landmark:" << myActor->GetLMNumber() << endl;
+		}
+	}
+	if (coll_modified == 1) {
+		myColl->Modified();
+	}
+	this->Render();
+}
 
 void mqMeshToolsCore::slotLandmarkMoveUp()
 {

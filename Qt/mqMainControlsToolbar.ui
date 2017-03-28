@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
+    <width>857</width>
     <height>34</height>
    </rect>
   </property>
@@ -37,7 +37,10 @@
      <normaloff>:/Icons/filesave.png</normaloff>:/Icons/filesave.png</iconset>
    </property>
    <property name="text">
-    <string>Save Data...</string>
+    <string>Save project...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save project...</string>
    </property>
    <property name="PV_MUST_BE_MASTER_TO_SHOW" stdset="0">
     <bool>true</bool>
@@ -384,6 +387,7 @@
    </property>
   </action>
   <addaction name="actionOpenData"/>
+  <addaction name="actionSaveData"/>
   <addaction name="separator"/>
   <addaction name="actionUndo"/>
   <addaction name="actionRedo"/>

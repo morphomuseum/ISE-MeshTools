@@ -24,6 +24,7 @@
 #include "mqSaveCURasVERDialogReaction.h"
 #include "mqSaveSTVDialogReaction.h"
 #include "mqSaveNTWDialogReaction.h"
+#include "mqSelectLandmarkRangeDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -140,7 +141,9 @@ void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
 	// since the UI file tends to change the name of the menu.
 	menu.setObjectName(objectName);
 	// QAction *openNtw = menu.addAction("Open Project");
+
 	//new mqOpenDataReaction(openNtw, 1);//1= open NTW 
+	new mqSelectLandmarkRangeDialogReaction(menu.addAction("Select landmark range") << mqSetName("actionSelectLandmarkRange"));
 	QAction *MoveUp = menu.addAction("Selected landmarks : move up (decrease landmark number)");
 	QAction *MoveDown = menu.addAction("Selected landmarks move down (increase landmark number)");
 	

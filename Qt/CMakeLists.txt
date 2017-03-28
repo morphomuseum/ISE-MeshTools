@@ -99,6 +99,10 @@ set (Qt_SRCS
   mqSaveNTWDialog.h
   mqSaveNTWDialogReaction.cxx
   mqSaveNTWDialogReaction.h
+mqSelectLandmarkRangeDialog.h
+mqSelectLandmarkRangeDialog.cxx
+mqSelectLandmarkRangeDialogReaction.h
+mqSelectLandmarkRangeDialogReaction.cxx
 )
 
 set (Qt_MOC_HDRS
@@ -125,6 +129,7 @@ mqCreateLMKDialog.ui
 mqEditFLGDialog.ui
 mqEditACTORDialog.ui
 mqEditAllFLGDialog.ui
+mqSelectLandmarkRangeDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )
