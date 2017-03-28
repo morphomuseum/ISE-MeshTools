@@ -61,6 +61,8 @@ set (Qt_SRCS
   mqUndoStack.cxx
   mqMainControlsToolbar.h
   mqMainControlsToolbar.cxx
+  mqLightControlsToolbar.h
+  mqLightControlsToolbar.cxx
   mqMeshToolsCore.h
   mqMeshToolsCore.cxx
   mqSavePLYDialog.cxx
@@ -130,6 +132,7 @@ mqEditFLGDialog.ui
 mqEditACTORDialog.ui
 mqEditAllFLGDialog.ui
 mqSelectLandmarkRangeDialog.ui
+mqLightControlsToolbar.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

@@ -29,32 +29,26 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
-#ifndef mqMainControlsToolbar_h
-#define mqMainControlsToolbar_h
+#ifndef mqLightControlsToolbar_h
+#define mqLightControlsToolbar_h
 
 
 #include <QToolBar>
-class Ui_mqMainControlsToolbar;
+class Ui_mqLightControlsToolbar;
 
-/**
-* pqMainControlsToolbar is the toolbar with actions (and reactions) for the
-* "Main Controls" toolbar in ParaView. It includes buttons like "Open Data",
-* "Save Data", "Connect", "Disconnect", "Undo", "Redo".
-* Simply instantiate this and put it in your application UI file or
-* QMainWindow to use it.
-*/
-class  mqMainControlsToolbar : public QToolBar
+
+class  mqLightControlsToolbar : public QToolBar
 {
   Q_OBJECT
   typedef QToolBar Superclass;
 
 public:
-  mqMainControlsToolbar(const QString& title, QWidget* parentObject = 0)
+  mqLightControlsToolbar(const QString& title, QWidget* parentObject = 0)
     : Superclass(title, parentObject)
   {
     this->constructor();
   }
-  mqMainControlsToolbar(QWidget* parentObject = 0)
+  mqLightControlsToolbar(QWidget* parentObject = 0)
     : Superclass(parentObject)
   {
     this->constructor();
@@ -62,17 +56,17 @@ public:
   
 
   public slots :
-  virtual void slotLandmarkNormalMode();
-  virtual void slotLandmarkTargetMode();
-  virtual void slotLandmarkNodeMode();
-  virtual void slotLandmarkHandleMode();
-  virtual void slotFlagMode();
-  virtual void slotMoveAll();
-  virtual void slotMoveOnlyLandmarks();
-private:
-	Q_DISABLE_COPY(mqMainControlsToolbar)
+  virtual void slotFrontLight();
+  virtual void slotBackLight();
+  virtual void slotAboveLight();
+  virtual void slotBelowLight();
+  virtual void slotLeftLight();
+  virtual void slotRightLight();
   
-  Ui_mqMainControlsToolbar *ui;
+private:
+	Q_DISABLE_COPY(mqLightControlsToolbar)
+  
+  Ui_mqLightControlsToolbar *ui;
   void constructor();
 };
 

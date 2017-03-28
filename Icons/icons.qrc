@@ -14,6 +14,12 @@
     <!-- Help -->
     <file>help.png</file>
     <file>name.png</file>
+   <file>light_above.gif</file>
+   <file>light_back.gif</file>
+   <file>light_below.gif</file>
+   <file>light_left.gif</file>
+   <file>light_right.gif</file>
+   <file>light_front.gif</file>
     <!-- Typical camera operations. -->
     <file>camera_above22_2.png</file>
     <file>camera_back22_2.png</file>
