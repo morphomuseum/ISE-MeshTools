@@ -1,132 +1,39 @@
-
-cmake_minimum_required(VERSION 2.8.8)
-if(POLICY CMP0020)
-  cmake_policy(SET CMP0020 NEW)
-endif()
-if(POLICY CMP0025)
-  cmake_policy(SET CMP0025 NEW) # CMake 3.0
-endif()
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 NEW) # CMake 3.0
-endif()
-if(POLICY CMP0053)
-  cmake_policy(SET CMP0053 NEW) # CMake 3.1
-endif()
-
 project(MeshTools)
 
-file(STRINGS version.txt version_txt)
+cmake_minimum_required(VERSION 2.8)
 
-set (MESHTOOLS_VERSION ${version_txt})
+add_subdirectory(MeshTools)
 
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-  "${PROJECT_SOURCE_DIR}/MeshToolsVersion.h.in"
-  "${PROJECT_BINARY_DIR}/MeshToolsVersion.h"
-  )
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
+include(InstallRequiredSystemLibraries)
+install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION programs
+        COMPONENT applications)
 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
 
-find_package(VTK COMPONENTS
-  vtkCommonCore
-  vtkIOCore
-  vtkFiltersCore
-  vtkInfovisCore
-  vtkInteractionStyle
-  vtkViewsQt
-  vtkCommonComputationalGeometry
-  vtkCommonCore
-  vtkCommonDataModel
-  vtkCommonExecutionModel
-  vtkCommonMath
-  vtkCommonMisc
-  vtkCommonSystem
-  vtkCommonTransforms
-  vtkFiltersGeneral  
-  vtkIOGeometry
-  vtkIOLegacy
-  vtkIOXML
-  vtkIOXMLParser
-  vtkFiltersModeling
-  vtkFiltersHybrid
-  vtkIOImport
-  vtkRenderingCore
-  # vtkRenderingOpenGL
-  vtkIOPLY
-)
-include(${VTK_USE_FILE})
+set(CPACK_PACKAGE_NAME "MeshTools")
+set(CPACK_PACKAGE_VENDOR "Renaud Lebrun")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MeshTools Installation")
+set(CPACK_PACKAGE_VERSION_MAJOR "2")
+set(CPACK_PACKAGE_VERSION_MINOR "alpha")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "MeshTools")
 
-if("${VTK_QT_VERSION}" STREQUAL "")
-  message(FATAL_ERROR "VTK was not built with Qt")
-endif()
+set(CPACK_COMPONENTS_ALL applications)
 
-# Use the include path and library for Qt that is used by VTK.
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
+set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "applications (MeshTools)")
 
-# Set your files and resources here
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
-set( Srcs main.cxx MeshTools.cxx)
+set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\meshtools.bmp")
+set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/meshtools.ico")
+set(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/meshtools.ico")
 
-set( Hdrs MeshTools.h )
-
-set( MOC_Hdrs MeshTools.h )
-
-set( UIs MeshTools.ui )
-
-set( QRCs Icons/icons.qrc )
+set(CPACK_NSIS_MENU_LINKS "programs\\meshtools" "MeshTools")
 
 
 
 
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
-
-# The rest should just work (sure...)
-if(VTK_QT_VERSION VERSION_GREATER "4")
-  # We have ui files, this will bring in the macro: qt5_wrap_ui
-  find_package(Qt5 COMPONENTS Widgets REQUIRED QUIET)
-  qt5_wrap_ui(UI_Srcs ${UIs})
-  qt5_add_resources(QRC_Srcs ${QRCs} )
-
-  source_group("Resources" FILES
-    ${UIs}
-    ${QRCs}
-    ${EXE_ICON} # Not present
-  )
-
-  source_group("Generated" FILES
-    ${UI_Srcs}
-    ${MOC_Srcs}
-    ${QRC_Srcs}
-    ${QRC_Srcs}
-  )
-
-include_directories ("${PROJECT_SOURCE_DIR}/Helpers")
-add_subdirectory (Helpers) 
-
-include_directories ("${PROJECT_SOURCE_DIR}/Qt")
-add_subdirectory (Qt) 
-
-
-
-set (EXTRA_LIBRARIES ${EXTRA_LIBRARIES} 
-MeshToolsHelpers
-MeshToolsQt
-)
-
-  add_executable(MeshTools MACOSX_BUNDLE
-    ${Srcs} ${Hdrs} ${UI_Srcs} ${MOC_Hdrs} ${QRC_Srcs})
-  qt5_use_modules(MeshTools Core Gui Widgets)
-  target_link_libraries(MeshTools ${VTK_LIBRARIES} ${EXTRA_LIBRARIES} )
-else()
-
-  message(FATAL_ERROR "Qt 5 required")
-
-endif()
+include(CPack)
