@@ -376,14 +376,14 @@
   <action name="actionEditActors">
    <property name="icon">
     <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/Icons/name.png</normaloff>
-     <normalon>:/Icons/name.png</normalon>:/Icons/name.png</iconset>
+     <normaloff>:/Icons/actor_edit.png</normaloff>
+     <normalon>:/Icons/actor_edit.png</normalon>:/Icons/actor_edit.png</iconset>
    </property>
    <property name="text">
     <string>Edit first selected surface object</string>
    </property>
    <property name="toolTip">
-    <string>Edit first selected object name and color</string>
+    <string>Edit first selected object name, color and matrix</string>
    </property>
   </action>
   <addaction name="actionOpenData"/>

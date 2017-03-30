@@ -37,6 +37,7 @@ public:
   void GetNextLandmark();
   void GetPrecedingLandmark();
   void UpdateUI();
+  int SomeThingHasChanged();
   public slots:
   
   virtual void slotRefreshDialog();

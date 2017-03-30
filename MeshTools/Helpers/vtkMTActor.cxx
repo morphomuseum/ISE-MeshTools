@@ -245,8 +245,10 @@ void vtkMTActor::PopUndoStack()
 	this->mColor[2] = this->UndoRedo->UndoStack.back().Color[2];
 	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
+	this->Name = this->UndoRedo->UndoStack.back().Name;
+
 	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->RedoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->UndoStack.back().UndoCount));
+	this->UndoRedo->RedoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->UndoStack.back().UndoCount, this->UndoRedo->UndoStack.back().Name));
 	this->UndoRedo->UndoStack.pop_back();
 	this->Modified();
 }
@@ -284,7 +286,8 @@ void vtkMTActor::PopRedoStack()
 	this->mColor[3] = this->UndoRedo->RedoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
 	cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->RedoStack.back().UndoCount));
+	this->Name = this->UndoRedo->RedoStack.back().Name;
+	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->RedoStack.back().UndoCount, this->UndoRedo->RedoStack.back().Name));
 	this->UndoRedo->RedoStack.pop_back();
 	this->Modified();
 }
@@ -309,11 +312,11 @@ void vtkMTActor::SaveState(int mCount)
 	myColor[2] = this->mColor[2];
 	myColor[3] = this->mColor[3];
 	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
-
+	std::string name = this->Name;
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	//std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;
-	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myColor, mSelected, mCount));
+	this->UndoRedo->UndoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myColor, mSelected, mCount, name));
 
 }
 //----------------------------------------------------------------------------

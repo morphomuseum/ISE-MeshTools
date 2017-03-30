@@ -37,6 +37,7 @@ public:
   void GetNextFlag();
   void GetPrecedingFlag();
   void UpdateUI();
+  int SomeThingHasChanged();
   public slots:
   
   virtual void slotRefreshDialog();

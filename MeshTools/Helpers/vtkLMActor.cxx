@@ -608,8 +608,15 @@ void vtkLMActor::PopUndoStack()
 	this->mColor[2] = this->UndoRedo->UndoStack.back().Color[2];
 	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
+	if (this->LMType == FLAG_LMK)
+	{
+		this->LMSize =this->UndoRedo->UndoStack.back().FlagLength;
+		this->SetLMText(this->UndoRedo->UndoStack.back().FlagLabel.c_str());
+		cout << "Redo flag label to :" << this->UndoRedo->UndoStack.back().FlagLabel.c_str() << endl;
+		mqMeshToolsCore::instance()->UpdateLandmarkSettings(this);
+	}
 //	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected,myCurrentType, myCurrentNodeType, this->UndoRedo->UndoStack.back().UndoCount));
+	this->UndoRedo->RedoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected,myCurrentType, myCurrentNodeType, this->UndoRedo->UndoStack.back().UndoCount, this->UndoRedo->UndoStack.back().FlagLength, this->UndoRedo->UndoStack.back().FlagLabel));
 	this->UndoRedo->UndoStack.pop_back();
 	this->CreateLMLabelText();
 	this->Modified();
@@ -653,8 +660,13 @@ void vtkLMActor::PopRedoStack()
 	this->mColor[2] = this->UndoRedo->RedoStack.back().Color[2];
 	this->mColor[3] = this->UndoRedo->RedoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->RedoStack.back().Selected);
+	if (this->LMType == FLAG_LMK)
+	{
+		this->LMSize = this->UndoRedo->RedoStack.back().FlagLength;
+		this->SetLMText(this->UndoRedo->RedoStack.back().FlagLabel.c_str());
+	}
 	//cout << "PopRedoStack Set Selected: " << mCurrentSelected << endl;
-	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, myCurrentType, myCurrentNodeType, this->UndoRedo->RedoStack.back().UndoCount));
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, myCurrentType, myCurrentNodeType, this->UndoRedo->RedoStack.back().UndoCount, this->UndoRedo->RedoStack.back().FlagLength, this->UndoRedo->RedoStack.back().FlagLabel));
 	this->UndoRedo->RedoStack.pop_back();
 	this->CreateLMLabelText();
 	this->Modified();
@@ -685,7 +697,10 @@ void vtkLMActor::SaveState(int mCount)
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	//cout << "Saved current LM state: " << endl;
-	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myColor, mSelected, mType, mNodeType, mCount));
+	double length = this->LMSize;
+	std::string flaglabel = this->GetLMText();
+	cout << "Save flag label:" << flaglabel << endl;
+	this->UndoRedo->UndoStack.push_back(vtkLMActorUndoRedo::Element(SavedMat, myColor, mSelected, mType, mNodeType, mCount,length, flaglabel));
 
 }
 //----------------------------------------------------------------------------

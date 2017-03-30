@@ -27,7 +27,8 @@ public:
 		double Color[4];
 		int Selected;
 		int UndoCount;
-		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int Count)
+		std::string Name;
+		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int Count, std::string name)
 		{
 			this->Matrix =m;
 			this->UndoCount = Count;
@@ -36,6 +37,7 @@ public:
 			this->Color[2] = c[2];
 			this->Color[3] = c[3];
 			this->Selected = selected;
+			this->Name = name;
 		}
 	};
 	typedef std::vector<Element> VectorOfElements;

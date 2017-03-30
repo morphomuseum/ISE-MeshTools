@@ -2245,7 +2245,7 @@ void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 				vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 				if (myActor->GetSelected() == 1)
 				{
-					myActor->ApplyMatrix(Mat);;
+					myActor->ApplyMatrix(Mat);
 					myActor->SetSelected(0);
 				}
 			}

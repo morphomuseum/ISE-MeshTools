@@ -10,6 +10,8 @@
 #include "ui_mqEditFLGDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
+#include "mqUndoStack.h"
+
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
 
@@ -118,22 +120,84 @@ mqEditFLGDialog::~mqEditFLGDialog()
 	
   delete this->Ui;
 }
+
+int mqEditFLGDialog::SomeThingHasChanged()
+{
+	int something_has_changed = 0;
+	if (this->FLG != NULL)
+	{
+		QColor muiFLGColor = this->Ui->FlagColorButton->chosenColor();
+		double uiFLGcolor[4];
+		muiFLGColor.getRgbF(&uiFLGcolor[0], &uiFLGcolor[1], &uiFLGcolor[2], &uiFLGcolor[3]);
+		
+
+		QColor myFLGColor;
+		double FLGcolor[4];
+		this->FLG->GetmColor(FLGcolor);
+
+		if (
+			FLGcolor[0] != uiFLGcolor[0]
+			|| FLGcolor[1] != uiFLGcolor[1]
+			|| FLGcolor[2] != uiFLGcolor[2]
+			
+			)
+		{
+			something_has_changed = 1;
+		}
+		double orig[3];
+		this->FLG->GetLMOrigin(orig);
+
+		if (
+			orig[0] != this->Ui->x->value() ||
+			orig[1] != this->Ui->y->value() ||
+			orig[2] != this->Ui->z->value()
+			)
+		{
+			something_has_changed = 1;
+		}
+
+		QString mylabel(this->FLG->GetLMText().c_str());
+		
+		
+		if (QString::compare(mylabel, this->Ui->FlagLabel->text(), Qt::CaseInsensitive) != 0)
+		{
+			something_has_changed = 1;
+		}
+
+		double flag_rendering_size = this->FLG->GetLMSize();
+		if (flag_rendering_size!= this->Ui->FlagRenderingSizeValue->value())
+		{
+			something_has_changed = 1;
+		}
+	}
+	return something_has_changed;
+}
+
 void mqEditFLGDialog::saveFLG()
 {
 	cout << "Save FLG!" << endl;
 	if (this->FLG != NULL)
 	{
-		QColor myFlagColor = this->Ui->FlagColorButton->chosenColor();
-		double flagcolor[4];
-		myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
-		this->FLG->SetmColor(flagcolor);
-		this->FLG->SetLMText(this->Ui->FlagLabel->text().toStdString().c_str());
-		
-		double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
-		this->FLG->SetLMSize(flg_rendering_size);
-		this->FLG->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
-		this->FLG->Modified();
-		mqMeshToolsCore::instance()->UpdateLandmarkSettings(this->FLG);// to update body size!
+		int something_has_changed = this->SomeThingHasChanged();
+		if (something_has_changed)
+		{
+			std::string action = "Update flag's color, origin, length and label";
+
+			int mCount = BEGIN_UNDO_SET(action);
+			this->FLG->SaveState(mCount);
+			QColor myFlagColor = this->Ui->FlagColorButton->chosenColor();
+			double flagcolor[4];
+			myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
+			this->FLG->SetmColor(flagcolor);
+			this->FLG->SetLMText(this->Ui->FlagLabel->text().toStdString().c_str());
+
+			double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
+			this->FLG->SetLMSize(flg_rendering_size);
+			this->FLG->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
+			this->FLG->Modified();
+			mqMeshToolsCore::instance()->UpdateLandmarkSettings(this->FLG);// to update body size!
+			END_UNDO_SET();
+		}
 	}
 	
 }

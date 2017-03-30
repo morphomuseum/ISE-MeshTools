@@ -37,12 +37,14 @@ public:
   void GetNextActor();
   void GetPrecedingActor();
   void UpdateUI();
+  int SomeThingHasChanged();
   public slots:
   
   virtual void slotRefreshDialog();
   virtual void slotGetPrecedingActor();
   virtual void slotGetNextActor();
   virtual void slotsaveActor();
+  virtual void slotReinitMatrix();
   
 
 protected:

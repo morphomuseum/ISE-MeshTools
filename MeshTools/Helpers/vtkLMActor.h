@@ -31,7 +31,9 @@ public:
 		int Type;
 		int NodeType;
 		int UndoCount;
-		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int type, int nodetype, int Count)
+		int FlagLength;
+		std::string FlagLabel;
+		Element(vtkSmartPointer<vtkMatrix4x4> m, double c[4], int selected, int type, int nodetype, int Count, double flaglength, std::string flaglabel)
 		{
 			this->Matrix =m;
 			this->UndoCount = Count;
@@ -42,6 +44,8 @@ public:
 			this->Selected = selected;
 			this->Type = type;
 			this->NodeType = nodetype;
+			this->FlagLength = flaglength;
+			this->FlagLabel = flaglabel;
 		}
 	};
 	typedef std::vector<Element> VectorOfElements;

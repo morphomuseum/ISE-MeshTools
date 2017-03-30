@@ -10,6 +10,7 @@
 #include "ui_mqEditLMKDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
+#include "mqUndoStack.h"
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
 
@@ -96,13 +97,44 @@ mqEditLMKDialog::~mqEditLMKDialog()
 	
   delete this->Ui;
 }
+
+int mqEditLMKDialog::SomeThingHasChanged()
+{
+	int something_has_changed = 0;
+	if (this->LMK != NULL)
+	{
+		
+		double orig[3];
+		this->LMK->GetLMOrigin(orig);
+
+		if (
+			orig[0] != this->Ui->x->value() ||
+			orig[1] != this->Ui->y->value() ||
+			orig[2] != this->Ui->z->value()
+			)
+		{
+			something_has_changed = 1;
+		}
+
+		
+	}
+	return something_has_changed;
+}
 void mqEditLMKDialog::saveLMK()
 {
 	cout << "Save LMK!" << endl;
 	if (this->LMK != NULL)
 	{
-		this->LMK->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
-		this->LMK->Modified();
+		int something_has_changed = this->SomeThingHasChanged();
+		if (something_has_changed)
+		{
+			std::string action = "Update landmark's origin";
+			int mCount = BEGIN_UNDO_SET(action);
+			this->LMK->SaveState(mCount);
+			this->LMK->SetLMOrigin(this->Ui->x->value(), this->Ui->y->value(), this->Ui->z->value());
+			this->LMK->Modified();
+			END_UNDO_SET();
+		}
 	}
 	
 }

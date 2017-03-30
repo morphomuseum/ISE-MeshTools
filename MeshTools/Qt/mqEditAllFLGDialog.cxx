@@ -10,6 +10,7 @@
 #include "ui_mqEditAllFLGDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
+#include "mqUndoStack.h"
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
 
@@ -95,15 +96,19 @@ void mqEditAllFLGDialog::saveAllFLG()
 {
 	cout << "Save All FLG!" << endl;
 	
+	if (mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfSelectedActors() > 0)
+	{
+		std::string action = "Update all selected flags";
+		int mCount = BEGIN_UNDO_SET(action);
 		QColor myFlagColor = this->Ui->FlagColorButton->chosenColor();
 		double flagcolor[4];
 		myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
-		
+
 		double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
-		
+
 		mqMeshToolsCore::instance()->UpdateAllSelectedFlags(flagcolor, flg_rendering_size);// to update body size!
-	
-	
+		END_UNDO_SET();
+	}
 }
 
 
