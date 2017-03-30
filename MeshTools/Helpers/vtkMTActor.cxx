@@ -246,7 +246,7 @@ void vtkMTActor::PopUndoStack()
 	this->mColor[3] = this->UndoRedo->UndoStack.back().Color[3];
 	this->SetSelected(this->UndoRedo->UndoStack.back().Selected);
 	this->Name = this->UndoRedo->UndoStack.back().Name;
-
+	//cout << "Undo name: " << this->UndoRedo->UndoStack.back().Name;
 	cout << "PopUndoStack Set Selected: " << mCurrentSelected << endl;
 	this->UndoRedo->RedoStack.push_back(vtkMTActorUndoRedo::Element(SavedMat, myCurrentColor, mCurrentSelected, this->UndoRedo->UndoStack.back().UndoCount, this->UndoRedo->UndoStack.back().Name));
 	this->UndoRedo->UndoStack.pop_back();
@@ -313,6 +313,7 @@ void vtkMTActor::SaveState(int mCount)
 	myColor[3] = this->mColor[3];
 	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
 	std::string name = this->Name;
+	cout << "Save name=" << name << endl;
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	//std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;

@@ -270,6 +270,7 @@ int mqEditACTORDialog::SomeThingHasChanged()
 		if (QString::compare(myname, this->Ui->ActorName->text(), Qt::CaseInsensitive)!=0)
 		{
 			something_has_changed = 1;
+			cout << "name has changed!" << endl;
 		}
 	
 	}
