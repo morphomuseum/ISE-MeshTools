@@ -43,6 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "mqOpenDataReaction.h"
 #include "mqCameraReaction.h"
 #include "mqDisplayReaction.h"
+#include <vtkLight.h>
+#include <vtkRenderer.h>
 
 #include <QToolButton>
 
@@ -68,67 +70,105 @@ void mqLightControlsToolbar::constructor()
 
 void mqLightControlsToolbar::slotFrontLight()
 {
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	cout << "front light!" << endl;
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(0, 0, 1);
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	mqMeshToolsCore::instance()->Render();
+
 
 	
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
 	
+	
+}
+void mqLightControlsToolbar::slotBackLight()
+{
+	
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	cout << "back light!" << endl;
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(-1, -1, -1);
+	
+	
+
+	vtkSmartPointer<vtkLight> light2 = vtkSmartPointer<vtkLight>::New();
+	light2->SetLightTypeToCameraLight();
+	light2->SetPosition(1, 1, -1);
+	
+	vtkSmartPointer<vtkLight> light3= vtkSmartPointer<vtkLight>::New();
+	light3->SetLightTypeToCameraLight();
+	light3->SetPosition(0, 1, -1);
+	
+	vtkSmartPointer<vtkLight> light4 = vtkSmartPointer<vtkLight>::New();
+	light4->SetLightTypeToCameraLight();
+	light4->SetPosition(0, -1, -1);
+
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	//mqMeshToolsCore::instance()->getRenderer()->AddLight(light2);
+	//mqMeshToolsCore::instance()->getRenderer()->AddLight(light3);
+	//mqMeshToolsCore::instance()->getRenderer()->AddLight(light4);
+	mqMeshToolsCore::instance()->Render();
+
+	
+
 }
 void mqLightControlsToolbar::slotAboveLight()
 {
 
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(0, 1, 1);
+	
 
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	mqMeshToolsCore::instance()->Render();
+
+
+	
 
 }
 void mqLightControlsToolbar::slotBelowLight()
 {
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(0, -1, 1);
+	
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	mqMeshToolsCore::instance()->Render();
 
-
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
-
-}
-void mqLightControlsToolbar::slotBackLight()
-{
-
-
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
+	
 
 }
+
 void mqLightControlsToolbar::slotLeftLight()
 {
 
+	cout << "left light!" << endl;
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(-1, 0, 1);
+	
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	mqMeshToolsCore::instance()->Render();
 
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
 
 }
 void mqLightControlsToolbar::slotRightLight()
 {
 
-
-	/*this->ui->actionLandmarksModeTarget->setChecked(false);
-	this->ui->actionLandmarksModeNode->setChecked(false);
-	this->ui->actionLandmarksModeHandle->setChecked(false);
-	this->ui->actionLandmarksModeFlag->setChecked(false);
-	mqMeshToolsCore::instance()->Setmui_LandmarkMode(0);*/
+	cout << "right light!" << endl;
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	light->SetLightTypeToCameraLight();
+	light->SetPosition(1, 0, 1);
+	
+	mqMeshToolsCore::instance()->getRenderer()->RemoveAllLights();
+	mqMeshToolsCore::instance()->getRenderer()->AddLight(light);
+	mqMeshToolsCore::instance()->Render();
 
 }
