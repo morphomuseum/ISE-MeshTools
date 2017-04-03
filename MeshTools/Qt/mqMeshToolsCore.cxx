@@ -1984,9 +1984,9 @@ void mqMeshToolsCore::AdjustCameraAndGrid()
 	if (this->Getmui_CameraOrtho() == 1)
 	{
 		this->getCamera()->SetParallelScale(GlobalBoundingBoxLength);
-		this->getRenderer()->ResetCameraClippingRange();
+		
 	}
-
+	this->getRenderer()->ResetCameraClippingRange();
 	//this->ui->qvtkWidget->update();
 	this->Render();
 
@@ -2306,6 +2306,8 @@ void mqMeshToolsCore::ApplyMatrix(vtkSmartPointer<vtkMatrix4x4> Mat, int mode)
 			}
 		}
 	}
+	cout <<" Actor collection changed" << endl;
+	this->ActorCollection->SetChanged(1);
 }
 
 void mqMeshToolsCore::SelectAll(int Count)

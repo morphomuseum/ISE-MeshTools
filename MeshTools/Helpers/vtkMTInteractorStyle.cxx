@@ -509,17 +509,18 @@ void vtkMTInteractorStyle::Dolly(double factor)
 	}
 
 	vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
-	if (camera->GetParallelProjection())
-	{
+	//if (camera->GetParallelProjection())
+	//{
 		camera->SetParallelScale(camera->GetParallelScale() / factor);
+		//important because this is used sometimes in perspective mode to check the distance between camera and grid center.
 		//cout << "Dolly camera parallell" << endl;
 		camera->Dolly(factor);
-	}
-	else
-	{
-		camera->Dolly(factor);
+	//}
+	//else
+	//{
+	//	camera->Dolly(factor);
 		
-	}
+	//}
 	if (this->AutoAdjustCameraClippingRange)
 	{
 		this->CurrentRenderer->ResetCameraClippingRange();

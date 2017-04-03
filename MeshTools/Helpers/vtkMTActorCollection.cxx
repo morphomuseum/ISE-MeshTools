@@ -729,6 +729,7 @@ void vtkMTActorCollection::ApplyChanges()
 void vtkMTActorCollection::GetCenterOfMass(double center[3])
 {
 	if (this->Changed == 1 || this->ActorChanged() == 1) { 
+		
 		ApplyChanges(); 
 }
 	double *com = this->GetCenterOfMass();

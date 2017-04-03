@@ -1613,6 +1613,8 @@ void mqOpenDataReaction::OpenPOS(QString fileName, int mode)
 
 			//cout << "call meshtools apply mat" << &Mat << endl;
 			mqMeshToolsCore::instance()->ApplyMatrix(Mat, mode);
+			mqMeshToolsCore::instance()->AdjustCameraAndGrid();
+			
 		}//file exists...
 	}	//length
 
@@ -1786,6 +1788,9 @@ void mqOpenDataReaction::OpenPOSTrans(QString fileName, int mode)
 			
 			 //cout << "call meshtools apply mat" << &Mat << endl;
 			mqMeshToolsCore::instance()->ApplyMatrix(Mat, mode);
+			
+			//ApplyChanges()
+			mqMeshToolsCore::instance()->AdjustCameraAndGrid();
 		}//file exists...
 	}	//length
 
