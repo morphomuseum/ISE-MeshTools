@@ -431,9 +431,9 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>20</x>
      <y>250</y>
-     <width>161</width>
+     <width>239</width>
      <height>25</height>
     </rect>
    </property>
@@ -445,6 +445,13 @@
       </property>
       <property name="standardButtons">
        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="reinit">
+      <property name="text">
+       <string>Default</string>
       </property>
      </widget>
     </item>

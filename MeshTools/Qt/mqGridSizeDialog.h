@@ -38,6 +38,7 @@ public:
   
   
   virtual void sloteditGridSize();
+  virtual void slotReinitialize();
   
 
 protected:

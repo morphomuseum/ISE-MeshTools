@@ -79,7 +79,7 @@ mqGridSizeDialog::mqGridSizeDialog(QWidget* Parent)
 	if (QString::compare(myUnit, m, Qt::CaseInsensitive) == 0) { this->Ui->m->setChecked(true); }
   
 	 connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(sloteditGridSize()));
-
+	 connect(this->Ui->reinit, SIGNAL(clicked()), this, SLOT(slotReinitialize()));
 }
 
 
@@ -119,7 +119,25 @@ void mqGridSizeDialog::sloteditGridSize()
 {
 	this->editGridSize();
 }
+void mqGridSizeDialog::slotReinitialize()
+{
+	double GridSpacing = mqMeshToolsCore::instance()->Getmui_DefaultGridSpacing();
+	
+	this->Ui->gridspacing->setValue(GridSpacing);
 
+	QString myUnit = mqMeshToolsCore::instance()->Getmui_DefaultSizeUnit();
+	QString mm("mm");
+	QString cm("cm");
+	QString m("m");
+	QString um("um");
+	QString nm("nm");
+	if (QString::compare(myUnit, mm, Qt::CaseInsensitive) == 0) { this->Ui->mm->setChecked(true); }
+	if (QString::compare(myUnit, cm, Qt::CaseInsensitive) == 0) { this->Ui->cm->setChecked(true); }
+	if (QString::compare(myUnit, um, Qt::CaseInsensitive) == 0) { this->Ui->um->setChecked(true); }
+	if (QString::compare(myUnit, nm, Qt::CaseInsensitive) == 0) { this->Ui->nm->setChecked(true); }
+	if (QString::compare(myUnit, m, Qt::CaseInsensitive) == 0) { this->Ui->m->setChecked(true); }
+
+}
 
 //-----------------------------------------------------------------------------
 
