@@ -25,6 +25,6 @@ mqEditLMKDialogReaction::mqEditLMKDialogReaction(QAction* parentObject)
 void mqEditLMKDialogReaction::showEditLMKDialog(mqEditLMKDialog *lmk_dialog)
 {
 	
-  
+  lmk_dialog->RefreshDialog();
   lmk_dialog->show();
 }

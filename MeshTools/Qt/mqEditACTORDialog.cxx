@@ -277,10 +277,30 @@ int mqEditACTORDialog::SomeThingHasChanged()
 
 	return something_has_changed;
 }
+// This dialog is non modal, and actors can have been removed from the collection in the meantime... so before saving actors, we should check whether they are still
+//inside the collection.
+int mqEditACTORDialog::CurrentActorInCollection()
+{
+	int actor_found = 0;
+	vtkMTActor * Act;
+	this->ACTOR_Coll->InitTraversal();
+	if (this->ACTOR != NULL && this->ACTOR_Coll != NULL)
+	{
+		Act = vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetNextActor());
+		if (actor_found == 1) { return actor_found; }
+		if (Act == this->ACTOR)
+		{
+			cout << "Actor found!!" << endl;
+			actor_found = 1;
+		}
+		
+	}
+	return actor_found;
+}
 void mqEditACTORDialog::saveActor()
 {
 	//cout << "Save ACTOR!" << endl;
-	if (this->ACTOR != NULL)
+	if (this->ACTOR != NULL && this->CurrentActorInCollection())
 	{
 		int something_has_changed = this->SomeThingHasChanged();
 		if (something_has_changed)
@@ -468,7 +488,14 @@ void mqEditACTORDialog::GetPrecedingActor()
 }
 void mqEditACTORDialog::slotsaveActor()
 {
+	
+
 	this->saveActor();
+	if (this->ACTOR != NULL)
+	{
+		this->ACTOR->SetSelected(0);
+		this->ACTOR->Modified();
+	}
 }
 void mqEditACTORDialog::slotGetPrecedingActor()
 {
@@ -486,12 +513,16 @@ void mqEditACTORDialog::slotGetNextActor()
 	mqMeshToolsCore::instance()->Render();
 }
 
-void mqEditACTORDialog::slotRefreshDialog()
+void mqEditACTORDialog::RefreshDialog()
 {
-	//cout << "Refresh ACTOR Dialog!" << endl;
 	this->GetFirstSelectedActor();
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
+}
+void mqEditACTORDialog::slotRefreshDialog()
+{
+	//cout << "Refresh ACTOR Dialog!" << endl;
+	this->slotRefreshDialog();
 
 }
 

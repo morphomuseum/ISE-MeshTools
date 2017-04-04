@@ -9,7 +9,7 @@
 
 #include "vtkMTActor.h"
 #include "vtkMTActorCollection.h"
-
+#include <vtkSmartPointer.h>
 #include <QDialog>
 
 namespace Ui
@@ -38,6 +38,8 @@ public:
   void GetPrecedingActor();
   void UpdateUI();
   int SomeThingHasChanged();
+  int CurrentActorInCollection();
+  void RefreshDialog();
   public slots:
   
   virtual void slotRefreshDialog();
@@ -54,7 +56,7 @@ private:
 
   Q_DISABLE_COPY(mqEditACTORDialog)
   Ui::mqEditACTORDialog* const Ui;
-  vtkMTActor *ACTOR;
+  vtkSmartPointer<vtkMTActor> ACTOR;
   vtkMTActorCollection *ACTOR_Coll;
   int current_coll;
 

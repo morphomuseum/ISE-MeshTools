@@ -120,10 +120,29 @@ int mqEditLMKDialog::SomeThingHasChanged()
 	}
 	return something_has_changed;
 }
+
+int mqEditLMKDialog::CurrentLMKInCollection()
+{
+	int lmk_found = 0;
+	vtkLMActor * Lmk;
+	this->LMK_Coll->InitTraversal();
+	if (this->LMK != NULL && this->LMK_Coll != NULL)
+	{
+		Lmk = vtkLMActor::SafeDownCast(this->LMK_Coll->GetNextActor());
+		if (lmk_found == 1) { return lmk_found; }
+		if (Lmk == this->LMK)
+		{
+			cout << "Landmark found!!" << endl;
+			lmk_found = 1;
+		}
+
+	}
+	return lmk_found;
+}
 void mqEditLMKDialog::saveLMK()
 {
 	cout << "Save LMK!" << endl;
-	if (this->LMK != NULL)
+	if (this->LMK != NULL&& this->CurrentLMKInCollection())
 	{
 		int something_has_changed = this->SomeThingHasChanged();
 		if (something_has_changed)
@@ -387,13 +406,18 @@ void mqEditLMKDialog::slotGetNextLandmark()
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
 }
-
-void mqEditLMKDialog::slotRefreshDialog()
+void mqEditLMKDialog::RefreshDialog()
 {
 	cout << "Refresh LMK Dialog!" << endl;
 	this->GetFirstSelectedLandmark();
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
+}
+
+void mqEditLMKDialog::slotRefreshDialog()
+{
+	
+	this->RefreshDialog();
 
 }
 

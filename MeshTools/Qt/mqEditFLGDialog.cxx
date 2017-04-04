@@ -176,7 +176,7 @@ int mqEditFLGDialog::SomeThingHasChanged()
 void mqEditFLGDialog::saveFLG()
 {
 	cout << "Save FLG!" << endl;
-	if (this->FLG != NULL)
+	if (this->FLG != NULL && this->CurrentFlagInCollection())
 	{
 		int something_has_changed = this->SomeThingHasChanged();
 		if (something_has_changed)
@@ -308,6 +308,26 @@ void mqEditFLGDialog::GetNextFlag()
 	}
 
 }
+
+int mqEditFLGDialog::CurrentFlagInCollection()
+{
+	int flg_found = 0;
+	vtkLMActor * Flg;
+	this->FLG_Coll->InitTraversal();
+	if (this->FLG != NULL && this->FLG_Coll != NULL)
+	{
+		Flg = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
+		if (flg_found == 1) { return flg_found; }
+		if (Flg == this->FLG)
+		{
+			cout << "Flag found!!" << endl;
+			flg_found = 1;
+		}
+
+	}
+	return flg_found;
+}
+
 void mqEditFLGDialog::GetPrecedingFlag()
 {
 
@@ -331,9 +351,17 @@ void mqEditFLGDialog::GetPrecedingFlag()
 	}
 
 }
+
+
+
 void mqEditFLGDialog::slotsaveFLG()
 {
 	this->saveFLG();
+	if (this->FLG != NULL)
+	{
+		this->FLG->SetSelected(0);
+		this->FLG->Modified();
+	}
 }
 void mqEditFLGDialog::slotGetPrecedingFlag()
 {
@@ -351,13 +379,18 @@ void mqEditFLGDialog::slotGetNextFlag()
 	mqMeshToolsCore::instance()->Render();
 }
 
-void mqEditFLGDialog::slotRefreshDialog()
+void mqEditFLGDialog::RefreshDialog()
 {
 	cout << "Refresh FLG Dialog!" << endl;
 	this->GetFirstSelectedFlag();
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
+}
 
+void mqEditFLGDialog::slotRefreshDialog()
+{
+	
+	this->RefreshDialog();
 }
 
 

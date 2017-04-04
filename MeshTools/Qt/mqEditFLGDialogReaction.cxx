@@ -25,6 +25,6 @@ mqEditFLGDialogReaction::mqEditFLGDialogReaction(QAction* parentObject)
 void mqEditFLGDialogReaction::showEditFLGDialog(mqEditFLGDialog *FLG_dialog)
 {
 	
-  
+  FLG_dialog->RefreshDialog();
   FLG_dialog->show();
 }

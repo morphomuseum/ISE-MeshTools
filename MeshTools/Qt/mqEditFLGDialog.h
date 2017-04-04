@@ -9,7 +9,7 @@
 
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
-
+#include <vtkSmartPointer.h>
 #include <QDialog>
 
 namespace Ui
@@ -38,6 +38,8 @@ public:
   void GetPrecedingFlag();
   void UpdateUI();
   int SomeThingHasChanged();
+  int CurrentFlagInCollection();
+  void RefreshDialog();
   public slots:
   
   virtual void slotRefreshDialog();
@@ -53,7 +55,7 @@ private:
 
   Q_DISABLE_COPY(mqEditFLGDialog)
   Ui::mqEditFLGDialog* const Ui;
-  vtkLMActor *FLG;
+  vtkSmartPointer<vtkLMActor> FLG;
   vtkLMActorCollection *FLG_Coll;
   int current_coll;
 
