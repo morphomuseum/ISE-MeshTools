@@ -73,6 +73,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
+	this->mui_GridSpacing = this->mui_DefaultGridSpacing = 10;
+	this->mui_SizeUnit = this->mui_DefaultSizeUnit = "mm";
+
 	this->mui_MoveAll = this->mui_DefaultMoveAll = 1;
 	this->mui_FlagColor[0] = this->mui_DefaultFlagColor[0] = 0;
 	this->mui_FlagColor[1] = this->mui_DefaultFlagColor[1] = 0.7;
@@ -208,13 +211,13 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->Renderer->SetOcclusionRatio(0.1);
 	this->Camera = this->Renderer->GetActiveCamera();
 	this->GridActor = vtkSmartPointer<vtkGridActor>::New();
+	this->GridActor->SetGridSpacing(this->Getmui_GridSpacing());
 	this->GridActor->SetGridType(2);	
 
 	
+	cornerAnnotation= vtkSmartPointer<vtkCornerAnnotation>::New();
 
-
-	//this->LandmarkCollection->SetChanged(1);
-	
+	this->Renderer->AddViewProp(cornerAnnotation);
 	this->Renderer->AddActor(this->GridActor);
 
 	
@@ -2232,6 +2235,61 @@ void mqMeshToolsCore::SetGridVisibility()
 	}
 	this->Render();
 }
+
+void mqMeshToolsCore::SetGridInfos()
+{
+	QString myAnnotation;
+	//QString myBeginning("Size unit: ");
+	//myAnnotation = myBeginning + this->Getmui_SizeUnit();
+	//QString follows("\nGrid: 1 square=");
+	QString follows("Grid: 1 square=");
+	QString valueAsString = QString::number(this->Getmui_GridSpacing());
+	//myAnnotation = myAnnotation + follows;
+	myAnnotation = follows + valueAsString;
+	myAnnotation = myAnnotation + this->Getmui_SizeUnit();
+	cornerAnnotation->SetText(vtkCornerAnnotation::LowerRight, myAnnotation.toStdString().c_str());
+	//QString myTest("Loulou fait du ski\nEt voila\nToutou");
+	if (this->Getmui_ShowGrid() == 1)
+	{
+		cornerAnnotation->VisibilityOn();
+	}
+	else
+	{
+		cornerAnnotation->VisibilityOff();
+	}
+	cornerAnnotation->SetLinearFontScaleFactor(2);  
+	cornerAnnotation->SetNonlinearFontScaleFactor(1);  
+	cornerAnnotation->SetMaximumFontSize(12);
+	this->Render();
+
+	//cornerAnnotation->SetText(vtkCornerAnnotation::RightEdge, valueAsString.toStdString().c_str());
+	//cornerAnnotation->SetText(vtkCornerAnnotation::RightEdge, myTest.toStdString().c_str());
+
+	//this->LandmarkCollection->SetChanged(1);
+	
+	/*vtkPropCollection* props = this->getRenderer()->GetViewProps(); //iterate through and set each visibility to 0
+	props->InitTraversal();
+	std::string str1("vtkGridActor");
+	for (int i = 0; i < props->GetNumberOfItems(); i++)
+	{
+		vtkProp *myprop = props->GetNextProp();
+		if (str1.compare(myprop->GetClassName()) == 0)
+		{
+			if (this->Getmui_ShowGrid() == 1)
+			{
+				myprop->VisibilityOn();
+			}
+			else
+			{
+				myprop->VisibilityOff();
+			}
+		}
+
+	}
+	this->Render();*/
+
+}
+
 void mqMeshToolsCore::SetOrientationHelperVisibility()
 {
 
@@ -2543,6 +2601,16 @@ int mqMeshToolsCore::Getmui_CameraOrtho() { return this->mui_CameraOrtho; }
 void mqMeshToolsCore::Setmui_ShowGrid(int showgrid) { this->mui_ShowGrid = showgrid; }
 int mqMeshToolsCore::Getmui_ShowGrid() { return this->mui_ShowGrid; }
 int mqMeshToolsCore::Getmui_DefaultShowGrid() { return this->mui_DefaultShowGrid; };
+
+void mqMeshToolsCore::Setmui_GridSpacing(double gridspacing) { this->mui_GridSpacing = gridspacing; this->GridActor->SetGridSpacing(gridspacing);
+
+}
+double mqMeshToolsCore::Getmui_GridSpacing() { return this->mui_GridSpacing; }
+double mqMeshToolsCore::Getmui_DefaultGridSpacing() { return this->mui_DefaultGridSpacing; }
+
+void mqMeshToolsCore::Setmui_SizeUnit(QString unit) { this->mui_SizeUnit = unit; }
+QString mqMeshToolsCore::Getmui_SizeUnit() { return this->mui_SizeUnit; }
+QString mqMeshToolsCore::Getmui_DefaultSizeUnit() { return this->mui_DefaultSizeUnit; }
 
 void mqMeshToolsCore::Setmui_MoveAll(int moveall) { this->mui_MoveAll= moveall;
 if (moveall == 0) { this->UnselectAll(-1);  }

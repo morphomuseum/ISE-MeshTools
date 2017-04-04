@@ -105,6 +105,9 @@ mqLandmarkDialog::mqLandmarkDialog(QWidget* Parent)
   this->Ui->FlagRenderingSizeValue->setSingleStep(1);
   this->Ui->FlagRenderingSizeValue->setValue(flag_rendering_size);
   
+  this->Ui->SizeUnit1->setText(mqMeshToolsCore::instance()->Getmui_SizeUnit());
+  this->Ui->SizeUnit2->setText(mqMeshToolsCore::instance()->Getmui_SizeUnit());
+
   connect(this->Ui->SpheresRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
   connect(this->Ui->ArrowsRadioButton, SIGNAL(clicked()), this, SLOT(slotLandmarkBodyTypeChanged()));
   connect(this->Ui->AdjustLandmarkRenderingSizeCheckBox, SIGNAL(clicked()), this, SLOT(slotAdjustLandmarkRenderingSizeChanged()));

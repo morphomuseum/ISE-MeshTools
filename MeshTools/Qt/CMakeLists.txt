@@ -33,6 +33,10 @@ set (Qt_SRCS
   mqEditAllFLGDialogReaction.cxx
   mqEditAllFLGDialog.h
   mqEditAllFLGDialog.cxx
+  mqGridSizeDialogReaction.h
+  mqGridSizeDialogReaction.cxx
+  mqGridSizeDialog.h
+  mqGridSizeDialog.cxx
   mqOpenDataReaction.cxx
   mqOpenDataReaction.h
   mqSetName.cxx
@@ -138,6 +142,7 @@ mqEditACTORDialog.ui
 mqEditAllFLGDialog.ui
 mqSelectLandmarkRangeDialog.ui
 mqLightControlsToolbar.ui
+mqGridSizeDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

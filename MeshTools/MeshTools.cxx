@@ -293,6 +293,12 @@ MeshTools::MeshTools()
 	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
 		this->MeshToolsCore->Getmui_DefaultShowGrid()
 		).toInt());
+	this->MeshToolsCore->Setmui_GridSpacing(settings.value("GridSpacing",
+		this->MeshToolsCore->Getmui_DefaultGridSpacing()
+	).toDouble());
+	this->MeshToolsCore->Setmui_SizeUnit(settings.value("SizeUnit",
+		this->MeshToolsCore->Getmui_DefaultSizeUnit()
+	).toString());
 	this->MeshToolsCore->Setmui_ShowOrientationHelper(settings.value("ShowOrientationHelper", 
 		this->MeshToolsCore->Getmui_DefaultShowOrientationHelper()
 		).toInt());
@@ -718,6 +724,7 @@ MeshTools::MeshTools()
   */
 
   this->MeshToolsCore->SetGridVisibility();
+  this->MeshToolsCore->SetGridInfos();
   this->MeshToolsCore->InitializeOrientationHelper(); // creates orientation helper...
   this->MeshToolsCore->SetOrientationHelperVisibility();
 
@@ -754,6 +761,8 @@ void MeshTools::saveSettings()
 	settings.endGroup();
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->MeshToolsCore->Getmui_ShowGrid());
+	settings.setValue("GridSpacing", this->MeshToolsCore->Getmui_GridSpacing());
+	settings.setValue("SizeUnit", this->MeshToolsCore->Getmui_SizeUnit());
 	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());
 	settings.setValue("CameraCentreOfMassAtOrigin", this->MeshToolsCore->Getmui_CameraCentreOfMassAtOrigin());
 	settings.setValue("CameraOrtho", this->MeshToolsCore->Getmui_CameraOrtho());

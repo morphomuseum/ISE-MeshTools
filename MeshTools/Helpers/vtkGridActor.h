@@ -193,7 +193,7 @@ protected:
 	int                AxisLabels;
 	int                GridType; // 0: xy, z=0; 1: xz, y=0; 2: yz, x=0
 	double		     GridSize; // number of squares in each quadrant
-	double		     GridSpacing; // spacing in mm between each grid line
+	double		     GridSpacing; // spacing in "SizeUnit"(mm) between each grid line
 	double			GridOrigin[3];
 
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>361</width>
+    <width>410</width>
     <height>406</height>
    </rect>
   </property>
@@ -462,7 +462,7 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>321</width>
+     <width>351</width>
      <height>221</height>
     </rect>
    </property>
@@ -946,7 +946,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Landmark rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(sphere diameter / arrow head length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Landmark rendering size &lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(sphere diameter / arrow head length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="LandmarkRenderingSizeValue">
@@ -982,13 +982,26 @@
      <string>Adjustment scale factor (0.1-10)</string>
     </property>
    </widget>
+   <widget class="QLabel" name="SizeUnit1">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>190</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Unit</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="FlagSettingsGroupBox">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>260</y>
-     <width>321</width>
+     <width>351</width>
      <height>91</height>
     </rect>
    </property>
@@ -1433,7 +1446,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Flag rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(total arrow length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Flag rendering size&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(total arrow length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="FlagRenderingSizeValue">
@@ -1444,6 +1457,19 @@
       <width>62</width>
       <height>22</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="SizeUnit2">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>60</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Unit</string>
     </property>
    </widget>
   </widget>

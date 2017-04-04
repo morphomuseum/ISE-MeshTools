@@ -22,6 +22,7 @@
 #include "mqSaveLandmarksDialogReaction.h"
 #include "mqSaveFlagsDialogReaction.h"
 #include "mqSaveCURDialogReaction.h"
+#include "mqGridSizeDialogReaction.h"
 #include "mqEditAlphaDialogReaction.h"
 #include "mqSaveCURasVERDialogReaction.h"
 #include "mqSaveSTVDialogReaction.h"
@@ -127,6 +128,7 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
   // since the UI file tends to change the name of the menu.
   menu.setObjectName(objectName);
   new mqColorDialogReaction(menu.addAction("Edit color options") << mqSetName("actionColor"));
+  new mqGridSizeDialogReaction(menu.addAction("Edit size unit and grid spacing") << mqSetName("actionGridSize"));
   new mqLandmarkDialogReaction(menu.addAction("Edit landmark and flag rendering options") << mqSetName("actionLandmark"));
   //new pqUndoRedoReaction(ui.actionEditUndo, true);
   //new pqUndoRedoReaction(ui.actionEditRedo, false);

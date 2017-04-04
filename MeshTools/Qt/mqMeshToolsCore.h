@@ -26,6 +26,7 @@
 
 
 #include <vtkSmartPointer.h>    
+#include <vtkCornerAnnotation.h>
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 #include <QMainWindow>
@@ -50,6 +51,16 @@ public:
 	void Setmui_ShowGrid(int showgrid);
 	int Getmui_ShowGrid();
 	int Getmui_DefaultShowGrid();
+
+	void Setmui_GridSpacing(double gridspacing);
+	double Getmui_GridSpacing();
+	double Getmui_DefaultGridSpacing();
+
+	void Setmui_SizeUnit(QString unit);
+	QString Getmui_SizeUnit();
+	QString Getmui_DefaultSizeUnit();
+
+	
 
 	void Setmui_ShowOrientationHelper(int orientationHelper);
 	int Getmui_DefaultShowOrientationHelper();
@@ -213,6 +224,7 @@ public:
   void DollyCameraForParallelScale();
   void ResetCameraOrthoPerspective();
   void SetGridVisibility();
+  void SetGridInfos();
   void SetOrientationHelperVisibility();
   std::string CheckingName(std::string name_obj);
   vtkMTActor* GetLastActor();
@@ -239,7 +251,7 @@ protected:
 	~mqMeshToolsCore();
 	//vtkUndoStack* mUndoStack;
 	vtkSmartPointer<vtkBezierCurveSource> BezierCurveSource;
-
+	vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;
 	vtkSmartPointer<vtkPolyDataMapper> BezierMapper;
 
 	vtkSmartPointer<vtkActor> BezierActor;
@@ -273,6 +285,11 @@ protected:
 	QString mui_LastUsedDir;
 	int mui_MoveAll;
 	int mui_ShowGrid;
+	double mui_GridSpacing;
+	QString mui_SizeUnit;
+	double mui_DefaultGridSpacing;
+	QString mui_DefaultSizeUnit;
+
 	int mui_Anaglyph;
 	int mui_ShowOrientationHelper;
 	int mui_CameraCentreOfMassAtOrigin;
@@ -326,6 +343,7 @@ protected:
 
 	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle 4flag
 	int mui_LandmarkMode;
+	
 	void SetSelectedActorsColor(int r, int g, int b);
 	
 	vtkOrientationHelperWidget* OrientationHelperWidget;

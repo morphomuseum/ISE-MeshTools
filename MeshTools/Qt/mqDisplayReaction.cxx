@@ -31,6 +31,7 @@ void mqDisplayReaction::GridToggle() {
 		mqMeshToolsCore::instance()->Setmui_ShowGrid(1);
 	}
 	mqMeshToolsCore::instance()->SetGridVisibility();
+	mqMeshToolsCore::instance()->SetGridInfos();
 }//0
 void mqDisplayReaction::OrientationHelperToggle() {
 	if (mqMeshToolsCore::instance()->Getmui_ShowOrientationHelper() == 1)
