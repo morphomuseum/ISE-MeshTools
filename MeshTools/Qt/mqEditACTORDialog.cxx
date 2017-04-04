@@ -270,7 +270,7 @@ int mqEditACTORDialog::SomeThingHasChanged()
 		if (QString::compare(myname, this->Ui->ActorName->text(), Qt::CaseInsensitive)!=0)
 		{
 			something_has_changed = 1;
-			cout << "name has changed!" << endl;
+			
 		}
 	
 	}
@@ -290,7 +290,6 @@ int mqEditACTORDialog::CurrentActorInCollection()
 		if (actor_found == 1) { return actor_found; }
 		if (Act == this->ACTOR)
 		{
-			cout << "Actor found!!" << endl;
 			actor_found = 1;
 		}
 		
@@ -345,7 +344,6 @@ void mqEditACTORDialog::saveActor()
 
 void mqEditACTORDialog::GetFirstSelectedActor()
 {
-	cout << "Get first selected actor!" << endl;
 	this->ACTOR_Coll = NULL;
 	this->ACTOR = NULL;
 
@@ -364,13 +362,12 @@ void mqEditACTORDialog::GetFirstSelectedActor()
 	
 		this->ACTOR_Coll->Modified();
 	}
-	cout << "So?????" << endl;
+	
 }
 
 void mqEditACTORDialog::GetFirstActor()
 {
 	
-	cout << "Get first actor!" << endl;
 	this->ACTOR_Coll = mqMeshToolsCore::instance()->getActorCollection();
 	int num = 0;
 	num = this->ACTOR_Coll->GetNumberOfItems();
@@ -391,7 +388,6 @@ void mqEditACTORDialog::GetFirstActor()
 
 void mqEditACTORDialog::UpdateUI()
 {
-	cout << "Try to update UI!" << endl;
 	if (this->ACTOR != NULL) {
 		
 		QString mylabel(this->ACTOR->GetName().c_str());

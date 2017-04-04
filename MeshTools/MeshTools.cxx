@@ -244,7 +244,7 @@ void RubberBandSelect(vtkObject* caller,
 	{
 		END_UNDO_SET();
 	}
-	cout << "now update landmarks and send signals..." << endl;
+	//cout << "now update landmarks and send signals..." << endl;
 	
 	//DIRTY
 	if (landmarks_have_changed == 1)
@@ -256,10 +256,10 @@ void RubberBandSelect(vtkObject* caller,
 	}
 	if (mesh_actors_have_changed == 1)
 	{
-		cout << "Signal actor selection changed!" << endl;
+		//cout << "Signal actor selection changed!" << endl;
 		mqMeshToolsCore::instance()->signal_actorSelectionChanged();
 	}
-	cout << "Am I done ? " << endl;
+	//cout << "Am I done ? " << endl;
 
 }
 
@@ -493,6 +493,7 @@ MeshTools::MeshTools()
 	connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
 	mqMeshToolsMenuBuilders::buildFileMenu(*this->ui->menuFile);
+	mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(*this->ui->menuEditSelectedSurfaces);
 	mqMeshToolsMenuBuilders::buildEditMenu(*this->ui->menuEdit);
 	mqMeshToolsMenuBuilders::buildLandmarksMenu(*this->ui->menuLandmarks);
 	mqMeshToolsMenuBuilders::buildHelpMenu(*this->ui->menuHelp);

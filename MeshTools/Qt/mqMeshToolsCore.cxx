@@ -1647,16 +1647,7 @@ void mqMeshToolsCore::SelectLandmarkRange(int start, int end, int lm_type)
 	this->Render();
 }
 
-void mqMeshToolsCore::slotLandmarkMoveUp()
-{
 
-	this->LandmarksMoveUp();
-}
-void mqMeshToolsCore::slotLandmarkMoveDown()
-{
-
-	this->LandmarksMoveDown();
-}
 void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_type, int node_type)
 {
 	
@@ -1810,7 +1801,6 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	//myLM->PrintSelf(cout, vtkIndent(1));
 	
 
-	END_UNDO_SET();
 	if (lmk_type == NORMAL_LMK)
 	{
 		
@@ -3256,3 +3246,97 @@ void mqMeshToolsCore::TransformPoint(vtkMatrix4x4* matrix, double pointin[3], do
 	pointout[1] = pointNew[1];
 	pointout[2] = pointNew[2];
 }
+
+void mqMeshToolsCore::SetSelectedActorsColor(int r, int g, int b) 
+{
+	int num_selected = this->ActorCollection->GetNumberOfSelectedActors();
+	if (num_selected > 0)
+	{
+		this->ActorCollection->InitTraversal();
+
+		std::string action = "Modify color of selected actors";
+		int mCount = BEGIN_UNDO_SET(action);
+		
+	
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				myActor->SaveState(mCount);
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255)
+				{
+					color[0] = (double)((double)r / 255);
+					color[1] = (double)((double)g / 255);
+					color[2] = (double)((double)b / 255);
+
+				}
+				myActor->SetmColor(color);
+				myActor->SetSelected(0);
+				myActor->Modified();
+			}
+		}
+		END_UNDO_SET();
+		this->Render();
+	}
+}
+void mqMeshToolsCore::SetSelectedActorsTransparency(int trans) {
+
+	int num_selected = this->ActorCollection->GetNumberOfSelectedActors();
+	if (num_selected > 0)
+	{
+		this->ActorCollection->InitTraversal();
+
+		std::string action = "Modify color of selected actors";
+		int mCount = BEGIN_UNDO_SET(action);
+
+
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				myActor->SaveState(mCount);
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				if (trans >= 0 && trans <= 100 )
+				{
+					color[3] = (double)((double)trans / 100);
+					
+
+				}
+				myActor->SetmColor(color);
+				myActor->SetSelected(0);
+				myActor->Modified();
+			}
+		}
+		END_UNDO_SET();
+		this->Render();
+	}
+}
+
+void mqMeshToolsCore::slotLandmarkMoveUp()
+{
+
+	this->LandmarksMoveUp();
+}
+void mqMeshToolsCore::slotLandmarkMoveDown()
+{
+
+	this->LandmarksMoveDown();
+}
+void mqMeshToolsCore::slotGrey() { this->SetSelectedActorsColor(150, 150, 150); }
+void mqMeshToolsCore::slotYellow(){ this->SetSelectedActorsColor(165, 142, 22); }
+void mqMeshToolsCore::slotRed(){ this->SetSelectedActorsColor(186, 37, 37); }
+void mqMeshToolsCore::slotPink(){ this->SetSelectedActorsColor(173, 120, 95); }
+void mqMeshToolsCore::slotBlue(){ this->SetSelectedActorsColor(64, 123, 126); }
+void mqMeshToolsCore::slotViolet(){ this->SetSelectedActorsColor(120, 51, 145); }
+void mqMeshToolsCore::slotBone(){ this->SetSelectedActorsColor(161, 146, 95); }
+void mqMeshToolsCore::slotGreen(){ this->SetSelectedActorsColor(39, 136, 42); }
+void mqMeshToolsCore::slotDarkred(){ this->SetSelectedActorsColor(115, 8, 15); }
+void mqMeshToolsCore::slotDarkblue(){ this->SetSelectedActorsColor(52, 52, 160); }
+void mqMeshToolsCore::slotDarkgreen(){ this->SetSelectedActorsColor(42, 110, 47); }
+void mqMeshToolsCore::slotOrange(){ this->SetSelectedActorsColor(195, 91, 0); }
+void mqMeshToolsCore::slotBrown(){ this->SetSelectedActorsColor(130, 78, 47); }

@@ -227,7 +227,7 @@ public:
   static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
   void signal_lmSelectionChanged();
   void signal_actorSelectionChanged();
-
+  void SetSelectedActorsTransparency(int trans);
 signals:
 
   void lmSelectionChanged();
@@ -326,11 +326,25 @@ protected:
 
 	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle 4flag
 	int mui_LandmarkMode;
-
+	void SetSelectedActorsColor(int r, int g, int b);
+	
 	vtkOrientationHelperWidget* OrientationHelperWidget;
 public slots:
 	virtual void slotLandmarkMoveUp();
 	virtual void slotLandmarkMoveDown();
+	virtual void  slotGrey();
+	virtual void slotYellow();
+	virtual void slotRed();
+	virtual void slotPink();
+	virtual void slotBlue();
+	virtual void slotViolet();
+	virtual void slotBone();
+	virtual void slotGreen();
+	virtual void slotDarkred();
+	virtual void slotDarkblue();
+	virtual void slotDarkgreen();
+	virtual void slotOrange();
+	virtual void slotBrown();
 
 private:
 	static mqMeshToolsCore* Instance;

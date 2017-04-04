@@ -175,7 +175,7 @@ int mqEditFLGDialog::SomeThingHasChanged()
 
 void mqEditFLGDialog::saveFLG()
 {
-	cout << "Save FLG!" << endl;
+	
 	if (this->FLG != NULL && this->CurrentFlagInCollection())
 	{
 		int something_has_changed = this->SomeThingHasChanged();
@@ -215,7 +215,7 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 	
 
 	num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
-	cout << "num flg selected:" << num_selected << endl;
+	
 	if (num_selected > 0) {
 		this->FLG = this->FLG_Coll->GetFirstSelectedActor();
 		
@@ -227,7 +227,7 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 	
 		this->FLG_Coll->Modified();
 	}
-	cout << "End first selected flg" << endl;
+	
 
 }
 
@@ -255,7 +255,7 @@ void mqEditFLGDialog::UpdateUI()
 {
 
 	if (this->FLG != NULL) {
-		cout << "FLG NOT NULL" << endl;
+		
 		this->Ui->FLGNumber->setValue(this->FLG->GetLMNumber());
 		
 		QString mylabel(this->FLG->GetLMLabelText());
@@ -276,7 +276,7 @@ void mqEditFLGDialog::UpdateUI()
 
 		double orig[3];
 		this->FLG->GetLMOrigin(orig);
-		cout << "orig[0]" << orig[0] << ", orig[1]" << orig[1] << ", orig[2]" << orig[2] << endl;
+		
 		this->Ui->x->setValue(orig[0]);
 		this->Ui->x->update();
 		this->Ui->y->setValue(orig[1]);
@@ -284,7 +284,7 @@ void mqEditFLGDialog::UpdateUI()
 		this->Ui->z->setValue(orig[2]);
 		this->Ui->z->update();
 	}
-	cout << "End Update UI" << endl;
+	
 
 }
 
@@ -327,7 +327,6 @@ int mqEditFLGDialog::CurrentFlagInCollection()
 		if (flg_found == 1) { return flg_found; }
 		if (Flg == this->FLG)
 		{
-			cout << "Flag found!!" << endl;
 			flg_found = 1;
 		}
 
@@ -347,7 +346,6 @@ void mqEditFLGDialog::GetPrecedingFlag()
 		this->FLG->SetSelected(0);
 		this->FLG_Coll->Modified();
 		int num = this->FLG->GetLMNumber();
-		cout << "num=" << num << endl;
 		this->FLG = this->FLG_Coll->GetLandmarkBefore(num);
 		if (this->FLG != NULL) { this->FLG->SetSelected(1); }
 		else
@@ -388,9 +386,7 @@ void mqEditFLGDialog::slotGetNextFlag()
 
 void mqEditFLGDialog::RefreshDialog()
 {
-	cout << "Refresh FLG Dialog!" << endl;
 	this->GetFirstSelectedFlag();
-	cout << "Call Update UI!" << endl;
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
 }

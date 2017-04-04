@@ -30,6 +30,7 @@ public:
 
   static void buildLandmarksMenu(QMenu& menu);
 
+  static void buildEditSelectedSurfacesMenu(QMenu& menu);
   /**
   * Builds the standard Edit menu.
   */
@@ -47,9 +48,9 @@ public:
   */
   static void buildToolbars(QMainWindow& mainWindow);
 
-  public slots:
+  /*public slots:
   virtual void slotLandmarkMoveUp();
-  virtual void slotLandmarkMoveDown();
+  virtual void slotLandmarkMoveDown();*/
 
   
 };

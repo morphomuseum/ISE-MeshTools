@@ -84,8 +84,14 @@
      <string>Landmarks</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuEditSelectedSurfaces">
+    <property name="title">
+     <string>Edit selected surfaces</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuEditSelectedSurfaces"/>
    <addaction name="menuLandmarks"/>
    <addaction name="menuHelp"/>
   </widget>

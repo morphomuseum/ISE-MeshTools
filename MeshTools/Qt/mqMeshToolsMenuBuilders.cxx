@@ -22,6 +22,7 @@
 #include "mqSaveLandmarksDialogReaction.h"
 #include "mqSaveFlagsDialogReaction.h"
 #include "mqSaveCURDialogReaction.h"
+#include "mqEditAlphaDialogReaction.h"
 #include "mqSaveCURasVERDialogReaction.h"
 #include "mqSaveSTVDialogReaction.h"
 #include "mqSaveNTWDialogReaction.h"
@@ -41,6 +42,7 @@
 #include <QFileInfo>
 #include <QKeySequence>
 #include <QLayout>
+#include <QPalette>
 #include <QMainWindow>
 #include <QMenu>
 
@@ -133,6 +135,49 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
   
 }
 
+void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
+{
+	QString objectName = menu.objectName();
+	std::cout << "Menu object name" << objectName.toStdString() << std::endl;
+	menu.setObjectName(objectName);
+	QMenu* submenuStructureModification = menu.addMenu("Structure modification");
+	QMenu* submenuRenderingModification = menu.addMenu("Rendering modification");
+	new mqEditAlphaDialogReaction(submenuRenderingModification->addAction("Change transparency") << mqSetName("actionEditAlpha"));
+
+	QMenu* submenuChangeObjectColor = submenuRenderingModification->addMenu("Change object color");
+
+	QAction *Grey = submenuChangeObjectColor->addAction("Grey");
+	
+	QAction *Yellow = submenuChangeObjectColor->addAction("Yellow");
+	QAction *Red = submenuChangeObjectColor->addAction("Red");
+	QAction *Pink = submenuChangeObjectColor->addAction("Pink");
+	QAction *Blue = submenuChangeObjectColor->addAction("Blue");
+	QAction *Violet = submenuChangeObjectColor->addAction("Violet");
+	QAction *Bone = submenuChangeObjectColor->addAction("Bone");
+	QAction *Green = submenuChangeObjectColor->addAction("Green");
+	QAction *Darkred = submenuChangeObjectColor->addAction("Dark red");
+	QAction *Darkblue = submenuChangeObjectColor->addAction("Dark blue");
+	QAction *Darkgreen = submenuChangeObjectColor->addAction("Dark green");
+	QAction *Orange = submenuChangeObjectColor->addAction("Orange");
+	QAction *Brown = menu.addAction("Brown");
+	
+
+	QAction::connect(Grey, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotGrey()));
+	QAction::connect(Yellow, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotYellow()));
+	QAction::connect(Red, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotRed()));
+	QAction::connect(Pink, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotPink()));
+	QAction::connect(Blue, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotBlue()));
+	QAction::connect(Violet, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotViolet()));
+	QAction::connect(Bone, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotBone()));
+	QAction::connect(Green, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotGreen()));
+	QAction::connect(Darkred, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotDarkred()));
+	QAction::connect(Darkblue, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotDarkblue()));
+	QAction::connect(Darkgreen, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotDarkgreen()));
+	QAction::connect(Orange, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotOrange()));
+	QAction::connect(Brown, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotBrown()));
+	
+	
+}
 void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
 {
 	QString objectName = menu.objectName();
