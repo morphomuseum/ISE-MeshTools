@@ -1869,6 +1869,79 @@ void mqMeshToolsCore::CreateLandmark(double coord[3], double ori[3], int lmk_typ
 	
 	
 }
+void mqMeshToolsCore::UpdateFirstSelectedLandmark(double coord[3], double ori[3])
+{
+
+	int lmk_type = this->Getmui_LandmarkMode();
+	vtkSmartPointer<vtkLMActor> MyFirst = NULL;
+	vtkSmartPointer<vtkLMActorCollection> myColl = NULL;
+	if (lmk_type == NORMAL_LMK)
+	{
+		myColl = this->NormalLandmarkCollection;				
+
+	}
+	else if (lmk_type == TARGET_LMK)
+	{
+		myColl = this->TargetLandmarkCollection;		
+	}
+	else if (lmk_type == NODE_LMK)
+	{
+		myColl = this->NodeLandmarkCollection;
+		
+	}
+	else if (lmk_type == HANDLE_LMK)
+	{
+		myColl = this->HandleLandmarkCollection;
+	}
+	else //if (lmk_type == FLAG_LMK)
+	{
+		myColl = this->FlagLandmarkCollection;
+	}
+
+	MyFirst = myColl->GetFirstSelectedActor();
+
+	if (MyFirst == NULL)
+	{
+		myColl = this->NormalLandmarkCollection;
+		MyFirst = myColl->GetFirstSelectedActor();
+		if (MyFirst == NULL)
+		{
+			myColl = this->TargetLandmarkCollection;
+			MyFirst = myColl->GetFirstSelectedActor();
+			if (MyFirst == NULL)
+			{
+				myColl = this->NodeLandmarkCollection;
+				MyFirst = myColl->GetFirstSelectedActor();
+				if (MyFirst == NULL)
+				{
+					myColl = this->HandleLandmarkCollection;
+					MyFirst = myColl->GetFirstSelectedActor();
+					if (MyFirst == NULL)
+					{
+						myColl = this->FlagLandmarkCollection;
+						MyFirst = myColl->GetFirstSelectedActor();
+						
+
+					}
+				}
+			}
+		}
+	}
+		
+	if (MyFirst != NULL)
+	{
+		std::string action = "Update xyz and nx ny nz coordinates ";
+		int mCount = BEGIN_UNDO_SET(action);
+			MyFirst->SaveState(mCount);
+			MyFirst->SetLMOrigin(coord);
+			MyFirst->SetLMOrientation(ori);
+			MyFirst->Modified();
+			myColl->Modified();
+		END_UNDO_SET();
+	}
+
+
+}
 void mqMeshToolsCore::ResetOrientationHelperLabels()
 {
 	this->SetOrientationHelperLabels(this->mui_X1Label.toStdString(), this->mui_X2Label.toStdString(), this->mui_Y1Label.toStdString(), this->mui_Y2Label.toStdString(), this->mui_Z1Label.toStdString(), this->mui_Z2Label.toStdString());
@@ -3099,6 +3172,7 @@ mqMeshToolsCore::~mqMeshToolsCore()
 
 void mqMeshToolsCore::signal_actorSelectionChanged()
 {
+	cout << "Emit actor Selection changed" << endl;
 	emit this->actorSelectionChanged();
 }
 void mqMeshToolsCore::signal_lmSelectionChanged()

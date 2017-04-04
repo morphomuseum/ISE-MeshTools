@@ -566,8 +566,57 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 	
 	if (this->Ctrl != CTRL_PRESSED)
 	{
-		this->CurrentMode = VTKISMT_SELECT;
-		this->RubberStart();
+		if (this->L == L_PRESSED)
+		{
+				//int* clickPos = this->GetInteractor()->GetEventPosition();
+				int x = this->Interactor->GetEventPosition()[0];
+				int y = this->Interactor->GetEventPosition()[1];
+				//std::cout << "Clicked at "
+				//	<< x << " " << y << std::endl;
+				if (this->CurrentRenderer == NULL) { cout << "Current renderer null" << endl; }
+				if (this->CurrentRenderer != NULL)
+				{
+					//std::cout << "Current renderer:" << this->CurrentRenderer << endl;
+					// Pick from this location.
+					/* vtkSmartPointer<vtkPropPicker>  picker =
+					vtkSmartPointer<vtkPropPicker>::New();*/
+
+					vtkSmartPointer<vtkCellPicker> picker =
+						vtkSmartPointer<vtkCellPicker>::New();
+
+					picker->Pick(x, y, 0, this->CurrentRenderer);
+
+
+
+					double* pos = picker->GetPickPosition();
+					std::cout << "Pick position (world coordinates) is: "
+						<< pos[0] << " " << pos[1]
+						<< " " << pos[2] << std::endl;
+					double* norm = picker->GetPickNormal();
+					std::cout << "Pick normal : "
+						<< norm[0] << " " << norm[1]
+						<< " " << norm[2] << std::endl;
+
+					std::cout << "Picked actor: " << picker->GetActor() << std::endl;
+					if (picker->GetActor() == NULL) { cout << "Picked Null actor" << endl; }
+					else
+					{
+						mqMeshToolsCore::instance()->UpdateFirstSelectedLandmark(pos, norm);
+
+						mqMeshToolsCore::instance()->Render();
+					}
+
+				}
+				//this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetDefaultRenderer()->AddActor(actor);
+
+
+			}
+		else
+		{
+
+			this->CurrentMode = VTKISMT_SELECT;
+			this->RubberStart();
+		}
 	}
 	else
 	{

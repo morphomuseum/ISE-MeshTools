@@ -56,6 +56,7 @@ private:
   Q_DISABLE_COPY(mqEditFLGDialog)
   Ui::mqEditFLGDialog* const Ui;
   vtkSmartPointer<vtkLMActor> FLG;
+  //vtkLMActor *FLG;
   vtkLMActorCollection *FLG_Coll;
   int current_coll;
 

@@ -313,7 +313,7 @@ void vtkMTActor::SaveState(int mCount)
 	myColor[3] = this->mColor[3];
 	//std::cout << "Saved Matrix: " << endl << *Mat << std::endl;
 	std::string name = this->Name;
-	cout << "Save name=" << name << endl;
+	//cout << "Save name=" << name << endl;
 	vtkSmartPointer<vtkMatrix4x4> SavedMat = vtkSmartPointer<vtkMatrix4x4>::New();
 	SavedMat->DeepCopy(Mat);
 	//std::cout << "Saved Matrix Copy: " << endl << *SavedMat << std::endl;

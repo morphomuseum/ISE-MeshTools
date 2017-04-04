@@ -345,6 +345,7 @@ void mqEditACTORDialog::saveActor()
 
 void mqEditACTORDialog::GetFirstSelectedActor()
 {
+	cout << "Get first selected actor!" << endl;
 	this->ACTOR_Coll = NULL;
 	this->ACTOR = NULL;
 
@@ -363,12 +364,13 @@ void mqEditACTORDialog::GetFirstSelectedActor()
 	
 		this->ACTOR_Coll->Modified();
 	}
-
+	cout << "So?????" << endl;
 }
 
 void mqEditACTORDialog::GetFirstActor()
 {
-	//cout << "Get first actor!" << endl;
+	
+	cout << "Get first actor!" << endl;
 	this->ACTOR_Coll = mqMeshToolsCore::instance()->getActorCollection();
 	int num = 0;
 	num = this->ACTOR_Coll->GetNumberOfItems();
@@ -389,6 +391,7 @@ void mqEditACTORDialog::GetFirstActor()
 
 void mqEditACTORDialog::UpdateUI()
 {
+	cout << "Try to update UI!" << endl;
 	if (this->ACTOR != NULL) {
 		
 		QString mylabel(this->ACTOR->GetName().c_str());
@@ -515,14 +518,18 @@ void mqEditACTORDialog::slotGetNextActor()
 
 void mqEditACTORDialog::RefreshDialog()
 {
+	
 	this->GetFirstSelectedActor();
+	
 	this->UpdateUI();
+	
 	mqMeshToolsCore::instance()->Render();
+	
 }
 void mqEditACTORDialog::slotRefreshDialog()
 {
-	//cout << "Refresh ACTOR Dialog!" << endl;
-	this->slotRefreshDialog();
+	
+	this->RefreshDialog();
 
 }
 

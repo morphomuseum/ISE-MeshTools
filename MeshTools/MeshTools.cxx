@@ -244,7 +244,7 @@ void RubberBandSelect(vtkObject* caller,
 	{
 		END_UNDO_SET();
 	}
-	
+	cout << "now update landmarks and send signals..." << endl;
 	
 	//DIRTY
 	if (landmarks_have_changed == 1)
@@ -256,8 +256,11 @@ void RubberBandSelect(vtkObject* caller,
 	}
 	if (mesh_actors_have_changed == 1)
 	{
+		cout << "Signal actor selection changed!" << endl;
 		mqMeshToolsCore::instance()->signal_actorSelectionChanged();
 	}
+	cout << "Am I done ? " << endl;
+
 }
 
 

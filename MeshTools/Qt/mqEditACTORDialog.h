@@ -57,6 +57,7 @@ private:
   Q_DISABLE_COPY(mqEditACTORDialog)
   Ui::mqEditACTORDialog* const Ui;
   vtkSmartPointer<vtkMTActor> ACTOR;
+  //vtkMTActor *ACTOR;
   vtkMTActorCollection *ACTOR_Coll;
   int current_coll;
 

@@ -65,7 +65,7 @@ mqEditFLGDialog::mqEditFLGDialog(QWidget* Parent)
 	
 	this->FLG_Coll = NULL;
 	this->FLG = NULL;
-	current_coll = -1;
+	
 	QString mylabel("...");
 	this->Ui->FlagLabel->setText(mylabel);
 	
@@ -208,14 +208,17 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 {
 	this->FLG_Coll = NULL;
 	this->FLG = NULL;
-	this->current_coll = -1;
+	
 
 	this->FLG_Coll = mqMeshToolsCore::instance()->getFlagLandmarkCollection();
 	int num_selected = 0;
+	
+
 	num_selected = this->FLG_Coll->GetNumberOfSelectedActors();
+	cout << "num flg selected:" << num_selected << endl;
 	if (num_selected > 0) {
 		this->FLG = this->FLG_Coll->GetFirstSelectedActor();
-		current_coll = 4;
+		
 	}
 	
 
@@ -224,6 +227,7 @@ void mqEditFLGDialog::GetFirstSelectedFlag()
 	
 		this->FLG_Coll->Modified();
 	}
+	cout << "End first selected flg" << endl;
 
 }
 
@@ -235,7 +239,7 @@ void mqEditFLGDialog::GetFirstFlag()
 	if (num > 0) {
 		this->FLG_Coll->InitTraversal();
 		this->FLG = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
-		current_coll = 0;
+		
 	}
 	
 
@@ -249,7 +253,9 @@ void mqEditFLGDialog::GetFirstFlag()
 
 void mqEditFLGDialog::UpdateUI()
 {
+
 	if (this->FLG != NULL) {
+		cout << "FLG NOT NULL" << endl;
 		this->Ui->FLGNumber->setValue(this->FLG->GetLMNumber());
 		
 		QString mylabel(this->FLG->GetLMLabelText());
@@ -278,6 +284,7 @@ void mqEditFLGDialog::UpdateUI()
 		this->Ui->z->setValue(orig[2]);
 		this->Ui->z->update();
 	}
+	cout << "End Update UI" << endl;
 
 }
 
@@ -383,6 +390,7 @@ void mqEditFLGDialog::RefreshDialog()
 {
 	cout << "Refresh FLG Dialog!" << endl;
 	this->GetFirstSelectedFlag();
+	cout << "Call Update UI!" << endl;
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
 }

@@ -56,6 +56,7 @@ private:
   Q_DISABLE_COPY(mqEditLMKDialog)
   Ui::mqEditLMKDialog* const Ui;
   vtkSmartPointer<vtkLMActor>LMK;
+  //vtkLMActor *LMK;
   vtkLMActorCollection *LMK_Coll;
   int current_coll;
 
