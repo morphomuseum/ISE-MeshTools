@@ -283,22 +283,26 @@ int mqEditACTORDialog::CurrentActorInCollection()
 {
 	int actor_found = 0;
 	vtkMTActor * Act;
-	this->ACTOR_Coll->InitTraversal();
 	if (this->ACTOR != NULL && this->ACTOR_Coll != NULL)
 	{
-		Act = vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetNextActor());
-		if (actor_found == 1) { return actor_found; }
-		if (Act == this->ACTOR)
+		this->ACTOR_Coll->InitTraversal();
+
+		for (vtkIdType i = 0; i < this->ACTOR_Coll->GetNumberOfItems(); i++)
 		{
-			actor_found = 1;
+			Act = vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetNextActor());
+			if (actor_found == 1) { return actor_found; }
+			if (Act == this->ACTOR)
+			{
+				actor_found = 1;
+			}
 		}
-		
 	}
 	return actor_found;
 }
 void mqEditACTORDialog::saveActor()
 {
 	//cout << "Save ACTOR!" << endl;
+	cout << "Save actor: in collection?:" << this->CurrentActorInCollection() << endl;
 	if (this->ACTOR != NULL && this->CurrentActorInCollection())
 	{
 		int something_has_changed = this->SomeThingHasChanged();

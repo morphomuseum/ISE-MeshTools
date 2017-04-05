@@ -1204,33 +1204,33 @@ void vtkGridActor::CreateGridOutline()
 double *vtkGridActor::GetBounds()
 {
 
-
+	
 	if (this->GridType == 0) // z=0
 	{
-		this->Bounds[0] = -this->GridSize * this->GridSpacing;
-		this->Bounds[1] = this->GridSize * this->GridSpacing;
-		this->Bounds[2] = -this->GridSize * this->GridSpacing;
-		this->Bounds[3] = this->GridSize * this->GridSpacing;
-		this->Bounds[4] = 0;
-		this->Bounds[5] = 0;
+		this->Bounds[0] = this->GridOrigin[0]-this->GridSize * this->GridSpacing;
+		this->Bounds[1] = this->GridOrigin[0]+this->GridSize * this->GridSpacing;
+		this->Bounds[2] = this->GridOrigin[1] -this->GridSize * this->GridSpacing;
+		this->Bounds[3] = this->GridOrigin[1]+this->GridSize * this->GridSpacing;
+		this->Bounds[4] = this->GridOrigin[2];
+		this->Bounds[5] = this->GridOrigin[2];
 	}
 	else if (this->GridType == 1) //y=0
 	{
-		this->Bounds[0] = -this->GridSize * this->GridSpacing;
-		this->Bounds[1] = this->GridSize * this->GridSpacing;
-		this->Bounds[2] = 0;
-		this->Bounds[3] = 0;
-		this->Bounds[4] = -this->GridSize * this->GridSpacing;
-		this->Bounds[5] = this->GridSize * this->GridSpacing;
+		this->Bounds[0] = this->GridOrigin[0] -this->GridSize * this->GridSpacing;
+		this->Bounds[1] = this->GridOrigin[0]+this->GridSize * this->GridSpacing;
+		this->Bounds[2] = this->GridOrigin[1];
+		this->Bounds[3] = this->GridOrigin[1];
+		this->Bounds[4] = this->GridOrigin[2] -this->GridSize * this->GridSpacing;
+		this->Bounds[5] = this->GridOrigin[2]+this->GridSize * this->GridSpacing;
 	}
 	else // x=0
 	{
-		this->Bounds[0] = 0;
-		this->Bounds[1] = 0;
-		this->Bounds[2] = -this->GridSize * this->GridSpacing;
-		this->Bounds[3] = this->GridSize * this->GridSpacing;
-		this->Bounds[4] = -this->GridSize * this->GridSpacing;
-		this->Bounds[5] = this->GridSize * this->GridSpacing;
+		this->Bounds[0] = this->GridOrigin[0];
+		this->Bounds[1] = this->GridOrigin[0];
+		this->Bounds[2] = this->GridOrigin[1] -this->GridSize * this->GridSpacing;
+		this->Bounds[3] = this->GridOrigin[1]+this->GridSize * this->GridSpacing;
+		this->Bounds[4] = this->GridOrigin[2] -this->GridSize * this->GridSpacing;
+		this->Bounds[5] = this->GridOrigin[2]+this->GridSize * this->GridSpacing;
 	}
 
 	return this->Bounds;

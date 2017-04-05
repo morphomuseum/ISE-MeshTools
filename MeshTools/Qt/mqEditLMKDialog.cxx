@@ -125,17 +125,20 @@ int mqEditLMKDialog::CurrentLMKInCollection()
 {
 	int lmk_found = 0;
 	vtkLMActor * Lmk;
-	this->LMK_Coll->InitTraversal();
 	if (this->LMK != NULL && this->LMK_Coll != NULL)
 	{
-		Lmk = vtkLMActor::SafeDownCast(this->LMK_Coll->GetNextActor());
-		if (lmk_found == 1) { return lmk_found; }
-		if (Lmk == this->LMK)
-		{
-			cout << "Landmark found!!" << endl;
-			lmk_found = 1;
-		}
+		this->LMK_Coll->InitTraversal();
 
+		for (vtkIdType i = 0; i < this->LMK_Coll->GetNumberOfItems(); i++)
+		{
+			Lmk = vtkLMActor::SafeDownCast(this->LMK_Coll->GetNextActor());
+			if (lmk_found == 1) { return lmk_found; }
+			if (Lmk == this->LMK)
+			{
+				cout << "Landmark found!!" << endl;
+				lmk_found = 1;
+			}
+		}
 	}
 	return lmk_found;
 }

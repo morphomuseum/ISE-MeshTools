@@ -320,16 +320,18 @@ int mqEditFLGDialog::CurrentFlagInCollection()
 {
 	int flg_found = 0;
 	vtkLMActor * Flg;
-	this->FLG_Coll->InitTraversal();
 	if (this->FLG != NULL && this->FLG_Coll != NULL)
 	{
-		Flg = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
-		if (flg_found == 1) { return flg_found; }
-		if (Flg == this->FLG)
+		this->FLG_Coll->InitTraversal();
+		for (vtkIdType i = 0; i < this->FLG_Coll->GetNumberOfItems(); i++)
 		{
-			flg_found = 1;
+			Flg = vtkLMActor::SafeDownCast(this->FLG_Coll->GetNextActor());
+			if (flg_found == 1) { return flg_found; }
+			if (Flg == this->FLG)
+			{
+				flg_found = 1;
+			}
 		}
-
 	}
 	return flg_found;
 }
