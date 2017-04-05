@@ -25,6 +25,7 @@
 #include "mqGridSizeDialogReaction.h"
 #include "mqEditAlphaDialogReaction.h"
 #include "mqSaveCURasVERDialogReaction.h"
+#include "mqOrientationLabelsDialogReaction.h"
 #include "mqSaveSTVDialogReaction.h"
 #include "mqSaveNTWDialogReaction.h"
 #include "mqSelectLandmarkRangeDialogReaction.h"
@@ -130,6 +131,7 @@ void mqMeshToolsMenuBuilders::buildEditMenu(QMenu& menu)
   new mqColorDialogReaction(menu.addAction("Edit color options") << mqSetName("actionColor"));
   new mqGridSizeDialogReaction(menu.addAction("Edit size unit and grid spacing") << mqSetName("actionGridSize"));
   new mqLandmarkDialogReaction(menu.addAction("Edit landmark and flag rendering options") << mqSetName("actionLandmark"));
+  new mqOrientationLabelsDialogReaction(menu.addAction("Edit orientation labels") << mqSetName("actionOrientationLabels"));
   //new pqUndoRedoReaction(ui.actionEditUndo, true);
   //new pqUndoRedoReaction(ui.actionEditRedo, false);
   //new pqCameraUndoRedoReaction(ui.actionEditCameraUndo, true);

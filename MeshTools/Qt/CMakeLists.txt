@@ -113,6 +113,10 @@ mqSelectLandmarkRangeDialog.h
 mqSelectLandmarkRangeDialog.cxx
 mqSelectLandmarkRangeDialogReaction.h
 mqSelectLandmarkRangeDialogReaction.cxx
+ mqOrientationLabelsDialog.cxx
+  mqOrientationLabelsDialog.h
+  mqOrientationLabelsDialogReaction.cxx
+  mqOrientationLabelsDialogReaction.h
 )
 
 set (Qt_MOC_HDRS
@@ -143,6 +147,7 @@ mqEditAllFLGDialog.ui
 mqSelectLandmarkRangeDialog.ui
 mqLightControlsToolbar.ui
 mqGridSizeDialog.ui
+mqOrientationLabelsDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )
