@@ -82,6 +82,10 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->mui_FlagRenderingSize= this->mui_DefaultFlagRenderingSize=5;
 	this->mui_AdjustScaleFactor = this->mui_DefaultAdjustScaleFactor = 1;
 
+
+	this->mui_ScalarVisibility = this->mui_DefaultScalarVisibility = 1;
+
+
 	this->mui_Anaglyph = this->mui_DefaultAnaglyph = 0;
 	this->mui_ShowGrid = this->mui_DefaultShowGrid = 1;
 	this->mui_GridSpacing = this->mui_DefaultGridSpacing = 10;
@@ -1258,17 +1262,18 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			lut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
 			mapper->SetScalarRange(0, tableSize - 1);
 			mapper->SetLookupTable(lut);
-			//mapper->ScalarVisibilityOn();
-			mapper->ScalarVisibilityOff();
+			mapper->ScalarVisibilityOn();
+			//mapper->ScalarVisibilityOff();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
 
 			int num = 2;
 
 			actor->SetmColor(this->Getmui_MeshColor());
+			
+			actor->SetMapper(mapper);
 			actor->SetSelected(1);
 			actor->SetName(newname);
-			actor->SetMapper(mapper);
 			this->getActorCollection()->AddItem(actor);
 			std::string action = "Load mesh file";
 			int mCount = BEGIN_UNDO_SET(action);
@@ -4376,6 +4381,37 @@ if (moveall == 0) { this->UnselectAll(-1);  }
 }
 int mqMeshToolsCore::Getmui_MoveAll() { return this->mui_MoveAll; }
 int mqMeshToolsCore::Getmui_DefaultMoveAll() { return this->mui_DefaultMoveAll; };
+
+void mqMeshToolsCore::Setmui_ScalarVisibility(int scalarvisibility)
+{
+	if (this->mui_ScalarVisibility != scalarvisibility)
+	{
+		this->mui_ScalarVisibility = scalarvisibility;
+		this->ActorCollection->InitTraversal();
+
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		
+			if (myActor->GetMapper() != NULL)
+			{
+				if (scalarvisibility == 1)
+				{
+					vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOn();
+				}
+				else
+				{
+					vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
+				}
+			}
+		}
+		
+
+	}
+}
+int mqMeshToolsCore::Getmui_DefaultScalarVisibility() { return this->mui_DefaultScalarVisibility; }
+
+int mqMeshToolsCore::Getmui_ScalarVisibility() { return this->mui_ScalarVisibility; }
 
 
 int mqMeshToolsCore::Getmui_DefaultAnaglyph() { return this->mui_DefaultAnaglyph; }

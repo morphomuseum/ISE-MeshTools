@@ -44,6 +44,10 @@ public:
 	int Getmui_DefaultAnaglyph();
 	int Getmui_Anaglyph();
 
+	void Setmui_ScalarVisibility(int scalarvisibility);
+	int Getmui_DefaultScalarVisibility();
+	int Getmui_ScalarVisibility();
+
 	void Setmui_MoveAll(int moveall);
 	int Getmui_MoveAll();
 	int Getmui_DefaultMoveAll();
@@ -302,6 +306,9 @@ protected:
 	QString mui_SizeUnit;
 	double mui_DefaultGridSpacing;
 	QString mui_DefaultSizeUnit;
+
+	int mui_ScalarVisibility;
+	int mui_DefaultScalarVisibility;
 
 	int mui_Anaglyph;
 	int mui_ShowOrientationHelper;

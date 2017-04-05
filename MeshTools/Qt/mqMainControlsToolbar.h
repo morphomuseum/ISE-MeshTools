@@ -62,6 +62,7 @@ public:
   
 
   public slots :
+  virtual void slotScalarVisitiliby();
   virtual void slotLandmarkNormalMode();
   virtual void slotLandmarkTargetMode();
   virtual void slotLandmarkNodeMode();

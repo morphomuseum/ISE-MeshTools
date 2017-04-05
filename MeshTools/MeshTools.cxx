@@ -293,6 +293,9 @@ MeshTools::MeshTools()
 	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
 		this->MeshToolsCore->Getmui_DefaultShowGrid()
 		).toInt());
+	this->MeshToolsCore->Setmui_ScalarVisibility(settings.value("ScalarVisibility",
+		this->MeshToolsCore->Getmui_DefaultScalarVisibility()
+	).toInt());
 	this->MeshToolsCore->Setmui_GridSpacing(settings.value("GridSpacing",
 		this->MeshToolsCore->Getmui_DefaultGridSpacing()
 	).toDouble());
@@ -761,6 +764,8 @@ void MeshTools::saveSettings()
 	settings.endGroup();
 	settings.beginGroup("display_options");
 	settings.setValue("ShowGrid", this->MeshToolsCore->Getmui_ShowGrid());
+	settings.setValue("ScalarVisibility", this->MeshToolsCore->Getmui_ScalarVisibility());
+	
 	settings.setValue("GridSpacing", this->MeshToolsCore->Getmui_GridSpacing());
 	settings.setValue("SizeUnit", this->MeshToolsCore->Getmui_SizeUnit());
 	settings.setValue("ShowOrientationHelper", this->MeshToolsCore->Getmui_ShowOrientationHelper());

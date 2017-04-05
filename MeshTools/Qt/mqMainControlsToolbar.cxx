@@ -77,6 +77,13 @@ void mqMainControlsToolbar::constructor()
 	  this->ui->actionCameraCentreOfMassToggle->setChecked(true);
   }
 
+  if (mqMeshToolsCore::instance()->Getmui_ScalarVisibility() == 1)
+  {
+
+	  this->ui->actionScalarVisibility->setChecked(true);
+  }
+
+
   if (mqMeshToolsCore::instance()->Getmui_CameraOrtho() == 0)
   {
 
@@ -133,9 +140,29 @@ void mqMainControlsToolbar::constructor()
   connect(this->ui->actionLandmarksModeFlag, SIGNAL(triggered()), this, SLOT(slotFlagMode()));
   connect(this->ui->actionMoveAll, SIGNAL(triggered()), this, SLOT(slotMoveAll()));
   connect(this->ui->actionMoveOnlyLandmarks, SIGNAL(triggered()), this, SLOT(slotMoveOnlyLandmarks()));
+  connect(this->ui->actionScalarVisibility, SIGNAL(triggered()), this, SLOT(slotScalarVisitiliby()));
+  
   
 }
 
+
+void mqMainControlsToolbar::slotScalarVisitiliby()
+{
+
+	if (this->ui->actionScalarVisibility->isChecked())
+	{
+		mqMeshToolsCore::instance()->Setmui_ScalarVisibility(1);
+	}
+	else
+	{
+		mqMeshToolsCore::instance()->Setmui_ScalarVisibility(0);
+	}
+	
+	mqMeshToolsCore::instance()->Render();
+
+	
+
+}
 
 void mqMainControlsToolbar::slotMoveAll()
 {

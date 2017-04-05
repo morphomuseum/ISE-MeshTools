@@ -104,6 +104,11 @@ void vtkMTActor::SetSelected(int selected)
 	this->Selected = selected;
 	if (selected == 1)
 	{
+		if (this->GetMapper() != NULL)
+		{
+			vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOff();
+		}
+		//vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOff();
 		this->GetProperty()->SetColor(0.5, 0.5, 0.5);
 		this->GetProperty()->SetOpacity(this->mColor[3]);
 		if (this->mColor[3] < 0.75)
@@ -113,6 +118,11 @@ void vtkMTActor::SetSelected(int selected)
 	}
 	else
 	{
+		if (this->GetMapper() != NULL && mqMeshToolsCore::instance()->Getmui_ScalarVisibility() == 1)
+		{
+			vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
+		}
+		//vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
 		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
 		//cout << "mColor[3](alpha) =" << this->mColor[3] << endl;
 		this->GetProperty()->SetOpacity(this->mColor[3]);
