@@ -17,8 +17,11 @@
 #include "vtkLMActor.h"
 #include "mqUndoStack.h"
 #include "mqMeshToolsCore.h"
-
-
+#include "mqSaveNTWDialog.h"
+#include "mqCoreUtilities.h"
+#include <QFileDialog>
+#include <QTextStream>
+#include <QMessageBox>
 #include <vtkIndent.h>
 #include <vtkProperty.h>
 #include <vtkTransform.h>
@@ -415,6 +418,268 @@ void vtkMTInteractorStyle::StartSelect()
 				rwi->Render();
 			}
 			
+	}
+	if (key.compare("o") == 0)
+	{
+
+		if (this->Ctrl == CTRL_PRESSED)
+		{
+			this->Ctrl = CTRL_RELEASED;
+			cout << "Open Data!" << endl;
+
+			QString fileName = QFileDialog::getOpenFileName(mqCoreUtilities::mainWidget(),
+				QObject::tr("Load data"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+				QObject::tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
+
+			cout << fileName.toStdString() << endl;
+			if (fileName.isEmpty()) return;
+			QFileInfo fileInfo(fileName);
+			mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
+
+			std::string STLext(".stl");
+			std::string STLext2(".STL");
+			std::string VTKext(".vtk");
+			std::string VTKext2(".VTK");
+			std::string VTKext3(".vtp");
+			std::string VTKext4(".VTP");
+			std::string PLYext(".ply");
+			std::string PLYext2(".PLY");
+			std::string NTWext(".ntw");
+			std::string NTWext2(".NTW");
+			std::string VERext(".ver");
+			std::string VERext2(".VER");
+			std::string CURext(".cur");
+			std::string CURext2(".CUR");
+			std::string FLGext(".flg");
+			std::string FLGext2(".FLG");
+			std::string LMKext(".lmk");
+			std::string LMKext2(".LMK");
+			std::string TAGext(".tag");
+			std::string TAGext2(".TAG");
+			std::string STVext(".stv");
+			std::string STVext2(".STV");
+			std::string ORIext(".ori");
+			std::string ORIext2(".ORI");
+			std::string POSext(".pos");
+			std::string POSext2(".POS");
+
+			int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk, 8 tag, 9 stv, 10 ori, 11 pos
+			std::size_t found = fileName.toStdString().find(STLext);
+			std::size_t found2 = fileName.toStdString().find(STLext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 0;
+				//STL
+			}
+
+			found = fileName.toStdString().find(VTKext);
+			found2 = fileName.toStdString().find(VTKext2);
+			std::size_t found3 = fileName.toStdString().find(VTKext3);
+			std::size_t found4 = fileName.toStdString().find(VTKext4);
+			if (found != std::string::npos || found2 != std::string::npos || found3 != std::string::npos || found4 != std::string::npos)
+			{
+				type = 1; //VTK
+			}
+
+			//std::cout << "2Type= " <<type<< std::endl;
+			found = fileName.toStdString().find(PLYext);
+			found2 = fileName.toStdString().find(PLYext2);
+
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 2; //PLY
+			}
+
+
+			//0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
+			found = fileName.toStdString().find(NTWext);
+			found2 = fileName.toStdString().find(NTWext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 3; //NTW
+			}
+
+			//4 ver, 5 cur, 6 flg, 7 lmk
+			found = fileName.toStdString().find(VERext);
+			found2 = fileName.toStdString().find(VERext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 4; //VER
+			}
+
+			found = fileName.toStdString().find(CURext);
+			found2 = fileName.toStdString().find(CURext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 5; //CUR
+			}
+			found = fileName.toStdString().find(FLGext);
+			found2 = fileName.toStdString().find(FLGext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 6; //FLG
+			}
+			found = fileName.toStdString().find(LMKext);
+			found2 = fileName.toStdString().find(LMKext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 7; //LMK
+			}
+			found = fileName.toStdString().find(TAGext);
+			found2 = fileName.toStdString().find(TAGext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 8; //TAG
+			}
+			found = fileName.toStdString().find(STVext);
+			found2 = fileName.toStdString().find(STVext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 9; //STV
+			}
+			//8 tag, 9 stv, 10 ori, 11 pos
+			found = fileName.toStdString().find(ORIext);
+			found2 = fileName.toStdString().find(ORIext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 10; //ORI
+			}
+			found = fileName.toStdString().find(POSext);
+			found2 = fileName.toStdString().find(POSext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 11; //POS
+			}
+
+
+			if (type < 3)
+			{
+				mqMeshToolsCore::instance()->OpenMesh(fileName);
+			}
+			else if (type == 3)
+			{
+				mqMeshToolsCore::instance()->OpenNTW(fileName);
+			}
+			else if (type == 4)
+			{
+				mqMeshToolsCore::instance()->OpenVER(fileName, 0);
+			}
+			else if (type == 5)
+			{
+				mqMeshToolsCore::instance()->OpenCUR(fileName);
+			}
+			else if (type == 6)
+			{
+				mqMeshToolsCore::instance()->OpenFLG(fileName);
+			}
+			else if (type == 7)
+			{
+				mqMeshToolsCore::instance()->OpenLMK(fileName, 0);
+			}
+			else if (type == 8)
+			{
+				mqMeshToolsCore::instance()->OpenTAG(fileName);
+			}
+			else if (type == 9)
+			{
+				mqMeshToolsCore::instance()->OpenSTV(fileName);
+			}
+			else if (type == 10)
+			{
+				mqMeshToolsCore::instance()->OpenORI(fileName);
+			}
+			else if (type == 11)
+			{
+				mqMeshToolsCore::instance()->OpenPOS(fileName, 1);
+			}
+
+
+			//  @@ to do!
+
+
+
+		}
+
+	}
+	if (key.compare("s") == 0)
+	{
+
+		if (this->Ctrl == CTRL_PRESSED)
+		{
+
+			this->Ctrl = CTRL_RELEASED;
+			//  @@ to do!
+			vtkIdType num_sel_Actors = 0;
+			vtkIdType num_sel_Fags = 0;
+			vtkIdType num_sel_Normal_Landmarks = 0;
+			vtkIdType num_sel_Target_Landmarks = 0;
+			vtkIdType num_sel_Node_Landmarks = 0;
+			vtkIdType num_sel_Handle_Landmarks = 0;
+
+			vtkIdType num_Actors = 0;
+			vtkIdType num_Fags = 0;
+			vtkIdType num_Normal_Landmarks = 0;
+			vtkIdType num_Target_Landmarks = 0;
+			vtkIdType num_Node_Landmarks = 0;
+			vtkIdType num_Handle_Landmarks = 0;
+
+
+			num_sel_Actors = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+			num_sel_Fags = mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+			num_sel_Normal_Landmarks = mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfSelectedActors();
+			num_sel_Target_Landmarks = mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfSelectedActors();
+			num_sel_Node_Landmarks = mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfSelectedActors();
+			num_sel_Handle_Landmarks = mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfSelectedActors();
+
+			num_Actors = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems();
+			num_Fags = mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfItems();
+			num_Normal_Landmarks = mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNumberOfItems();
+			num_Target_Landmarks = mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNumberOfItems();
+			num_Node_Landmarks = mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNumberOfItems();
+			num_Handle_Landmarks = mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNumberOfItems();
+
+
+			if (num_sel_Actors == 0
+				&& num_sel_Fags == 0
+				&& num_sel_Normal_Landmarks == 0
+				&& num_sel_Target_Landmarks == 0
+				&& num_sel_Node_Landmarks == 0
+				&& num_sel_Handle_Landmarks == 0
+
+				) {
+				QMessageBox msgBox;
+				msgBox.setText("Select at least one surface/flag/landmark/curve element to use this function!");
+				msgBox.exec();
+				return;
+			}
+
+			if (num_sel_Actors != num_Actors
+				|| num_sel_Fags != num_Fags
+				|| num_sel_Normal_Landmarks != num_Normal_Landmarks
+				|| num_sel_Target_Landmarks != num_Target_Landmarks
+				|| num_sel_Node_Landmarks != num_Node_Landmarks
+				|| num_sel_Handle_Landmarks != num_Handle_Landmarks
+
+
+				) {
+				QMessageBox msgBox;
+				msgBox.setText("Some elements are unselected and will not be saved. Continue ?");
+				msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+				msgBox.setDefaultButton(QMessageBox::No);
+				int ret = msgBox.exec();
+				if (ret == QMessageBox::No) { return; }
+
+
+			}
+
+			cout << "Save NTW Dialog Triggered!" << endl;
+
+
+			mqSaveNTWDialog SaveNTW_dialog(mqCoreUtilities::mainWidget());
+			SaveNTW_dialog.exec();
+
+		}
+
 	}
 	if (key.compare("z") == 0)
 	{

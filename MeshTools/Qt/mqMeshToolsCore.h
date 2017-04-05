@@ -113,6 +113,19 @@ public:
 	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms = 0, vtkMTActor *myActor = NULL);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
 	int SaveFlagFile(QString fileName, int save_only_selected);
+
+	void OpenFLG(QString fileName);
+	void OpenCUR(QString fileName);
+	void OpenSTV(QString fileName);
+	void OpenTAG(QString fileName);
+	void OpenORI(QString fileName);
+	void OpenNTW(QString fileName);
+	void OpenVER(QString fileName, int mode);
+	void OpenLMK(QString fileName, int mode);
+	void OpenMesh(QString fileName);
+	void OpenPOS(QString fileName, int mode);
+	void OpenPOSTrans(QString fileName, int mode);
+
 	double* Getmui_MeshColor();
 	void Getmui_MeshColor(double c[4]);
 	double* Getmui_DefaultMeshColor();

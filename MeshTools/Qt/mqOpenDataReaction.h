@@ -41,17 +41,7 @@ public:
    void OpenTAG();
    void OpenORI();
    
-   void OpenFLG(QString fileName);
-   void OpenCUR(QString fileName);
-   void OpenSTV(QString fileName);
-   void OpenTAG(QString fileName);
-   void OpenORI(QString fileName);
-   void OpenNTW(QString fileName);
-   void OpenVER(QString fileName, int mode);
-   void OpenLMK(QString fileName, int mode);
-   void OpenMesh(QString fileName);
-   void OpenPOS(QString fileName, int mode);
-   void OpenPOSTrans(QString fileName, int mode);
+  
 protected:
   /**
   * Called when the action is triggered.
