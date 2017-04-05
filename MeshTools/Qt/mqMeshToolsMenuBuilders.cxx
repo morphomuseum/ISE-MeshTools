@@ -163,7 +163,7 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	QAction *Darkblue = submenuChangeObjectColor->addAction("Dark blue");
 	QAction *Darkgreen = submenuChangeObjectColor->addAction("Dark green");
 	QAction *Orange = submenuChangeObjectColor->addAction("Orange");
-	QAction *Brown = menu.addAction("Brown");
+	QAction *Brown = submenuChangeObjectColor->addAction("Brown");
 	
 
 	QAction::connect(Grey, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotGrey()));
