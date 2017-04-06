@@ -17,6 +17,7 @@
 #include <vtkAppendPolyData.h>
 #include <vtkConeSource.h>
 #include <vtkCylinderSource.h>
+#include <vtkSphereSource.h>
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
 #include <vtkObjectFactory.h>
@@ -29,12 +30,13 @@ vtkStandardNewMacro(vtkProbeSource);
 
 vtkProbeSource::vtkProbeSource()
 {
+	this->TipType = 1; //cone 1=> sphere
   this->ArrowLength = 1;
-  this->TipResolution = 6;
-  this->TipRadius = 0.1;
-  this->TipLength = 0.35;
-  this->ShaftResolution = 6;
-  this->ShaftRadius = 0.03;
+  this->TipResolution = 12;
+  this->TipRadius = 0.05;
+  this->TipLength = 0.2;
+  this->ShaftResolution = 12;
+  this->ShaftRadius = 0.01;
   this->Invert = false;
 
   this->SetNumberOfInputPorts(0);
@@ -57,6 +59,7 @@ int vtkProbeSource::RequestData(
   vtkTransform *trans0 = vtkTransform::New();
   vtkTransformFilter *tf0 = vtkTransformFilter::New();
   vtkConeSource *cone = vtkConeSource::New();
+  vtkSphereSource *sphereSource = vtkSphereSource::New();
   vtkTransform *trans1 = vtkTransform::New();
   vtkTransform *trans2 = vtkTransform::New();
   vtkTransformFilter *tf1 = vtkTransformFilter::New();
@@ -67,28 +70,58 @@ int vtkProbeSource::RequestData(
   numPieces = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
   outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS());
 
-  cyl->SetResolution(this->ShaftResolution);
-  cyl->SetRadius(this->ArrowLength*this->ShaftRadius);
-  cyl->SetHeight((1.0 - this->TipLength)*this->ArrowLength);
-  cyl->SetCenter(0, (1.0-this->TipLength)*0.5*this->ArrowLength, 0.0);
-  cyl->CappingOn();
+  if (this->TipType == 0)
+  {
+	  cyl->SetResolution(this->ShaftResolution);
+	  cyl->SetRadius(this->ArrowLength*this->ShaftRadius);
+	  cyl->SetHeight((1.0 - this->TipLength)*this->ArrowLength);
+	  cyl->SetCenter(0, (1.0 - this->TipLength)*0.5*this->ArrowLength, 0.0);
+	  cyl->CappingOn();
 
-  trans0->RotateZ(-90.0);
-  tf0->SetTransform(trans0);
-  tf0->SetInputConnection(cyl->GetOutputPort());
+	  trans0->RotateZ(-90.0);
+	  tf0->SetTransform(trans0);
+	  tf0->SetInputConnection(cyl->GetOutputPort());
 
-  cone->SetResolution(this->TipResolution);
-  cone->SetHeight(this->TipLength*this->ArrowLength);
-  cone->SetRadius(this->TipRadius*this->ArrowLength);
+	  cone->SetResolution(this->TipResolution);
+	  cone->SetHeight(this->TipLength*this->ArrowLength);
+	  cone->SetRadius(this->TipRadius*this->ArrowLength);
 
-  trans1->Translate(this->ArrowLength*(1.0-this->TipLength*0.5), 0.0, 0.0);
-  tf1->SetTransform(trans1);
-  tf1->SetInputConnection(cone->GetOutputPort());
+	  trans1->Translate(this->ArrowLength*(1.0 - this->TipLength*0.5), 0.0, 0.0);
+	  tf1->SetTransform(trans1);
+	  tf1->SetInputConnection(cone->GetOutputPort());
 
-  append->AddInputConnection(tf0->GetOutputPort());
-  append->AddInputConnection(tf1->GetOutputPort());
+	  append->AddInputConnection(tf0->GetOutputPort());
+	  append->AddInputConnection(tf1->GetOutputPort());
 
- // used only when this->Invert is true.
+	
+  }
+  else
+  {
+	  cyl->SetResolution(this->ShaftResolution);
+	  cyl->SetRadius(this->ArrowLength*this->ShaftRadius);
+	  cyl->SetHeight((1.0 - (0.5*this->TipLength))*this->ArrowLength);
+	  cyl->SetCenter(0, (1.0 - -(0.5*this->TipLength))*0.5*this->ArrowLength, 0.0);
+	  cyl->CappingOn();
+
+	  trans0->RotateZ(-90.0);
+	  tf0->SetTransform(trans0);
+	  tf0->SetInputConnection(cyl->GetOutputPort());
+	 
+	  sphereSource->SetCenter(0, 0, 0);
+	  sphereSource->SetRadius(0.5*this->TipLength*this->ArrowLength);
+
+	  trans1->Translate(this->ArrowLength*(1.0 - this->TipLength*0.5*0.5), 0.0, 0.0);
+	  tf1->SetTransform(trans1);
+	  tf1->SetInputConnection(sphereSource->GetOutputPort());
+
+	  
+	  append->AddInputConnection(tf0->GetOutputPort());
+	  append->AddInputConnection(tf1->GetOutputPort());
+
+
+  }
+
+  // used only when this->Invert is true.
  trans2->Translate(1 * this->ArrowLength, 0, 0);
  trans2->Scale(-1, 1, 1);
  tf2->SetTransform(trans2);

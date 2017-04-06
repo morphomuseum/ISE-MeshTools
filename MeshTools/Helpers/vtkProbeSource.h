@@ -83,6 +83,7 @@ protected:
   int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
   int TipResolution;
+  int TipType;
   double TipLength;
   double TipRadius;
   double ArrowLength;

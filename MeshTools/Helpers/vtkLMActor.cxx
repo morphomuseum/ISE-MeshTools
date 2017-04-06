@@ -343,7 +343,7 @@ void vtkLMActor::CreateLMBody()
 	{
 		vtkSmartPointer<vtkSphereSource> sphereSource =
 			vtkSmartPointer<vtkSphereSource>::New();
-
+		
 		sphereSource->SetCenter(0, 0, 0);
 		sphereSource->SetRadius(0.5*this->LMSize);
 		if (this->LMType == TARGET_LMK || this->LMType == HANDLE_LMK)
