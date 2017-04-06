@@ -398,7 +398,7 @@ void vtkLMActor::ResetLMColor()
 	double cyan[4] = { 0, 1, 1, 1 }; 
 	double violet[4] = { 0.7, 0, 1, 0.5 }; 
 	double *flgcolor = mqMeshToolsCore::instance()->Getmui_FlagColor();
-	double flagcolor[4] = { flgcolor[0], flgcolor[1], flgcolor[2], 1 };// LMType=0 VERT
+	double flagcolor[4] = { flgcolor[0], flgcolor[1], flgcolor[2], 0.5 };// LMType=0 VERT
 	if (this->LMType == NORMAL_LMK) { this->SetmColor(green); }// LMType = 0 (normal LM) vert
 	if (this->LMType == TARGET_LMK) { this->SetmColor(orange); }// LMType = 1 (target LM) jaune
 	

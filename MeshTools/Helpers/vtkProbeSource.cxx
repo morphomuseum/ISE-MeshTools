@@ -17,6 +17,7 @@
 #include <vtkAppendPolyData.h>
 #include <vtkConeSource.h>
 #include <vtkCylinderSource.h>
+#include <vtkReverseSense.h>
 #include <vtkSphereSource.h>
 #include <vtkInformation.h>
 #include <vtkInformationVector.h>
@@ -65,7 +66,8 @@ int vtkProbeSource::RequestData(
   vtkTransformFilter *tf1 = vtkTransformFilter::New();
   vtkTransformFilter *tf2 = vtkTransformFilter::New();
   vtkAppendPolyData *append = vtkAppendPolyData::New();
-
+  vtkReverseSense *reverse = vtkReverseSense::New();
+ 
   piece = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_PIECE_NUMBER());
   numPieces = outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_PIECES());
   outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_NUMBER_OF_GHOST_LEVELS());
@@ -90,8 +92,7 @@ int vtkProbeSource::RequestData(
 	  tf1->SetTransform(trans1);
 	  tf1->SetInputConnection(cone->GetOutputPort());
 
-	  append->AddInputConnection(tf0->GetOutputPort());
-	  append->AddInputConnection(tf1->GetOutputPort());
+	 
 
 	
   }
@@ -100,39 +101,58 @@ int vtkProbeSource::RequestData(
 	  cyl->SetResolution(this->ShaftResolution);
 	  cyl->SetRadius(this->ArrowLength*this->ShaftRadius);
 	  cyl->SetHeight((1.0 - (0.5*this->TipLength))*this->ArrowLength);
-	  cyl->SetCenter(0, (1.0 - -(0.5*this->TipLength))*0.5*this->ArrowLength, 0.0);
+	  cyl->SetCenter(0, (1.0 - (0.5*this->TipLength))*0.5*this->ArrowLength, 0.0);
 	  cyl->CappingOn();
 
 	  trans0->RotateZ(-90.0);
 	  tf0->SetTransform(trans0);
 	  tf0->SetInputConnection(cyl->GetOutputPort());
 	 
+	  cone->SetResolution(this->TipResolution);
+	  cone->SetHeight(this->TipLength*this->ArrowLength);
+	  cone->SetRadius(this->TipRadius*this->ArrowLength);
+
 	  sphereSource->SetCenter(0, 0, 0);
 	  sphereSource->SetRadius(0.5*this->TipLength*this->ArrowLength);
 
 	  trans1->Translate(this->ArrowLength*(1.0 - this->TipLength*0.5*0.5), 0.0, 0.0);
 	  tf1->SetTransform(trans1);
 	  tf1->SetInputConnection(sphereSource->GetOutputPort());
-
+	  //tf1->SetInputConnection(cone->GetOutputPort());
 	  
-	  append->AddInputConnection(tf0->GetOutputPort());
-	  append->AddInputConnection(tf1->GetOutputPort());
-
+	  
 
   }
+  append->AddInputConnection(tf0->GetOutputPort());
+  append->AddInputConnection(tf1->GetOutputPort());
+  
+  trans2->Translate(1 * this->ArrowLength, 0, 0);
+  trans2->RotateY(180.0);
+  //trans2->Scale(-1, 1, 1);
 
-  // used only when this->Invert is true.
- trans2->Translate(1 * this->ArrowLength, 0, 0);
- trans2->Scale(-1, 1, 1);
- tf2->SetTransform(trans2);
- tf2->SetInputConnection(append->GetOutputPort());
+  tf2->SetTransform(trans2);
+  tf2->SetInputConnection(append->GetOutputPort());
+  reverse->SetInputConnection(tf2->GetOutputPort());
+  reverse->ReverseCellsOn();
+  reverse->ReverseNormalsOn();
+
 
   if (piece == 0 && numPieces > 0)
     {
     if (this->Invert)
       {
-      tf2->Update();
-      output->ShallowCopy(tf2->GetOutput());
+		  tf2->Update();
+		  output->ShallowCopy(tf2->GetOutput());
+		  /*if (this->TipType == 0)
+		  {
+			  tf2->Update();
+			  output->ShallowCopy(tf2->GetOutput());
+		  }
+		  else
+		  {*/
+			  //reverse->Update();
+			  //output->ShallowCopy(reverse->GetOutput());
+		  /*}*/
       }
     else
       {
@@ -140,7 +160,7 @@ int vtkProbeSource::RequestData(
       output->ShallowCopy(append->GetOutput());
       }
     }
-
+  sphereSource->Delete();
   cone->Delete();
   trans0->Delete();
   tf0->Delete();
@@ -150,6 +170,7 @@ int vtkProbeSource::RequestData(
   append->Delete();
   tf2->Delete();
   trans2->Delete();
+  reverse->Delete();
 
   return 1;
 }
