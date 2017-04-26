@@ -488,7 +488,7 @@ void mqMeshToolsCore::OpenFLG(QString fileName)
 							this->CreateLandmark(coord, ori, 4);
 							vtkLMActor *myLastFlag = this->GetLastLandmark(4);
 							myLastFlag->SetLMType(4);
-							myLastFlag->SetmColor(r, g, b, 1);
+							myLastFlag->SetmColor(r, g, b, 0.5);
 							myLastFlag->SetLMText(FLGName.toStdString());
 							cout << "Set LM Size:" << flength << endl;
 							myLastFlag->SetLMSize(flength);
