@@ -439,6 +439,7 @@ MeshTools::MeshTools()
 	//this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
 	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToAnaglyph();
 	this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
+
 	settings.beginGroup("renderer_settings");
 	this->MeshToolsCore->Setmui_Anaglyph(settings.value("Anaglyph", "0").toInt());
 	settings.endGroup();

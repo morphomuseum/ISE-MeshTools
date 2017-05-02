@@ -313,171 +313,186 @@ void mqOpenDataReaction::OpenData()
 	//mqMeshToolsCore::instance()->getUndoStack();
 	cout << "Open Data!" << endl;
 	
-	QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+	
+	QStringList filenames = QFileDialog::getOpenFileNames(this->MainWindow,
 		tr("Load data"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
 
-	cout << fileName.toStdString()<<endl;
-	if (fileName.isEmpty()) return;
-	QFileInfo fileInfo(fileName);
-	mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
-
-	std::string STLext(".stl");
-	std::string STLext2(".STL");
-	std::string VTKext(".vtk");
-	std::string VTKext2(".VTK");
-	std::string VTKext3(".vtp");
-	std::string VTKext4(".VTP");
-	std::string PLYext(".ply");
-	std::string PLYext2(".PLY");
-	std::string NTWext(".ntw");
-	std::string NTWext2(".NTW");
-	std::string VERext(".ver");
-	std::string VERext2(".VER");
-	std::string CURext(".cur");
-	std::string CURext2(".CUR");
-	std::string FLGext(".flg");
-	std::string FLGext2(".FLG");
-	std::string LMKext(".lmk");
-	std::string LMKext2(".LMK");
-	std::string TAGext(".tag");
-	std::string TAGext2(".TAG");
-	std::string STVext(".stv");
-	std::string STVext2(".STV");
-	std::string ORIext(".ori");
-	std::string ORIext2(".ORI");
-	std::string POSext(".pos");
-	std::string POSext2(".POS");
-
-	int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk, 8 tag, 9 stv, 10 ori, 11 pos
-	std::size_t found = fileName.toStdString().find(STLext);
-	std::size_t found2 = fileName.toStdString().find(STLext2);
-	if (found != std::string::npos || found2 != std::string::npos)
+	if (!filenames.isEmpty())
 	{
-		type = 0;
-		//STL
-	}
+		for (int i = 0; i < filenames.count(); i++)
+		{
+			QString fileName = filenames.at(i);
+			cout << fileName.toStdString() << endl;
+			if (fileName.isEmpty()) return;
+			QFileInfo fileInfo(fileName);
+			mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
 
-	found = fileName.toStdString().find(VTKext);
-	found2 = fileName.toStdString().find(VTKext2);
-	std::size_t found3 = fileName.toStdString().find(VTKext3);
-	std::size_t found4 = fileName.toStdString().find(VTKext4);
-	if (found != std::string::npos || found2 != std::string::npos || found3 != std::string::npos || found4 != std::string::npos)
-	{
-		type = 1; //VTK
-	}
+			std::string STLext(".stl");
+			std::string STLext2(".STL");
+			std::string VTKext(".vtk");
+			std::string VTKext2(".VTK");
+			std::string VTKext3(".vtp");
+			std::string VTKext4(".VTP");
+			std::string PLYext(".ply");
+			std::string PLYext2(".PLY");
+			std::string NTWext(".ntw");
+			std::string NTWext2(".NTW");
+			std::string VERext(".ver");
+			std::string VERext2(".VER");
+			std::string CURext(".cur");
+			std::string CURext2(".CUR");
+			std::string FLGext(".flg");
+			std::string FLGext2(".FLG");
+			std::string LMKext(".lmk");
+			std::string LMKext2(".LMK");
+			std::string TAGext(".tag");
+			std::string TAGext2(".TAG");
+			std::string STVext(".stv");
+			std::string STVext2(".STV");
+			std::string ORIext(".ori");
+			std::string ORIext2(".ORI");
+			std::string POSext(".pos");
+			std::string POSext2(".POS");
 
-	//std::cout << "2Type= " <<type<< std::endl;
-	found = fileName.toStdString().find(PLYext);
-	found2 = fileName.toStdString().find(PLYext2);
+			int type = 0; //0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk, 8 tag, 9 stv, 10 ori, 11 pos
+			std::size_t found = fileName.toStdString().find(STLext);
+			std::size_t found2 = fileName.toStdString().find(STLext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 0;
+				//STL
+			}
+
+			found = fileName.toStdString().find(VTKext);
+			found2 = fileName.toStdString().find(VTKext2);
+			std::size_t found3 = fileName.toStdString().find(VTKext3);
+			std::size_t found4 = fileName.toStdString().find(VTKext4);
+			if (found != std::string::npos || found2 != std::string::npos || found3 != std::string::npos || found4 != std::string::npos)
+			{
+				type = 1; //VTK
+			}
+
+			//std::cout << "2Type= " <<type<< std::endl;
+			found = fileName.toStdString().find(PLYext);
+			found2 = fileName.toStdString().find(PLYext2);
+
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 2; //PLY
+			}
+
+
+			//0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
+			found = fileName.toStdString().find(NTWext);
+			found2 = fileName.toStdString().find(NTWext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 3; //NTW
+			}
+
+			//4 ver, 5 cur, 6 flg, 7 lmk
+			found = fileName.toStdString().find(VERext);
+			found2 = fileName.toStdString().find(VERext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 4; //VER
+			}
+
+			found = fileName.toStdString().find(CURext);
+			found2 = fileName.toStdString().find(CURext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 5; //CUR
+			}
+			found = fileName.toStdString().find(FLGext);
+			found2 = fileName.toStdString().find(FLGext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 6; //FLG
+			}
+			found = fileName.toStdString().find(LMKext);
+			found2 = fileName.toStdString().find(LMKext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 7; //LMK
+			}
+			found = fileName.toStdString().find(TAGext);
+			found2 = fileName.toStdString().find(TAGext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 8; //TAG
+			}
+			found = fileName.toStdString().find(STVext);
+			found2 = fileName.toStdString().find(STVext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 9; //STV
+			}
+			//8 tag, 9 stv, 10 ori, 11 pos
+			found = fileName.toStdString().find(ORIext);
+			found2 = fileName.toStdString().find(ORIext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 10; //ORI
+			}
+			found = fileName.toStdString().find(POSext);
+			found2 = fileName.toStdString().find(POSext2);
+			if (found != std::string::npos || found2 != std::string::npos)
+			{
+				type = 11; //POS
+			}
+
+
+			if (type < 3)
+			{
+				mqMeshToolsCore::instance()->OpenMesh(fileName);
+			}
+			else if (type == 3)
+			{
+				mqMeshToolsCore::instance()->OpenNTW(fileName);
+			}
+			else if (type == 4)
+			{
+				mqMeshToolsCore::instance()->OpenVER(fileName, 0);
+			}
+			else if (type == 5)
+			{
+				mqMeshToolsCore::instance()->OpenCUR(fileName);
+			}
+			else if (type == 6)
+			{
+				mqMeshToolsCore::instance()->OpenFLG(fileName);
+			}
+			else if (type == 7)
+			{
+				mqMeshToolsCore::instance()->OpenLMK(fileName, 0);
+			}
+			else if (type == 8)
+			{
+				mqMeshToolsCore::instance()->OpenTAG(fileName);
+			}
+			else if (type == 9)
+			{
+				mqMeshToolsCore::instance()->OpenSTV(fileName);
+			}
+			else if (type == 10)
+			{
+				mqMeshToolsCore::instance()->OpenORI(fileName);
+			}
+			else if (type == 11)
+			{
+				mqMeshToolsCore::instance()->OpenPOS(fileName, 1);
+			}
+		}
+	}
 	
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 2; //PLY
-	}
-	
-	
-	//0 = stl, 1 = vtk,  2 = ply, 3 = ntw, 4 ver, 5 cur, 6 flg, 7 lmk
-	found = fileName.toStdString().find(NTWext);
-	found2 = fileName.toStdString().find(NTWext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 3; //NTW
-	}
 
-	//4 ver, 5 cur, 6 flg, 7 lmk
-	found = fileName.toStdString().find(VERext);
-	found2 = fileName.toStdString().find(VERext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 4; //VER
-	}
+	/*QString fileName = QFileDialog::getOpenFileName(this->MainWindow,
+		tr("Load data"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+		tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));*/
+
 	
-	found = fileName.toStdString().find(CURext);
-	found2 = fileName.toStdString().find(CURext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 5; //CUR
-	}
-	found = fileName.toStdString().find(FLGext);
-	found2 = fileName.toStdString().find(FLGext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 6; //FLG
-	}
-	found = fileName.toStdString().find(LMKext);
-	found2 = fileName.toStdString().find(LMKext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 7; //LMK
-	}
-	found = fileName.toStdString().find(TAGext);
-	found2 = fileName.toStdString().find(TAGext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 8; //TAG
-	}
-	found = fileName.toStdString().find(STVext);
-	found2 = fileName.toStdString().find(STVext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 9; //STV
-	}
-	//8 tag, 9 stv, 10 ori, 11 pos
-	found = fileName.toStdString().find(ORIext);
-	found2 = fileName.toStdString().find(ORIext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 10; //ORI
-	}
-	found = fileName.toStdString().find(POSext);
-	found2 = fileName.toStdString().find(POSext2);
-	if (found != std::string::npos || found2 != std::string::npos)
-	{
-		type = 11; //POS
-	}
-
-
-	if (type < 3)
-	{
-		mqMeshToolsCore::instance()->OpenMesh(fileName);
-	}
-	else if (type == 3)
-	{
-		mqMeshToolsCore::instance()->OpenNTW(fileName);
-	}
-	else if (type == 4)
-	{
-		mqMeshToolsCore::instance()->OpenVER(fileName,0);
-	}
-	else if (type == 5)
-	{
-		mqMeshToolsCore::instance()->OpenCUR(fileName);
-	}
-	else if (type == 6)
-	{
-		mqMeshToolsCore::instance()->OpenFLG(fileName);
-	}
-	else if (type == 7)
-	{
-		mqMeshToolsCore::instance()->OpenLMK(fileName, 0);
-	}
-	else if (type == 8)
-	{
-		mqMeshToolsCore::instance()->OpenTAG(fileName);
-	}
-	else if (type == 9)
-	{
-		mqMeshToolsCore::instance()->OpenSTV(fileName);
-	}
-	else if (type == 10)
-	{
-		mqMeshToolsCore::instance()->OpenORI(fileName);
-	}
-	else if (type == 11)
-	{
-		mqMeshToolsCore::instance()->OpenPOS(fileName, 1);
-	}
 }
 
 void mqOpenDataReaction::OpenNTW()

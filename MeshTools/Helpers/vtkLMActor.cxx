@@ -266,7 +266,7 @@ void vtkLMActor::CreateLMLabelText()
 	}
 		mproperty->SetColor(color);
 
-
+	//mproperty->Set
 
 	mproperty->SetFontFamilyToArial();
 
@@ -276,6 +276,7 @@ void vtkLMActor::CreateLMLabelText()
 	this->LMLabel->SetHeight(0.03);
 	this->LMLabel->BorderOff();
 	this->LMLabel->LeaderOff();
+	//this->LMLabel->
 	this->SetLMLabelText(myStrLabel.c_str());
 	this->LMLabel->SetCaption(this->LMLabelText);
 

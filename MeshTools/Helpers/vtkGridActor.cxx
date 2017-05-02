@@ -57,6 +57,7 @@ vtkGridActor::vtkGridActor()
 	this->FirstAxisLabel2 = vtkCaptionActor2D::New();
 	this->SecondAxisLabel = vtkCaptionActor2D::New();
 	this->SecondAxisLabel2 = vtkCaptionActor2D::New();
+	
 	/*
 	this->SetFirstAxisLabelText("-X");
 	this->SetFirstAxisLabelText2("X");

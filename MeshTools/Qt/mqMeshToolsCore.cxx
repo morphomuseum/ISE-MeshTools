@@ -4424,6 +4424,7 @@ void mqMeshToolsCore::Setmui_Anaglyph(int anaglyph)
 		if (anaglyph == 1)
 		{
 			this->RenderWindow->StereoRenderOn();
+			this->RenderWindow->StereoUpdate();
 			this->RenderWindow->Render();
 		}
 		else
