@@ -188,6 +188,7 @@ void mqEditFLGDialog::saveFLG()
 			QColor myFlagColor = this->Ui->FlagColorButton->chosenColor();
 			double flagcolor[4];
 			myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
+			flagcolor[3] = 0.5; // dirty hack!!!!
 			this->FLG->SetmColor(flagcolor);
 			this->FLG->SetLMText(this->Ui->FlagLabel->text().toStdString().c_str());
 
