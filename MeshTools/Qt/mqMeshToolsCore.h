@@ -110,7 +110,7 @@ public:
 	QString Getmui_Z2Label();
 	void SavePOS(vtkSmartPointer<vtkMatrix4x4> Mat, QString fileName);
 	void SaveORI(QString fileName);
-	int SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply);
+	int SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply, int apply_position_to_surfaces =0);
 	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
 	int SaveCURasVERFile(QString fileName, int decimation, int save_format, int save_other_lmks);

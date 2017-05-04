@@ -200,7 +200,7 @@ mqEditACTORDialog::mqEditACTORDialog(QWidget* Parent)
 	this->UpdateUI();
 	
  
-  
+	connect(this->Ui->ApplyMatrix, SIGNAL(pressed()), this, SLOT(slotapplyMatrixToAllSelectedActors()));
  connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotsaveActor()));
  connect(this->Ui->Reinit, SIGNAL(pressed()), this, SLOT(slotReinitMatrix()));
 
@@ -486,6 +486,47 @@ void mqEditACTORDialog::GetPrecedingActor()
 			this->ACTOR= vtkMTActor::SafeDownCast(this->ACTOR_Coll->GetLastActor());
 			this->ACTOR->SetSelected(1);
 		}
+	}
+
+}
+void mqEditACTORDialog::slotapplyMatrixToAllSelectedActors()
+{
+	int num_sel = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+	int num_act = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems();
+	if (num_sel > 0)
+	{
+		std::string action = "Apply same matrix to all selected actors";
+		int mCount = BEGIN_UNDO_SET(action);
+		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
+
+		for (int i = 0; i < num_act; i++)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(mqMeshToolsCore::instance()->getActorCollection()->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+				vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+				this->ACTOR->SaveState(mCount);
+				Mat->SetElement(0, 0, this->Ui->M00->value());
+				Mat->SetElement(0, 1, this->Ui->M01->value());
+				Mat->SetElement(0, 2, this->Ui->M02->value());
+				Mat->SetElement(0, 3, this->Ui->M03->value());
+				Mat->SetElement(1, 0, this->Ui->M10->value());
+				Mat->SetElement(1, 1, this->Ui->M11->value());
+				Mat->SetElement(1, 2, this->Ui->M12->value());
+				Mat->SetElement(1, 3, this->Ui->M13->value());
+				Mat->SetElement(2, 0, this->Ui->M20->value());
+				Mat->SetElement(2, 1, this->Ui->M21->value());
+				Mat->SetElement(2, 2, this->Ui->M22->value());
+				Mat->SetElement(2, 3, this->Ui->M23->value());
+				Mat->SetElement(3, 0, this->Ui->M30->value());
+				Mat->SetElement(3, 1, this->Ui->M31->value());
+				Mat->SetElement(3, 2, this->Ui->M32->value());
+				Mat->SetElement(3, 3, this->Ui->M33->value());
+				myActor->ApplyMatrix(Mat);
+				myActor->Modified();
+			}
+		}
+		END_UNDO_SET();
 	}
 
 }

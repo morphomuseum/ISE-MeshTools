@@ -324,7 +324,7 @@ int mqMeshToolsCore::selected_file_exists(std::string path, std::string ext, std
 			break;
 		}
 	}
-
+	//cout << "file " << path << " " << ext <<  postfix<< " exists" << exists;
 	return exists;
 
 }
@@ -400,7 +400,7 @@ void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_re
 
 void mqMeshToolsCore::OpenFLG(QString fileName)
 {
-	cout << "OpenFLG " << fileName.toStdString() << endl;
+	//cout << "OpenFLG " << fileName.toStdString() << endl;
 	double  x, y, z, nx, ny, nz, flength, r, g, b;
 
 	QString FLGName;
@@ -426,7 +426,7 @@ void mqMeshToolsCore::OpenFLG(QString fileName)
 		else
 		{
 
-			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			//std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
 			file_exists = 0;
 		}
 
@@ -490,7 +490,7 @@ void mqMeshToolsCore::OpenFLG(QString fileName)
 							myLastFlag->SetLMType(4);
 							myLastFlag->SetmColor(r, g, b, 0.5);
 							myLastFlag->SetLMText(FLGName.toStdString());
-							cout << "Set LM Size:" << flength << endl;
+							//cout << "Set LM Size:" << flength << endl;
 							myLastFlag->SetLMSize(flength);
 							myLastFlag->SetChanged(1);
 						}
@@ -548,7 +548,7 @@ void mqMeshToolsCore::OpenPOS(QString fileName, int mode)
 		else
 		{
 
-			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			//std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
 			file_exists = 0;
 		}
 
@@ -696,7 +696,7 @@ void mqMeshToolsCore::OpenPOSTrans(QString fileName, int mode)
 		else
 		{
 
-			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			//std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
 			file_exists = 0;
 		}
 
@@ -863,7 +863,7 @@ void mqMeshToolsCore::OpenLMK(QString fileName, int mode)
 		else
 		{
 
-			std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
+			//std::cout << "file:" << fileName.toStdString().c_str() << " does not exists." << std::endl;
 			file_exists = 0;
 		}
 
@@ -2147,8 +2147,9 @@ void mqMeshToolsCore::OpenSTV(QString fileName)
 
 }
 
-int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply)
+int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, int save_surfaces_as_ply, int apply_position_to_surfaces)
 {
+	cout << "apply_position_to_surfaces=" << apply_position_to_surfaces << endl;
 	std::string NTWext = ".ntw";
 	std::string NTWext2 = ".NTW";
 	std::size_t found = fileName.toStdString().find(NTWext);
@@ -2177,7 +2178,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 		std::string path = fileName.toStdString().substr(0, (fileName.toStdString().length() - only_filename.length()));
 		std::string posExt = ".pos";
 		std::string vtpExt = ".vtp";
-		std::string plyExt = ".vtp";
+		std::string plyExt = ".ply";
 		std::string tagExt = ".tag";
 		std::string oriExt = ".ori";
 		std::string flgExt = ".flg";
@@ -2412,7 +2413,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 
 					if (save_surfaces_as_ply == 1) { File_type = 2; }//2 = PLY
 	
-					this->SaveSurfaceFile(QString(_mesh_fullpath.c_str()), 0, 0, File_type, 0, myActor);
+					this->SaveSurfaceFile(QString(_mesh_fullpath.c_str()),0 , apply_position_to_surfaces, File_type, 0, myActor);
 				}
 
 				
@@ -2431,8 +2432,18 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 
 				if (write == 1)
 				{
-					vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
-					this->SavePOS(Mat, QString(_pos_fullpath.c_str()));
+					if (apply_position_to_surfaces == 0)
+					{
+						vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+						this->SavePOS(Mat, QString(_pos_fullpath.c_str()));
+					}
+					else
+					{
+						vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+						Mat->Identity();
+						this->SavePOS(Mat, QString(_pos_fullpath.c_str()));
+
+					}
 				}
 				stream << _mesh_file.c_str() << endl;
 				stream << _pos_file.c_str() << endl;
@@ -3096,6 +3107,7 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 	
 	if (myActor == NULL)
 	{
+		//cout << "myActor is null" << endl;
 
 		this->ActorCollection->InitTraversal();
 		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
@@ -3139,11 +3151,40 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 	}
 	else
 	{
-		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
-		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		if (position_mode == 0)
 		{
-			mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
+			//cout << "position_mode=0..." << endl;
+			vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+			{
+				mergedObjects->AddInputData(vtkPolyData::SafeDownCast(mapper->GetInput()));
+			}
 		}
+		else
+		{
+			//cout << "I am where I should be in the save mesh function!" << endl;
+			vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+			{
+				vtkSmartPointer<vtkPolyData> toSave = vtkSmartPointer<vtkPolyData>::New();
+				toSave->DeepCopy(vtkPolyData::SafeDownCast(mapper->GetInput()));
+				double ve_init_pos[3];;
+				double ve_final_pos[3];
+				vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+
+
+				for (vtkIdType i = 0; i < toSave->GetNumberOfPoints(); i++) {
+					// for every triangle 
+					toSave->GetPoint(i, ve_init_pos);
+					mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);
+
+					toSave->GetPoints()->SetPoint((vtkIdType)i, ve_final_pos);
+				}
+				mergedObjects->AddInputData(toSave);
+			}
+
+		}
+		
 	}
 
 	Ok = 1;

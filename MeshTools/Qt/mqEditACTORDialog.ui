@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>446</width>
-    <height>285</height>
+    <height>332</height>
    </rect>
   </property>
   <property name="palette">
@@ -432,7 +432,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>250</y>
+     <y>290</y>
      <width>161</width>
      <height>25</height>
     </rect>
@@ -456,7 +456,7 @@
      <x>10</x>
      <y>10</y>
      <width>421</width>
-     <height>231</height>
+     <height>271</height>
     </rect>
    </property>
    <property name="title">
@@ -597,10 +597,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="M21">
+   <widget class="QDoubleSpinBox" name="M01">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>100</x>
       <y>130</y>
       <width>61</width>
       <height>20</height>
@@ -617,17 +617,17 @@
      </rect>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="M01">
+   <widget class="QDoubleSpinBox" name="M21">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>240</x>
       <y>130</y>
       <width>61</width>
       <height>20</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="M31">
+   </widget>   
+     <widget class="QDoubleSpinBox" name="M31">
     <property name="geometry">
      <rect>
       <x>310</x>
@@ -637,10 +637,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="M22">
+    <widget class="QDoubleSpinBox" name="M02">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>100</x>
       <y>160</y>
       <width>61</width>
       <height>20</height>
@@ -656,17 +656,18 @@
       <height>20</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="M02">
+   </widget>  
+   <widget class="QDoubleSpinBox" name="M22">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>240</x>
       <y>160</y>
       <width>61</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
+   
    <widget class="QDoubleSpinBox" name="M32">
     <property name="geometry">
      <rect>
@@ -677,17 +678,17 @@
      </rect>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="M23">
+   <widget class="QDoubleSpinBox" name="M03">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>100</x>
       <y>190</y>
       <width>61</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="M13">
+    <widget class="QDoubleSpinBox" name="M13">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -696,11 +697,11 @@
       <height>20</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QDoubleSpinBox" name="M03">
+   </widget> 
+   <widget class="QDoubleSpinBox" name="M23">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>240</x>
       <y>190</y>
       <width>61</width>
       <height>20</height>
@@ -743,7 +744,24 @@
      <string>Reinit Matrix</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="ApplyMatrix">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>230</y>
+      <width>191</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Apply matrix to all selected actors</string>
+    </property>
+   </widget>
   </widget>
+  <zorder>layoutWidget</zorder>
+  <zorder>groupBox</zorder>
+  <zorder>buttonBox</zorder>
+  <zorder>buttonBox</zorder>
  </widget>
  <customwidgets>
   <customwidget>
