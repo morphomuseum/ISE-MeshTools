@@ -204,7 +204,10 @@ void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
 
 	QMenu* submenuLandmarksInvolved = menu.addMenu("Selected node and handle landmarks");
 	new mqEditAllFLGDialogReaction(menu.addAction("Edit all selected flags") << mqSetName("actionEditAllSelectedFlags"));
+	QAction *UpdateAllSelectedFlagsColors = menu.addAction("Update all selected flags colours automatically");
+	QAction::connect(UpdateAllSelectedFlagsColors, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotUpdateAllSelectedFlagsColors()));
 	
+
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Move curve handles semi-automatically") << mqSetName("actionMoveHandles"), 4);
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): change as starting nodes (dark red)") << mqSetName("actionStartingNode"), 1);
 	new mqChangeNodeReaction(submenuLandmarksInvolved->addAction("Normal nodes (red): connect to preceding starting nodes (cyan)") << mqSetName("actionConnectNode"), 3);

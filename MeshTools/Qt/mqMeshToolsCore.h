@@ -201,6 +201,7 @@ public:
   
 	void LandmarksMoveDown();
 	void SelectLandmarkRange(int start, int end, int lm_type);
+	void UpdateAllSelectedFlagsColors();
 	void UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size);
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
   void SetRenderWindow(vtkRenderWindow *renwin)
@@ -370,6 +371,7 @@ protected:
 public slots:
 	virtual void slotLandmarkMoveUp();
 	virtual void slotLandmarkMoveDown();
+	virtual void slotUpdateAllSelectedFlagsColors();
 	virtual void  slotGrey();
 	virtual void slotYellow();
 	virtual void slotRed();

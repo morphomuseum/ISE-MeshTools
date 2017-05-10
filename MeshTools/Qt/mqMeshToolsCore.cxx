@@ -13,6 +13,7 @@
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
 
+#include <vtkCellPicker.h>
 #include <vtkProperty.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
@@ -364,7 +365,142 @@ void mqMeshToolsCore::SaveORI(QString fileName)
 
 
 }
+void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
+{
+	double r1, g1, b1;
+	vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+	if (selectedflags>0)
+	{
 
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		myColl = this->FlagLandmarkCollection;
+		
+
+		myColl->InitTraversal();
+		for (vtkIdType k = 0; k < myColl->GetNumberOfItems(); k++)
+		{
+			int ok = 0;
+			vtkLMActor *myFlag = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+			double min_dist = DBL_MAX;
+			if (myFlag->GetSelected() == 1)
+			{
+				double flpos[3];
+				
+				myFlag->GetLMOrigin(flpos);
+				double closest[3] = { flpos[0] , flpos[1],flpos[2] };
+				cout << "Current flag :" << flpos[0] << "," << flpos[1] << "," << flpos[2] << endl;
+
+				this->ActorCollection->InitTraversal();
+				for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+				{
+					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+					
+					//@@
+
+					vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+					{
+						vtkSmartPointer<vtkPolyData> myPD = vtkSmartPointer<vtkPolyData>::New();
+						myPD->DeepCopy(vtkPolyData::SafeDownCast(mapper->GetInput()));
+						double ve_init_pos[3];;
+						double ve_final_pos[3];
+						vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+
+						vtkIdType id_min=NULL;
+						for (vtkIdType j = 0; j < myPD->GetNumberOfPoints(); j++) 
+						{
+							// for every triangle 
+							myPD->GetPoint(j, ve_init_pos);
+							mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);
+
+							double curr_dist = (ve_final_pos[0] - flpos[0])*(ve_final_pos[0] - flpos[0]) +
+								(ve_final_pos[1] - flpos[1])*(ve_final_pos[1] - flpos[1]) +
+								(ve_final_pos[2] - flpos[2])*(ve_final_pos[2] - flpos[2]);
+							if (min_dist>curr_dist)
+							{
+								id_min = j;
+								min_dist = curr_dist;
+								//now get current color!
+								
+							}
+							
+						}
+						if (id_min != NULL) // means that mesh i could be the mesh that contains the closest vertex of flag k
+						{
+							//now get current color of point id_min of mesh i!
+							//@TODO! => On va faire 1 variable globale de type G_Current_Active_Scalar => Ce premier if sera changé par 
+							// if (visibility ==0 OU GetScalar(G_Current_Active_Scalar)==NULL)
+							if (this->Getmui_ScalarVisibility() == 0 || 
+							(((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB") == NULL) &&
+							  ((vtkIntArray*)myPD->GetPointData()->GetScalars("Tags") == NULL))
+								)
+							{
+								myActor->GetProperty()->GetColor(r1, g1, b1);
+								cout << "Mesh PLAIN color " <<i<<"("<< myActor->GetName() << "): " << "r="<<r1 << ", g=" << g1<< ", b="<<b1 << endl;
+								ok = 1;
+							}
+							else
+							{
+								//@TODO! => On va faire 1 variable globale G_Current_Active_Scalar!								
+								// then what is the current active scalar RVB or TAGS ??
+								if ((vtkIntArray*)myPD->GetPointData()->GetScalars("Tags") == NULL)
+								{ 
+									// in that case we retried the "RGB color".
+									vtkSmartPointer<vtkUnsignedCharArray> colors =
+										vtkSmartPointer<vtkUnsignedCharArray>::New();
+									colors->SetNumberOfComponents(3);
+									colors = (vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB");
+									double cur_r = (double) colors->GetTuple(id_min)[0];
+									double cur_g = (double)colors->GetTuple(id_min)[1];
+									double cur_b = (double)colors->GetTuple(id_min)[2];
+									r1 = cur_r / 255;
+									g1 = cur_g / 255;
+									b1 = cur_b / 255;
+									cout << "Mesh RGB color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+									ok = 1;
+								}
+								else
+								{
+									vtkIntArray *currentTags;
+									currentTags = (vtkIntArray*)myPD->GetPointData()->GetScalars("Tags");
+									int mytag = currentTags->GetTuple(id_min)[0];
+									vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+									lut = vtkLookupTable::SafeDownCast(mapper->GetLookupTable());
+									double rgb[3];
+									lut->GetColor((double)mytag, rgb);
+									r1 = rgb[0];
+									g1 = rgb[1];
+									b1 = rgb[2];
+									cout << "Mesh TAG color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+									ok = 1;
+
+								}
+									
+							}
+
+						}
+					}
+
+				}
+				
+
+				myFlag->SetSelected(0);
+				if (ok == 1)
+				{
+					myFlag->SetmColor(r1,g1,b1,0.5);
+
+				}
+				this->UpdateLandmarkSettings(myFlag);
+
+
+
+			}
+
+		}
+
+		this->Render();
+	}
+}
 void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size)
 {
 	vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
@@ -397,6 +533,7 @@ void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_re
 	}
 
 }
+
 
 void mqMeshToolsCore::OpenFLG(QString fileName)
 {
@@ -1262,6 +1399,7 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			lut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
 			mapper->SetScalarRange(0, tableSize - 1);
 			mapper->SetLookupTable(lut);
+			
 			mapper->ScalarVisibilityOn();
 			//mapper->ScalarVisibilityOff();
 			mapper->SetInputData(MyPolyData);
@@ -5226,6 +5364,10 @@ void mqMeshToolsCore::slotLandmarkMoveUp()
 {
 
 	this->LandmarksMoveUp();
+}
+void mqMeshToolsCore::slotUpdateAllSelectedFlagsColors()
+{
+	this->UpdateAllSelectedFlagsColors();
 }
 void mqMeshToolsCore::slotLandmarkMoveDown()
 {
