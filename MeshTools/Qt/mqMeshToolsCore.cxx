@@ -375,7 +375,10 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
 		myColl = this->FlagLandmarkCollection;
 		
-
+		std::string action = "Update color of all selected flags";
+		int mCount = BEGIN_UNDO_SET(action);
+		
+		
 		myColl->InitTraversal();
 		for (vtkIdType k = 0; k < myColl->GetNumberOfItems(); k++)
 		{
@@ -483,10 +486,11 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 
 				}
 				
-
+				
 				myFlag->SetSelected(0);
 				if (ok == 1)
 				{
+					myFlag->SaveState(mCount);
 					myFlag->SetmColor(r1,g1,b1,0.5);
 
 				}
@@ -497,6 +501,7 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 			}
 
 		}
+		END_UNDO_SET();
 
 		this->Render();
 	}
