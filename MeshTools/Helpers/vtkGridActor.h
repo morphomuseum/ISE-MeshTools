@@ -15,7 +15,8 @@ Module:    vtkGridActor.h
 #include "vtkProp3D.h"
 
 class vtkActor;
-class vtkCaptionActor2D;
+//class vtkCaptionActor2D;
+class vtkBillboardTextActor3D;
 class vtkConeSource;
 class vtkCylinderSource;
 class vtkLineSource;
@@ -108,19 +109,19 @@ public:
 	// Description:
 	// Retrieve handles to the X, Y and Z axis (so that you can set their text
 	// properties for example)
-	vtkCaptionActor2D *GetFirstAxisCaptionActor2D()
+	vtkBillboardTextActor3D *GetFirstAxisCaptionActor2D()
 	{
 		return this->FirstAxisLabel;
 	}
-	vtkCaptionActor2D *GetSecondAxisCaptionActor2D()
+	vtkBillboardTextActor3D *GetSecondAxisCaptionActor2D()
 	{
 		return this->SecondAxisLabel;
 	}
-	vtkCaptionActor2D *GetFirstAxis2CaptionActor2D()
+	vtkBillboardTextActor3D *GetFirstAxis2CaptionActor2D()
 	{
 		return this->FirstAxisLabel2;
 	}
-	vtkCaptionActor2D *GetSecondAxis2CaptionActor2D()
+	vtkBillboardTextActor3D *GetSecondAxis2CaptionActor2D()
 	{
 		return this->SecondAxisLabel2;
 	}
@@ -182,11 +183,11 @@ protected:
 	char              *SecondAxisLabelText;
 	char              *SecondAxisLabelText2;
 
-
-	vtkCaptionActor2D *FirstAxisLabel;
-	vtkCaptionActor2D *FirstAxisLabel2;
-	vtkCaptionActor2D *SecondAxisLabel;
-	vtkCaptionActor2D *SecondAxisLabel2;
+	
+	vtkBillboardTextActor3D *FirstAxisLabel;
+	vtkBillboardTextActor3D *FirstAxisLabel2;
+	vtkBillboardTextActor3D *SecondAxisLabel;
+	vtkBillboardTextActor3D *SecondAxisLabel2;
 
 
 	int OutlineMode; // 0; outline orange // 1 outline cyan

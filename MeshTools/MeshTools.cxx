@@ -44,7 +44,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkVectorText.h>
 #include <vtkImageData.h>
-#include <vtkCaptionActor2D.h>
+#include <vtkBillboardTextActor3D.h>
 #include <vtkProperty2D.h>
 #include <vtkAxesActor.h>
 #include <vtkPolyDataNormals.h>

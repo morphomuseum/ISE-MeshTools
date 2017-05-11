@@ -159,7 +159,7 @@ void vtkLMActorCollection::AddItem(vtkActor *a)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(a);
 		//this->Renderer->AddActor(a);
 		//this->CurrentRenderer->AddActor(myLM);
-		this->Renderer->AddActor(myActor->GetLMLabelActor2D());
+		this->Renderer->AddActor(myActor->GetLMLabelActor3D());
 
 	}
 

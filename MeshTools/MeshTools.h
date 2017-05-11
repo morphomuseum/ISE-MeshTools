@@ -27,7 +27,7 @@
 #include <vtkImageData.h>
 
 #include <vtkStructuredGrid.h>
-#include <vtkCaptionActor2D.h>
+#include <vtkBillboardTextActor3D.h>
 #include <QMainWindow>
 #include <QFileDialog>
 

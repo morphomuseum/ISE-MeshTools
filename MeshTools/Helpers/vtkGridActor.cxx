@@ -15,7 +15,7 @@ PURPOSE.  See the above copyright notice for more information.
 #include "vtkGridActor.h"
 
 #include <vtkActor.h>
-#include <vtkCaptionActor2D.h>
+#include <vtkBillboardTextActor3D.h>
 #include <vtkMath.h>
 #include <vtkObject.h>
 #include <vtkObjectFactory.h>
@@ -53,10 +53,10 @@ vtkGridActor::vtkGridActor()
 	this->SecondAxisLabelText = NULL;
 	this->SecondAxisLabelText2 = NULL;
 
-	this->FirstAxisLabel = vtkCaptionActor2D::New();
-	this->FirstAxisLabel2 = vtkCaptionActor2D::New();
-	this->SecondAxisLabel = vtkCaptionActor2D::New();
-	this->SecondAxisLabel2 = vtkCaptionActor2D::New();
+	this->FirstAxisLabel = vtkBillboardTextActor3D::New();
+	this->FirstAxisLabel2 = vtkBillboardTextActor3D::New();
+	this->SecondAxisLabel = vtkBillboardTextActor3D::New();
+	this->SecondAxisLabel2 = vtkBillboardTextActor3D::New();
 	
 	/*
 	this->SetFirstAxisLabelText("-X");
@@ -348,16 +348,24 @@ void vtkGridActor::CreateGridLabelText()
 		myStr1 = "-x";
 		pos1[0] -= this->GridSize*(this->GridSpacing);
 		property1->SetColor(yellow);
+
+		//FirstAxisLabel->GetTextProperty()->SetColor(yellow);
 		myStr2 = "x";
 		pos2[0] += this->GridSize*(this->GridSpacing);
+		//FirstAxisLabel2->GetTextProperty()->SetColor(red);
 		property2->SetColor(red);
+
 		myStr3 = "-y";
 		pos3[1] -= this->GridSize*(this->GridSpacing);
+		
+		//SecondAxisLabel->GetTextProperty()->SetColor(cyan);
 		property3->SetColor(cyan);
+
 		myStr4 = "y";
 		pos4[1] += this->GridSize*(this->GridSpacing);
 		property4->SetColor(green);
 
+		//SecondAxisLabel2->GetTextProperty()->SetColor(green);
 	}
 	else if (this->GridType == 1)
 	{
@@ -396,37 +404,59 @@ void vtkGridActor::CreateGridLabelText()
 
 
 
-	property1->SetFontFamilyToArial();
+	/*property1->SetFontFamilyToArial();
 	property2->SetFontFamilyToArial();
 	property3->SetFontFamilyToArial();
-	property4->SetFontFamilyToArial();
-	FirstAxisLabel->SetCaptionTextProperty(property1);
-	FirstAxisLabel2->SetCaptionTextProperty(property2);
-	SecondAxisLabel->SetCaptionTextProperty(property3);
-	SecondAxisLabel2->SetCaptionTextProperty(property4);
+	property4->SetFontFamilyToArial();*/
+	property1->SetBold(0);
+	property2->SetBold(0);
+	property3->SetBold(0);
+	property4->SetBold(0);
+	property1->SetFontSize(16);
+	property2->SetFontSize(16);
+	property3->SetFontSize(16);
+	property4->SetFontSize(16);
+	property1->SetJustificationToLeft();
+	property2->SetJustificationToLeft();
+	property3->SetJustificationToLeft();
+	property4->SetJustificationToLeft();
 
-	FirstAxisLabel->SetPosition(0, 0);
+
+	/*textActor->SetInput("");
+	textActor->SetPosition(actor->GetPosition());
+	textActor->GetTextProperty()->SetFontSize(12);*/
+	
+	
+	FirstAxisLabel->SetTextProperty(property1);
+	FirstAxisLabel2->SetTextProperty(property2);
+	SecondAxisLabel->SetTextProperty(property3);
+	SecondAxisLabel2->SetTextProperty(property4);
+
+	/*FirstAxisLabel->SetPosition(0, 0);
 	FirstAxisLabel2->SetPosition(0, 0);
 	SecondAxisLabel->SetPosition(0, 0);
-	SecondAxisLabel2->SetPosition(0, 0);
+	SecondAxisLabel2->SetPosition(0, 0);*/
+	FirstAxisLabel->SetPosition(pos1);
+	FirstAxisLabel2->SetPosition(pos2);
+	SecondAxisLabel->SetPosition(pos3);
+	SecondAxisLabel2->SetPosition(pos4);
 
-
-	FirstAxisLabel->SetAttachmentPoint(pos1);
+	/*FirstAxisLabel->SetAttachmentPoint(pos1);
 	FirstAxisLabel2->SetAttachmentPoint(pos2);
 	SecondAxisLabel->SetAttachmentPoint(pos3);
 	SecondAxisLabel2->SetAttachmentPoint(pos4);
+	*/
 
 
 
-
-	this->FirstAxisLabel->SetHeight(0.03);
+	/*this->FirstAxisLabel->SetHeight(0.03);
 	this->FirstAxisLabel2->SetHeight(0.03);
 	this->SecondAxisLabel->SetHeight(0.03);
-	this->SecondAxisLabel2->SetHeight(0.03);
+	this->SecondAxisLabel2->SetHeight(0.03);*/
 
 
 
-	this->FirstAxisLabel->BorderOff();
+	/*this->FirstAxisLabel->BorderOff();
 	this->FirstAxisLabel2->BorderOff();
 	this->SecondAxisLabel->BorderOff();
 	this->SecondAxisLabel2->BorderOff();
@@ -435,7 +465,7 @@ void vtkGridActor::CreateGridLabelText()
 	this->FirstAxisLabel->LeaderOff();
 	this->FirstAxisLabel2->LeaderOff();
 	this->SecondAxisLabel->LeaderOff();
-	this->SecondAxisLabel2->LeaderOff();
+	this->SecondAxisLabel2->LeaderOff();*/
 
 
 	/*this->FirstAxisLabel->SetCaption(myStr1.c_str());
@@ -448,10 +478,14 @@ void vtkGridActor::CreateGridLabelText()
 	this->SetSecondAxisLabelText(myStr3.c_str());
 	this->SetSecondAxisLabelText2(myStr4.c_str());
 
-	this->FirstAxisLabel->SetCaption(this->FirstAxisLabelText);
+	/*this->FirstAxisLabel->SetCaption(this->FirstAxisLabelText);
 	this->FirstAxisLabel2->SetCaption(this->FirstAxisLabelText2);
 	this->SecondAxisLabel->SetCaption(this->SecondAxisLabelText);
-	this->SecondAxisLabel2->SetCaption(this->SecondAxisLabelText2);
+	this->SecondAxisLabel2->SetCaption(this->SecondAxisLabelText2);*/
+	FirstAxisLabel->SetInput(this->FirstAxisLabelText);
+	FirstAxisLabel2->SetInput(this->FirstAxisLabelText);
+	SecondAxisLabel->SetInput(this->SecondAxisLabelText);
+	SecondAxisLabel2->SetInput(this->SecondAxisLabelText2);
 
 
 

@@ -15,7 +15,7 @@ Module:    vtkLMActor.h
 #include "vtkMTActor.h"
 #include <vtkMatrix4x4.h>
 #include <vtkPolyData.h>
-#include <vtkCaptionActor2D.h>
+#include <vtkBillboardTextActor3D.h>
 #include <vtkSmartPointer.h>
 #include <vector>
 #include <QString>
@@ -80,7 +80,7 @@ public:
 	virtual void PopRedoStack();
 
 	// Landmark 100% specific methods
-	vtkSmartPointer<vtkCaptionActor2D> GetLMLabelActor2D(){	return this->LMLabel;}
+	vtkSmartPointer<vtkBillboardTextActor3D> GetLMLabelActor3D(){	return this->LMLabel;}
 	vtkSetStringMacro(LMLabelText);
 	vtkGetStringMacro(LMLabelText);
 	vtkSmartPointer<vtkPolyData> getLMBody() { return this->LMBody; }
@@ -121,7 +121,7 @@ protected:
 	vtkSmartPointer<vtkPolyData> LMBody;
 	vtkLMActorUndoRedo* UndoRedo;
 	char              *LMLabelText;
-	vtkSmartPointer<vtkCaptionActor2D> LMLabel;
+	vtkSmartPointer<vtkBillboardTextActor3D> LMLabel;
 	int LMNumber; // landmark number in sequence
 	int LMBodyType; //0; sphere //1 needle needle 
 	int LMType; // 0; normal landmark (red) // 1 target landmark (yellow)

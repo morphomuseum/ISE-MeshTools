@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
+#include <vtkBillboardTextActor3D.h>
 #include <vtkIndent.h>
 #include <vtkProperty.h>
 #include <vtkTransform.h>
@@ -139,8 +140,7 @@ void vtkMTInteractorStyle::EndPan()
 void vtkMTInteractorStyle::EndLandmarkMovements(vtkLMActor *myActor)
 {
 	vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-	vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
+	
 	if (myActor->GetSelected() == 1)
 	{
 		// do something
@@ -1863,7 +1863,6 @@ void vtkMTInteractorStyle::RotateActors()
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 			if (myActor->GetSelected() == 1)
 			{
 				this->Prop3DTransform(myPropr,
@@ -1880,7 +1879,6 @@ void vtkMTInteractorStyle::RotateActors()
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 			if (myActor->GetSelected() == 1)
 			{
 				this->Prop3DTransform(myPropr,
@@ -1897,7 +1895,6 @@ void vtkMTInteractorStyle::RotateActors()
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 			if (myActor->GetSelected() == 1)
 			{
 				this->Prop3DTransform(myPropr,
@@ -1914,7 +1911,6 @@ void vtkMTInteractorStyle::RotateActors()
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 			if (myActor->GetSelected() == 1)
 			{
 				this->Prop3DTransform(myPropr,
@@ -1931,7 +1927,6 @@ void vtkMTInteractorStyle::RotateActors()
 		{
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-			vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 			if (myActor->GetSelected() == 1)
 			{
 				this->Prop3DTransform(myPropr,
@@ -2040,7 +2035,6 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -2057,7 +2051,6 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -2074,7 +2067,6 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -2091,7 +2083,6 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -2108,7 +2099,6 @@ void vtkMTInteractorStyle::SpinActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		if (myActor->GetSelected() == 1)
 		{
 			this->Prop3DTransform(myPropr,
@@ -2196,9 +2186,7 @@ void vtkMTInteractorStyle::PanActors()
 	for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
-		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
+		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);		
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -2226,8 +2214,6 @@ void vtkMTInteractorStyle::PanActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -2255,7 +2241,6 @@ void vtkMTInteractorStyle::PanActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
 		int nchanged = 0;
 		if (myActor->GetSelected() == 1)
 		{
@@ -2286,8 +2271,6 @@ void vtkMTInteractorStyle::PanActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -2315,8 +2298,6 @@ void vtkMTInteractorStyle::PanActors()
 	{
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 		vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
-		vtkCaptionActor2D *myLabel = myActor->GetLMLabelActor2D();
-
 		if (myActor->GetSelected() == 1)
 		{
 			if (myPropr->GetUserMatrix() != NULL)
@@ -2351,7 +2332,7 @@ void vtkMTInteractorStyle::PanActors()
 
 void vtkMTInteractorStyle::ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActor *LMActor)
 {
-	vtkCaptionActor2D *LMLabel = LMActor->GetLMLabelActor2D();
+	vtkBillboardTextActor3D *LMLabel = LMActor->GetLMLabelActor3D();
 	double init_pos = 1;
 	double mult = 1;
 	if (LMActor->GetLMType() == TARGET_LMK || LMActor->GetLMType() == HANDLE_LMK)
@@ -2381,7 +2362,7 @@ void vtkMTInteractorStyle::ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActo
 	double apt[3];
 
 	this->TransformPoint(NewMat, ap, apt);
-	LMLabel->SetAttachmentPoint(apt);
+	LMLabel->SetPosition(apt);
 }
 
 //--------------------------------------------------------------------------

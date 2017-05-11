@@ -43,7 +43,7 @@ vtkLMActor::vtkLMActor()
 	this->LMBodyType = SPHERE;
 	this->LMText = "Flag 0";
 	this->LMBody = vtkSmartPointer<vtkPolyData>::New();
-	this->LMLabel = vtkCaptionActor2D::New();
+	this->LMLabel = vtkBillboardTextActor3D::New();
 	
 	this->LMDrawLabel = 1;//Draws the label
 	this->LMType = NORMAL_LMK;
@@ -270,15 +270,12 @@ void vtkLMActor::CreateLMLabelText()
 
 	mproperty->SetFontFamilyToArial();
 
-	this->LMLabel->SetCaptionTextProperty(mproperty);
-	this->LMLabel->SetPosition(0, 0);
-	this->LMLabel->SetAttachmentPoint(final_pos);
-	this->LMLabel->SetHeight(0.03);
-	this->LMLabel->BorderOff();
-	this->LMLabel->LeaderOff();
+	this->LMLabel->SetTextProperty(mproperty);
+	this->LMLabel->SetPosition(final_pos);
+	
 	//this->LMLabel->
 	this->SetLMLabelText(myStrLabel.c_str());
-	this->LMLabel->SetCaption(this->LMLabelText);
+	this->LMLabel->SetInput(this->LMLabelText);
 
 }
 

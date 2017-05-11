@@ -264,7 +264,7 @@ void vtkMTActorCollection::DeleteSelectedActors()
 							undocoll->AddItem(myActor);
 							this->RemoveItem(myActor);
 							this->Renderer->RemoveActor(myActor);
-							this->Renderer->RemoveActor(myActor->GetLMLabelActor2D());
+							this->Renderer->RemoveActor(myActor->GetLMLabelActor3D());
 							found = 1;
 						}
 					}
@@ -355,7 +355,7 @@ void vtkMTActorCollection::PopUndoStack() {
 			{
 				vtkLMActor *myLMActor;
 				myLMActor = vtkLMActor::SafeDownCast(myActor);
-				this->Renderer->AddActor(myLMActor->GetLMLabelActor2D());
+				this->Renderer->AddActor(myLMActor->GetLMLabelActor3D());
 			}
 			this->Changed = 1;
 		}
@@ -380,7 +380,7 @@ void vtkMTActorCollection::PopUndoStack() {
 			{
 				vtkLMActor *myLMActor;
 				myLMActor = vtkLMActor::SafeDownCast(myActor);
-				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor2D());
+				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor3D());
 			}
 
 		}
@@ -413,7 +413,7 @@ void vtkMTActorCollection::PopRedoStack() {
 			{
 				vtkLMActor *myLMActor;
 				myLMActor = vtkLMActor::SafeDownCast(myActor);
-				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor2D());
+				this->Renderer->RemoveActor(myLMActor->GetLMLabelActor3D());
 			}
 			this->Changed = 1;
 		}
@@ -442,7 +442,7 @@ void vtkMTActorCollection::PopRedoStack() {
 			{
 				vtkLMActor *myLMActor;
 				myLMActor = vtkLMActor::SafeDownCast(myActor);
-				this->Renderer->AddActor(myLMActor->GetLMLabelActor2D());
+				this->Renderer->AddActor(myLMActor->GetLMLabelActor3D());
 			}
 			this->Changed = 1;
 
