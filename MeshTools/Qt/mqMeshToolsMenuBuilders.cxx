@@ -16,6 +16,7 @@
 #include "mqMeshToolsMenuBuilders.h"
 #include "mqMainControlsToolbar.h"
 #include "mqLightControlsToolbar.h"
+#include "mqScalarsControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
 #include "mqOpenDataReaction.h"
 #include "mqSaveDataReaction.h"
@@ -256,6 +257,10 @@ void mqMeshToolsMenuBuilders::buildToolbars(QMainWindow& mainWindow)
 	lightToolBar->layout()->setSpacing(0);
 	mainWindow.addToolBar(Qt::BottomToolBarArea, lightToolBar);
 
+	QToolBar* scalarsToolBar = new mqScalarsControlsToolbar(&mainWindow)
+		<< mqSetName("ScalarsControlsToolbar");
+	scalarsToolBar->layout()->setSpacing(10);
+	mainWindow.addToolBar(Qt::BottomToolBarArea, scalarsToolBar);
 
 
 }

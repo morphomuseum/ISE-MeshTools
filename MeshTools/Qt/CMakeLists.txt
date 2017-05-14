@@ -71,6 +71,8 @@ set (Qt_SRCS
   mqMainControlsToolbar.cxx
   mqLightControlsToolbar.h
   mqLightControlsToolbar.cxx
+  mqScalarsControlsToolbar.h
+  mqScalarsControlsToolbar.cxx
   mqMeshToolsCore.h
   mqMeshToolsCore.cxx
   mqSavePLYDialog.cxx
@@ -146,6 +148,7 @@ mqEditACTORDialog.ui
 mqEditAllFLGDialog.ui
 mqSelectLandmarkRangeDialog.ui
 mqLightControlsToolbar.ui
+mqScalarsControlsToolbar.ui
 mqGridSizeDialog.ui
 mqOrientationLabelsDialog.ui
 )
