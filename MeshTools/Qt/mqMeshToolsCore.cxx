@@ -73,6 +73,8 @@ mqMeshToolsCore::mqMeshToolsCore()
 {
 
 	mqMeshToolsCore::Instance = this;
+	this->mui_ActiveScalars = QString("none");
+	this->Addmui_ExistingScalars(this->mui_ActiveScalars);
 	this->MainWindow = NULL;
 	this->OrientationHelperWidget = vtkOrientationHelperWidget::New();
 	this->mui_DefaultLandmarkMode = this->mui_LandmarkMode = 0;
@@ -1342,13 +1344,19 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			cout << "Object Name= " << newname << endl;
 			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
 			{
+				QString RGB = QString("RGB");
+				this->Addmui_ExistingScalars(RGB);
 				//	MyPolyData->GetPointData()->SetScalars(NULL);
-				//	cout << "found RGB colours! " << endl;
+					cout << "found RGB colours! " << endl;
 			}
 
-			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("Tags") != NULL)
+			if ((vtkIntArray*)MyPolyData->GetPointData()->GetScalars("Tags") != NULL)
 			{
+
+				QString Tags = QString("Tags");
+				this->Addmui_ExistingScalars(Tags);
 				cout << "found Tags! " << endl;
+
 				MyPolyData->GetPointData()->SetActiveScalars("Tags");
 			}
 
@@ -4597,6 +4605,88 @@ int mqMeshToolsCore::Getmui_DefaultScalarVisibility() { return this->mui_Default
 
 int mqMeshToolsCore::Getmui_ScalarVisibility() { return this->mui_ScalarVisibility; }
 
+QStringList mqMeshToolsCore::Getmui_ExistingScalars()
+{
+	return this->mui_ExistingScalars;
+}
+void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar)
+{
+	int exists = 0;
+	QString none = QString("none");
+	if (this->mui_ExistingScalars.size() == 1 && this->mui_ExistingScalars.at(0) != Scalar)
+	{
+		this->mui_ExistingScalars.clear();
+		this->mui_ExistingScalars.push_back(Scalar);
+		this->signal_existingScalarsChanged();
+	}
+	else
+	{
+
+		//check first if Scalar already exists!
+		for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+		{
+			QString myScalar = this->mui_ExistingScalars.at(i);
+			if (myScalar == this->mui_ActiveScalars)
+			{
+				exists = 1;
+			}
+
+		}
+		if (exists == 0)
+		{
+			this->mui_ExistingScalars.push_back(Scalar);
+			this->signal_existingScalarsChanged();
+		}
+	}
+}
+void mqMeshToolsCore::Initmui_ExistingScalars()
+{
+	// browse through all actors and check for existing scalar
+	// add
+	QStringList existing;
+	this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		{
+			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
+			if ((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB") != NULL)
+			{
+				QString RGB = QString("RGB");
+				this->Addmui_ExistingScalars(RGB);
+			}
+			if ((vtkIntArray*)myPD->GetPointData()->GetScalars("Tags") != NULL)
+			{
+				QString Tags = QString("Tags");
+				this->Addmui_ExistingScalars(Tags);
+			}
+
+		}
+
+		
+	}
+	/*
+	
+	(((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB") == NULL) &&
+							  ((vtkIntArray*)myPD->GetPointData()->GetScalars("Tags") == NULL))
+								)
+	*/
+	
+}
+QString mqMeshToolsCore::Getmui_ActiveScalars()
+{
+	return this->mui_ActiveScalars;
+}
+void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar)
+{
+	this->mui_ActiveScalars = Scalar;
+	// now brows through all actors and set active scalar 
+
+}
+
 
 int mqMeshToolsCore::Getmui_DefaultAnaglyph() { return this->mui_DefaultAnaglyph; }
 int mqMeshToolsCore::Getmui_Anaglyph() { return this->mui_Anaglyph; }
@@ -5207,6 +5297,12 @@ mqMeshToolsCore::~mqMeshToolsCore()
 {
 	return this->UndoStack;
 }*/
+
+void mqMeshToolsCore::signal_existingScalarsChanged()
+{
+	cout << "Emit existing scalars changed" << endl;
+	emit this->existingScalarsChanged();
+}
 
 void mqMeshToolsCore::signal_actorSelectionChanged()
 {

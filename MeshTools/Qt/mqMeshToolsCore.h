@@ -181,8 +181,12 @@ public:
 	void Setmui_BackGroundColor(double background[3]);
 
 
+	QStringList Getmui_ExistingScalars();
+	void Addmui_ExistingScalars(QString Scalar);
+	void Initmui_ExistingScalars();
 
-
+	QString Getmui_ActiveScalars();
+	void Setmui_ActiveScalars(QString Scalar);
 
 	double* Getmui_BackGroundColor2();
 	void Getmui_BackGroundColor2(double bg[3]);
@@ -257,12 +261,13 @@ public:
   static void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
   void signal_lmSelectionChanged();
   void signal_actorSelectionChanged();
+  void signal_existingScalarsChanged();
   void SetSelectedActorsTransparency(int trans);
 signals:
 
   void lmSelectionChanged();
   void actorSelectionChanged();
-
+  void existingScalarsChanged();
 
 protected:
 	
@@ -299,6 +304,10 @@ protected:
 	//vtkUndoStack* UndoStack;
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
+
+	QString mui_ActiveScalars;
+	QStringList mui_ExistingScalars;
+
 
 	QString mui_LastUsedDir;
 	int mui_MoveAll;
