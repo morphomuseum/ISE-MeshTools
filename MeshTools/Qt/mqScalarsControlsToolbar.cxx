@@ -58,7 +58,8 @@ void mqScalarsControlsToolbar::constructor()
   this->comboActiveScalars = new QComboBox;
   //@@ to do : populate combo box according to found scalars
   // Create a list with all possible scalars.
-  this->comboActiveScalars->addItems({ "Initial RGB", "Tags", "Thickness", "Curvature"});
+  //this->comboActiveScalars->addItems({ "Initial RGB", "Tags", "Thickness", "Curvature"});
+  this->comboActiveScalars->addItems({ "none" });
   // Add values in the combo box
   this->addWidget(this->comboActiveScalars);
   if (mqMeshToolsCore::instance()->Getmui_ScalarVisibility() == 1)
@@ -70,6 +71,7 @@ void mqScalarsControlsToolbar::constructor()
   {
 	  this->comboActiveScalars->setDisabled(true);
   }
+  connect(mqMeshToolsCore::instance(), SIGNAL(existingScalarsChanged()), this, SLOT(slotRefreshComboScalars()));
 
   connect(this->ui->actionScalarVisibility, SIGNAL(triggered()), this, SLOT(slotScalarVisitiliby()));
   connect(this->comboActiveScalars, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActiveScalarChanged(int)));
@@ -79,6 +81,13 @@ void mqScalarsControlsToolbar::constructor()
 void mqScalarsControlsToolbar::slotActiveScalarChanged(int idx)
 {
 	cout << "looks like active scalar has changed!:: "<<idx << endl;
+}
+void mqScalarsControlsToolbar::slotRefreshComboScalars()
+{
+	this->comboActiveScalars->clear();
+	QStringList MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
+	this->comboActiveScalars->addItems(MyList);
+	
 }
 void mqScalarsControlsToolbar::slotScalarVisitiliby()
 {

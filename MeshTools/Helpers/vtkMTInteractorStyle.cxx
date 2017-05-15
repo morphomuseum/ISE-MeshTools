@@ -258,6 +258,7 @@ void vtkMTInteractorStyle::StartSelect()
 		std::cout << "Pressed " << key << std::endl;
 		this->DeleteSelectedActors();
 		
+		
 	}
 	if (key.compare("a") == 0)
 	{		

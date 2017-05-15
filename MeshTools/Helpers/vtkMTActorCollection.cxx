@@ -164,7 +164,7 @@ void vtkMTActorCollection::AddItem(vtkActor *a)
 	this->Renderer->AddActor(a);
 	//cout << "Actor added to renderer" << endl;
 
-	
+	mqMeshToolsCore::instance()->Initmui_ExistingScalars();
 
 }
 void vtkMTActorCollection::CreateLoadUndoSet(int count, int creationcount)
@@ -282,7 +282,7 @@ void vtkMTActorCollection::DeleteSelectedActors()
 		this->Changed = 1;
 	}
 	
-
+	mqMeshToolsCore::instance()->Initmui_ExistingScalars();
 
 } //delete all selected actors
 void vtkMTActorCollection::Redo(int mCount) {
@@ -299,6 +299,7 @@ void vtkMTActorCollection::Redo(int mCount) {
 		//cout << "Redo actor event " << this->UndoRedo->RedoStack.back().UndoCount << endl;
 		// ici : faire l'appel global à undo de ce count là!!  
 		this->PopRedoStack();
+		mqMeshToolsCore::instance()->Initmui_ExistingScalars();
 	}
 
 } // Try to redo (if exists) "mCount" event
@@ -326,6 +327,7 @@ void vtkMTActorCollection::Undo(int mCount)
 	{
 		cout << "Undo actor event " << this->UndoRedo->UndoStack.back().UndoCount << endl;
 		this->PopUndoStack();
+		mqMeshToolsCore::instance()->Initmui_ExistingScalars();
 	}
 
 } // Try to undo (if exists) "mCount" event

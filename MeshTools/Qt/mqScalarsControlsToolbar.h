@@ -38,7 +38,7 @@ public:
   public slots :
   virtual void slotScalarVisitiliby();
   virtual void slotActiveScalarChanged(int idx);
-
+  virtual void slotRefreshComboScalars();
 private:
 	Q_DISABLE_COPY(mqScalarsControlsToolbar)
 		QComboBox * comboActiveScalars;
