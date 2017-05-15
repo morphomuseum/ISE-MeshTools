@@ -81,12 +81,28 @@ void mqScalarsControlsToolbar::constructor()
 void mqScalarsControlsToolbar::slotActiveScalarChanged(int idx)
 {
 	cout << "looks like active scalar has changed!:: "<<idx << endl;
+	QString ActiveScalar = this->comboActiveScalars->currentText();
+	mqMeshToolsCore::instance()->Setmui_ActiveScalars(ActiveScalar);
 }
 void mqScalarsControlsToolbar::slotRefreshComboScalars()
 {
 	this->comboActiveScalars->clear();
 	QStringList MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
 	this->comboActiveScalars->addItems(MyList);
+	QString myActiveScalars = mqMeshToolsCore::instance()->Getmui_ActiveScalars();
+	int exists = -1;
+	for (int i = 0; i < MyList.size(); i++)
+	{
+		QString myScalar = MyList.at(i);
+		if (myScalar == myActiveScalars)
+		{
+			exists = i;
+
+		}
+
+	}
+	if (exists > -1) { this->comboActiveScalars->setCurrentIndex(exists); }
+	
 	
 }
 void mqScalarsControlsToolbar::slotScalarVisitiliby()

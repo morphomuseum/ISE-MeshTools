@@ -4670,6 +4670,11 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 				QString RGB = QString("RGB");
 				this->Addmui_ExistingScalars(RGB);
 			}
+			if ((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("Init_RGB") != NULL)
+			{
+				QString RGB = QString("Init_RGB");
+				this->Addmui_ExistingScalars(RGB);
+			}
 			if ((vtkIntArray*)myPD->GetPointData()->GetScalars("Tags") != NULL)
 			{
 				
@@ -4682,6 +4687,19 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 
 		
 	}
+	int exists = 0;
+	for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+	{
+		QString myScalar = this->mui_ExistingScalars.at(i);
+		if (myScalar == this->mui_ActiveScalars)
+		{
+			exists = 1;
+			
+		}
+
+	}
+	if (exists == 0) { this->Setmui_ActiveScalars(none); }
+
 	/*
 	
 	(((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB") == NULL) &&
