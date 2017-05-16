@@ -120,7 +120,11 @@ void vtkMTActor::SetSelected(int selected)
 	{
 		if (this->GetMapper() != NULL && mqMeshToolsCore::instance()->Getmui_ScalarVisibility() == 1)
 		{
-			vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
+			QString none = QString("none");
+			if (mqMeshToolsCore::instance()->Getmui_ActiveScalars() != none)
+			{
+				vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
+			}
 		}
 		//vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
 		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);

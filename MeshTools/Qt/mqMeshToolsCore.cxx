@@ -400,8 +400,7 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 				{
 					vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 					
-					//@@
-
+				
 					vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
 					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
 					{
@@ -4587,9 +4586,21 @@ void mqMeshToolsCore::Setmui_ScalarVisibility(int scalarvisibility)
 		
 			if (myActor->GetMapper() != NULL)
 			{
-				if (scalarvisibility == 1)
+				if (scalarvisibility == 1 && myActor->GetSelected()==0)
 				{
-					vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOn();
+				
+					QString none = QString("none");
+					if (this->mui_ActiveScalars != none)
+					{
+						vtkPolyData *myPD = vtkPolyData::SafeDownCast(myActor->GetMapper()->GetInput());
+						if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars.toStdString().c_str()) != NULL)
+						{
+
+							vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOn();
+						}
+						
+					}
+					
 				}
 				else
 				{
@@ -4687,6 +4698,8 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 		
 	}
 	int exists = 0;
+	
+
 	for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
 	{
 		QString myScalar = this->mui_ExistingScalars.at(i);
@@ -4697,7 +4710,26 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 		}
 
 	}
-	if (exists == 0) { this->Setmui_ActiveScalars(none); }
+
+	// if RGB exists, and this->mui_ActiveScalars ==none, set active scalar to RGB
+	QString RGB = QString("RGB");
+	for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+	{
+		QString myScalar = this->mui_ExistingScalars.at(i);
+		if (this->mui_ActiveScalars == none && myScalar ==RGB)
+		{
+			exists = 1;
+			this->Setmui_ActiveScalars(RGB); 
+
+		}
+
+	}
+	
+	// last case : no RGB and none is not set as the active scalar before.
+	if (exists == 0)
+	{
+		this->Setmui_ActiveScalars(none);
+	}
 
 	/*
 	
@@ -4725,12 +4757,28 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar)
 		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
 		{
 			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
-			if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars.toStdString().c_str()) != NULL)
+			//vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
+			QString none = QString("none");
+			if (this->mui_ActiveScalars == none)
 			{
+				vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
+				cout << "Scalar visibility off from Set mui active scalars" << endl;
+			}
+			else
+			{
+				if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars.toStdString().c_str()) != NULL)
+				{
+					if (this->mui_ScalarVisibility == 1 && myActor->GetSelected()==0)
+					{
 
-
-
-				myPD->GetPointData()->SetActiveScalars(this->mui_ActiveScalars.toStdString().c_str());
+						vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOn();
+					}
+					myPD->GetPointData()->SetActiveScalars(this->mui_ActiveScalars.toStdString().c_str());
+				}
+				else
+				{
+					vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
+				}
 			}
 			
 			
