@@ -1342,29 +1342,23 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			//@@TODO! 
 			newname = this->CheckingName(newname);
 			cout << "Object Name= " << newname << endl;
-			int nbarrays = MyPolyData->GetPointData()->GetNumberOfArrays();
-			for (int i = 0; i < nbarrays; i++)
-			{
-				cout << "Array " << i << "=" << MyPolyData->GetPointData()->GetArrayName(i) << endl;
-			}
-			if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
+			
+			/*if ((vtkUnsignedCharArray*)MyPolyData->GetPointData()->GetScalars("RGB") != NULL)
 			{
 				QString RGB = QString("RGB");
 				this->Addmui_ExistingScalars(RGB);
 				//	MyPolyData->GetPointData()->SetScalars(NULL);
 					cout << "found RGB colours! " << endl;
-			}
+			}*/
 
-			if ((vtkIntArray*)MyPolyData->GetPointData()->GetScalars("Tags") != NULL)
+			if (MyPolyData->GetPointData()->GetScalars(this->mui_ActiveScalars.toStdString().c_str()) != NULL)
 			{
 
-				QString Tags = QString("Tags");
-				this->Addmui_ExistingScalars(Tags);
-				cout << "found Tags! " << endl;
+				
 
-				MyPolyData->GetPointData()->SetActiveScalars("Tags");
+				MyPolyData->GetPointData()->SetActiveScalars(this->mui_ActiveScalars.toStdString().c_str());
 			}
-
+			
 			/*
 			vtkSmartPointer<vtkUnsignedCharArray> newcolors =
 			vtkSmartPointer<vtkUnsignedCharArray>::New();
@@ -4619,7 +4613,7 @@ void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar)
 {
 	int exists = 0;
 	QString none = QString("none");
-	if (this->mui_ExistingScalars.size() == 1 && this->mui_ExistingScalars.at(0) == none)
+	/*if (this->mui_ExistingScalars.size() == 1 && this->mui_ExistingScalars.at(0) == none)
 	{
 		cout << "1 scalar, and this is none! Confirmation:" << this->mui_ExistingScalars.at(0).toStdString() << endl;
 		this->mui_ExistingScalars.clear();
@@ -4627,7 +4621,7 @@ void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar)
 		
 	}
 	else
-	{
+	{*/
 		
 		//check first if Scalar already exists!
 		for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
@@ -4645,7 +4639,7 @@ void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar)
 			this->mui_ExistingScalars.push_back(Scalar);
 			
 		}
-	}
+	/*}*/
 }
 void mqMeshToolsCore::Initmui_ExistingScalars()
 {
@@ -4661,10 +4655,15 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 	{
 		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+		
 		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
 		{
 			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
-			
+			int nbarrays = myPD->GetPointData()->GetNumberOfArrays();
+			for (int i = 0; i < nbarrays; i++)
+			{
+				cout << "Array " << i << "=" << myPD->GetPointData()->GetArrayName(i) << endl;
+			}
 			if ((vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB") != NULL)
 			{
 				QString RGB = QString("RGB");
@@ -4716,7 +4715,33 @@ QString mqMeshToolsCore::Getmui_ActiveScalars()
 void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar)
 {
 	this->mui_ActiveScalars = Scalar;
+	cout << "Now active scalar is " << Scalar.toStdString() << endl;
+	this->ActorCollection->InitTraversal();
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+
+		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		{
+			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
+			if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars.toStdString().c_str()) != NULL)
+			{
+
+
+
+				myPD->GetPointData()->SetActiveScalars(this->mui_ActiveScalars.toStdString().c_str());
+			}
+			
+			
+		}
+
+
+	}
+	this->Render();
 	// now brows through all actors and set active scalar 
+	/*
+			}*/
 
 }
 

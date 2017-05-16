@@ -56,6 +56,7 @@ void mqScalarsControlsToolbar::constructor()
   this->ui = new Ui_mqScalarsControlsToolbar;
   this->ui->setupUi(this);
   this->comboActiveScalars = new QComboBox;
+  this->comboActiveScalars->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   //@@ to do : populate combo box according to found scalars
   // Create a list with all possible scalars.
   //this->comboActiveScalars->addItems({ "Initial RGB", "Tags", "Thickness", "Curvature"});
@@ -74,7 +75,7 @@ void mqScalarsControlsToolbar::constructor()
   connect(mqMeshToolsCore::instance(), SIGNAL(existingScalarsChanged()), this, SLOT(slotRefreshComboScalars()));
 
   connect(this->ui->actionScalarVisibility, SIGNAL(triggered()), this, SLOT(slotScalarVisitiliby()));
-  connect(this->comboActiveScalars, SIGNAL(currentIndexChanged(int)), this, SLOT(slotActiveScalarChanged(int)));
+  connect(this->comboActiveScalars, SIGNAL(activated(int)), this, SLOT(slotActiveScalarChanged(int)));
   
 }
 
@@ -86,22 +87,28 @@ void mqScalarsControlsToolbar::slotActiveScalarChanged(int idx)
 }
 void mqScalarsControlsToolbar::slotRefreshComboScalars()
 {
+	cout << "Refresg combo "<< endl;
 	this->comboActiveScalars->clear();
 	QStringList MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
 	this->comboActiveScalars->addItems(MyList);
 	QString myActiveScalars = mqMeshToolsCore::instance()->Getmui_ActiveScalars();
+	cout << "myActiveScalars " << myActiveScalars.toStdString()<< endl;
 	int exists = -1;
 	for (int i = 0; i < MyList.size(); i++)
 	{
 		QString myScalar = MyList.at(i);
 		if (myScalar == myActiveScalars)
 		{
+			cout << "found in list!!!!! " << myScalar.toStdString() << endl;
 			exists = i;
 
 		}
 
 	}
-	if (exists > -1) { this->comboActiveScalars->setCurrentIndex(exists); }
+	if (exists > -1) { 
+		cout << "Now current index of combo box is " << exists << endl;
+		this->comboActiveScalars->setCurrentIndex(exists); 
+	}
 	
 	
 }
