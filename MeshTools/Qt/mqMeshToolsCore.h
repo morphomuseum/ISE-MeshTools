@@ -30,6 +30,37 @@
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 #include <QMainWindow>
+
+class ExistingScalars
+{
+public:
+	struct Element
+	{
+		QString Name;
+		int DataType;
+		int NumComp;
+		
+		Element(QString name, int datatype, int numcomp)
+		{
+			this->Name = name;
+			this->DataType= datatype;
+			this->NumComp = numcomp;
+			
+		}
+	};
+	typedef std::vector<Element> VectorOfElements;
+	VectorOfElements Stack;	
+};
+
+class ActiveScalars
+{
+public:
+	QString Name;
+	int DataType;
+	int NumComp;
+	
+};
+
 // 
 class mqUndoStack;
 
@@ -182,11 +213,11 @@ public:
 
 
 	QStringList Getmui_ExistingScalars();
-	void Addmui_ExistingScalars(QString Scalar);
+	void Addmui_ExistingScalars(QString Scalar, int dataType, int numComp);
 	void Initmui_ExistingScalars();
 
-	QString Getmui_ActiveScalars();
-	void Setmui_ActiveScalars(QString Scalar);
+	ActiveScalars* Getmui_ActiveScalars();
+	void Setmui_ActiveScalars(QString Scalar, int dataType, int numComp);
 
 	double* Getmui_BackGroundColor2();
 	void Getmui_BackGroundColor2(double bg[3]);
@@ -305,7 +336,8 @@ protected:
 	mqUndoStack* UndoStack;
 	//vtkSmartPointer<vtkUndoStack> UndoStack;
 
-	QString mui_ActiveScalars;
+	//QString mui_ActiveScalars;
+	ActiveScalars *mui_ActiveScalars;
 	QStringList mui_ExistingScalars;
 
 

@@ -121,7 +121,7 @@ void vtkMTActor::SetSelected(int selected)
 		if (this->GetMapper() != NULL && mqMeshToolsCore::instance()->Getmui_ScalarVisibility() == 1)
 		{
 			QString none = QString("none");
-			if (mqMeshToolsCore::instance()->Getmui_ActiveScalars() != none)
+			if (mqMeshToolsCore::instance()->Getmui_ActiveScalars()->Name != none)
 			{
 				vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
 			}
