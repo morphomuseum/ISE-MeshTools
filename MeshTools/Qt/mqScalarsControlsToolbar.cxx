@@ -81,22 +81,40 @@ void mqScalarsControlsToolbar::constructor()
 
 void mqScalarsControlsToolbar::slotActiveScalarChanged(int idx)
 {
-	cout << "looks like active scalar has changed!:: "<<idx << endl;
-	QString ActiveScalar = this->comboActiveScalars->currentText();
-	mqMeshToolsCore::instance()->Setmui_ActiveScalars(ActiveScalar, -100, -100);
+	cout << "looks like active scalar has changed!:: " << idx << endl;
+	QString NewActiveScalarName = this->comboActiveScalars->currentText();
+	for (int i = 0; i < mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.size(); i++)
+	{
+		QString myExisingScalarName = mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).Name;
+		if (NewActiveScalarName == myExisingScalarName)
+		{
+		
+			mqMeshToolsCore::instance()->Setmui_ActiveScalarsAndRender(NewActiveScalarName,
+				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).DataType, 
+				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).NumComp
+			);
+
+		}
+	}
+	
+	
 }
 void mqScalarsControlsToolbar::slotRefreshComboScalars()
 {
 	cout << "Refresh combo "<< endl;
 	this->comboActiveScalars->clear();
-	QStringList MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
-	this->comboActiveScalars->addItems(MyList);
+	ExistingScalars *MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
+	for (int i = 0; i < MyList->Stack.size(); i++)
+	{
+		this->comboActiveScalars->addItem(MyList->Stack.at(i).Name);
+		
+	}
 	QString myActiveScalars = mqMeshToolsCore::instance()->Getmui_ActiveScalars()->Name;
 	cout << "myActiveScalars " << myActiveScalars.toStdString()<< endl;
 	int exists = -1;
-	for (int i = 0; i < MyList.size(); i++)
+	for (int i = 0; i < MyList->Stack.size(); i++)
 	{
-		QString myScalar = MyList.at(i);
+		QString myScalar = MyList->Stack.at(i).Name;
 		if (myScalar == myActiveScalars)
 		{
 			cout << "found in list!!!!! " << myScalar.toStdString() << endl;

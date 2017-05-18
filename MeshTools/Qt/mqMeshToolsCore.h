@@ -212,13 +212,14 @@ public:
 	void Setmui_BackGroundColor(double background[3]);
 
 
-	QStringList Getmui_ExistingScalars();
+	ExistingScalars* Getmui_ExistingScalars();
 	void Addmui_ExistingScalars(QString Scalar, int dataType, int numComp);
 	void Initmui_ExistingScalars();
 
 	ActiveScalars* Getmui_ActiveScalars();
 	void Setmui_ActiveScalars(QString Scalar, int dataType, int numComp);
 
+	void Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp);
 	double* Getmui_BackGroundColor2();
 	void Getmui_BackGroundColor2(double bg[3]);
 	double* Getmui_DefaultBackGroundColor2();
@@ -338,7 +339,7 @@ protected:
 
 	//QString mui_ActiveScalars;
 	ActiveScalars *mui_ActiveScalars;
-	QStringList mui_ExistingScalars;
+	ExistingScalars *mui_ExistingScalars;
 
 
 	QString mui_LastUsedDir;

@@ -74,11 +74,12 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	mqMeshToolsCore::Instance = this;
 
+	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	cout << "try to create mui_ActiveScalars" << endl;
 	this->mui_ActiveScalars = new ActiveScalars;
+	this->mui_ExistingScalars = new ExistingScalars;
 	cout << "mui_ActiveScalars creaed" << endl;
 	QString none = QString("none");
-	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->Setmui_ActiveScalars(none, -1, 0);
 	cout << "mui_ActiveScalars instantiated" << endl;
 	this->Addmui_ExistingScalars(this->mui_ActiveScalars->Name, this->mui_ActiveScalars->DataType, this->mui_ActiveScalars->NumComp);
@@ -254,6 +255,8 @@ mqMeshToolsCore::mqMeshToolsCore()
 mqMeshToolsCore::~mqMeshToolsCore()
 {
 	//this->ActorCollection->Delete();
+	this->mui_ExistingScalars->Stack.clear();
+	delete this->mui_ExistingScalars;
 	delete this->mui_ActiveScalars;
 	if (mqMeshToolsCore::Instance == this)
 	{
@@ -4635,7 +4638,7 @@ int mqMeshToolsCore::Getmui_DefaultScalarVisibility() { return this->mui_Default
 
 int mqMeshToolsCore::Getmui_ScalarVisibility() { return this->mui_ScalarVisibility; }
 
-QStringList mqMeshToolsCore::Getmui_ExistingScalars()
+ExistingScalars * mqMeshToolsCore::Getmui_ExistingScalars()
 {
 	return this->mui_ExistingScalars;
 }
@@ -4654,9 +4657,9 @@ void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar, int dataType, int n
 	{*/
 		
 		//check first if Scalar already exists!
-		for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+		for (int i = 0; i < this->mui_ExistingScalars->Stack.size(); i++)
 		{
-			QString myScalar = this->mui_ExistingScalars.at(i);
+			QString myScalar = this->mui_ExistingScalars->Stack.at(i).Name;
 			if (myScalar == Scalar)
 			{
 				exists = 1;
@@ -4666,7 +4669,7 @@ void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar, int dataType, int n
 		}
 		if (exists == 0)
 		{
-			this->mui_ExistingScalars.push_back(Scalar);
+			this->mui_ExistingScalars->Stack.push_back(ExistingScalars::Element(Scalar, dataType, numComp));
 			
 		}
 	/*}*/
@@ -4678,9 +4681,9 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 	cout << "Init mui existing scalars" << endl;
 	QStringList existing;
 	this->ActorCollection->InitTraversal();
-	this->mui_ExistingScalars.clear();
+	this->mui_ExistingScalars->Stack.clear();
 	QString none = QString("none");
-	this->mui_ExistingScalars.push_back(none);
+	this->mui_ExistingScalars->Stack.push_back(ExistingScalars::Element(none,-1,0));
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
 		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
@@ -4751,9 +4754,9 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 	int exists = 0;
 	
 
-	for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+	for (int i = 0; i < this->mui_ExistingScalars->Stack.size(); i++)
 	{
-		QString myScalar = this->mui_ExistingScalars.at(i);
+		QString myScalar = this->mui_ExistingScalars->Stack.at(i).Name;
 		if (myScalar == this->mui_ActiveScalars->Name)
 		{
 			exists = 1;
@@ -4764,13 +4767,13 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 
 	// if RGB exists, and this->mui_ActiveScalars ==none, set active scalar to RGB
 	QString RGB = QString("RGB");
-	for (int i = 0; i < this->mui_ExistingScalars.size(); i++)
+	for (int i = 0; i < this->mui_ExistingScalars->Stack.size(); i++)
 	{
-		QString myScalar = this->mui_ExistingScalars.at(i);
+		QString myScalar = this->mui_ExistingScalars->Stack.at(i).Name;
 		if (this->mui_ActiveScalars->Name == none && myScalar ==RGB)
 		{
 			exists = 1;
-			this->Setmui_ActiveScalars(RGB, VTK_UNSIGNED_CHAR, 3); 
+			this->Setmui_ActiveScalarsAndRender(this->mui_ExistingScalars->Stack.at(i).Name, this->mui_ExistingScalars->Stack.at(i).DataType, this->mui_ExistingScalars->Stack.at(i).NumComp);
 
 		}
 
@@ -4779,7 +4782,7 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 	// last case : no RGB and none is not set as the active scalar before.
 	if (exists == 0)
 	{
-		this->Setmui_ActiveScalars(none, -1, 0);
+		this->Setmui_ActiveScalarsAndRender(none, -1, 0);
 	}
 
 	/*
@@ -4794,6 +4797,11 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 ActiveScalars* mqMeshToolsCore::Getmui_ActiveScalars()
 {
 	return this->mui_ActiveScalars;
+}
+void mqMeshToolsCore::Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp)
+{
+	this->Setmui_ActiveScalars(Scalar, dataType, numComp);
+	this->Render();
 }
 void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int numComp)
 {
@@ -4843,7 +4851,7 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 
 	}
 	cout << "Hello!!!!" << endl;
-	this->Render();
+
 	// now brows through all actors and set active scalar 
 	/*
 			}*/
