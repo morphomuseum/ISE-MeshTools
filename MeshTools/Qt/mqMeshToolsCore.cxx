@@ -466,30 +466,15 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 							}
 							else
 							{
-								//@TODO! => On va faire 1 variable globale G_Current_Active_Scalar!								
-								// then what is the current active scalar RVB or TAGS ??
-								QString tags = QString("Tags");
-								if (this->mui_ActiveScalars->Name != tags)
+								if (
+									(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+									&& this->mui_ActiveScalars->NumComp==1
+									)
 								{ 
-									// in that case we retried the "RGB color".
-									vtkSmartPointer<vtkUnsignedCharArray> colors =
-										vtkSmartPointer<vtkUnsignedCharArray>::New();
-									colors->SetNumberOfComponents(3);
-									colors = (vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars("RGB");
-									double cur_r = (double) colors->GetTuple(id_min)[0];
-									double cur_g = (double)colors->GetTuple(id_min)[1];
-									double cur_b = (double)colors->GetTuple(id_min)[2];
-									r1 = cur_r / 255;
-									g1 = cur_g / 255;
-									b1 = cur_b / 255;
-									cout << "Mesh RGB color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
-									ok = 1;
-								}
-								else
-								{
-									vtkIntArray *currentTags;
-									currentTags = (vtkIntArray*)myPD->GetPointData()->GetScalars("Tags");
-									int mytag = currentTags->GetTuple(id_min)[0];
+								// Tag-like scalar!!!!
+									vtkIntArray *currentTagsLike;
+									currentTagsLike = (vtkIntArray*)myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str());
+									int mytag = currentTagsLike->GetTuple(id_min)[0];
 									vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
 									lut = vtkLookupTable::SafeDownCast(mapper->GetLookupTable());
 									double rgb[3];
@@ -497,10 +482,36 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 									r1 = rgb[0];
 									g1 = rgb[1];
 									b1 = rgb[2];
-									cout << "Mesh TAG color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+									cout << "Mesh TAG-like color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+									ok = 1;								
+								}
+								else if (
+									(this->mui_ActiveScalars->DataType == VTK_UNSIGNED_CHAR)
+									&& (this->mui_ActiveScalars->NumComp == 3 || this->mui_ActiveScalars->NumComp == 4)
+									)
+								{
+									//RGB-Like Scalars
+									int numcomp = this->mui_ActiveScalars->NumComp;
+									vtkSmartPointer<vtkUnsignedCharArray> colors =
+										vtkSmartPointer<vtkUnsignedCharArray>::New();
+									colors->SetNumberOfComponents(numcomp);
+									colors = (vtkUnsignedCharArray*)myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str());
+									double cur_r = (double)colors->GetTuple(id_min)[0];
+									double cur_g = (double)colors->GetTuple(id_min)[1];
+									double cur_b = (double)colors->GetTuple(id_min)[2];
+									r1 = cur_r / 255;
+									g1 = cur_g / 255;
+									b1 = cur_b / 255;
+									cout << "Mesh RGB-like color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
 									ok = 1;
 
 								}
+								else
+								{
+									// scalar double ou scalar float avec numcomp = 1!
+
+								}
+								
 									
 							}
 
