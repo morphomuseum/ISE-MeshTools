@@ -29,10 +29,14 @@ set (Qt_SRCS
   mqEditACTORDialogReaction.cxx
   mqEditACTORDialog.h
   mqEditACTORDialog.cxx
-  mqEditAllFLGDialogReaction.h
-  mqEditAllFLGDialogReaction.cxx
-  mqEditAllFLGDialog.h
-  mqEditAllFLGDialog.cxx
+  mqEditAllFLGColorDialogReaction.h
+  mqEditAllFLGColorDialogReaction.cxx
+  mqEditAllFLGColorDialog.h
+  mqEditAllFLGColorDialog.cxx
+mqEditAllFLGLengthDialogReaction.h
+  mqEditAllFLGLengthDialogReaction.cxx
+  mqEditAllFLGLengthDialog.h
+  mqEditAllFLGLengthDialog.cxx
   mqGridSizeDialogReaction.h
   mqGridSizeDialogReaction.cxx
   mqGridSizeDialog.h
@@ -145,7 +149,8 @@ mqEditAlphaDialog.ui
 mqCreateLMKDialog.ui
 mqEditFLGDialog.ui
 mqEditACTORDialog.ui
-mqEditAllFLGDialog.ui
+mqEditAllFLGColorDialog.ui
+mqEditAllFLGLengthDialog.ui
 mqSelectLandmarkRangeDialog.ui
 mqLightControlsToolbar.ui
 mqScalarsControlsToolbar.ui

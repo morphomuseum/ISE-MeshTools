@@ -7,7 +7,8 @@
 #include "mqMeshToolsCore.h"
 #include "mqAboutDialogReaction.h"
 #include "mqChangeNodeReaction.h"
-#include "mqEditAllFLGDialogReaction.h"
+#include "mqEditAllFLGLengthDialogReaction.h"
+#include "mqEditAllFLGColorDialogReaction.h"
 #include "mqSavePLYDialogReaction.h"
 #include "mqSaveVTPDialogReaction.h"
 #include "mqSaveSTLDialogReaction.h"
@@ -204,7 +205,8 @@ void mqMeshToolsMenuBuilders::buildLandmarksMenu(QMenu& menu)
 
 
 	QMenu* submenuLandmarksInvolved = menu.addMenu("Selected node and handle landmarks");
-	new mqEditAllFLGDialogReaction(menu.addAction("Edit all selected flags") << mqSetName("actionEditAllSelectedFlags"));
+	new mqEditAllFLGColorDialogReaction(menu.addAction("Edit color of all selected flags") << mqSetName("actionEditAllSelectedFlagsColors"));
+	new mqEditAllFLGLengthDialogReaction(menu.addAction("Edit length all selected flags") << mqSetName("actionEditAllSelectedFlagsLength"));
 	QAction *UpdateAllSelectedFlagsColors = menu.addAction("Update all selected flags colours automatically");
 	QAction::connect(UpdateAllSelectedFlagsColors, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotUpdateAllSelectedFlagsColors()));
 	

@@ -540,7 +540,8 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 		this->Render();
 	}
 }
-void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size)
+
+void mqMeshToolsCore::UpdateAllSelectedFlagsColors(double flagcolor[4])
 {
 	vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
 	if (selectedflags>0)
@@ -558,7 +559,6 @@ void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_re
 			{
 
 				myActor->SetmColor(flagcolor);
-				myActor->SetLMSize(flag_rendering_size);
 				myActor->SetSelected(0);
 				this->UpdateLandmarkSettings(myActor);
 				
@@ -572,7 +572,37 @@ void mqMeshToolsCore::UpdateAllSelectedFlags(double flagcolor[4], double flag_re
 	}
 
 }
+void mqMeshToolsCore::UpdateAllSelectedFlagsLengths(double flag_rendering_size)
+{
+	vtkIdType selectedflags = this->getFlagLandmarkCollection()->GetNumberOfSelectedActors();
+	if (selectedflags>0)
+	{
 
+		vtkSmartPointer<vtkLMActorCollection> myColl = vtkSmartPointer<vtkLMActorCollection>::New();
+		myColl = this->FlagLandmarkCollection;
+
+
+		myColl->InitTraversal();
+		for (vtkIdType i = 0; i < myColl->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(myColl->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+
+				myActor->SetLMSize(flag_rendering_size);
+				myActor->SetSelected(0);
+				this->UpdateLandmarkSettings(myActor);
+
+
+
+			}
+
+		}
+
+
+	}
+
+}
 
 void mqMeshToolsCore::OpenFLG(QString fileName)
 {

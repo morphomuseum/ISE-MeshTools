@@ -238,7 +238,8 @@ public:
 	void LandmarksMoveDown();
 	void SelectLandmarkRange(int start, int end, int lm_type);
 	void UpdateAllSelectedFlagsColors();
-	void UpdateAllSelectedFlags(double flagcolor[4], double flag_rendering_size);
+	void UpdateAllSelectedFlagsColors(double flagcolor[4]);
+	void UpdateAllSelectedFlagsLengths(double flag_rendering_size);
   //void SetRenderWindow(vtkSmartPointer<vtkRenderWindow> renwin)
   void SetRenderWindow(vtkRenderWindow *renwin)
   {

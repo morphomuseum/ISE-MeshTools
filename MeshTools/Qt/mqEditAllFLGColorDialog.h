@@ -4,8 +4,8 @@
    
 
 =========================================================================*/
-#ifndef _mqEditAllFLGDialog_h
-#define _mqEditAllFLGDialog_h
+#ifndef _mqEditAllFLGColorDialog_h
+#define _mqEditAllFLGColorDialog_h
 
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
@@ -14,23 +14,23 @@
 
 namespace Ui
 {
-class mqEditAllFLGDialog;
+class mqEditAllFLGColorDialog;
 }
 
 
 
 
 /**
-* mqEditAllFLGDialog is the dialog used by MeshTools to save CUR files.
+* mqEditAllFLGColorDialog is the dialog used by MeshTools to save CUR files.
 */
-class  mqEditAllFLGDialog : public QDialog
+class  mqEditAllFLGColorDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  mqEditAllFLGDialog(QWidget* Parent);
+  mqEditAllFLGColorDialog(QWidget* Parent);
   
-  ~mqEditAllFLGDialog();
+  ~mqEditAllFLGColorDialog();
   void saveAllFLG();
   
   public slots:
@@ -45,8 +45,8 @@ protected:
 private:
 	
 
-  Q_DISABLE_COPY(mqEditAllFLGDialog)
-  Ui::mqEditAllFLGDialog* const Ui;
+  Q_DISABLE_COPY(mqEditAllFLGColorDialog)
+  Ui::mqEditAllFLGColorDialog* const Ui;
  
   // Here we should have the file name, no ?
 };

@@ -6,8 +6,8 @@
  
 =========================================================================*/
 
-#include "mqEditAllFLGDialog.h"
-#include "ui_mqEditAllFLGDialog.h"
+#include "mqEditAllFLGColorDialog.h"
+#include "ui_mqEditAllFLGColorDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
 #include "mqUndoStack.h"
@@ -51,16 +51,13 @@
 #endif
 
 //-----------------------------------------------------------------------------
-mqEditAllFLGDialog::mqEditAllFLGDialog(QWidget* Parent)
+mqEditAllFLGColorDialog::mqEditAllFLGColorDialog(QWidget* Parent)
   : QDialog(Parent)
-  , Ui(new Ui::mqEditAllFLGDialog())
+  , Ui(new Ui::mqEditAllFLGColorDialog())
 {
 	this->Ui->setupUi(this);
-	this->setObjectName("mqEditAllFLGDialog");			
-	double flag_rendering_size = mqMeshToolsCore::instance()->Getmui_FlagRenderingSize();
-	this->Ui->FlagRenderingSizeValue->setMinimum(0);
-	this->Ui->FlagRenderingSizeValue->setSingleStep(1);
-	this->Ui->FlagRenderingSizeValue->setValue(flag_rendering_size);
+	this->setObjectName("mqEditAllFLGColorDialog");			
+	
 
 	QColor myFlagColor;
 
@@ -85,16 +82,16 @@ mqEditAllFLGDialog::mqEditAllFLGDialog(QWidget* Parent)
 
 
 //-----------------------------------------------------------------------------
-mqEditAllFLGDialog::~mqEditAllFLGDialog()
+mqEditAllFLGColorDialog::~mqEditAllFLGColorDialog()
 {
 
  //depending on what is 
 	
   delete this->Ui;
 }
-void mqEditAllFLGDialog::saveAllFLG()
+void mqEditAllFLGColorDialog::saveAllFLG()
 {
-	cout << "Save All FLG!" << endl;
+	cout << "Save All FLG COLOR!" << endl;
 	
 	if (mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNumberOfSelectedActors() > 0)
 	{
@@ -104,9 +101,9 @@ void mqEditAllFLGDialog::saveAllFLG()
 		double flagcolor[4];
 		myFlagColor.getRgbF(&flagcolor[0], &flagcolor[1], &flagcolor[2], &flagcolor[3]);
 
-		double flg_rendering_size = this->Ui->FlagRenderingSizeValue->value();
+	
 
-		mqMeshToolsCore::instance()->UpdateAllSelectedFlags(flagcolor, flg_rendering_size);// to update body size!
+		mqMeshToolsCore::instance()->UpdateAllSelectedFlagsColors(flagcolor);// to update body size!
 		END_UNDO_SET();
 	}
 }
@@ -117,7 +114,7 @@ void mqEditAllFLGDialog::saveAllFLG()
 
 
 
-void mqEditAllFLGDialog::slotsaveAllFLG()
+void mqEditAllFLGColorDialog::slotsaveAllFLG()
 {
 	this->saveAllFLG();
 }

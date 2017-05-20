@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mqEditAllFLGDialog</class>
- <widget class="QDialog" name="mqEditAllFLGDialog">
+ <class>mqEditAllFLGColorDialog</class>
+ <widget class="QDialog" name="mqEditAllFLGColorDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
+    <width>245</width>
     <height>135</height>
    </rect>
   </property>
@@ -426,12 +426,12 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Edit all selected flags</string>
+   <string>Edit color of all selected flags</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>30</x>
      <y>100</y>
      <width>161</width>
      <height>25</height>
@@ -455,7 +455,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>411</width>
+     <width>201</width>
      <height>71</height>
     </rect>
    </property>
@@ -475,29 +475,6 @@
      <string>Flag color</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="FlagRenderingSizeValue">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>20</y>
-      <width>71</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>20</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Flag rendering size (mm)&lt;br/&gt;&lt;span style=&quot; font-size:7pt;&quot;&gt;(total arrow length)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -515,7 +492,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>mqEditAllFLGDialog</receiver>
+   <receiver>mqEditAllFLGColorDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -531,7 +508,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>mqEditAllFLGDialog</receiver>
+   <receiver>mqEditAllFLGColorDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

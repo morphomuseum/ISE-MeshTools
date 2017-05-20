@@ -1,28 +1,28 @@
 /*=========================================================================
 
    Program: MeshTools
-   Module:    mqEditAllFLGDialogReaction.cxx
+   Module:    mqEditAllFLGLengthDialogReaction.cxx
 
 
 ========================================================================*/
-#include "mqEditAllFLGDialogReaction.h"
+#include "mqEditAllFLGLengthDialogReaction.h"
 #include "mqCoreUtilities.h"
-#include "mqEditAllFLGDialog.h"
+#include "mqEditAllFLGLengthDialog.h"
 #include "mqReaction.h"
 
 
 //-----------------------------------------------------------------------------
-mqEditAllFLGDialogReaction::mqEditAllFLGDialogReaction(QAction* parentObject)
+mqEditAllFLGLengthDialogReaction::mqEditAllFLGLengthDialogReaction(QAction* parentObject)
   : Superclass(parentObject)
 {
-	this->FLG_dialog = new mqEditAllFLGDialog(mqCoreUtilities::mainWidget());
+	this->FLG_dialog = new mqEditAllFLGLengthDialog(mqCoreUtilities::mainWidget());
 
 	
 }
 
 
 //-----------------------------------------------------------------------------
-void mqEditAllFLGDialogReaction::showEditAllFLGDialog(mqEditAllFLGDialog *FLG_dialog)
+void mqEditAllFLGLengthDialogReaction::showEditAllFLGDialog(mqEditAllFLGLengthDialog *FLG_dialog)
 {
 	
   
