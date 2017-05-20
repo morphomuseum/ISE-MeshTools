@@ -31,7 +31,7 @@
 #include <vtkSTLReader.h>
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
-
+#include <vtkDoubleArray.h>
 
 #include <vtkCubeAxesActor.h>
 #include <vtkAppendPolyData.h>
@@ -546,10 +546,43 @@ void mqMeshToolsCore::UpdateAllSelectedFlagsColors()
 									ok = 1;
 
 								}
-								else
+								else if (
+									(this->mui_ActiveScalars->DataType == VTK_DOUBLE || this->mui_ActiveScalars->DataType == VTK_FLOAT)
+									&& this->mui_ActiveScalars->NumComp == 1
+									)
 								{
-									// scalar double ou scalar float avec numcomp = 1!
+									if (this->mui_ActiveScalars->DataType == VTK_FLOAT)
+									{
+										// Tag-like scalar!!!!
+										vtkFloatArray *currentScalars;
+										currentScalars = (vtkFloatArray*)myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str());
+										float myscalar = currentScalars->GetTuple(id_min)[0];
+										vtkSmartPointer<vtkLookupTable> lut = vtkLookupTable::SafeDownCast(mapper->GetLookupTable());
+										double rgb[3];
+										lut->GetColor(myscalar, rgb);
+										r1 = rgb[0];
+										g1 = rgb[1];
+										b1 = rgb[2];
+										cout << "Mesh Float-Scalar color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+										ok = 1;
+									}
+									else
+									{
+										// Tag-like scalar!!!!
+										vtkDoubleArray *currentScalars;
+										currentScalars = (vtkDoubleArray*)myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str());
+										
+										double myscalar = currentScalars->GetTuple(id_min)[0];
+										vtkSmartPointer<vtkLookupTable> lut = vtkLookupTable::SafeDownCast(mapper->GetLookupTable());
+										double rgb[3];
+										lut->GetColor(myscalar, rgb);
+										r1 = rgb[0];
+										g1 = rgb[1];
+										b1 = rgb[2];
+										cout << "Mesh Double-Scalar color " << i << "(" << myActor->GetName() << "): " << "r=" << r1 << ", g=" << g1 << ", b=" << b1 << endl;
+										ok = 1;
 
+									}
 								}
 								
 									
