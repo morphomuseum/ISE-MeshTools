@@ -296,6 +296,11 @@ public:
   void signal_actorSelectionChanged();
   void signal_existingScalarsChanged();
   void SetSelectedActorsTransparency(int trans);
+  vtkSmartPointer<vtkLookupTable> GetTagLut();
+  vtkSmartPointer<vtkLookupTable> GetScalarRainbowLut();
+  vtkSmartPointer<vtkLookupTable> GetScalarRedLut();
+  void InitLuts();
+  
 signals:
 
   void lmSelectionChanged();
@@ -306,6 +311,11 @@ protected:
 	
 	~mqMeshToolsCore();
 	//vtkUndoStack* mUndoStack;
+	vtkSmartPointer<vtkLookupTable> TagLut;
+	int TagTableSize;
+	vtkSmartPointer<vtkLookupTable> ScalarRainbowLut;
+	vtkSmartPointer<vtkLookupTable> ScalarRedLut;
+
 	vtkSmartPointer<vtkBezierCurveSource> BezierCurveSource;
 	vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;
 	vtkSmartPointer<vtkPolyDataMapper> BezierMapper;

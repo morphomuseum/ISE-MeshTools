@@ -73,7 +73,11 @@ mqMeshToolsCore::mqMeshToolsCore()
 {
 
 	mqMeshToolsCore::Instance = this;
-
+	this->TagLut= vtkSmartPointer<vtkLookupTable>::New();
+	this->ScalarRedLut = vtkSmartPointer<vtkLookupTable>::New();
+	this->ScalarRainbowLut = vtkSmartPointer<vtkLookupTable>::New();
+	this->TagTableSize = 25;
+	this->InitLuts();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	cout << "try to create mui_ActiveScalars" << endl;
 	this->mui_ActiveScalars = new ActiveScalars;
@@ -263,7 +267,43 @@ mqMeshToolsCore::~mqMeshToolsCore()
 		mqMeshToolsCore::Instance = 0;
 	}
 }
+vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetTagLut() 
+{
+	return this->TagLut;
+}
+vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetScalarRainbowLut() 
+{
+	return this->ScalarRainbowLut;
+}
+vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetScalarRedLut()
+{
+	return this->ScalarRedLut;
+}
 
+void mqMeshToolsCore::InitLuts()
+{
+	
+	this->TagLut->SetNumberOfTableValues(this->TagTableSize);
+	this->TagLut->Build();
+
+	// Fill in a few known colors, the rest will be generated if needed
+	TagLut->SetTableValue(0, 0, 0, 0, 1);  //Black
+	TagLut->SetTableValue(1, 0.8900, 0.8100, 0.3400, 1); // Banana
+	TagLut->SetTableValue(2, 1.0000, 0.3882, 0.2784, 1); // Tomato
+	TagLut->SetTableValue(3, 0.9608, 0.8706, 0.7020, 1); // Wheat
+	TagLut->SetTableValue(4, 0.9020, 0.9020, 0.9804, 1); // Lavender
+	TagLut->SetTableValue(5, 1.0000, 0.4900, 0.2500, 1); // Flesh
+	TagLut->SetTableValue(6, 0.5300, 0.1500, 0.3400, 1); // Raspberry
+	TagLut->SetTableValue(7, 0.9804, 0.5020, 0.4471, 1); // Salmon
+	TagLut->SetTableValue(8, 0.7400, 0.9900, 0.7900, 1); // Mint
+	TagLut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
+	
+	this->ScalarRainbowLut->Build();
+
+	this->ScalarRedLut->Build();
+	
+
+}
 void mqMeshToolsCore::ComputeSelectedNamesLists()
 {
 	
@@ -1455,24 +1495,22 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			mapper->SetColorModeToDefault();
 
 			//	cout << "found RGB colours! " << endl;
-			vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-			int tableSize = 25;
-			lut->SetNumberOfTableValues(25);
-			lut->Build();
+			// Decide which lut should be set!
+			if (
+				(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+				&& this->mui_ActiveScalars->NumComp == 1
+				)
+			{
+				mapper->SetScalarRange(0, this->TagTableSize - 1);
+				mapper->SetLookupTable(this->GetTagLut());
+			}
+			else
+			{
+				mapper->SetScalarRange(0,0.5);
+				mapper->SetLookupTable(this->GetScalarRainbowLut());
+			}
 
-			// Fill in a few known colors, the rest will be generated if needed
-			lut->SetTableValue(0, 0, 0, 0, 1);  //Black
-			lut->SetTableValue(1, 0.8900, 0.8100, 0.3400, 1); // Banana
-			lut->SetTableValue(2, 1.0000, 0.3882, 0.2784, 1); // Tomato
-			lut->SetTableValue(3, 0.9608, 0.8706, 0.7020, 1); // Wheat
-			lut->SetTableValue(4, 0.9020, 0.9020, 0.9804, 1); // Lavender
-			lut->SetTableValue(5, 1.0000, 0.4900, 0.2500, 1); // Flesh
-			lut->SetTableValue(6, 0.5300, 0.1500, 0.3400, 1); // Raspberry
-			lut->SetTableValue(7, 0.9804, 0.5020, 0.4471, 1); // Salmon
-			lut->SetTableValue(8, 0.7400, 0.9900, 0.7900, 1); // Mint
-			lut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
-			mapper->SetScalarRange(0, tableSize - 1);
-			mapper->SetLookupTable(lut);
+			
 			
 			mapper->ScalarVisibilityOn();
 			//mapper->ScalarVisibilityOff();
@@ -4863,7 +4901,24 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
 			//vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
 			QString none = QString("none");
-			cout << "big test?" << endl;
+		
+			if (
+				(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+				&& this->mui_ActiveScalars->NumComp == 1
+				)
+			{
+				cout << "Set Tag Lut!!!" << endl;
+				mapper->SetScalarRange(0, this->TagTableSize-1);
+				mapper->SetLookupTable(this->GetTagLut());
+
+			}
+			else
+			{
+				mapper->SetScalarRange(0, 0.5);
+
+				mapper->SetLookupTable(this->GetScalarRainbowLut());
+			}
+
 			if (this->mui_ActiveScalars->Name == none)
 			{
 				vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
@@ -4871,6 +4926,8 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 			}
 			else
 			{
+
+
 				if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str()) != NULL)
 				{
 					if (this->mui_ScalarVisibility == 1 && myActor->GetSelected()==0)
