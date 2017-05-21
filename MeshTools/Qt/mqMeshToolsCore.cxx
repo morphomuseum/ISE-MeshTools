@@ -299,7 +299,26 @@ void mqMeshToolsCore::InitLuts()
 	TagLut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
 	
 	this->ScalarRainbowLut->Build();
-
+	/*
+	import vtk
+>
+> cmap = vtk.vtkDiscretizableColorTransferFunction()
+> cmap.SetColorSpaceToRGB()
+> cmap.AddRGBPoint(0.0, 0.0, 0.0, 0.0) # black
+> cmap.AddRGBPoint(0.4, 1.0, 0.9, 0.0) # reddish
+> cmap.AddRGBPoint(0.8, 0.9, 0.9, 0.0) # yellow
+> cmap.AddRGBPoint(1.0, 1.0, 1.0, 1.0) # white
+>
+> scalarValues = vtk.vtkFloatArray()
+> scalarValues.SetNumberOfComponents(1)
+> scalarValues.SetNumberOfTuples(256)
+> for i in xrange(256) :
+>     scalarValues.SetTupleValue(i, [i / 255.0])
+>
+> table = cmap.MapScalars(scalarValues, 0, -1)
+>
+> for i in xrange(table.GetNumberOfTuples()) :
+>     print table.GetTuple(i)*/
 	this->ScalarRedLut->Build();
 	
 
