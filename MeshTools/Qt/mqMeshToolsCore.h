@@ -24,7 +24,7 @@
 //#include "vtkUndoStack.h" => for some reason the ompilation fails if this header is included
 //#include "vtkUndoStackInternal.h"
 
-
+#include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkSmartPointer.h>    
 #include <vtkCornerAnnotation.h>
 #include <vtkCamera.h>
@@ -298,7 +298,7 @@ public:
   void SetSelectedActorsTransparency(int trans);
   vtkSmartPointer<vtkLookupTable> GetTagLut();
   vtkSmartPointer<vtkLookupTable> GetScalarRainbowLut();
-  vtkSmartPointer<vtkLookupTable> GetScalarRedLut();
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRedLut();
   void InitLuts();
   
 signals:
@@ -314,7 +314,7 @@ protected:
 	vtkSmartPointer<vtkLookupTable> TagLut;
 	int TagTableSize;
 	vtkSmartPointer<vtkLookupTable> ScalarRainbowLut;
-	vtkSmartPointer<vtkLookupTable> ScalarRedLut;
+	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ScalarRedLut;
 
 	vtkSmartPointer<vtkBezierCurveSource> BezierCurveSource;
 	vtkSmartPointer<vtkCornerAnnotation> cornerAnnotation;

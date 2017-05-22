@@ -13,6 +13,7 @@
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
 
+#include <vtkPiecewiseFunction.h>
 #include <vtkCellPicker.h>
 #include <vtkProperty.h>
 #include <vtkPointData.h>
@@ -39,6 +40,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkLookupTable.h>
+#include <vtkDiscretizableColorTransferFunction.h>
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -74,7 +76,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	mqMeshToolsCore::Instance = this;
 	this->TagLut= vtkSmartPointer<vtkLookupTable>::New();
-	this->ScalarRedLut = vtkSmartPointer<vtkLookupTable>::New();
+	this->ScalarRedLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
 	this->ScalarRainbowLut = vtkSmartPointer<vtkLookupTable>::New();
 	this->TagTableSize = 25;
 	this->InitLuts();
@@ -275,7 +277,7 @@ vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetScalarRainbowLut()
 {
 	return this->ScalarRainbowLut;
 }
-vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetScalarRedLut()
+vtkSmartPointer<vtkDiscretizableColorTransferFunction> mqMeshToolsCore::GetScalarRedLut()
 {
 	return this->ScalarRedLut;
 }
@@ -299,19 +301,55 @@ void mqMeshToolsCore::InitLuts()
 	TagLut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
 	
 	this->ScalarRainbowLut->Build();
+
+
+	
+	
+    this->ScalarRedLut->SetColorSpaceToRGB();
+	this->ScalarRedLut->EnableOpacityMappingOn();
+	// 	vtkPiecewiseFunction
+	//cmap->SetScalarOpacityFunction();
+	this->ScalarRedLut->AddRGBPoint(0.0, 0.0, 0.0, 0.0); //# black
+	this->ScalarRedLut->AddRGBPoint(0.4, 1.0, 0, 0.0); //# reddish
+	this->ScalarRedLut->AddRGBPoint(0.8, 1.0, 0.4900, 0.25);// # flesh
+	this->ScalarRedLut->AddRGBPoint(2.0, 1.0, 1.0, 1.0);// # white
+
+	vtkSmartPointer<vtkPiecewiseFunction> opacityfunction =  vtkSmartPointer<vtkPiecewiseFunction>::New();
+
+	opacityfunction->AddPoint(0, 0.00);
+	opacityfunction->AddPoint(0.4, 0.15);
+	opacityfunction->AddPoint(0.8, 0.6);
+	opacityfunction->AddPoint(2, 1);
+	
+	this->ScalarRedLut->SetScalarOpacityFunction(opacityfunction);
+	this->ScalarRedLut->Build();
+
+	vtkSmartPointer<vtkFloatArray> scalarValues = vtkSmartPointer<vtkFloatArray>::New();
+	scalarValues->SetNumberOfComponents(1);
+	scalarValues->SetNumberOfTuples(256);
+	for (int i = 0; i < 256; i++)
+	{
+
+		const float val = (float)i / 255;
+		//		scalarValues->SetTupleValue(i, &val);
+		scalarValues->SetTypedTuple(i, &val);
+	}
+	
+	//cmap->
+	//cmap->MapScalars(scalarValues, 0, -1);
+	//this->ScalarRedLut = vtkLookupTable::SafeDownCast(); 
+	//this->ScalarRainbowLut = vtkLookupTable::SafeDownCast(cmap->MapScalars(scalarValues, 0, 1));
+	
+	/*for (int i = 0; i < 256; i++)
+	{
+		double* machin= scalarValues->GetTuple(i);
+		//scalarValues->GetTupleGetTupleValue(i, &machin);
+
+		//cout << "tuple i=" << machin[0] << endl;
+	}*/
+
 	/*
-	import vtk
->
-> cmap = vtk.vtkDiscretizableColorTransferFunction()
-> cmap.SetColorSpaceToRGB()
-> cmap.AddRGBPoint(0.0, 0.0, 0.0, 0.0) # black
-> cmap.AddRGBPoint(0.4, 1.0, 0.9, 0.0) # reddish
-> cmap.AddRGBPoint(0.8, 0.9, 0.9, 0.0) # yellow
-> cmap.AddRGBPoint(1.0, 1.0, 1.0, 1.0) # white
->
-> scalarValues = vtk.vtkFloatArray()
-> scalarValues.SetNumberOfComponents(1)
-> scalarValues.SetNumberOfTuples(256)
+	
 > for i in xrange(256) :
 >     scalarValues.SetTupleValue(i, [i / 255.0])
 >
@@ -319,7 +357,7 @@ void mqMeshToolsCore::InitLuts()
 >
 > for i in xrange(table.GetNumberOfTuples()) :
 >     print table.GetTuple(i)*/
-	this->ScalarRedLut->Build();
+	
 	
 
 }
@@ -1558,8 +1596,10 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			}
 			else
 			{
-				mapper->SetScalarRange(0,0.5);
-				mapper->SetLookupTable(this->GetScalarRainbowLut());
+				//mapper->SetScalarRange(0,200);
+				
+				//mapper->SetLookupTable(this->GetScalarRainbowLut());
+				mapper->SetLookupTable(this->GetScalarRedLut());
 			}
 
 			
@@ -4966,9 +5006,9 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 			}
 			else
 			{
-				mapper->SetScalarRange(0, 0.5);
-
-				mapper->SetLookupTable(this->GetScalarRainbowLut());
+				//mapper->SetScalarRange(0, 200);
+				mapper->SetLookupTable(this->GetScalarRedLut());
+				//mapper->SetLookupTable(this->GetScalarRainbowLut());
 			}
 
 			if (this->mui_ActiveScalars->Name == none)
