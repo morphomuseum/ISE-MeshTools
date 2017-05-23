@@ -337,7 +337,7 @@ public:
   void signal_activeScalarsChanged();
   void SetSelectedActorsTransparency(int trans);
   vtkSmartPointer<vtkLookupTable> GetTagLut();
-  vtkSmartPointer<vtkLookupTable> GetScalarRainbowLut();
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRainbowLut();
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRedLut();
   void InitLuts();
   
@@ -355,7 +355,7 @@ protected:
 	//vtkUndoStack* mUndoStack;
 	vtkSmartPointer<vtkLookupTable> TagLut;
 	int TagTableSize;
-	vtkSmartPointer<vtkLookupTable> ScalarRainbowLut;
+	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ScalarRainbowLut;
 	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ScalarRedLut;
 
 	vtkSmartPointer<vtkBezierCurveSource> BezierCurveSource;

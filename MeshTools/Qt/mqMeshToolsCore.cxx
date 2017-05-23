@@ -77,16 +77,17 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mqMeshToolsCore::Instance = this;
 	this->TagLut= vtkSmartPointer<vtkLookupTable>::New();
 	this->ScalarRedLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
-	this->ScalarRainbowLut = vtkSmartPointer<vtkLookupTable>::New();
+	this->ScalarRainbowLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
 	this->TagTableSize = 25;
+	this->mui_ActiveColorMap = new ActiveColorMap;
+	this->mui_ExistingColorMaps = new ExistingColorMaps;
 	this->InitLuts();
 	this->ActorCollection = vtkSmartPointer<vtkMTActorCollection>::New();
 	cout << "try to create mui_ActiveScalars" << endl;
 	this->mui_ActiveScalars = new ActiveScalars;
 	this->mui_ExistingScalars = new ExistingScalars;
 
-	this->mui_ActiveColorMap = new ActiveColorMap;
-	this->mui_ExistingColorMaps = new ExistingColorMaps;
+	
 
 
 	cout << "mui_ActiveScalars creaed" << endl;
@@ -283,7 +284,7 @@ vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetTagLut()
 {
 	return this->TagLut;
 }
-vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetScalarRainbowLut() 
+vtkSmartPointer<vtkDiscretizableColorTransferFunction> mqMeshToolsCore::GetScalarRainbowLut()
 {
 	return this->ScalarRainbowLut;
 }
@@ -294,7 +295,7 @@ vtkSmartPointer<vtkDiscretizableColorTransferFunction> mqMeshToolsCore::GetScala
 
 void mqMeshToolsCore::InitLuts()
 {
-	
+	cout << "Start Init LUTS!" << endl;
 	this->TagLut->SetNumberOfTableValues(this->TagTableSize);
 	this->TagLut->Build();
 
@@ -310,29 +311,66 @@ void mqMeshToolsCore::InitLuts()
 	TagLut->SetTableValue(8, 0.7400, 0.9900, 0.7900, 1); // Mint
 	TagLut->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1);
 	
-	this->ScalarRainbowLut->Build();
-
+	this->ScalarRainbowLut->SetColorSpaceToRGB();
+	this->ScalarRainbowLut->EnableOpacityMappingOn();
 
 	
+	this->ScalarRainbowLut->AddRGBPoint(0.0, 1.0, 0.0, 1.0); //# purple
+	this->ScalarRainbowLut->AddRGBPoint(2.0, 0.0, 0.0, 1.0); //# blue
+	this->ScalarRainbowLut->AddRGBPoint(4.0, 0.0, 1.0, 1.0); //# purple
+	this->ScalarRainbowLut->AddRGBPoint(6.0, 0.0, 1.0, 0.0); //# green
+	this->ScalarRainbowLut->AddRGBPoint(8.0, 1.0, 1.0, 0.0); //# yellow
+	this->ScalarRainbowLut->AddRGBPoint(1.0, 1.0, 0.0, 0.0); //# red
+	vtkSmartPointer<vtkPiecewiseFunction> opacityRfunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+
+	opacityRfunction->AddPoint(0, 0.00);
+	opacityRfunction->AddPoint(0.2, 0.6);
+	opacityRfunction->AddPoint(0.8, 0.8);
+	opacityRfunction->AddPoint(1, 1);
+
+	this->ScalarRainbowLut->SetScalarOpacityFunction(opacityRfunction);
+	
+	this->ScalarRainbowLut->Build();
 	
     this->ScalarRedLut->SetColorSpaceToRGB();
 	this->ScalarRedLut->EnableOpacityMappingOn();
-	// 	vtkPiecewiseFunction
-	//cmap->SetScalarOpacityFunction();
 	this->ScalarRedLut->AddRGBPoint(0.0, 0.0, 0.0, 0.0); //# black
 	this->ScalarRedLut->AddRGBPoint(0.4, 1.0, 0, 0.0); //# reddish
 	this->ScalarRedLut->AddRGBPoint(0.8, 1.0, 0.4900, 0.25);// # flesh
-	this->ScalarRedLut->AddRGBPoint(2.0, 1.0, 1.0, 1.0);// # white
+	this->ScalarRedLut->AddRGBPoint(1.0, 1.0, 1.0, 1.0);// # white
+
+	// 	vtkPiecewiseFunction
+	//cmap->SetScalarOpacityFunction();
+	
+	
 
 	vtkSmartPointer<vtkPiecewiseFunction> opacityfunction =  vtkSmartPointer<vtkPiecewiseFunction>::New();
 
 	opacityfunction->AddPoint(0, 0.00);
 	opacityfunction->AddPoint(0.4, 0.15);
 	opacityfunction->AddPoint(0.8, 0.6);
-	opacityfunction->AddPoint(2, 1);
+	opacityfunction->AddPoint(1, 1);
 	
 	this->ScalarRedLut->SetScalarOpacityFunction(opacityfunction);
 	this->ScalarRedLut->Build();
+
+	/*this->mui_ActiveColorMap->ColorMap = this->ScalarRedLut;
+	this->mui_ActiveColorMap->Name = QString("Black-Red-White_Alpha");*/
+	cout << "Set Active color map!" << endl;
+	this->mui_ActiveColorMap->ColorMap = this->ScalarRainbowLut;
+	cout << "Set Active color map2!" << endl;
+	QString Rainbow = QString("Rainbow");
+	this->mui_ActiveColorMap->Name = Rainbow;
+
+	cout << "Try to set existing color maps!!" << endl;
+	this->mui_ExistingColorMaps->Stack.push_back(ExistingColorMaps::Element(Rainbow, this->ScalarRainbowLut));
+
+	cout << "Try to set existing color maps 2!!" << endl;
+	QString BRWA = QString("Black-Red-White_Alpha");
+
+	this->mui_ExistingColorMaps->Stack.push_back(ExistingColorMaps::Element(BRWA,this->ScalarRedLut));
+	cout << "Try to set existing color maps 3!!" << endl;
+
 
 	vtkSmartPointer<vtkFloatArray> scalarValues = vtkSmartPointer<vtkFloatArray>::New();
 	scalarValues->SetNumberOfComponents(1);
@@ -1608,8 +1646,8 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			{
 				//mapper->SetScalarRange(0,200);
 				
-				//mapper->SetLookupTable(this->GetScalarRainbowLut());
-				mapper->SetLookupTable(this->GetScalarRedLut());
+				
+				mapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
 			}
 
 			
@@ -5042,7 +5080,7 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 			else
 			{
 				//mapper->SetScalarRange(0, 200);
-				mapper->SetLookupTable(this->GetScalarRedLut());
+				mapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
 				//mapper->SetLookupTable(this->GetScalarRainbowLut());
 			}
 

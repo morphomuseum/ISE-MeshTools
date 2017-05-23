@@ -210,7 +210,34 @@ void mqEditScalarsDialog::UpdateUI()
 
 	// 2 populate comboColorMap
 	this->Ui->comboColorMap->clear();
+	ExistingColorMaps *MyCM = mqMeshToolsCore::instance()->Getmui_ExistingColorMaps();
+	for (int i = 0; i < MyCM->Stack.size(); i++)
+	{
+		
+			this->Ui->comboColorMap->addItem(MyCM->Stack.at(i).Name);
+		
 
+	}
+	QString myActiveCM = mqMeshToolsCore::instance()->Getmui_ActiveColorMap()->Name;
+	cout << "DIAL myActiveColorMap " << myActiveCM.toStdString() << endl;
+	exists = -1;
+	for (int i = 0; i < this->Ui->comboColorMap->count(); i++)
+	{
+		QString myCM = this->Ui->comboColorMap->itemText(i);
+		if (myCM == myActiveCM)
+		{
+			cout << "DIAL found CM in list!!!!! " << myCM.toStdString() << endl;
+			exists = i;
+
+		}
+
+	}
+	if (exists > -1) {
+		cout << "DIAL Now current index of combo box is " << exists << endl;
+		this->Ui->comboColorMap->setCurrentIndex(exists);
+
+
+	}
 }
 
 
