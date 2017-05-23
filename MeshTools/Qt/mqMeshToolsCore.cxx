@@ -84,6 +84,11 @@ mqMeshToolsCore::mqMeshToolsCore()
 	cout << "try to create mui_ActiveScalars" << endl;
 	this->mui_ActiveScalars = new ActiveScalars;
 	this->mui_ExistingScalars = new ExistingScalars;
+
+	this->mui_ActiveColorMap = new ActiveColorMap;
+	this->mui_ExistingColorMaps = new ExistingColorMaps;
+
+
 	cout << "mui_ActiveScalars creaed" << endl;
 	QString none = QString("none");
 	this->Setmui_ActiveScalars(none, -1, 0);
@@ -264,6 +269,11 @@ mqMeshToolsCore::~mqMeshToolsCore()
 	this->mui_ExistingScalars->Stack.clear();
 	delete this->mui_ExistingScalars;
 	delete this->mui_ActiveScalars;
+
+	this->mui_ExistingColorMaps->Stack.clear();
+	delete this->mui_ExistingColorMaps;
+	delete this->mui_ActiveColorMap;
+
 	if (mqMeshToolsCore::Instance == this)
 	{
 		mqMeshToolsCore::Instance = 0;
@@ -4813,6 +4823,13 @@ ExistingScalars * mqMeshToolsCore::Getmui_ExistingScalars()
 {
 	return this->mui_ExistingScalars;
 }
+
+ExistingColorMaps * mqMeshToolsCore::Getmui_ExistingColorMaps()
+{
+	return this->mui_ExistingColorMaps;
+
+}
+
 void mqMeshToolsCore::Addmui_ExistingScalars(QString Scalar, int dataType, int numComp)
 {
 	int exists = 0;
@@ -4965,10 +4982,28 @@ void mqMeshToolsCore::Initmui_ExistingScalars()
 	this->signal_existingScalarsChanged();
 	
 }
+
+ActiveColorMap * mqMeshToolsCore::Getmui_ActiveColorMap()
+{
+	return this->mui_ActiveColorMap;
+}
+
 ActiveScalars* mqMeshToolsCore::Getmui_ActiveScalars()
 {
 	return this->mui_ActiveScalars;
 }
+void mqMeshToolsCore::Setmui_ActiveColorMap(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
+{
+	this->mui_ActiveColorMap->Name = name;
+	this->mui_ActiveColorMap->ColorMap = colorMap;
+	cout << "Now active color map is " << name.toStdString() << endl;
+}
+void mqMeshToolsCore::Setmui_ActiveColorMapAndRender(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
+{
+	this->Setmui_ActiveColorMap( name, colorMap);
+	this->Render();
+}
+
 void mqMeshToolsCore::Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp)
 {
 	this->Setmui_ActiveScalars(Scalar, dataType, numComp);

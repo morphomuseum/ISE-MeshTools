@@ -39,17 +39,39 @@ public:
 		QString Name;
 		int DataType;
 		int NumComp;
-		
+
 		Element(QString name, int datatype, int numcomp)
 		{
 			this->Name = name;
-			this->DataType= datatype;
+			this->DataType = datatype;
 			this->NumComp = numcomp;
-			
+
 		}
 	};
 	typedef std::vector<Element> VectorOfElements;
-	VectorOfElements Stack;	
+	VectorOfElements Stack;
+};
+
+class ExistingColorMaps
+{
+public:
+	struct Element
+	{
+		QString Name;
+		vtkSmartPointer<vtkDiscretizableColorTransferFunction> ColorMap;
+
+
+		Element(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colormap)
+		{
+			this->Name = name;
+			this->ColorMap = colormap;
+
+
+		}
+	};
+	typedef std::vector<Element> VectorOfElements;
+	VectorOfElements Stack;
+	
 };
 
 class ActiveScalars
@@ -59,6 +81,15 @@ public:
 	int DataType;
 	int NumComp;
 	
+};
+
+
+class ActiveColorMap
+{
+public:
+	QString Name;
+	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ColorMap;
+
 };
 
 // 
@@ -215,11 +246,19 @@ public:
 	ExistingScalars* Getmui_ExistingScalars();
 	void Addmui_ExistingScalars(QString Scalar, int dataType, int numComp);
 	void Initmui_ExistingScalars();
-
-	ActiveScalars* Getmui_ActiveScalars();
 	void Setmui_ActiveScalars(QString Scalar, int dataType, int numComp);
 
 	void Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp);
+	ActiveScalars* Getmui_ActiveScalars();
+
+
+	ExistingColorMaps* Getmui_ExistingColorMaps();
+	ActiveColorMap* Getmui_ActiveColorMap();
+	void Setmui_ActiveColorMap(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap);
+	void Setmui_ActiveColorMapAndRender(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap);
+
+	
+
 	double* Getmui_BackGroundColor2();
 	void Getmui_BackGroundColor2(double bg[3]);
 	double* Getmui_DefaultBackGroundColor2();
@@ -295,6 +334,7 @@ public:
   void signal_lmSelectionChanged();
   void signal_actorSelectionChanged();
   void signal_existingScalarsChanged();
+  void signal_activeScalarsChanged();
   void SetSelectedActorsTransparency(int trans);
   vtkSmartPointer<vtkLookupTable> GetTagLut();
   vtkSmartPointer<vtkLookupTable> GetScalarRainbowLut();
@@ -306,6 +346,8 @@ signals:
   void lmSelectionChanged();
   void actorSelectionChanged();
   void existingScalarsChanged();
+  void activeScalarsChanged();
+
 
 protected:
 	
@@ -352,6 +394,8 @@ protected:
 	ActiveScalars *mui_ActiveScalars;
 	ExistingScalars *mui_ExistingScalars;
 
+	ActiveColorMap *mui_ActiveColorMap;
+	ExistingColorMaps *mui_ExistingColorMaps;
 
 	QString mui_LastUsedDir;
 	int mui_MoveAll;

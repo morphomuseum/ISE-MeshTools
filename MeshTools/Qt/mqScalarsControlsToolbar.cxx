@@ -1,47 +1,16 @@
 /*=========================================================================
 
    Program: MeshTools
-   Module:    Copied from Paraview pqScalarsControlsToolbar.cxx
-
-   Copyright (c) 2005,2006 Sandia Corporation, Kitware Inc.
-   All rights reserved.
-
-   ParaView is a free software; you can redistribute it and/or modify it
-   under the terms of the ParaView license version 1.2.
-
-   See License_v1.2.txt for the full ParaView license.
-   A copy of this license can be obtained by contacting
-   Kitware Inc.
-   28 Corporate Drive
-   Clifton Park, NY 12065
-   USA
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  
 
 ========================================================================*/
 #include "mqScalarsControlsToolbar.h"
 #include "ui_mqScalarsControlsToolbar.h"
 
 // For later!
-#include "mqSaveNTWDialogReaction.h"
+#include "mqEditScalarsDialogReaction.h"
 #include "mqUndoRedoReaction.h"
-#include "mqEditLMKDialogReaction.h"
-#include "mqCreateLMKDialogReaction.h"
-#include "mqEditFLGDialogReaction.h"
-#include "mqEditACTORDialogReaction.h"
 #include "mqMeshToolsCore.h"
-#include "mqOpenDataReaction.h"
-#include "mqCameraReaction.h"
 #include "mqDisplayReaction.h"
 
 #include <QToolButton>
@@ -72,10 +41,13 @@ void mqScalarsControlsToolbar::constructor()
   {
 	  this->comboActiveScalars->setDisabled(true);
   }
+  this->ui->actionTagEdit->setDisabled(true);
+  this->ui->actionColorScaleEdit->setDisabled(true);
   connect(mqMeshToolsCore::instance(), SIGNAL(existingScalarsChanged()), this, SLOT(slotRefreshComboScalars()));
 
   connect(this->ui->actionScalarVisibility, SIGNAL(triggered()), this, SLOT(slotScalarVisitiliby()));
   connect(this->comboActiveScalars, SIGNAL(activated(int)), this, SLOT(slotActiveScalarChanged(int)));
+  new mqEditScalarsDialogReaction(this->ui->actionColorScaleEdit);
   
 }
 
@@ -93,15 +65,38 @@ void mqScalarsControlsToolbar::slotActiveScalarChanged(int idx)
 				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).DataType, 
 				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).NumComp
 			);
+			this->RefreshEditButtons();
 
 		}
 	}
 	
 	
 }
+
+void mqScalarsControlsToolbar::RefreshEditButtons()
+{
+
+	this->ui->actionTagEdit->setEnabled(false);
+	this->ui->actionColorScaleEdit->setEnabled(false);
+	if ((mqMeshToolsCore::instance()->Getmui_ActiveScalars()->DataType == VTK_INT ||
+		mqMeshToolsCore::instance()->Getmui_ActiveScalars()->DataType == VTK_UNSIGNED_INT)
+		&& mqMeshToolsCore::instance()->Getmui_ActiveScalars()->NumComp == 1
+		)
+	{
+		this->ui->actionTagEdit->setEnabled(true);
+	}
+	if ((mqMeshToolsCore::instance()->Getmui_ActiveScalars()->DataType == VTK_FLOAT ||
+		mqMeshToolsCore::instance()->Getmui_ActiveScalars()->DataType == VTK_DOUBLE)
+		&& mqMeshToolsCore::instance()->Getmui_ActiveScalars()->NumComp == 1
+		)
+	{
+		this->ui->actionColorScaleEdit->setEnabled(true);
+	}
+}
+
 void mqScalarsControlsToolbar::slotRefreshComboScalars()
 {
-	cout << "Refresh combo "<< endl;
+	//cout << "Refresh combo "<< endl;
 	this->comboActiveScalars->clear();
 	ExistingScalars *MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
 	for (int i = 0; i < MyList->Stack.size(); i++)
@@ -110,22 +105,24 @@ void mqScalarsControlsToolbar::slotRefreshComboScalars()
 		
 	}
 	QString myActiveScalars = mqMeshToolsCore::instance()->Getmui_ActiveScalars()->Name;
-	cout << "myActiveScalars " << myActiveScalars.toStdString()<< endl;
+	//cout << "myActiveScalars " << myActiveScalars.toStdString()<< endl;
 	int exists = -1;
 	for (int i = 0; i < MyList->Stack.size(); i++)
 	{
 		QString myScalar = MyList->Stack.at(i).Name;
 		if (myScalar == myActiveScalars)
 		{
-			cout << "found in list!!!!! " << myScalar.toStdString() << endl;
+			//cout << "found in list!!!!! " << myScalar.toStdString() << endl;
 			exists = i;
 
 		}
 
 	}
 	if (exists > -1) { 
-		cout << "Now current index of combo box is " << exists << endl;
+		//cout << "Now current index of combo box is " << exists << endl;
 		this->comboActiveScalars->setCurrentIndex(exists); 
+		this->RefreshEditButtons();
+		
 	}
 	
 	

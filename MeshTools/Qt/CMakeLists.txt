@@ -25,6 +25,10 @@ set (Qt_SRCS
   mqEditFLGDialogReaction.cxx
   mqEditFLGDialog.h
   mqEditFLGDialog.cxx
+  mqEditScalarsDialog.h
+  mqEditScalarsDialog.cxx
+  mqEditScalarsDialogReaction.h
+  mqEditScalarsDialogReaction.cxx
   mqEditACTORDialogReaction.h
   mqEditACTORDialogReaction.cxx
   mqEditACTORDialog.h
@@ -156,6 +160,7 @@ mqLightControlsToolbar.ui
 mqScalarsControlsToolbar.ui
 mqGridSizeDialog.ui
 mqOrientationLabelsDialog.ui
+mqEditScalarsDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

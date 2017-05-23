@@ -33,7 +33,7 @@ public:
   {
     this->constructor();
   }
-  
+  void RefreshEditButtons();
 
   public slots :
   virtual void slotScalarVisitiliby();
