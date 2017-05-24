@@ -31,44 +31,6 @@
 #include <vtkRenderWindow.h>
 #include <QMainWindow>
 
-struct scalar_f {
-	float v; //value
-	long n; //original vertex or triangle nr	
-};
-
-typedef scalar_f* sc_fptr;
-
-struct scalar_d {
-	double v; //value
-	long n; //original vertex or triangle nr	
-};
-typedef scalar_d* sc_dptr;
-
-
-
-int scalar_fcompare(const void* v1, const void* v2)
-{
-	float v = sc_fptr(v1)->v;
-	float w = sc_fptr(v2)->v;
-	if (v>w)
-		return 1;
-	else if (w>v)
-		return -1;
-	else return 0;
-
-}
-
-int scalar_dcompare(const void* v1, const void* v2)
-{
-	double v = sc_dptr(v1)->v;
-	double w = sc_dptr(v2)->v;
-	if (v>w)
-		return 1;
-	else if (w>v)
-		return -1;
-	else return 0;
-
-}
 
 class ExistingScalars
 {

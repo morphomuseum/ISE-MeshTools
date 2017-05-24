@@ -181,6 +181,7 @@ void mqEditScalarsDialog::UpdateUI()
 void mqEditScalarsDialog::RefreshSuggestedRange() 
 {
 	this->Ui->suggestedMax->setValue(mqMeshToolsCore::instance()->GetSuggestedScalarRangeMax());
+	this->Ui->suggestedMin->setValue(mqMeshToolsCore::instance()->GetSuggestedScalarRangeMin());
 }
 void mqEditScalarsDialog::RefreshSliders() 
 {
@@ -293,7 +294,7 @@ void mqEditScalarsDialog::slotActiveScalarChanged(int idx)
 				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).DataType,
 				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).NumComp
 			);
-			
+			this->RefreshSuggestedRange();
 
 		}
 	}
@@ -316,6 +317,7 @@ void mqEditScalarsDialog::slotActiveColorMapChanged(int idx)
 			mqMeshToolsCore::instance()->Setmui_ActiveColorMapAndRender(NewActiveColorMap,
 				mqMeshToolsCore::instance()->Getmui_ExistingColorMaps()->Stack.at(i).ColorMap
 			);
+		
 
 
 		}

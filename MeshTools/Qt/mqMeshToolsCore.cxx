@@ -312,14 +312,99 @@ double mqMeshToolsCore::GetScalarRangeMax()
 double mqMeshToolsCore::GetSuggestedScalarRangeMin()
 {
 
-	return this->ScalarRangeMin;
+	double my_min;
+	double my_currmin;
+
+	my_min = DBL_MAX;
+	my_currmin = DBL_MAX;
+
+	this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+
+		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		{
+			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
+			if (myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str()) != NULL
+				&& (
+					this->Getmui_ActiveScalars()->DataType == VTK_FLOAT ||
+					this->Getmui_ActiveScalars()->DataType == VTK_DOUBLE
+
+					)
+				&& this->Getmui_ActiveScalars()->NumComp == 1
+				)
+			{
+				if (this->Getmui_ActiveScalars()->DataType == VTK_FLOAT)
+				{
+					vtkFloatArray *currentScalars = (vtkFloatArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+					if (currentScalars != NULL)
+					{
+						my_currmin = DBL_MAX;
+						my_currmin = (double)currentScalars->GetTuple(0)[0];
+
+
+						std::vector<float> vals;
+						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
+						{
+							vals.push_back(currentScalars->GetTuple(i)[0]);
+						}
+
+						std::sort(vals.begin(), vals.end());
+
+						int iQ = (int)(0.05*myPD->GetNumberOfPoints());
+						my_currmin = (double)vals.at(iQ);
+
+						if (my_currmin < my_min) { my_min = my_currmin; }
+					}
+				}
+				else
+				{
+					vtkDoubleArray *currentScalars = (vtkDoubleArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+					if (currentScalars != NULL)
+					{
+						my_currmin = DBL_MAX;
+						my_currmin = currentScalars->GetTuple(0)[0];
+
+
+						std::vector<double> vals;
+						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
+						{
+							vals.push_back(currentScalars->GetTuple(i)[0]);
+						}
+
+						std::sort(vals.begin(), vals.end());
+
+						int iQ = (int)(0.05*myPD->GetNumberOfPoints());
+						my_currmin = vals.at(iQ);
+
+						if (my_currmin < my_min) { my_min = my_currmin; }
+					}
+
+				}
+
+			}
+		}
+	}
+	if (my_min == VTK_DOUBLE_MAX || my_min == VTK_FLOAT_MAX)
+	{
+		cout << "Strange!!!" << endl;
+		return 0;
+	}
+	else
+	{
+		return my_min;
+	}
+
 }
 
 double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 {
 	double my_max;
 	double my_currmax;
-	double my_maxnext;
+
 	my_max = DBL_MIN;
 	my_currmax = DBL_MIN;
 
@@ -350,22 +435,18 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 						my_currmax = DBL_MIN;
 						my_currmax = (double)currentScalars->GetTuple(0)[0];
 
-						float val;
-						scalar_f *tmp_sc = (scalar_f*)malloc((int)(myPD->GetNumberOfPoints()) * sizeof(scalar_f));
+
+						std::vector<float> vals;
 						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
 						{
-							val = currentScalars->GetTuple(i)[0];
-
-							tmp_sc[i].n = i;
-							tmp_sc[i].v = val;
-
+							vals.push_back(currentScalars->GetTuple(i)[0]);
 						}
-						// sort list trm_tri		
-						qsort(tmp_sc, myPD->GetNumberOfPoints(), sizeof(scalar_f), scalar_fcompare);
+
+						std::sort(vals.begin(), vals.end());
+
 						int iQ = (int)(0.95*myPD->GetNumberOfPoints());
-						my_currmax = (double) tmp_sc[iQ].v;
-						free(tmp_sc);
-						tmp_sc = NULL;
+						my_currmax = (double)vals.at(iQ);
+
 						if (my_currmax > my_max) { my_max = my_currmax; }
 					}
 				}
@@ -377,22 +458,18 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 						my_currmax = DBL_MIN;
 						my_currmax = currentScalars->GetTuple(0)[0];
 
-						double val;
-						scalar_d *tmp_sc = (scalar_d*)malloc((int)(myPD->GetNumberOfPoints()) * sizeof(scalar_f));
+					
+						std::vector<double> vals;
 						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
 						{
-							val = currentScalars->GetTuple(i)[0];
-
-							tmp_sc[i].n = i;
-							tmp_sc[i].v = val;
-
+							vals.push_back(currentScalars->GetTuple(i)[0]);
 						}
-						// sort list trm_tri		
-						qsort(tmp_sc, myPD->GetNumberOfPoints(), sizeof(scalar_d), scalar_dcompare);
+
+						std::sort(vals.begin(), vals.end());
+
 						int iQ = (int)(0.95*myPD->GetNumberOfPoints());
-						my_currmax = tmp_sc[iQ].v;
-						free(tmp_sc);
-						tmp_sc = NULL;
+						my_currmax = vals.at(iQ);
+						
 						if (my_currmax > my_max) { my_max = my_currmax; }
 					}
 
