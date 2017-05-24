@@ -31,6 +31,45 @@
 #include <vtkRenderWindow.h>
 #include <QMainWindow>
 
+struct scalar_f {
+	float v; //value
+	long n; //original vertex or triangle nr	
+};
+
+typedef scalar_f* sc_fptr;
+
+struct scalar_d {
+	double v; //value
+	long n; //original vertex or triangle nr	
+};
+typedef scalar_d* sc_dptr;
+
+
+
+int scalar_fcompare(const void* v1, const void* v2)
+{
+	float v = sc_fptr(v1)->v;
+	float w = sc_fptr(v2)->v;
+	if (v>w)
+		return 1;
+	else if (w>v)
+		return -1;
+	else return 0;
+
+}
+
+int scalar_dcompare(const void* v1, const void* v2)
+{
+	double v = sc_dptr(v1)->v;
+	double w = sc_dptr(v2)->v;
+	if (v>w)
+		return 1;
+	else if (w>v)
+		return -1;
+	else return 0;
+
+}
+
 class ExistingScalars
 {
 public:
@@ -249,6 +288,7 @@ public:
 	void Setmui_ActiveScalars(QString Scalar, int dataType, int numComp);
 
 	void Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp);
+	void RefreshColorMapsAndScalarVisibility();
 	ActiveScalars* Getmui_ActiveScalars();
 
 
@@ -334,7 +374,11 @@ public:
   void signal_lmSelectionChanged();
   void signal_actorSelectionChanged();
   void signal_existingScalarsChanged();
-  void signal_activeScalarsChanged();
+  void signal_activeScalarChanged();
+  double GetScalarRangeMin();
+	double GetScalarRangeMax();
+	double GetSuggestedScalarRangeMin();
+	double GetSuggestedScalarRangeMax();
   void SetSelectedActorsTransparency(int trans);
   vtkSmartPointer<vtkLookupTable> GetTagLut();
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRainbowLut();
@@ -346,7 +390,7 @@ signals:
   void lmSelectionChanged();
   void actorSelectionChanged();
   void existingScalarsChanged();
-  void activeScalarsChanged();
+  void activeScalarChanged();
 
 
 protected:
@@ -461,7 +505,8 @@ protected:
 
 	int mui_DefaultLandmarkMode; // 0 normal 1target 2node 3handle 4flag
 	int mui_LandmarkMode;
-	
+	double ScalarRangeMin;
+	double ScalarRangeMax;
 	void SetSelectedActorsColor(int r, int g, int b);
 	
 	vtkOrientationHelperWidget* OrientationHelperWidget;

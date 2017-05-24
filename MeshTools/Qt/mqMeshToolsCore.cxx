@@ -75,6 +75,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 {
 
 	mqMeshToolsCore::Instance = this;
+	this->ScalarRangeMin = 0;
+	this->ScalarRangeMax = 1;
+
 	this->TagLut= vtkSmartPointer<vtkLookupTable>::New();
 	this->ScalarRedLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
 	this->ScalarRainbowLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
@@ -280,6 +283,7 @@ mqMeshToolsCore::~mqMeshToolsCore()
 		mqMeshToolsCore::Instance = 0;
 	}
 }
+
 vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetTagLut() 
 {
 	return this->TagLut;
@@ -292,6 +296,123 @@ vtkSmartPointer<vtkDiscretizableColorTransferFunction> mqMeshToolsCore::GetScala
 {
 	return this->ScalarRedLut;
 }
+
+double mqMeshToolsCore::GetScalarRangeMin()
+{
+
+	return this->ScalarRangeMin;
+}
+
+double mqMeshToolsCore::GetScalarRangeMax()
+{
+
+	return this->ScalarRangeMax;
+}
+
+double mqMeshToolsCore::GetSuggestedScalarRangeMin()
+{
+
+	return this->ScalarRangeMin;
+}
+
+double mqMeshToolsCore::GetSuggestedScalarRangeMax()
+{
+	double my_max;
+	double my_currmax;
+	double my_maxnext;
+	my_max = DBL_MIN;
+	my_currmax = DBL_MIN;
+
+	this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+
+		if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+		{
+			vtkPolyData *myPD =vtkPolyData::SafeDownCast(mapper->GetInput());
+			if (myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str()) != NULL
+				&& (
+					this->Getmui_ActiveScalars()->DataType ==VTK_FLOAT ||
+					this->Getmui_ActiveScalars()->DataType == VTK_DOUBLE
+
+					)
+				&& this->Getmui_ActiveScalars()->NumComp == 1
+				)
+			{
+				if (this->Getmui_ActiveScalars()->DataType == VTK_FLOAT)
+				{
+					vtkFloatArray *currentScalars = (vtkFloatArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());					
+					if (currentScalars != NULL)
+					{
+						my_currmax = DBL_MIN;
+						my_currmax = (double)currentScalars->GetTuple(0)[0];
+
+						float val;
+						scalar_f *tmp_sc = (scalar_f*)malloc((int)(myPD->GetNumberOfPoints()) * sizeof(scalar_f));
+						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
+						{
+							val = currentScalars->GetTuple(i)[0];
+
+							tmp_sc[i].n = i;
+							tmp_sc[i].v = val;
+
+						}
+						// sort list trm_tri		
+						qsort(tmp_sc, myPD->GetNumberOfPoints(), sizeof(scalar_f), scalar_fcompare);
+						int iQ = (int)(0.95*myPD->GetNumberOfPoints());
+						my_currmax = (double) tmp_sc[iQ].v;
+						free(tmp_sc);
+						tmp_sc = NULL;
+						if (my_currmax > my_max) { my_max = my_currmax; }
+					}
+				}
+				else
+				{
+					vtkDoubleArray *currentScalars = (vtkDoubleArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+					if (currentScalars != NULL)
+					{
+						my_currmax = DBL_MIN;
+						my_currmax = currentScalars->GetTuple(0)[0];
+
+						double val;
+						scalar_d *tmp_sc = (scalar_d*)malloc((int)(myPD->GetNumberOfPoints()) * sizeof(scalar_f));
+						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
+						{
+							val = currentScalars->GetTuple(i)[0];
+
+							tmp_sc[i].n = i;
+							tmp_sc[i].v = val;
+
+						}
+						// sort list trm_tri		
+						qsort(tmp_sc, myPD->GetNumberOfPoints(), sizeof(scalar_d), scalar_dcompare);
+						int iQ = (int)(0.95*myPD->GetNumberOfPoints());
+						my_currmax = tmp_sc[iQ].v;
+						free(tmp_sc);
+						tmp_sc = NULL;
+						if (my_currmax > my_max) { my_max = my_currmax; }
+					}
+
+				}
+
+			}
+		}							
+	}
+	if (my_max == VTK_DOUBLE_MIN || my_max == VTK_FLOAT_MIN)
+	{
+		return 1;
+	}
+	else 
+	{
+		return my_max;
+	}
+	
+	
+}
+
 
 void mqMeshToolsCore::InitLuts()
 {
@@ -5030,30 +5151,10 @@ ActiveScalars* mqMeshToolsCore::Getmui_ActiveScalars()
 {
 	return this->mui_ActiveScalars;
 }
-void mqMeshToolsCore::Setmui_ActiveColorMap(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
-{
-	this->mui_ActiveColorMap->Name = name;
-	this->mui_ActiveColorMap->ColorMap = colorMap;
-	cout << "Now active color map is " << name.toStdString() << endl;
-}
-void mqMeshToolsCore::Setmui_ActiveColorMapAndRender(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
-{
-	this->Setmui_ActiveColorMap( name, colorMap);
-	this->Render();
-}
 
-void mqMeshToolsCore::Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp)
-{
-	this->Setmui_ActiveScalars(Scalar, dataType, numComp);
-	this->Render();
-}
-void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int numComp)
+void mqMeshToolsCore::RefreshColorMapsAndScalarVisibility()
 {
 
-	this->mui_ActiveScalars->Name = Scalar;
-	this->mui_ActiveScalars->DataType = dataType;
-	this->mui_ActiveScalars->NumComp = numComp;
-	cout << "Now active scalar is " << Scalar.toStdString() << endl;
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
@@ -5066,14 +5167,14 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 			vtkPolyData *myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
 			//vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
 			QString none = QString("none");
-		
+
 			if (
 				(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
 				&& this->mui_ActiveScalars->NumComp == 1
 				)
 			{
 				cout << "Set Tag Lut!!!" << endl;
-				mapper->SetScalarRange(0, this->TagTableSize-1);
+				mapper->SetScalarRange(0, this->TagTableSize - 1);
 				mapper->SetLookupTable(this->GetTagLut());
 
 			}
@@ -5095,7 +5196,7 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 
 				if (myPD->GetPointData()->GetScalars(this->mui_ActiveScalars->Name.toStdString().c_str()) != NULL)
 				{
-					if (this->mui_ScalarVisibility == 1 && myActor->GetSelected()==0)
+					if (this->mui_ScalarVisibility == 1 && myActor->GetSelected() == 0)
 					{
 
 						vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOn();
@@ -5107,12 +5208,44 @@ void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int num
 					vtkPolyDataMapper::SafeDownCast(myActor->GetMapper())->ScalarVisibilityOff();
 				}
 			}
-			
-			
-		}
 
+
+		}
+		
 
 	}
+}
+
+void mqMeshToolsCore::Setmui_ActiveColorMap(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
+{
+	this->mui_ActiveColorMap->Name = name;
+	this->mui_ActiveColorMap->ColorMap = colorMap;
+
+	this->RefreshColorMapsAndScalarVisibility();
+	cout << "Now active color map is " << name.toStdString() << endl;
+}
+void mqMeshToolsCore::Setmui_ActiveColorMapAndRender(QString name, vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorMap)
+{
+	this->Setmui_ActiveColorMap( name, colorMap);
+	this->Render();
+}
+
+void mqMeshToolsCore::Setmui_ActiveScalarsAndRender(QString Scalar, int dataType, int numComp)
+{
+	this->Setmui_ActiveScalars(Scalar, dataType, numComp);
+	emit this->activeScalarChanged();
+	this->Render();
+}
+void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int numComp)
+{
+
+	this->mui_ActiveScalars->Name = Scalar;
+	this->mui_ActiveScalars->DataType = dataType;
+	this->mui_ActiveScalars->NumComp = numComp;
+	cout << "Now active scalar is " << Scalar.toStdString() << endl;
+	this->RefreshColorMapsAndScalarVisibility();
+
+	
 	cout << "Hello!!!!" << endl;
 
 	// now brows through all actors and set active scalar 

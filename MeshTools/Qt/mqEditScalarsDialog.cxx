@@ -63,24 +63,20 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->comboActiveScalar->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 	
 	this->Ui->comboColorMap->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	connect(mqMeshToolsCore::instance(), SIGNAL(existingScalarsChanged()), this, SLOT(slotRefreshComboScalars()));
+	connect(mqMeshToolsCore::instance(), SIGNAL(activeScalarChanged()), this, SLOT(slotRefreshComboScalars()));
+	connect(this->Ui->comboActiveScalar, SIGNAL(activated(int)), this, SLOT(slotActiveScalarChanged(int)));
+	connect(this->Ui->comboColorMap, SIGNAL(activated(int)), this, SLOT(slotActiveColorMapChanged(int)));
+	
+
 	/*
 	sc_show:
 scWindow->show();
 
 
-comboColorMap->clear();
-int color_scale_id = MT->GetColorScaleId();
-comboColorMap->add("Rainbow");
-comboColorMap->add("Red and Yellow");
 
-if (color_scale_id >= 0)
-{
-	comboColorMap->value(color_scale_id);
-}
-
-
-scmin->value(MT->Get_sc_min());
-scmax->value(MT->Get_sc_max());
+sliderMin->value(MT->Get_sc_min());
+sliderMax->value(MT->Get_sc_max());
 currentMax->value(MT->Get_sc_max());
 currentMin->value(MT->Get_sc_min());
 suggestedMax->value(MT->scalars_get_max());
@@ -166,17 +162,43 @@ void mqEditScalarsDialog::UpdateUI()
 {
 	/*int color_scale_id = MT->GetColorScaleId();
 	
+	currentMax->value(MT->Get_sc_max());
+	currentMin->value(MT->Get_sc_min());
+*/
+
+	//1 populate comboActiveScalar
+
+	this->RefreshComboScalars();
+
+	// 2 populate comboColorMap
+	this->RefreshComboColorMaps();
+
+	this->RefreshSuggestedRange();
+	this->RefreshSliders();
+	
+}
+
+void mqEditScalarsDialog::RefreshSuggestedRange() 
+{
+	this->Ui->suggestedMax->setValue(mqMeshToolsCore::instance()->GetSuggestedScalarRangeMax());
+}
+void mqEditScalarsDialog::RefreshSliders() 
+{
+	/*
 	sliderMin->maximum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
 	sliderMin->minimum((3 * MT->Get_sc_min() - MT->Get_sc_max()) / 2);
 	sliderMax->minimum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
 	sliderMax->maximum((3 * MT->Get_sc_max() - MT->Get_sc_min()) / 2);
-	currentMax->value(MT->Get_sc_max());
-	currentMin->value(MT->Get_sc_min());
 	sliderMax->redraw();
-	sliderMax->redraw();*/
+	sliderMax->redraw();
+	*/
+}
+void mqEditScalarsDialog::RefreshRange() 
+{
+}
 
-	//1 populate comboActiveScalar
-
+void mqEditScalarsDialog::RefreshComboScalars()
+{
 	this->Ui->comboActiveScalar->clear();
 	ExistingScalars *MyList = mqMeshToolsCore::instance()->Getmui_ExistingScalars();
 	for (int i = 0; i < MyList->Stack.size(); i++)
@@ -207,20 +229,23 @@ void mqEditScalarsDialog::UpdateUI()
 
 
 	}
+}
 
-	// 2 populate comboColorMap
+
+void mqEditScalarsDialog::RefreshComboColorMaps() 
+{
 	this->Ui->comboColorMap->clear();
 	ExistingColorMaps *MyCM = mqMeshToolsCore::instance()->Getmui_ExistingColorMaps();
 	for (int i = 0; i < MyCM->Stack.size(); i++)
 	{
-		
-			this->Ui->comboColorMap->addItem(MyCM->Stack.at(i).Name);
-		
+
+		this->Ui->comboColorMap->addItem(MyCM->Stack.at(i).Name);
+
 
 	}
 	QString myActiveCM = mqMeshToolsCore::instance()->Getmui_ActiveColorMap()->Name;
 	cout << "DIAL myActiveColorMap " << myActiveCM.toStdString() << endl;
-	exists = -1;
+	int exists = -1;
 	for (int i = 0; i < this->Ui->comboColorMap->count(); i++)
 	{
 		QString myCM = this->Ui->comboColorMap->itemText(i);
@@ -239,14 +264,64 @@ void mqEditScalarsDialog::UpdateUI()
 
 	}
 }
+void mqEditScalarsDialog::slotRefreshComboScalars()
+{
+	this->RefreshComboScalars();
 
 
+}
 
 
 void mqEditScalarsDialog::RefreshDialog()
 {
 	this->UpdateUI();
 	mqMeshToolsCore::instance()->Render();
+}
+
+
+void mqEditScalarsDialog::slotActiveScalarChanged(int idx)
+{
+	cout << "looks like active scalar has changed!:: " << idx << endl;
+	QString NewActiveScalarName = this->Ui->comboActiveScalar->currentText();
+	for (int i = 0; i < mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.size(); i++)
+	{
+		QString myExisingScalarName = mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).Name;
+		if (NewActiveScalarName == myExisingScalarName)
+		{
+
+			mqMeshToolsCore::instance()->Setmui_ActiveScalarsAndRender(NewActiveScalarName,
+				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).DataType,
+				mqMeshToolsCore::instance()->Getmui_ExistingScalars()->Stack.at(i).NumComp
+			);
+			
+
+		}
+	}
+
+
+}
+
+
+void mqEditScalarsDialog::slotActiveColorMapChanged(int idx)
+{
+	cout << "looks like active color map has changed!:: " << idx << endl;
+	QString NewActiveColorMap = this->Ui->comboColorMap->currentText();
+	for (int i = 0; i < mqMeshToolsCore::instance()->Getmui_ExistingColorMaps()->Stack.size(); i++)
+	{
+		QString myExisingColorMapName = mqMeshToolsCore::instance()->Getmui_ExistingColorMaps()->Stack.at(i).Name;
+		if (NewActiveColorMap == myExisingColorMapName)
+		{
+			
+
+			mqMeshToolsCore::instance()->Setmui_ActiveColorMapAndRender(NewActiveColorMap,
+				mqMeshToolsCore::instance()->Getmui_ExistingColorMaps()->Stack.at(i).ColorMap
+			);
+
+
+		}
+	}
+
+
 }
 
 /*

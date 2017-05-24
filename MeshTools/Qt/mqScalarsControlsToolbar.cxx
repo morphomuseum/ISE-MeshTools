@@ -46,6 +46,7 @@ void mqScalarsControlsToolbar::constructor()
   connect(mqMeshToolsCore::instance(), SIGNAL(existingScalarsChanged()), this, SLOT(slotRefreshComboScalars()));
 
   connect(this->ui->actionScalarVisibility, SIGNAL(triggered()), this, SLOT(slotScalarVisitiliby()));
+  connect(mqMeshToolsCore::instance(), SIGNAL(activeScalarChanged()), this, SLOT(slotRefreshComboScalars()));
   connect(this->comboActiveScalars, SIGNAL(activated(int)), this, SLOT(slotActiveScalarChanged(int)));
   new mqEditScalarsDialogReaction(this->ui->actionColorScaleEdit);
   

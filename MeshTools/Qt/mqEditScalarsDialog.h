@@ -35,11 +35,18 @@ public:
   void UpdateUI();
   int SomeThingHasChanged();
  void RefreshDialog();
+ void RefreshComboScalars();
+ void RefreshComboColorMaps();
+ void RefreshSuggestedRange();
+ void RefreshSliders();
+ void RefreshRange();
   public slots:
+  virtual void slotActiveScalarChanged(int idx);
+  virtual void slotActiveColorMapChanged(int idx);
   
   virtual void slotRefreshDialog();
   virtual void slotAccepted();
-
+  virtual void slotRefreshComboScalars();
 protected:
 	
 private:
