@@ -405,8 +405,9 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 	double my_max;
 	double my_currmax;
 
-	my_max = DBL_MIN;
-	my_currmax = DBL_MIN;
+	my_max = -DBL_MAX;
+	
+	my_currmax = -DBL_MAX;
 
 	this->ActorCollection->InitTraversal();
 
@@ -432,10 +433,9 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 					vtkFloatArray *currentScalars = (vtkFloatArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());					
 					if (currentScalars != NULL)
 					{
-						my_currmax = DBL_MIN;
+						
 						my_currmax = (double)currentScalars->GetTuple(0)[0];
-
-
+					
 						std::vector<float> vals;
 						for (int i = 0; i < myPD->GetNumberOfPoints(); i++)
 						{
@@ -445,9 +445,10 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 						std::sort(vals.begin(), vals.end());
 
 						int iQ = (int)(0.95*myPD->GetNumberOfPoints());
+					
 						my_currmax = (double)vals.at(iQ);
-
 						if (my_currmax > my_max) { my_max = my_currmax; }
+						
 					}
 				}
 				else
@@ -455,7 +456,7 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 					vtkDoubleArray *currentScalars = (vtkDoubleArray*)myPD->GetPointData()->GetScalars(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
 					if (currentScalars != NULL)
 					{
-						my_currmax = DBL_MIN;
+						
 						my_currmax = currentScalars->GetTuple(0)[0];
 
 					
@@ -484,6 +485,7 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 	}
 	else 
 	{
+		cout << "my_max=" << my_max << endl;
 		return my_max;
 	}
 	

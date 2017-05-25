@@ -68,7 +68,19 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	connect(this->Ui->comboActiveScalar, SIGNAL(activated(int)), this, SLOT(slotActiveScalarChanged(int)));
 	connect(this->Ui->comboColorMap, SIGNAL(activated(int)), this, SLOT(slotActiveColorMapChanged(int)));
 	
+	this->Ui->currentMin->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	this->Ui->currentMax->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	this->Ui->suggestedMin->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	this->Ui->suggestedMax->setButtonSymbols(QAbstractSpinBox::NoButtons);
+	this->Ui->currentMin->setMinimum(-DBL_MAX);
+	this->Ui->currentMax->setMinimum(-DBL_MAX);
+	this->Ui->suggestedMin->setMinimum(-DBL_MAX);
+	this->Ui->suggestedMax->setMinimum(-DBL_MAX);
 
+	this->Ui->currentMin->setMaximum(DBL_MAX);
+	this->Ui->currentMax->setMaximum(DBL_MAX);
+	this->Ui->suggestedMin->setMaximum(DBL_MAX);
+	this->Ui->suggestedMax->setMaximum(DBL_MAX);
 	/*
 	sc_show:
 scWindow->show();
