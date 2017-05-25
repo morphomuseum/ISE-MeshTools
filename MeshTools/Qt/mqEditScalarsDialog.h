@@ -47,6 +47,8 @@ public:
   virtual void slotRefreshDialog();
   virtual void slotAccepted();
   virtual void slotRefreshComboScalars();
+  virtual void slotacceptSuggestedMax();
+  virtual void slotacceptSuggestedMin();
 protected:
 	
 private:

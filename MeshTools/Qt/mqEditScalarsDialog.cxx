@@ -81,6 +81,9 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->currentMax->setMaximum(DBL_MAX);
 	this->Ui->suggestedMin->setMaximum(DBL_MAX);
 	this->Ui->suggestedMax->setMaximum(DBL_MAX);
+
+	connect(this->Ui->pushScalarSuggestedMax, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMax()));
+	connect(this->Ui->pushScalarSuggestedMin, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMin()));
 	/*
 	sc_show:
 scWindow->show();
@@ -165,7 +168,6 @@ int mqEditScalarsDialog::SomeThingHasChanged()
 	
 	return something_has_changed;
 }
-
 
 
 
@@ -277,6 +279,19 @@ void mqEditScalarsDialog::RefreshComboColorMaps()
 
 	}
 }
+
+
+void mqEditScalarsDialog::slotacceptSuggestedMax()
+{
+	this->Ui->currentMax->setValue(this->Ui->suggestedMax->value());
+}
+
+void mqEditScalarsDialog::slotacceptSuggestedMin()
+{
+	
+	this->Ui->currentMin->setValue(this->Ui->suggestedMin->value());
+}
+
 void mqEditScalarsDialog::slotRefreshComboScalars()
 {
 	this->RefreshComboScalars();
