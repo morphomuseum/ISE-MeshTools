@@ -49,6 +49,9 @@ public:
   virtual void slotRefreshComboScalars();
   virtual void slotacceptSuggestedMax();
   virtual void slotacceptSuggestedMin();
+  virtual void sliderMinValueChanged(int value);
+  virtual void sliderMaxValueChanged(int value);
+  
 protected:
 	
 private:

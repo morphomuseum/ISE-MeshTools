@@ -11,6 +11,7 @@
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
 #include "mqUndoStack.h"
+#include "QDoubleSlider.h"
 
 #include "vtkLMActor.h"
 #include "vtkLMActorCollection.h"
@@ -81,9 +82,24 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->currentMax->setMaximum(DBL_MAX);
 	this->Ui->suggestedMin->setMaximum(DBL_MAX);
 	this->Ui->suggestedMax->setMaximum(DBL_MAX);
+	this->Ui->sliderMin->setDoubleValue(0);
+	this->Ui->sliderMin->setDoubleMaximum(1);
+	this->Ui->sliderMin->setDoubleMinimum(-1);
+	
+
+	this->Ui->sliderMax->setDoubleValue(1);
+	this->Ui->sliderMax->setDoubleMaximum(2);
+	this->Ui->sliderMax->setDoubleMinimum(0);
+	this->Ui->sliderMin->setDoubleSingleStep((this->Ui->sliderMin->doubleMaximum() - this->Ui->sliderMin->doubleMinimum()) / 100);
+
+	this->Ui->sliderMax->setDoubleSingleStep((this->Ui->sliderMax->doubleMaximum() - this->Ui->sliderMax->doubleMinimum()) / 100);
+
 
 	connect(this->Ui->pushScalarSuggestedMax, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMax()));
 	connect(this->Ui->pushScalarSuggestedMin, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMin()));
+	connect(this->Ui->sliderMin, SIGNAL(valueChanged(int)), this, SLOT(sliderMinValueChanged(int)));
+	connect(this->Ui->sliderMax, SIGNAL(valueChanged(int)), this, SLOT(sliderMaxValueChanged(int)));
+	
 	/*
 	sc_show:
 scWindow->show();
@@ -199,6 +215,16 @@ void mqEditScalarsDialog::RefreshSuggestedRange()
 }
 void mqEditScalarsDialog::RefreshSliders() 
 {
+	//this->Ui->sliderMin->setDoubleValue(this->Ui->currentMin->value());
+	//this->Ui->sliderMax->setDoubleValue(this->Ui->currentMax->value());
+	this->Ui->sliderMin->setDoubleMaximum((this->Ui->currentMax->value()+ this->Ui->currentMin->value()) / 2);
+	this->Ui->sliderMin->setDoubleMinimum((3 * this->Ui->currentMin->value() - this->Ui->currentMax->value()) / 2);
+	this->Ui->sliderMax->setDoubleMinimum((this->Ui->currentMax->value() + this->Ui->currentMin->value()) / 2);
+	this->Ui->sliderMax->setDoubleMaximum((3 * this->Ui->currentMax->value() - this->Ui->currentMin->value()) / 2);
+	this->Ui->sliderMin->setDoubleSingleStep((this->Ui->sliderMin->doubleMaximum() - this->Ui->sliderMin->doubleMinimum()) / 100);
+	this->Ui->sliderMax->setDoubleSingleStep((this->Ui->sliderMax->doubleMaximum() - this->Ui->sliderMax->doubleMinimum()) / 100);
+
+
 	/*
 	sliderMin->maximum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
 	sliderMin->minimum((3 * MT->Get_sc_min() - MT->Get_sc_max()) / 2);
@@ -284,12 +310,16 @@ void mqEditScalarsDialog::RefreshComboColorMaps()
 void mqEditScalarsDialog::slotacceptSuggestedMax()
 {
 	this->Ui->currentMax->setValue(this->Ui->suggestedMax->value());
+	this->Ui->sliderMax->setDoubleValue(this->Ui->suggestedMax->value());
+	RefreshSliders();
 }
 
 void mqEditScalarsDialog::slotacceptSuggestedMin()
 {
 	
 	this->Ui->currentMin->setValue(this->Ui->suggestedMin->value());
+	this->Ui->sliderMin->setDoubleValue(this->Ui->suggestedMin->value());
+	RefreshSliders();
 }
 
 void mqEditScalarsDialog::slotRefreshComboScalars()
@@ -419,6 +449,19 @@ suggestedMin->value(MT->scalars_get_min());
 
 
 */
+void mqEditScalarsDialog::sliderMinValueChanged(int value)
+{
+	cout << "Now slider Min = " << this->Ui->sliderMin->doubleValue() << endl;
+	this->Ui->currentMin->setValue(this->Ui->sliderMin->doubleValue());
+	//this->RefreshSliders();
+
+}
+void mqEditScalarsDialog::sliderMaxValueChanged(int value)
+{
+	this->Ui->currentMax->setValue(this->Ui->sliderMax->doubleValue());
+	//this->RefreshSliders();
+
+}
 
 void mqEditScalarsDialog::slotAccepted()
 {

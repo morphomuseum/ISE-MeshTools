@@ -652,19 +652,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QSlider" name="sliderMin">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>140</y>
-      <width>201</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="cbBelowMin">
     <property name="geometry">
      <rect>
@@ -691,7 +678,7 @@
      <string>min: </string>
     </property>
    </widget>
-   <widget class="QSlider" name="sliderMax">
+   <widget class="QDoubleSlider" name="sliderMax">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -730,8 +717,28 @@
      <string>show above max: </string>
     </property>
    </widget>
+   <widget class="QDoubleSlider" name="sliderMin">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>140</y>
+      <width>201</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QDoubleSlider</class>
+   <extends>QSlider</extends>
+   <header>QDoubleSlider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../Icons/icons.qrc"/>
   <include location="../Icons/icons.qrc"/>

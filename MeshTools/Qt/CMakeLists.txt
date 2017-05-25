@@ -127,6 +127,8 @@ mqSelectLandmarkRangeDialogReaction.cxx
   mqOrientationLabelsDialog.h
   mqOrientationLabelsDialogReaction.cxx
   mqOrientationLabelsDialogReaction.h
+QDoubleSlider.cxx
+QDoubleSlider.h
 )
 
 set (Qt_MOC_HDRS
