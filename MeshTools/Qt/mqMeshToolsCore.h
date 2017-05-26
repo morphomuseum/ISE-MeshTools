@@ -338,6 +338,7 @@ public:
   void signal_existingScalarsChanged();
   void signal_activeScalarChanged();
   double GetScalarRangeMin();
+  void UpddateLookupTablesRanges(double min, double max);
 	double GetScalarRangeMax();
 	double GetSuggestedScalarRangeMin();
 	double GetSuggestedScalarRangeMax();

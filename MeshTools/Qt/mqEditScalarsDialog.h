@@ -38,6 +38,7 @@ public:
  void RefreshComboScalars();
  void RefreshComboColorMaps();
  void RefreshSuggestedRange();
+ void UpdateLookupTables();
  void RefreshSliders();
  void RefreshRange();
   public slots:
@@ -47,10 +48,13 @@ public:
   virtual void slotRefreshDialog();
   virtual void slotAccepted();
   virtual void slotRefreshComboScalars();
-  virtual void slotacceptSuggestedMax();
-  virtual void slotacceptSuggestedMin();
-  virtual void sliderMinValueChanged(int value);
-  virtual void sliderMaxValueChanged(int value);
+  virtual void slotAcceptSuggestedMax();
+  virtual void slotRefreshSliders();
+  virtual void slotAcceptSuggestedMin();
+  virtual void slotCurrentMinMaxEdited();
+
+ /* virtual void slotSliderMinValueChanged(int value);
+  virtual void slotSliderMaxValueChanged(int value);*/
   
 protected:
 	

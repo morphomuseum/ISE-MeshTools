@@ -492,6 +492,44 @@ double mqMeshToolsCore::GetSuggestedScalarRangeMax()
 	
 }
 
+void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
+{
+	for (int i = 0; i < this->mui_ExistingColorMaps->Stack.size(); i++)
+	{
+		vtkSmartPointer<vtkDiscretizableColorTransferFunction> CM = this->mui_ExistingColorMaps->Stack.at(i).ColorMap;
+		
+		double *pts = CM->GetDataPointer();
+		
+		int numnodes = CM->GetSize();
+		cout << this->mui_ExistingColorMaps->Stack.at(i).Name.toStdString() << ": num nodes = " << numnodes << endl;
+		double old_min = DBL_MAX;
+		double old_max = -DBL_MAX;
+		for (int j = 0; j < numnodes; j++)
+		{
+			double curr = pts[4 * j];
+			cout << "x" << j << "=" << curr << endl;
+			if (curr < old_min) { old_min = curr; }
+			if (curr > old_max) { old_max = curr; }
+
+		}
+		if (old_max > old_min)
+		{
+			double old_range = old_max - old_min;
+			double new_range = max - min;
+			double mult = new_range / old_range;
+			double c = min - old_min*mult;
+			for (int k = 0; k < numnodes; k++)
+			{
+				pts[4 * k] = pts[4 * k] * mult + c;
+				cout << "nx" << k << "=" << pts[4 * k] << endl;
+			}
+			CM->FillFromDataPointer(numnodes, pts);
+
+		}
+	}
+	this->Render();
+
+}
 
 void mqMeshToolsCore::InitLuts()
 {
@@ -516,10 +554,10 @@ void mqMeshToolsCore::InitLuts()
 
 	
 	this->ScalarRainbowLut->AddRGBPoint(0.0, 1.0, 0.0, 1.0); //# purple
-	this->ScalarRainbowLut->AddRGBPoint(2.0, 0.0, 0.0, 1.0); //# blue
-	this->ScalarRainbowLut->AddRGBPoint(4.0, 0.0, 1.0, 1.0); //# purple
-	this->ScalarRainbowLut->AddRGBPoint(6.0, 0.0, 1.0, 0.0); //# green
-	this->ScalarRainbowLut->AddRGBPoint(8.0, 1.0, 1.0, 0.0); //# yellow
+	this->ScalarRainbowLut->AddRGBPoint(0.2, 0.0, 0.0, 1.0); //# blue
+	this->ScalarRainbowLut->AddRGBPoint(0.4, 0.0, 1.0, 1.0); //# purple
+	this->ScalarRainbowLut->AddRGBPoint(0.6, 0.0, 1.0, 0.0); //# green
+	this->ScalarRainbowLut->AddRGBPoint(0.8, 1.0, 1.0, 0.0); //# yellow
 	this->ScalarRainbowLut->AddRGBPoint(1.0, 1.0, 0.0, 0.0); //# red
 	vtkSmartPointer<vtkPiecewiseFunction> opacityRfunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
 

@@ -75,6 +75,8 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->suggestedMax->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	this->Ui->currentMin->setMinimum(-DBL_MAX);
 	this->Ui->currentMax->setMinimum(-DBL_MAX);
+	this->Ui->currentMax->setValue(1);
+	this->Ui->currentMin->setValue(0);
 	this->Ui->suggestedMin->setMinimum(-DBL_MAX);
 	this->Ui->suggestedMax->setMinimum(-DBL_MAX);
 
@@ -87,6 +89,8 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->sliderMin->setDoubleMinimum(-1);
 	
 
+	
+
 	this->Ui->sliderMax->setDoubleValue(1);
 	this->Ui->sliderMax->setDoubleMaximum(2);
 	this->Ui->sliderMax->setDoubleMinimum(0);
@@ -95,11 +99,17 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	this->Ui->sliderMax->setDoubleSingleStep((this->Ui->sliderMax->doubleMaximum() - this->Ui->sliderMax->doubleMinimum()) / 100);
 
 
-	connect(this->Ui->pushScalarSuggestedMax, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMax()));
-	connect(this->Ui->pushScalarSuggestedMin, SIGNAL(pressed()), this, SLOT(slotacceptSuggestedMin()));
-	connect(this->Ui->sliderMin, SIGNAL(valueChanged(int)), this, SLOT(sliderMinValueChanged(int)));
-	connect(this->Ui->sliderMax, SIGNAL(valueChanged(int)), this, SLOT(sliderMaxValueChanged(int)));
+	connect(this->Ui->pushScalarSuggestedMax, SIGNAL(pressed()), this, SLOT(slotAcceptSuggestedMax()));
+	connect(this->Ui->pushScalarSuggestedMin, SIGNAL(pressed()), this, SLOT(slotAcceptSuggestedMin()));
 	
+	connect(this->Ui->sliderMin, SIGNAL(sliderReleased()), this, SLOT(slotRefreshSliders()));
+	connect(this->Ui->sliderMax, SIGNAL(sliderReleased()), this, SLOT(slotRefreshSliders()));
+	
+	connect(this->Ui->currentMin, SIGNAL(editingFinished()), this, SLOT(slotCurrentMinMaxEdited()));
+	connect(this->Ui->currentMax, SIGNAL(editingFinished()), this, SLOT(slotCurrentMinMaxEdited()));
+	
+
+	this->RefreshSliders();
 	/*
 	sc_show:
 scWindow->show();
@@ -204,7 +214,7 @@ void mqEditScalarsDialog::UpdateUI()
 	this->RefreshComboColorMaps();
 
 	this->RefreshSuggestedRange();
-	this->RefreshSliders();
+	
 	
 }
 
@@ -215,15 +225,38 @@ void mqEditScalarsDialog::RefreshSuggestedRange()
 }
 void mqEditScalarsDialog::RefreshSliders() 
 {
+	
 	//this->Ui->sliderMin->setDoubleValue(this->Ui->currentMin->value());
 	//this->Ui->sliderMax->setDoubleValue(this->Ui->currentMax->value());
-	this->Ui->sliderMin->setDoubleMaximum((this->Ui->currentMax->value()+ this->Ui->currentMin->value()) / 2);
-	this->Ui->sliderMin->setDoubleMinimum((3 * this->Ui->currentMin->value() - this->Ui->currentMax->value()) / 2);
-	this->Ui->sliderMax->setDoubleMinimum((this->Ui->currentMax->value() + this->Ui->currentMin->value()) / 2);
-	this->Ui->sliderMax->setDoubleMaximum((3 * this->Ui->currentMax->value() - this->Ui->currentMin->value()) / 2);
-	this->Ui->sliderMin->setDoubleSingleStep((this->Ui->sliderMin->doubleMaximum() - this->Ui->sliderMin->doubleMinimum()) / 100);
-	this->Ui->sliderMax->setDoubleSingleStep((this->Ui->sliderMax->doubleMaximum() - this->Ui->sliderMax->doubleMinimum()) / 100);
+	cout << "Refresh Sliders" << endl;
+	double curr_max = this->Ui->sliderMax->doubleValue();
+	double curr_min = this->Ui->sliderMin->doubleValue();
 
+	double new_max_min = (curr_max + curr_min) / 2;
+	double new_half = new_max_min - curr_min;
+	double new_max_max = curr_max+new_half;
+	
+	double new_min_min = curr_min - new_half;
+	double new_min_max = new_max_min;
+	cout << "Min:" << new_min_min << "|" << curr_min << "|" << new_min_max << endl;
+	cout << "Max:" << new_max_min << "|" << curr_max << "|" << new_max_max << endl;
+	this->Ui->sliderMin->setDoubleValue(curr_min);
+	this->Ui->sliderMax->setDoubleValue(curr_max);
+
+	this->Ui->sliderMin->setDoubleMaximum(new_min_max);
+	this->Ui->sliderMin->setDoubleMinimum(new_min_min);
+
+	this->Ui->sliderMax->setDoubleMinimum(new_max_min);
+	this->Ui->sliderMax->setDoubleMaximum(new_max_max);
+	this->Ui->sliderMin->setDoubleSingleStep((curr_max -curr_min) / 1000);
+	this->Ui->sliderMax->setDoubleSingleStep((curr_max-curr_min) / 1000);
+
+	this->Ui->sliderMin->setDoubleValue(curr_min);
+	this->Ui->sliderMax->setDoubleValue(curr_max);
+
+	this->Ui->currentMin->setValue(this->Ui->sliderMin->doubleValue());
+
+	this->Ui->currentMax->setValue(this->Ui->sliderMax->doubleValue());
 
 	/*
 	sliderMin->maximum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
@@ -307,19 +340,20 @@ void mqEditScalarsDialog::RefreshComboColorMaps()
 }
 
 
-void mqEditScalarsDialog::slotacceptSuggestedMax()
-{
-	this->Ui->currentMax->setValue(this->Ui->suggestedMax->value());
-	this->Ui->sliderMax->setDoubleValue(this->Ui->suggestedMax->value());
-	RefreshSliders();
-}
-
-void mqEditScalarsDialog::slotacceptSuggestedMin()
+void mqEditScalarsDialog::slotAcceptSuggestedMax()
 {
 	
-	this->Ui->currentMin->setValue(this->Ui->suggestedMin->value());
+	this->Ui->sliderMax->setDoubleValue(this->Ui->suggestedMax->value());
+	RefreshSliders();
+	this->UpdateLookupTables();
+}
+
+void mqEditScalarsDialog::slotAcceptSuggestedMin()
+{
+	
 	this->Ui->sliderMin->setDoubleValue(this->Ui->suggestedMin->value());
 	RefreshSliders();
+	this->UpdateLookupTables();
 }
 
 void mqEditScalarsDialog::slotRefreshComboScalars()
@@ -449,19 +483,24 @@ suggestedMin->value(MT->scalars_get_min());
 
 
 */
-void mqEditScalarsDialog::sliderMinValueChanged(int value)
+void mqEditScalarsDialog::slotRefreshSliders()
+{
+	this->RefreshSliders();
+	this->UpdateLookupTables();
+}
+/*void mqEditScalarsDialog::slotSliderMinValueChanged(int value)
 {
 	cout << "Now slider Min = " << this->Ui->sliderMin->doubleValue() << endl;
 	this->Ui->currentMin->setValue(this->Ui->sliderMin->doubleValue());
 	//this->RefreshSliders();
 
 }
-void mqEditScalarsDialog::sliderMaxValueChanged(int value)
+void mqEditScalarsDialog::slotSliderMaxValueChanged(int value)
 {
 	this->Ui->currentMax->setValue(this->Ui->sliderMax->doubleValue());
 	//this->RefreshSliders();
 
-}
+}*/
 
 void mqEditScalarsDialog::slotAccepted()
 {
@@ -490,6 +529,29 @@ void mqEditScalarsDialog::slotAccepted()
 	MT->Update_RGB();
 	MT->redraw();*/
 
+}
+void mqEditScalarsDialog::UpdateLookupTables()
+{
+	mqMeshToolsCore::instance()->UpddateLookupTablesRanges(this->Ui->currentMin->value(), this->Ui->currentMax->value());
+}
+void mqEditScalarsDialog::slotCurrentMinMaxEdited()
+{
+	//cout << "Min max edited!" << endl;
+	double new_min = this->Ui->currentMin->value();
+	double new_max = this->Ui->currentMax->value();
+	if (new_min < new_max)
+	{
+		this->Ui->sliderMin->setDoubleValue(this->Ui->currentMin->value());
+		this->Ui->sliderMax->setDoubleValue(this->Ui->currentMax->value());
+		this->RefreshSliders();
+		this->UpdateLookupTables();
+	}
+	else
+	{
+		this->Ui->currentMin->setValue(this->Ui->sliderMin->doubleValue());
+		this->Ui->currentMax->setValue(this->Ui->sliderMax->doubleValue());
+	}
+	
 }
 void mqEditScalarsDialog::slotRefreshDialog()
 {
