@@ -526,6 +526,34 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 			CM->FillFromDataPointer(numnodes, pts);
 
 		}
+		vtkPiecewiseFunction* OF = CM->GetScalarOpacityFunction();
+		int numnodes2 = OF->GetSize();
+		double *pts2 = OF->GetDataPointer();
+		cout << this->mui_ExistingColorMaps->Stack.at(i).Name.toStdString() << ": OF num nodes = " << numnodes2 << endl;
+		double old_min2 = DBL_MAX;
+		double old_max2 = -DBL_MAX;
+		for (int j = 0; j < numnodes2; j++)
+		{
+			double curr = pts2[2*j];
+			cout << "x" << j << "=" << curr << endl;
+			if (curr < old_min2) { old_min2 = curr; }
+			if (curr > old_max2) { old_max2 = curr; }
+
+		}
+		if (old_max2 > old_min2)
+		{
+			double old_range = old_max2 - old_min2;
+			double new_range = max - min;
+			double mult = new_range / old_range;
+			double c = min - old_min2*mult;
+			for (int k = 0; k < numnodes2; k++)
+			{
+				pts2[2*k] = pts2[2*k] * mult + c;
+				cout << "nx" << k << "=" << pts[2*k] << endl;
+			}
+			OF->FillFromDataPointer(numnodes2, pts2);
+
+		}
 	}
 	this->Render();
 
@@ -561,7 +589,7 @@ void mqMeshToolsCore::InitLuts()
 	this->ScalarRainbowLut->AddRGBPoint(1.0, 1.0, 0.0, 0.0); //# red
 	vtkSmartPointer<vtkPiecewiseFunction> opacityRfunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
 
-	opacityRfunction->AddPoint(0, 0.00);
+	opacityRfunction->AddPoint(0, 0.3);
 	opacityRfunction->AddPoint(0.2, 0.6);
 	opacityRfunction->AddPoint(0.8, 0.8);
 	opacityRfunction->AddPoint(1, 1);
@@ -584,8 +612,8 @@ void mqMeshToolsCore::InitLuts()
 
 	vtkSmartPointer<vtkPiecewiseFunction> opacityfunction =  vtkSmartPointer<vtkPiecewiseFunction>::New();
 
-	opacityfunction->AddPoint(0, 0.00);
-	opacityfunction->AddPoint(0.4, 0.15);
+	opacityfunction->AddPoint(0, 0.3);
+	opacityfunction->AddPoint(0.4, 0.4);
 	opacityfunction->AddPoint(0.8, 0.6);
 	opacityfunction->AddPoint(1, 1);
 	
