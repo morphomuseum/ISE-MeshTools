@@ -90,7 +90,9 @@ mqMeshToolsCore::mqMeshToolsCore()
 	this->mui_ActiveScalars = new ActiveScalars;
 	this->mui_ExistingScalars = new ExistingScalars;
 
-	
+	this->ScalarBarActor = vtkSmartPointer<vtkScalarBarActor>::New();
+	this->ScalarBarActor->SetOrientationToHorizontal();
+	this->ScalarBarActor->SetHeight(0.1);
 
 
 	cout << "mui_ActiveScalars creaed" << endl;
@@ -549,7 +551,7 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 			for (int k = 0; k < numnodes2; k++)
 			{
 				pts2[2*k] = pts2[2*k] * mult + c;
-				cout << "nx" << k << "=" << pts[2*k] << endl;
+				cout << "nx" << k << "=" << pts2[2*k] << endl;
 			}
 			OF->FillFromDataPointer(numnodes2, pts2);
 
@@ -1914,6 +1916,7 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 				
 				
 				mapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				
 			}
 
 			
@@ -5084,6 +5087,38 @@ void mqMeshToolsCore::Setmui_ScalarVisibility(int scalarvisibility)
 {
 	if (this->mui_ScalarVisibility != scalarvisibility)
 	{
+		//cout << "Scalar visibility has changed" << endl;
+		//1 refresh scalar bar actor !
+		int sba_refresh_needed = 0;
+		if ((this->mui_ActiveScalars->DataType==VTK_FLOAT|| this->mui_ActiveScalars->DataType == VTK_DOUBLE)&& this->mui_ActiveScalars->NumComp == 1)
+		{
+			//cout << "SBA refresh needed" << endl;
+			sba_refresh_needed = 1;
+		}
+		if (scalarvisibility == 1)
+		{
+			// turn on if needed
+			if (sba_refresh_needed == 1)
+			{
+				this->ScalarBarActor->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				this->ScalarBarActor->SetTitle(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+				this->Renderer->AddActor(ScalarBarActor);
+				//cout << "Add SBA" << endl;
+			}
+
+		}
+		else
+		{
+			//turn off if needed
+			if (sba_refresh_needed == 1)
+			{
+			//	cout << "Remove SBA" << endl;
+				this->Renderer->RemoveActor(ScalarBarActor);
+			}
+		}
+	
+
+		// 2 refresh all actors!
 		this->mui_ScalarVisibility = scalarvisibility;
 		this->ActorCollection->InitTraversal();
 
@@ -5300,6 +5335,24 @@ ActiveScalars* mqMeshToolsCore::Getmui_ActiveScalars()
 void mqMeshToolsCore::RefreshColorMapsAndScalarVisibility()
 {
 
+	//1 refresh scalar bar actor if needed.
+	int sba_refresh_needed = 0;
+	if ((this->mui_ActiveScalars->DataType == VTK_FLOAT || this->mui_ActiveScalars->DataType == VTK_DOUBLE) && this->mui_ActiveScalars->NumComp == 1)
+	{
+		sba_refresh_needed = 1;
+	}
+	
+	if (sba_refresh_needed == 1)
+	{
+			this->ScalarBarActor->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+			this->ScalarBarActor->SetTitle(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+			
+			
+	}
+
+	
+
+	//2 refresh all actors
 	this->ActorCollection->InitTraversal();
 	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
 	{
@@ -5327,6 +5380,8 @@ void mqMeshToolsCore::RefreshColorMapsAndScalarVisibility()
 			{
 				//mapper->SetScalarRange(0, 200);
 				mapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+			
+				
 				//mapper->SetLookupTable(this->GetScalarRainbowLut());
 			}
 
@@ -5383,14 +5438,46 @@ void mqMeshToolsCore::Setmui_ActiveScalarsAndRender(QString Scalar, int dataType
 }
 void mqMeshToolsCore::Setmui_ActiveScalars(QString Scalar, int dataType, int numComp)
 {
+	int sba_refresh_needed = 0;
+	int old_sba_on = 0;
+	int new_sba_on = 0;
+	if ((dataType == VTK_FLOAT || dataType == VTK_DOUBLE) && numComp == 1)
+	{
+		new_sba_on = 1;
+		
+	}
+	if ((this->mui_ActiveScalars->DataType == VTK_FLOAT || this->mui_ActiveScalars->DataType == VTK_DOUBLE) && this->mui_ActiveScalars->NumComp == 1)
+	{
+		old_sba_on = 1;
+	}
+	if (old_sba_on != new_sba_on)
+	{
+		sba_refresh_needed = 1;
+		if (new_sba_on == 1)
+		{
+			this->ScalarBarActor->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+			this->ScalarBarActor->SetTitle(this->Getmui_ActiveScalars()->Name.toStdString().c_str());
+			
+			this->Renderer->AddActor(ScalarBarActor);
+		}
+		else
+		{
+			this->Renderer->RemoveActor(ScalarBarActor);
+		}
+	}
 
 	this->mui_ActiveScalars->Name = Scalar;
 	this->mui_ActiveScalars->DataType = dataType;
 	this->mui_ActiveScalars->NumComp = numComp;
 	cout << "Now active scalar is " << Scalar.toStdString() << endl;
-	this->RefreshColorMapsAndScalarVisibility();
-
 	
+		
+
+
+	this->RefreshColorMapsAndScalarVisibility();
+	
+	
+
 	cout << "Hello!!!!" << endl;
 
 	// now brows through all actors and set active scalar 

@@ -24,6 +24,7 @@
 //#include "vtkUndoStack.h" => for some reason the ompilation fails if this header is included
 //#include "vtkUndoStackInternal.h"
 
+#include <vtkScalarBarActor.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkSmartPointer.h>    
 #include <vtkCornerAnnotation.h>
@@ -362,6 +363,8 @@ protected:
 	//vtkUndoStack* mUndoStack;
 	vtkSmartPointer<vtkLookupTable> TagLut;
 	int TagTableSize;
+
+	vtkSmartPointer<vtkScalarBarActor> ScalarBarActor;
 	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ScalarRainbowLut;
 	vtkSmartPointer<vtkDiscretizableColorTransferFunction> ScalarRedLut;
 
