@@ -42,6 +42,7 @@ void mqCameraReaction::CameraFront()
 	mqMeshToolsCore::instance()->getCamera()->SetFocalPoint(cameracentre);
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(0, 0, 1);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 	//this->ReplaceCamera();
 
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
@@ -69,6 +70,7 @@ void mqCameraReaction::CameraBack() {
 	mqMeshToolsCore::instance()->getCamera()->SetFocalPoint(cameracentre);
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(0, 0, 1);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
 	mqMeshToolsCore::instance()->getGridActor()->SetOutlineMode(mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin());
 	mqMeshToolsCore::instance()->getGridActor()->SetGridType(2);
@@ -89,6 +91,7 @@ void mqCameraReaction::CameraLeft() {
 	mqMeshToolsCore::instance()->getCamera()->SetPosition(cameracentre[0], camdist + cameracentre[1], cameracentre[2]);
 	mqMeshToolsCore::instance()->getCamera()->SetFocalPoint(cameracentre);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(0, 0, 1);
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
@@ -113,6 +116,7 @@ void mqCameraReaction::CameraRight()
 	mqMeshToolsCore::instance()->getCamera()->SetFocalPoint(cameracentre);
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(0, 0, 1);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
 	mqMeshToolsCore::instance()->getGridActor()->SetOutlineMode(mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin());
@@ -137,6 +141,7 @@ void mqCameraReaction::CameraAbove() {
 
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(-1, 0, 0);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
 	mqMeshToolsCore::instance()->getGridActor()->SetOutlineMode(mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin());
 	mqMeshToolsCore::instance()->getGridActor()->SetGridType(0);
@@ -157,6 +162,7 @@ void mqCameraReaction::CameraBelow() {
 	mqMeshToolsCore::instance()->getCamera()->SetFocalPoint(cameracentre);
 	mqMeshToolsCore::instance()->getCamera()->SetViewUp(1, 0, 0);
 	mqMeshToolsCore::instance()->getRenderer()->ResetCameraClippingRange();
+	mqMeshToolsCore::instance()->ActivateClippingPlane();
 	//mqMeshToolsCore::instance()->getCamera()->SetParallelScale(120);
 	mqMeshToolsCore::instance()->getGridActor()->SetGridOrigin(cameracentre);
 	mqMeshToolsCore::instance()->getGridActor()->SetOutlineMode(mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin());

@@ -77,7 +77,8 @@ mqMeshToolsCore::mqMeshToolsCore()
 	mqMeshToolsCore::Instance = this;
 	this->ScalarRangeMin = 0;
 	this->ScalarRangeMax = 1;
-
+	this->mui_ClippingPlane = 0; // no x=0 clipping plane by default
+	this->mui_BackfaceCulling = 0; //no backface culling
 	this->TagLut= vtkSmartPointer<vtkLookupTable>::New();
 	this->ScalarRedLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
 	this->ScalarRainbowLut = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
@@ -209,6 +210,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 	//this->RenderWindow = vtkSmartPointer<vtkRenderWindow>::New();
 	this->RenderWindow = NULL;
 	this->Renderer = vtkSmartPointer<vtkRenderer>::New();
+	
 
 	this->ActorCollection->SetRenderer(this->Renderer);
 
@@ -264,7 +266,7 @@ mqMeshToolsCore::mqMeshToolsCore()
 
 	this->Renderer->AddViewProp(cornerAnnotation);
 	this->Renderer->AddActor(this->GridActor);
-
+	this->Renderer->TwoSidedLightingOff();
 		
 
 }
@@ -284,6 +286,72 @@ mqMeshToolsCore::~mqMeshToolsCore()
 	{
 		mqMeshToolsCore::Instance = 0;
 	}
+}
+void mqMeshToolsCore::ActivateClippingPlane()
+{
+	if (this->Getmui_ClippinPlane() == 1)
+	{
+
+		double cr[2];
+		double cameracentre[3];
+		double camerafocalpoint[3];
+		
+		this->getRenderer()->GetActiveCamera()->GetPosition(cameracentre);
+		this->getRenderer()->GetActiveCamera()->GetFocalPoint(camerafocalpoint);
+		double dist = sqrt((cameracentre[0] - camerafocalpoint[0])*(cameracentre[0] - camerafocalpoint[0])
+		+ (cameracentre[1] - camerafocalpoint[1])*(cameracentre[1] - camerafocalpoint[1])
+			+ (cameracentre[2] - camerafocalpoint[2])*(cameracentre[2] - camerafocalpoint[2])
+		);
+		this->getRenderer()->GetActiveCamera()->GetClippingRange(cr);
+
+		this->getRenderer()->GetActiveCamera()->SetClippingRange(dist, cr[1]);
+	}
+}
+void mqMeshToolsCore::ActivateBackfaceCulling() {
+
+	this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor * myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		
+			if (this->mui_BackfaceCulling == 0)
+			{
+				myActor->GetProperty()->BackfaceCullingOff();
+			}
+			else
+			{
+				myActor->GetProperty()->BackfaceCullingOn();
+			}
+					
+	}
+
+}
+void mqMeshToolsCore::ChangeBackfaceCulling() {
+	if (this->mui_BackfaceCulling == 0) { this->mui_BackfaceCulling = 1; }
+	else { this->mui_BackfaceCulling = 0; }
+	this->ActivateBackfaceCulling();
+}
+
+int mqMeshToolsCore::Getmui_BackfaceCulling() { return this->mui_BackfaceCulling; }
+void mqMeshToolsCore::Setmui_BackfaceCulling(int on_off) {
+	if (on_off == 0 || on_off == 1) { this->mui_BackfaceCulling = on_off; }
+}
+
+void mqMeshToolsCore::ChangeClippingPlane() 
+{
+	if (this->mui_ClippingPlane == 0) { this->mui_ClippingPlane = 1; }
+	else{ this->mui_ClippingPlane = 0; }
+	this->ActivateClippingPlane();
+
+}
+int mqMeshToolsCore::Getmui_ClippinPlane() 
+{
+	return this->mui_ClippingPlane;
+}
+void mqMeshToolsCore::Setmui_ClippinPlane(int on_off) 
+{
+	if (on_off == 0 || on_off == 1) { this->mui_ClippingPlane = on_off; }
 }
 
 vtkSmartPointer<vtkLookupTable> mqMeshToolsCore::GetTagLut() 
@@ -1834,7 +1902,15 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 		{
 
 			VTK_CREATE(vtkMTActor, actor);
-
+			if (this->mui_BackfaceCulling == 0)
+			{
+				actor->GetProperty()->BackfaceCullingOff();
+			}
+			else
+			{
+				actor->GetProperty()->BackfaceCullingOn();
+			}
+			
 
 			QFileInfo fileInfo(fileName);
 			QString onlyfilename(fileInfo.fileName());
@@ -4518,6 +4594,7 @@ void mqMeshToolsCore::AdjustCameraAndGrid()
 		
 	}
 	this->getRenderer()->ResetCameraClippingRange();
+	this->ActivateClippingPlane();
 	//this->ui->qvtkWidget->update();
 	this->Render();
 

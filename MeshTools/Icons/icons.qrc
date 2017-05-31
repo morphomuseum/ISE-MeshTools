@@ -12,6 +12,10 @@
  
 
     <!-- Help -->
+    <file>backface_off.png</file>
+    <file>backface_on.png</file>
+    <file>clipping_plane_off.png</file>
+    <file>clipping_plane_on.png</file>
     <file>scalars.png</file>
     <file>tag_edit.png</file>
     <file>color_scale_edit.png</file>

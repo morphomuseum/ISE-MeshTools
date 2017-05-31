@@ -15,6 +15,7 @@
 #include "mqColorDialogReaction.h"
 #include "mqLandmarkDialogReaction.h"
 #include "mqMeshToolsMenuBuilders.h"
+#include "mqCameraControlsToolbar.h"
 #include "mqMainControlsToolbar.h"
 #include "mqLightControlsToolbar.h"
 #include "mqScalarsControlsToolbar.h"
@@ -264,6 +265,10 @@ void mqMeshToolsMenuBuilders::buildToolbars(QMainWindow& mainWindow)
 	scalarsToolBar->layout()->setSpacing(10);
 	mainWindow.addToolBar(Qt::BottomToolBarArea, scalarsToolBar);
 
+	QToolBar* cameraToolBar = new mqCameraControlsToolbar(&mainWindow)
+		<< mqSetName("CameraControlsToolbar");
+	cameraToolBar->layout()->setSpacing(10);
+	mainWindow.addToolBar(Qt::RightToolBarArea, cameraToolBar);
 
 }
 

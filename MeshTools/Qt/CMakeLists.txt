@@ -75,6 +75,8 @@ mqEditAllFLGLengthDialogReaction.h
   mqUndoRedoReaction.cxx
   mqUndoStack.h
   mqUndoStack.cxx
+  mqCameraControlsToolbar.h
+  mqCameraControlsToolbar.cxx
   mqMainControlsToolbar.h
   mqMainControlsToolbar.cxx
   mqLightControlsToolbar.h
@@ -139,6 +141,7 @@ set (Qt_MOC_HDRS
 set (Qt_UIs mqAboutDialog.ui 
 mqColorDialog.ui 
 mqLandmarkDialog.ui  
+mqCameraControlsToolbar.ui 
 mqMainControlsToolbar.ui 
 mqSavePLYDialog.ui 
 mqSaveVTPDialog.ui 

@@ -105,6 +105,7 @@ protected:
   int CurrentMode;
   int Ctrl;
   int L;
+  int LM_Button;
   //vtkProp3D *InteractionProp;
   vtkSmartPointer<vtkMTActorCollection> ActorCollection;
   vtkSmartPointer<vtkLMActorCollection> NormalLandmarkCollection;

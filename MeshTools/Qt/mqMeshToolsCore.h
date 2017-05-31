@@ -276,7 +276,17 @@ public:
 	void SetMainWindow(QMainWindow *_mainWindow);
 	QMainWindow* GetMainWindow();
 	void LandmarksMoveUp();
-  
+	void ChangeClippingPlane();
+	int Getmui_ClippinPlane();
+	void Setmui_ClippinPlane(int on_off);
+
+	void ActivateBackfaceCulling();
+	void ChangeBackfaceCulling();
+	int Getmui_BackfaceCulling();
+	void Setmui_BackfaceCulling(int on_off);
+
+	void ActivateClippingPlane();
+
 	void LandmarksMoveDown();
 	void SelectLandmarkRange(int start, int end, int lm_type);
 	void UpdateAllSelectedFlagsColors();
@@ -414,6 +424,9 @@ protected:
 	QString mui_SizeUnit;
 	double mui_DefaultGridSpacing;
 	QString mui_DefaultSizeUnit;
+
+	int mui_ClippingPlane;
+	int mui_BackfaceCulling;
 
 	int mui_ScalarVisibility;
 	int mui_DefaultScalarVisibility;

@@ -57,6 +57,8 @@ vtkStandardNewMacro(vtkMTInteractorStyle);
 #define SPHERE 0
 #define ARROW 1
 
+#define LBUTTON_DOWN 0
+#define LBUTTON_UP 1
 
 #define VTKISMT_ORIENT 0
 #define VTKISMT_SELECT 1
@@ -74,6 +76,7 @@ vtkMTInteractorStyle::vtkMTInteractorStyle()
 	this->CurrentMode = VTKISMT_ORIENT;
 	this->L = L_RELEASED;
 	this->Ctrl = CTRL_RELEASED;
+	this->LM_Button = LBUTTON_UP;
 	this->StartPosition[0] = this->StartPosition[1] = 0;
 	this->EndPosition[0] = this->EndPosition[1] = 0;
 	this->Moving = 0;
@@ -790,6 +793,7 @@ void vtkMTInteractorStyle::Dolly(double factor)
 	if (this->AutoAdjustCameraClippingRange)
 	{
 		this->CurrentRenderer->ResetCameraClippingRange();
+		mqMeshToolsCore::instance()->ActivateClippingPlane();
 	}
 
 	if (this->Interactor->GetLightFollowCamera())
@@ -905,7 +909,8 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 }
 void vtkMTInteractorStyle::OnLeftButtonDown()
 {
-	cout << "Left button down!" << endl;
+	//cout << "Left button down!" << endl;
+	this->LM_Button = LBUTTON_DOWN;
   if (this->CurrentMode != VTKISMT_SELECT)
   {
     //if not in rubber band mode, let the parent class handle it
@@ -960,7 +965,8 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 		  }
 		  else
 		  {
-			  this->Superclass::OnLeftButtonDown();
+			  this->Superclass::OnLeftButtonDown();		
+			
 		  }
 	  }
 	  else
@@ -1181,6 +1187,11 @@ void vtkMTInteractorStyle::OnMouseMove()
 	  {
 		  //let the parent class handle it
 		  this->Superclass::OnMouseMove();
+		  if (this->LM_Button == LBUTTON_DOWN)
+		  {
+			  //cout << "Activage clipping plane!!" << endl;
+			  mqMeshToolsCore::instance()->ActivateClippingPlane();
+		  }
 	  }
 	  else
 	  {
@@ -1311,6 +1322,7 @@ void vtkMTInteractorStyle::OnRightButtonUp()
 //--------------------------------------------------------------------------
 void vtkMTInteractorStyle::OnLeftButtonUp()
 {
+	this->LM_Button = LBUTTON_UP;
   if (this->CurrentMode != VTKISMT_SELECT)
   {
 	  if (this->Ctrl != CTRL_PRESSED)
@@ -1947,6 +1959,7 @@ void vtkMTInteractorStyle::RotateActors()
 		if (this->AutoAdjustCameraClippingRange)
 		{
 			this->CurrentRenderer->ResetCameraClippingRange();
+			mqMeshToolsCore::instance()->ActivateClippingPlane();
 		}
 
 		rwi->Render();
@@ -2118,6 +2131,7 @@ void vtkMTInteractorStyle::SpinActors()
 	if (this->AutoAdjustCameraClippingRange)
 	{
 		this->CurrentRenderer->ResetCameraClippingRange();
+		mqMeshToolsCore::instance()->ActivateClippingPlane();
 	}
 
 	rwi->Render();
@@ -2326,6 +2340,7 @@ void vtkMTInteractorStyle::PanActors()
 	if (this->AutoAdjustCameraClippingRange)
 	{
 		this->CurrentRenderer->ResetCameraClippingRange();
+		mqMeshToolsCore::instance()->ActivateClippingPlane();
 	}
 
 	rwi->Render();
