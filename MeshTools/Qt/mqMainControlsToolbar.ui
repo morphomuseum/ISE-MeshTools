@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>855</width>
+    <width>618</width>
     <height>34</height>
    </rect>
   </property>
@@ -395,14 +395,6 @@
   <addaction name="actionMoveAll"/>
   <addaction name="actionMoveOnlyLandmarks"/>
   <addaction name="separator"/>
-  <addaction name="actionCameraFront"/>
-  <addaction name="actionCameraBack"/>
-  <addaction name="actionCameraRight"/>
-  <addaction name="actionCameraLeft"/>
-  <addaction name="actionCameraAbove"/>
-  <addaction name="actionCameraBelow"/>
-  <addaction name="actionCameraCentreOfMassToggle"/>
-  <addaction name="actionCameraOrthoPerspectiveToggle"/>
   <addaction name="separator"/>
   <addaction name="actionGridToggle"/>
   <addaction name="actionOrientationHelperToggle"/>

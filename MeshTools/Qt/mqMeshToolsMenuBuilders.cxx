@@ -262,13 +262,13 @@ void mqMeshToolsMenuBuilders::buildToolbars(QMainWindow& mainWindow)
 
 	QToolBar* scalarsToolBar = new mqScalarsControlsToolbar(&mainWindow)
 		<< mqSetName("ScalarsControlsToolbar");
-	scalarsToolBar->layout()->setSpacing(10);
+	scalarsToolBar->layout()->setSpacing(0);
 	mainWindow.addToolBar(Qt::BottomToolBarArea, scalarsToolBar);
 
 	QToolBar* cameraToolBar = new mqCameraControlsToolbar(&mainWindow)
 		<< mqSetName("CameraControlsToolbar");
-	cameraToolBar->layout()->setSpacing(10);
-	mainWindow.addToolBar(Qt::RightToolBarArea, cameraToolBar);
+	cameraToolBar->layout()->setSpacing(0);
+	mainWindow.addToolBar(Qt::LeftToolBarArea, cameraToolBar);
 
 }
 

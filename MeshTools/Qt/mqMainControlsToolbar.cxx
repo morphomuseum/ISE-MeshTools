@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "mqEditACTORDialogReaction.h"
 #include "mqMeshToolsCore.h"
 #include "mqOpenDataReaction.h"
-#include "mqCameraReaction.h"
+
 #include "mqDisplayReaction.h"
 
 #include <QToolButton>
@@ -56,12 +56,7 @@ void mqMainControlsToolbar::constructor()
   this->ui->setupUi(this);
   new mqSaveNTWDialogReaction(this->ui->actionSaveData);
   new mqOpenDataReaction(this->ui->actionOpenData, 0);//0= open data (generic)
-  new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
-  new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back
-  new mqCameraReaction(this->ui->actionCameraLeft, 2); //2 = camera Left
-  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
-  new mqCameraReaction(this->ui->actionCameraAbove, 4); //4 = camera Above
-  new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
+ 
   new mqEditLMKDialogReaction(this->ui->actionEditLandmarks);
   new mqCreateLMKDialogReaction(this->ui->actionCreateLandmark);
   new mqEditFLGDialogReaction(this->ui->actionEditFlags);
@@ -71,19 +66,7 @@ void mqMainControlsToolbar::constructor()
   new mqUndoRedoReaction(this->ui->actionUndo, true);
   new mqUndoRedoReaction(this->ui->actionRedo, false);
 
-  if (mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin() == 0)
-  {
-
-	  this->ui->actionCameraCentreOfMassToggle->setChecked(true);
-  }
-
   
-
-  if (mqMeshToolsCore::instance()->Getmui_CameraOrtho() == 0)
-  {
-
-	  this->ui->actionCameraOrthoPerspectiveToggle->setChecked(true);
-  }
 
   if (mqMeshToolsCore::instance()->Getmui_Anaglyph() == 1)
   {
@@ -113,9 +96,6 @@ void mqMainControlsToolbar::constructor()
 	  this->ui->actionMoveOnlyLandmarks->setChecked(true);
   }
 
-
-  new mqCameraReaction(this->ui->actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
-  new mqCameraReaction(this->ui->actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
 
   new mqDisplayReaction(this->ui->actionGridToggle, 0); //0 = display Grid Toggle
   new mqDisplayReaction(this->ui->actionOrientationHelperToggle, 1); //1 = display Orientation Helper Toggle

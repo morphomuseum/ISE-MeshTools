@@ -12,12 +12,14 @@
 #include "mqUndoRedoReaction.h"
 #include "mqMeshToolsCore.h"
 #include "mqDisplayReaction.h"
-
+#include "mqCameraReaction.h"
 #include <vtkRenderer.h>
 #include "QDoubleSlider.h"
 #include <QToolButton>
 #include <QComboBox>
 #include <QSlider>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 
 //-----------------------------------------------------------------------------
@@ -27,17 +29,75 @@ void mqCameraControlsToolbar::constructor()
  // ui.setupUi(this);
   this->ui = new Ui_mqCameraControlsToolbar;
   this->ui->setupUi(this);
-  this->cP = new QDoubleSlider;
+
+  new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
+  new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back
+  new mqCameraReaction(this->ui->actionCameraLeft, 2); //2 = camera Left
+  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
+  new mqCameraReaction(this->ui->actionCameraAbove, 4); //4 = camera Above
+  new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
+
+  if (mqMeshToolsCore::instance()->Getmui_CameraCentreOfMassAtOrigin() == 0)
+  {
+
+	  this->ui->actionCameraCentreOfMassToggle->setChecked(true);
+  }
+
+
+
+  if (mqMeshToolsCore::instance()->Getmui_CameraOrtho() == 0)
+  {
+
+	  this->ui->actionCameraOrthoPerspectiveToggle->setChecked(true);
+  }
+
+  new mqCameraReaction(this->ui->actionCameraCentreOfMassToggle, 6); //6 = camera COM toggle
+  new mqCameraReaction(this->ui->actionCameraOrthoPerspectiveToggle, 7); //7 = camera OrthoPerspective toggle
+
+
+
+ /* */
+   this->cP = new QDoubleSlider;
+   this->cP->setToolTip(QString("Clipping plane"));
   this->zoom = new QDoubleSlider;
+  this->zoom->setToolTip(QString("Zoom"));
   this->zRot = new QDoubleSlider;
+  this->zRot->setToolTip(QString("Rotate camera along viewing axis"));
+  
+  QHBoxLayout *layout = new QHBoxLayout;
   
   
-  
-  // Add values in the combo box
-  this->addWidget(this->zRot);
-   this->addWidget(this->cP);
-  this->addWidget(this->zoom);
+  QWidget* grid = new QWidget();
+ layout->addWidget(this->zRot);
  
+ 
+
+  grid->setLayout(layout);
+  this->addWidget(grid);
+  // Add values in the combo box
+  /*this->addWidget(this->zRot);
+  this->addWidget(this->cP);
+  this->addWidget(this->zoom);*/
+
+ 
+
+  QHBoxLayout *layout2 = new QHBoxLayout;
+  QWidget* grid2 = new QWidget();
+  layout2->addWidget(this->cP);
+  grid2->setLayout(layout2);
+  this->addWidget(grid2);
+
+  QWidget* spacer = new QWidget();
+  spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  this->addWidget(spacer);
+
+  QHBoxLayout *layout3 = new QHBoxLayout;
+  QWidget* grid3 = new QWidget();
+  layout3->addWidget(this->zoom);
+  grid3->setLayout(layout3);
+  this->addWidget(grid3);
+
+  //this->setLayout(layout);
   //this->ui->actionTagEdit->setDisabled(true);
   //this->ui->actionClippingPlaneOnOff->setDisabled(true);
   //connect(mqMeshToolsCore::instance(), SIGNAL(clippingPlaneChanged(int)), this, SLOT(slotClippingPlaneChanged(int)));
