@@ -15,6 +15,7 @@
 #include "mqCameraReaction.h"
 #include <vtkRenderer.h>
 #include "QDoubleSlider.h"
+#include "QReleaseSlider.h"
 #include <QToolButton>
 #include <QComboBox>
 #include <QSlider>
@@ -61,7 +62,10 @@ void mqCameraControlsToolbar::constructor()
    this->cP->setToolTip(QString("Clipping plane"));
   this->zoom = new QDoubleSlider;
   this->zoom->setToolTip(QString("Zoom"));
-  this->zRot = new QDoubleSlider;
+  this->zRot = new QReleaseSlider;
+  this->zRot->setMaximum(90);
+  this->zRot->setMinimum(-90);
+
   this->zRot->setToolTip(QString("Rotate camera along viewing axis"));
   
   QHBoxLayout *layout = new QHBoxLayout;
