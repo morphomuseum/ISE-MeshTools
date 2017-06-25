@@ -14,6 +14,7 @@
 class Ui_mqCameraControlsToolbar;
 class QDoubleSlider;
 class QReleaseSlider;
+class QReleaseSliderValue;
 /**
 * mqCameraControlsToolbar is the toolbar with actions (and reactions) for the
 * "Camera Controls" toolbar in MeshTools. 
@@ -43,7 +44,8 @@ public:
 private:
 	Q_DISABLE_COPY(mqCameraControlsToolbar);
 	QReleaseSlider * zRot;
-	QDoubleSlider * cP;
+	QReleaseSliderValue *cP;
+	//QDoubleSlider * cP;
 	QDoubleSlider * zoom;
   Ui_mqCameraControlsToolbar *ui;
   void constructor();

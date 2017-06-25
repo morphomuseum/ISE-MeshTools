@@ -16,6 +16,7 @@
 #include <vtkRenderer.h>
 #include "QDoubleSlider.h"
 #include "QReleaseSlider.h"
+#include "QReleaseSliderValue.h"
 #include <QToolButton>
 #include <QComboBox>
 #include <QSlider>
@@ -58,8 +59,10 @@ void mqCameraControlsToolbar::constructor()
 
 
  /* */
-   this->cP = new QDoubleSlider;
-   this->cP->setToolTip(QString("Clipping plane"));
+  // this->cP = new QDoubleSlider;
+  this->cP = new QReleaseSliderValue(Qt::Vertical, tr("")); 
+  //this->cP->set
+  // this->cP->setToolTip(QString("Clipping plane"));
   this->zoom = new QDoubleSlider;
   this->zoom->setToolTip(QString("Zoom"));
   this->zRot = new QReleaseSlider;
