@@ -1,7 +1,7 @@
 #ifndef QRELEASESLIDERVALUE_H
 #define QRELEASESLIDERVALUE_H
 
-#include <QGroupBox>
+#include <QWidget>
 
 class QDial;
 class QScrollBar;
@@ -9,7 +9,7 @@ class QScrollBar;
 class QSlider;
 class QSpinBox;
 
-class QReleaseSliderValue : public QGroupBox
+class QReleaseSliderValue : public QWidget
 {
 	Q_OBJECT
 

@@ -4,13 +4,21 @@
 
 QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QString &title,
 	QWidget *parent)
-	: QGroupBox(title, parent)
+	//: QGroupBox(title, parent)
+	: QWidget(parent)
 {
-	this->setFlat(true);
+	//this->setFlat(true);
 	this->spinbox = new QSpinBox;
 	this->spinbox->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	this->spinbox->setDisabled(true);
-	this->spinbox->setFixedWidth(20);
+	this->spinbox->setMaximum(90);
+	this->spinbox->setMinimum(-90);
+	//this->spinbox->setFixedWidth(20);
+	this->spinbox->setFixedSize(15, 15);
+	QFont font(this->spinbox->font());
+	font.setPointSize(5);
+	this->spinbox->setFont(font);
+
 	//this->slider = new QReleaseSlider(orientation);
 	this->slider = new QSlider(orientation);
 	//this->slider->setFocusPolicy(Qt::StrongFocus);
@@ -34,12 +42,13 @@ QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QStr
 		direction = QBoxLayout::LeftToRight;
 	}
 
-	QBoxLayout *slidersLayout = new QBoxLayout(direction);
-	
-	slidersLayout->addWidget(slider);
-	slidersLayout->addWidget(spinbox);
-	setLayout(slidersLayout);
-	this->setContentsMargins(0, 0, 0, 0);
+	//QBoxLayout *slidersLayout = new QBoxLayout(direction);
+	QVBoxLayout *layout2 = new QVBoxLayout;
+
+	layout2->addWidget(slider);
+	layout2->addWidget(spinbox);
+	setLayout(layout2);
+	//this->setContentsMargins(0, 0, 0, 0);
 	//this->setFixedWidth(30);
 }
 

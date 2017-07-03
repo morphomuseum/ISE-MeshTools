@@ -88,11 +88,12 @@ void mqCameraControlsToolbar::constructor()
 
  
 
-  QHBoxLayout *layout2 = new QHBoxLayout;
+  /*QHBoxLayout *layout2 = new QHBoxLayout;
   QWidget* grid2 = new QWidget();
   layout2->addWidget(this->cP);
   grid2->setLayout(layout2);
-  this->addWidget(grid2);
+  this->addWidget(grid2);*/
+  this->addWidget(this->cP);
 
   QWidget* spacer = new QWidget();
   spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
