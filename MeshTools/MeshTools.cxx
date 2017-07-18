@@ -271,6 +271,7 @@ void RubberBandSelect(vtkObject* caller,
 // Constructor
 MeshTools::MeshTools()
 {
+	vtkObject::GlobalWarningDisplayOff();
 	this->MeshToolsCore =  new mqMeshToolsCore();
 
 	//vtkUndoStack* undoStack = vtkUndoStack::New();
