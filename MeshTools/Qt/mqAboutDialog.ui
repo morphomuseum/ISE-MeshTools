@@ -77,6 +77,38 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string> ISE-MeshTools provides a set of tools for editing, positioning, deforming, labeling, measuring and rendering sets of 3D meshes.
+
+Features include:
+
+    Retro-deformation for un-deforming fossils/deformed specimens
+    Point and curve primitives for placing the exact type of landmark points you're interested in
+    Easy to use 3D interface for positioning and manipulating sets of surfaces and landmark primitives
+    Mesh tagging, labeling and coloring (to allow for the creation of anatomy atlases)
+    Mesh scalar computation and coloring (based upon curvature/thickness etc...) </string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>MeshTools is based on the design concepts of the software FoRM-IT (Fossil Reconstruction and Morphometry Interactive Toolkit; see Zollikofer CPE &amp; Ponce de León MS (1995) Tools for rapid prototyping in the biosciences. IEEE Comp. Graph. Appl., 15(6), 48-55; Zollikofer CPE &amp; Ponce de León MS. (2005) Virtual reconstruction: A primer in computer-assisted paleontology and biomedicine. New York: Wiley).
+</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
