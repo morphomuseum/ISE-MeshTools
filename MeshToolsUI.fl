@@ -1,6 +1,6 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0302 
-header_name {MeshToolsUI.h} 
+version 1.0304
+header_name {MeshToolsUI.h}
 code_name {MeshToolsUI.cxx}
 class MeshToolsUI {open
 } {
@@ -11,7 +11,7 @@ class MeshToolsUI {open
       callback {options_hide();
 cam_hide();
 
-exit(0);} open
+exit(0);}
       private image {pixmap/s_face.gif} xywh {20 206 1100 700} type Double box UP_BOX color 55 labelsize 12 align 8 when 1 hide resizable
     } {
       Fl_Group Top {open
@@ -857,7 +857,7 @@ MT->redraw();}
             MenuItem AllFlagOptions2 {
               label {Update all selected flags colours automatically}
               callback {MT->update_all_flags_colours();
-MT->redraw();} selected
+MT->redraw();}
               tooltip {Gives closest vertex colour to all selected flags} xywh {20 20 30 20}
             }
             MenuItem LandmarkNormals {
@@ -1974,7 +1974,7 @@ options_lm_hide();}
       }
     }
     Fl_Window matWindow {
-      label {Object Matrix} open
+      label {Object Matrix}
       image {pixmap/s_back_13.gif} xywh {455 253 231 331} type Double color 215 hide resizable non_modal
     } {
       Fl_Button Ok_mat {
@@ -2289,13 +2289,13 @@ MyName->value(Name.c_str());}
       }
     }
     Fl_Window versionWindow {
-      label About
-      xywh {1209 341 784 173} type Double hide resizable modal
+      label About open selected
+      xywh {269 341 759 256} type Double resizable modal visible
     } {
       Fl_Button Ok_Version {
         label Ok
         callback {version_hide();}
-        xywh {265 120 65 25}
+        xywh {265 216 65 25}
       }
       Fl_Input Version {
         label {Version :}
@@ -2319,6 +2319,26 @@ MyName->value(Name.c_str());}
       Fl_Input Git {
         label {Source repository : https://github.com/morphomuseum/ISE-MeshTools}
         xywh {487 86 15 25} box NO_BOX
+      }
+      Fl_Input Design_concepts {
+        label {Design concepts : ISE-MeshTools is based on the design concepts of the software FoRM-IT }
+        xywh {634 106 15 25} box NO_BOX
+      }
+      Fl_Input Design_concepts2 {
+        label { (Fossil Reconstruction and Morphometry Interactive Toolkit; see Zollikofer CPE and}
+        xywh {691 128 15 25} box NO_BOX
+      }
+      Fl_Input Design_concepts3 {
+        label {Ponce de León MS (1995) Tools for rapid prototyping in the biosciences. IEEE Comp. }
+        xywh {711 149 15 25} box NO_BOX
+      }
+      Fl_Input Design_concepts4 {
+        label {Graph. Appl., 15(6), 48-55; Zollikofer CPE & Ponce de León MS. (2005) Virtual reconstruction:}
+        xywh {751 168 15 25} box NO_BOX
+      }
+      Fl_Input Design_concepts5 {
+        label {A primer in computer-assisted paleontology and biomedicine. New York: Wiley).}
+        xywh {668 187 15 25} box NO_BOX
       }
     }
     Fl_Window smoothWindow {
@@ -6712,8 +6732,7 @@ Flag_Colour->redraw();*/} {}
   Function {flag_hide()} {} {
     code {flagWindow->hide();} {}
   }
-  Function {flag_update()} {open
-  } {
+  Function {flag_update()} {} {
     code {std::string label ="Flag";
 float m[3];
 m[0]=0;
@@ -7192,4 +7211,4 @@ LMK_Label->value(lmk_num);} {}
   Function {lmk_xyz_hide()} {} {
     code {lmkxyzWindow->hide();} {}
   }
-} 
+}
