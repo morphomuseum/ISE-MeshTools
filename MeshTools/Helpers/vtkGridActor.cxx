@@ -682,7 +682,7 @@ void vtkGridActor::CreateGridLines()
 	{
 		if (this->GridType == 0)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(green);
 #else
 			colors->InsertNextTupleValue(green);
@@ -691,7 +691,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else if (this->GridType == 1)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(blue);
 #else
 			colors->InsertNextTupleValue(blue);
@@ -699,7 +699,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(blue);
 #else
 			colors->InsertNextTupleValue(blue);
@@ -711,7 +711,7 @@ void vtkGridActor::CreateGridLines()
 	{
 		if (this->GridType == 0)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(red);
 #else
 			colors->InsertNextTupleValue(red);
@@ -719,7 +719,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else if (this->GridType == 1)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(red);
 #else
 			colors->InsertNextTupleValue(red);
@@ -728,7 +728,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(green);
 #else
 			colors->InsertNextTupleValue(green);
@@ -740,7 +740,7 @@ void vtkGridActor::CreateGridLines()
 	{
 		if (this->GridType == 0)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(cyan);
 #else
 			colors->InsertNextTupleValue(cyan);
@@ -749,7 +749,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else if (this->GridType == 1)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(fuschia);
 #else
 			colors->InsertNextTupleValue(fuschia);
@@ -759,7 +759,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(fuschia);
 #else
 			colors->InsertNextTupleValue(fuschia);
@@ -774,7 +774,7 @@ void vtkGridActor::CreateGridLines()
 	{
 		if (this->GridType == 0)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(yellow);
 #else
 			colors->InsertNextTupleValue(yellow);
@@ -784,7 +784,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else if (this->GridType == 1)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(yellow);
 #else
 			colors->InsertNextTupleValue(yellow);
@@ -793,7 +793,7 @@ void vtkGridActor::CreateGridLines()
 		}
 		else
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			colors->InsertNextTypedTuple(cyan);
 #else
 			colors->InsertNextTupleValue(cyan);
@@ -1121,7 +1121,7 @@ void vtkGridActor::CreateGridOutline()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			/*colors->InsertNextTypedTuple(green);
 			colors->InsertNextTypedTuple(cyan);*/
 			colors->InsertNextTypedTuple(outline_color);
@@ -1135,7 +1135,7 @@ void vtkGridActor::CreateGridOutline()
 		}
 		for (int i = 0; i < 3; i++)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			/*colors->InsertNextTypedTuple(red);
 			colors->InsertNextTypedTuple(yellow);*/
 			colors->InsertNextTypedTuple(outline_color);
@@ -1153,7 +1153,7 @@ void vtkGridActor::CreateGridOutline()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			/*colors->InsertNextTypedTuple(blue);
 			colors->InsertNextTypedTuple(fuschia);*/
 			colors->InsertNextTypedTuple(outline_color);
@@ -1170,7 +1170,7 @@ void vtkGridActor::CreateGridOutline()
 		{
 			for (int i = 0; i < 3; i++)
 			{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 				/*colors->InsertNextTypedTuple(red);
 				colors->InsertNextTypedTuple(yellow);*/
 				colors->InsertNextTypedTuple(outline_color);
@@ -1190,7 +1190,7 @@ void vtkGridActor::CreateGridOutline()
 	{
 		for (int i = 0; i < 3; i++)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			/*colors->InsertNextTypedTuple(blue);
 			colors->InsertNextTypedTuple(fuschia);*/
 			colors->InsertNextTypedTuple(outline_color);
@@ -1204,7 +1204,7 @@ void vtkGridActor::CreateGridOutline()
 		}
 		for (int i = 0; i < 3; i++)
 		{
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 			/*colors->InsertNextTypedTuple(green);
 			colors->InsertNextTypedTuple(cyan);*/
 			colors->InsertNextTypedTuple(outline_color);
@@ -1272,7 +1272,7 @@ double *vtkGridActor::GetBounds()
 }
 
 //----------------------------------------------------------------------------
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 
 vtkMTimeType vtkGridActor::GetMTime()
 {

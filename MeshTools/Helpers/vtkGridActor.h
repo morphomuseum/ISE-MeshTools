@@ -73,7 +73,7 @@ public:
 	// Description:
 	// Get the actors mtime plus consider its properties and texture if set.
 
-#if VTK_MINOR_VERSION >= 1
+#if VTK_MAJOR_VERSION >= 8 || VTK_MINOR_VERSION >= 1
 
 	/**
 	* Get the actors mtime plus consider its properties and texture if set.
