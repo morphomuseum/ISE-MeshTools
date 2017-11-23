@@ -16,7 +16,9 @@
 #include <vtkRenderer.h>
 #include "QDoubleSlider.h"
 #include "QReleaseSlider.h"
+#include "QDoubleReleaseSlider.h"
 #include "QReleaseSliderValue.h"
+#include <QDial>
 #include <QToolButton>
 #include <QComboBox>
 #include <QSlider>
@@ -62,10 +64,49 @@ void mqCameraControlsToolbar::constructor()
   // this->cP = new QDoubleSlider;
   this->cP = new QReleaseSliderValue(Qt::Vertical, tr("")); 
   //this->cP->set
-  // this->cP->setToolTip(QString("Clipping plane"));
-  this->zoom = new QDoubleSlider;
+   this->cP->setToolTip(QString("Clipping plane"));
+   this->cP->setMaximum(100);
+   this->cP->setMinimum(-100);
+  this->zoom = new QDoubleReleaseSlider;
   this->zoom->setToolTip(QString("Zoom"));
-  this->zRot = new QReleaseSlider;
+  
+  this->zoom->setDoubleMinimum(-100);
+  this->zoom->setDoubleMaximum(100);
+  this->zoom->setDoubleValue(10);
+  //this->zRot = new QReleaseSlider;
+  this->zRot = new QDial;
+  this->zRot->setFixedSize(30, 30);
+  this->zRot->setObjectName("zRot");
+ // this->setFixedWidth(200);
+  //this->zRot->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);"    );
+  
+  /*this->setStyleSheet("QDial#zRot{ background-color: blue }"
+	  "QDial#zRot:pressed {"
+					"background-color: rgb(224, 0, 0);"
+					"border-style: inset;"
+		"}"
+	   );
+	   */
+  /*QSlider::groove:vertical{
+  background: red;
+  position: absolute; 
+  left: 4px; right: 4px;
+  }
+
+	  QSlider::handle:vertical{
+  height: 10px;
+  background: green;
+  margin: 0 - 4px; 
+  }
+
+	  QSlider::addpage:vertical{
+  background: white;
+  }
+
+	  QSlider::sub - page : vertical{
+  background: pink;
+  }*/
+
   this->zRot->setMaximum(90);
   this->zRot->setMinimum(-90);
 
@@ -113,6 +154,8 @@ void mqCameraControlsToolbar::constructor()
   connect(this->ui->actionBackfaceCullingOnOff, SIGNAL(triggered()), this, SLOT(slotBackfaceCullingOnOff()));
   connect(this->ui->actionClippingPlaneOnOff, SIGNAL(triggered()), this, SLOT(slotClippingPlaneOnOff()));
  
+  connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
+  
   
 }
 

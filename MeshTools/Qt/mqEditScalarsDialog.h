@@ -40,6 +40,7 @@ public:
  void RefreshSuggestedRange();
  void UpdateLookupTables();
  void RefreshSliders();
+ void MoveSliders();
  void RefreshRange();
   public slots:
   virtual void slotActiveScalarChanged(int idx);
@@ -50,6 +51,7 @@ public:
   virtual void slotRefreshComboScalars();
   virtual void slotAcceptSuggestedMax();
   virtual void slotRefreshSliders();
+  virtual void slotMoveSliders();
   virtual void slotAcceptSuggestedMin();
   virtual void slotCurrentMinMaxEdited();
 

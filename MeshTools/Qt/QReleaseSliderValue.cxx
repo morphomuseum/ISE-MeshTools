@@ -1,5 +1,6 @@
 #include <QtWidgets>
-
+//#include "QDoubleSlider.h"
+#include "QReleaseSlider.h"
 #include "QReleaseSliderValue.h"
 
 QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QString &title,
@@ -11,20 +12,23 @@ QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QStr
 	this->spinbox = new QSpinBox;
 	this->spinbox->setButtonSymbols(QAbstractSpinBox::NoButtons);
 	this->spinbox->setDisabled(true);
-	this->spinbox->setMaximum(90);
-	this->spinbox->setMinimum(-90);
+	//this->spinbox->setMaximum(90);
+	//this->spinbox->setMinimum(-90);
 	//this->spinbox->setFixedWidth(20);
-	this->spinbox->setFixedSize(15, 15);
+	//this->spinbox->setFixedSize(15, 15);
+	this->spinbox->setFixedSize(22, 15);
 	QFont font(this->spinbox->font());
 	font.setPointSize(5);
 	this->spinbox->setFont(font);
 
-	//this->slider = new QReleaseSlider(orientation);
-	this->slider = new QSlider(orientation);
+	this->slider = new QReleaseSlider;
+	//this->slider = new QSlider(orientation);
+	//this->slider = new QDoubleSlider;
+	//this->slider = new QDoubleSlider;
 	//this->slider->setFocusPolicy(Qt::StrongFocus);
 	//this->slider->setTickPosition(QSlider::TicksBothSides);
 	//this->slider->setTickInterval(10);
-	this->slider->setSingleStep(1);
+	this->slider->setSingleStep(0.2);
 
 	
 	

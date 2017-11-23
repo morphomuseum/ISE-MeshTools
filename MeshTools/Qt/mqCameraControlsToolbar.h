@@ -13,6 +13,8 @@
 #include <QToolBar>
 class Ui_mqCameraControlsToolbar;
 class QDoubleSlider;
+class QDial;
+class QDoubleReleaseSlider;
 class QReleaseSlider;
 class QReleaseSliderValue;
 /**
@@ -43,10 +45,12 @@ public:
   
 private:
 	Q_DISABLE_COPY(mqCameraControlsToolbar);
-	QReleaseSlider * zRot;
+	//QReleaseSlider * zRot;
+	QDial * zRot;
+	//QDial * camzRot;
 	QReleaseSliderValue *cP;
 	//QDoubleSlider * cP;
-	QDoubleSlider * zoom;
+	QDoubleReleaseSlider * zoom;
   Ui_mqCameraControlsToolbar *ui;
   void constructor();
 };

@@ -5,8 +5,8 @@
 
 class QDial;
 class QScrollBar;
-//class QReleaseSlider;
-class QSlider;
+class QReleaseSlider;
+//class QDoubleSlider;
 class QSpinBox;
 
 class QReleaseSliderValue : public QWidget
@@ -29,7 +29,7 @@ signals:
 
 private:
 	//QReleaseSlider *slider;
-	QSlider *slider;
+	QReleaseSlider *slider;
 	QSpinBox *spinbox;
 	QDial *dial;
 };

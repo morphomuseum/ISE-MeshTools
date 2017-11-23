@@ -102,9 +102,13 @@ mqEditScalarsDialog::mqEditScalarsDialog(QWidget* Parent)
 	connect(this->Ui->pushScalarSuggestedMax, SIGNAL(pressed()), this, SLOT(slotAcceptSuggestedMax()));
 	connect(this->Ui->pushScalarSuggestedMin, SIGNAL(pressed()), this, SLOT(slotAcceptSuggestedMin()));
 	
+	connect(this->Ui->sliderMin, SIGNAL(valueChanged(int)), this, SLOT(slotMoveSliders()));
+	connect(this->Ui->sliderMax, SIGNAL(valueChanged(int)), this, SLOT(slotMoveSliders()));
+	
 	connect(this->Ui->sliderMin, SIGNAL(sliderReleased()), this, SLOT(slotRefreshSliders()));
 	connect(this->Ui->sliderMax, SIGNAL(sliderReleased()), this, SLOT(slotRefreshSliders()));
-	
+
+
 	connect(this->Ui->currentMin, SIGNAL(editingFinished()), this, SLOT(slotCurrentMinMaxEdited()));
 	connect(this->Ui->currentMax, SIGNAL(editingFinished()), this, SLOT(slotCurrentMinMaxEdited()));
 	
@@ -267,6 +271,30 @@ void mqEditScalarsDialog::RefreshSliders()
 	sliderMax->redraw();
 	*/
 }
+
+void mqEditScalarsDialog::MoveSliders()
+{
+
+	//this->Ui->sliderMin->setDoubleValue(this->Ui->currentMin->value());
+	//this->Ui->sliderMax->setDoubleValue(this->Ui->currentMax->value());
+	cout << "Move Slider" << endl;
+	double curr_max = this->Ui->sliderMax->doubleValue();
+	double curr_min = this->Ui->sliderMin->doubleValue();
+
+	this->Ui->currentMin->setValue(this->Ui->sliderMin->doubleValue());
+
+	this->Ui->currentMax->setValue(this->Ui->sliderMax->doubleValue());
+
+	/*
+	sliderMin->maximum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
+	sliderMin->minimum((3 * MT->Get_sc_min() - MT->Get_sc_max()) / 2);
+	sliderMax->minimum((MT->Get_sc_max() + MT->Get_sc_min()) / 2);
+	sliderMax->maximum((3 * MT->Get_sc_max() - MT->Get_sc_min()) / 2);
+	sliderMax->redraw();
+	sliderMax->redraw();
+	*/
+}
+
 void mqEditScalarsDialog::RefreshRange() 
 {
 }
@@ -487,6 +515,11 @@ void mqEditScalarsDialog::slotRefreshSliders()
 {
 	this->RefreshSliders();
 	this->UpdateLookupTables();
+}
+void mqEditScalarsDialog::slotMoveSliders()
+{
+	this->MoveSliders();
+	//this->UpdateLookupTables();
 }
 /*void mqEditScalarsDialog::slotSliderMinValueChanged(int value)
 {

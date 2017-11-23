@@ -133,6 +133,8 @@ QDoubleSlider.cxx
 QDoubleSlider.h
 QReleaseSlider.cxx
 QReleaseSlider.h
+QDoubleReleaseSlider.cxx
+QDoubleReleaseSlider.h
 QReleaseSliderValue.cxx
 QReleaseSliderValue.h
 )

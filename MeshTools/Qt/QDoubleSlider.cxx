@@ -1,5 +1,10 @@
 #include "QDoubleSlider.h"
 #include <cmath>
+#include <stdlib.h>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <QTextStream>
 
 QDoubleSlider::QDoubleSlider(QWidget *parent) :
 	QSlider(parent)
@@ -29,6 +34,7 @@ void QDoubleSlider::setDoubleValue(double x)
 	if (this->value() != p)
 		this->setValue(p);
 	m_CorrespondingIntValue = p;
+	//std::cout << "Value:" <<x<< std::endl;
 }
 
 double QDoubleSlider::doubleValue()

@@ -578,7 +578,7 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 		{
 			double curr = pts[4 * j];
 			cout << "x" << j << "=" << curr << endl;
-			if (curr < old_min) { old_min = curr; }
+			//if (curr < old_min) { old_min = curr; }
 			if (curr > old_max) { old_max = curr; }
 
 		}
@@ -591,7 +591,7 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 			for (int k = 0; k < numnodes; k++)
 			{
 				pts[4 * k] = pts[4 * k] * mult + c;
-				cout << "nx" << k << "=" << pts[4 * k] << endl;
+				//cout << "nx" << k << "=" << pts[4 * k] << endl;
 			}
 			CM->FillFromDataPointer(numnodes, pts);
 
@@ -599,13 +599,13 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 		vtkPiecewiseFunction* OF = CM->GetScalarOpacityFunction();
 		int numnodes2 = OF->GetSize();
 		double *pts2 = OF->GetDataPointer();
-		cout << this->mui_ExistingColorMaps->Stack.at(i).Name.toStdString() << ": OF num nodes = " << numnodes2 << endl;
+		//cout << this->mui_ExistingColorMaps->Stack.at(i).Name.toStdString() << ": OF num nodes = " << numnodes2 << endl;
 		double old_min2 = DBL_MAX;
 		double old_max2 = -DBL_MAX;
 		for (int j = 0; j < numnodes2; j++)
 		{
 			double curr = pts2[2*j];
-			cout << "x" << j << "=" << curr << endl;
+			//cout << "x" << j << "=" << curr << endl;
 			if (curr < old_min2) { old_min2 = curr; }
 			if (curr > old_max2) { old_max2 = curr; }
 
@@ -619,7 +619,7 @@ void mqMeshToolsCore::UpddateLookupTablesRanges(double min, double max)
 			for (int k = 0; k < numnodes2; k++)
 			{
 				pts2[2*k] = pts2[2*k] * mult + c;
-				cout << "nx" << k << "=" << pts2[2*k] << endl;
+				//cout << "nx" << k << "=" << pts2[2*k] << endl;
 			}
 			OF->FillFromDataPointer(numnodes2, pts2);
 
