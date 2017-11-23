@@ -48,6 +48,8 @@ public:
 
 signals:
 
+	//void doubleValueChanged (double val);
+
 	public slots :
 
 private:

@@ -1089,6 +1089,8 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 {
 	if (this->ActorsPositionsSaved == 0)
 	{
+		//cout << "SavePositions" << endl;
+
 		std::string action = "Action!";
 		//cout << "State = " << this->State << endl;
 		switch (this->State)
@@ -1749,6 +1751,7 @@ void vtkMTInteractorStyle::TransformPoint(vtkMatrix4x4* matrix, double pointin[3
 
 void vtkMTInteractorStyle::RotateActors()
 {
+	cout << "ROTATE! " << endl;
 	if (this->CurrentRenderer == NULL 
 		|| this->ActorCollection == NULL
 		)

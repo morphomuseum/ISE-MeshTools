@@ -35,6 +35,7 @@ void QDoubleSlider::setDoubleValue(double x)
 		this->setValue(p);
 	m_CorrespondingIntValue = p;
 	//std::cout << "Value:" <<x<< std::endl;
+	//emit doubleValueChanged(m_DoubleValue);
 }
 
 double QDoubleSlider::doubleValue()

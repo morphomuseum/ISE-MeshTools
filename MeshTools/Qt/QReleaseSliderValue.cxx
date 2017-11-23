@@ -16,9 +16,9 @@ QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QStr
 	//this->spinbox->setMinimum(-90);
 	//this->spinbox->setFixedWidth(20);
 	//this->spinbox->setFixedSize(15, 15);
-	this->spinbox->setFixedSize(22, 15);
+	this->spinbox->setFixedSize(20, 15);
 	QFont font(this->spinbox->font());
-	font.setPointSize(5);
+	font.setPointSize(4);
 	this->spinbox->setFont(font);
 
 	this->slider = new QReleaseSlider;

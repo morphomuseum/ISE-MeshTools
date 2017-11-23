@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 void mqCameraControlsToolbar::constructor()
 {
+	this->lastzoom = 0;
  // Ui::mqCameraControlsToolbar ui;
  // ui.setupUi(this);
   this->ui = new Ui_mqCameraControlsToolbar;
@@ -154,9 +155,39 @@ void mqCameraControlsToolbar::constructor()
   connect(this->ui->actionBackfaceCullingOnOff, SIGNAL(triggered()), this, SLOT(slotBackfaceCullingOnOff()));
   connect(this->ui->actionClippingPlaneOnOff, SIGNAL(triggered()), this, SLOT(slotClippingPlaneOnOff()));
  
-  connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
+  //connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
+  connect(zoom, SIGNAL(valueChanged(int)), this, SLOT(slotZoom()));
   
-  
+}
+
+void mqCameraControlsToolbar::slotZoom()
+{
+	double val = this->zoom->doubleValue();
+	if (val == 0) { this->lastzoom = 0;  return; }
+	if (this->lastzoom>val)
+	{
+		mqMeshToolsCore::instance()->getCamera()->Zoom(1.1);
+		this->lastzoom = val;
+	}
+	else if (this->lastzoom<val)
+	{
+		this->lastzoom = val;
+		mqMeshToolsCore::instance()->getCamera()->Zoom(0.9);
+	}
+	mqMeshToolsCore::instance()->Render();
+}
+
+void mqCameraControlsToolbar::slotZrot(int val)
+{
+	if (val > 1)
+	{
+		mqMeshToolsCore::instance()->getCamera()->Zoom(1.1);
+	}
+	else
+	{
+		mqMeshToolsCore::instance()->getCamera()->Zoom(0.9);
+	}
+	mqMeshToolsCore::instance()->Render();
 }
 
 void mqCameraControlsToolbar::slotClippingPlaneOnOff()

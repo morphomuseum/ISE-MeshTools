@@ -42,8 +42,12 @@ public:
   public slots :
   virtual void slotClippingPlaneOnOff();
   virtual void slotBackfaceCullingOnOff();
+  virtual void slotZrot(int val);
+  //virtual void slotZoom(double val);
+  virtual void slotZoom();
   
 private:
+	double lastzoom;
 	Q_DISABLE_COPY(mqCameraControlsToolbar);
 	//QReleaseSlider * zRot;
 	QDial * zRot;
