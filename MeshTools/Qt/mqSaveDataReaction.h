@@ -37,6 +37,7 @@ public:
    
    
    void SaveCURInfos();
+   void SaveNormalizedShapeIndex();
    void SaveORI();
    
    
@@ -111,6 +112,10 @@ protected:
 	else if (this->Mode == 17)
 	{
 		this->SaveCURInfos();
+	}
+	else if (this->Mode == 18)
+	{
+		this->SaveNormalizedShapeIndex();
 	}
   }
 

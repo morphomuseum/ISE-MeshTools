@@ -33,6 +33,7 @@
 #include <vtkCleanPolyData.h>
 #include <vtkFloatArray.h>
 #include <vtkDoubleArray.h>
+#include <vtkMassProperties.h>
 
 #include <vtkCubeAxesActor.h>
 #include <vtkAppendPolyData.h>
@@ -3808,6 +3809,46 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 
 }
 
+int mqMeshToolsCore::SaveNormalizedShapeIndex(QString fileName)
+{
+	
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QTextStream stream(&file);
+		
+		
+		
+		//this->ComputeSelectedNamesLists();
+	
+		this->ActorCollection->InitTraversal();
+
+
+
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			if (myActor->GetSelected() == 1)
+			{
+			
+					vtkPolyDataMapper *mapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
+					{
+					
+						vtkSmartPointer<vtkPolyData> toMeasure = vtkSmartPointer<vtkPolyData>::New();
+						vtkSmartPointer<vtkMassProperties> massProp = vtkSmartPointer<vtkMassProperties>::New();
+						massProp->SetInputData(mapper->GetInput());
+						stream << myActor->GetName().c_str() << "_nsi:" << massProp->GetNormalizedShapeIndex() << endl;
+					
+						//@@@
+					}
+			
+			
+			}
+		}
+	}
+	file.close();
+}
 
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
 {

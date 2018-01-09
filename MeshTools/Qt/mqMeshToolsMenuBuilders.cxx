@@ -73,6 +73,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   QMenu* submenuTagsAndFlags = menu.addMenu("Tags and Flags");
   //QMenu* submenuFileInfos = menu.addMenu("Save infos (surface, area, volume)");
   QMenu* submenuOrientationLabels = menu.addMenu("Orientation helper labels");
+  QMenu* submenuMeasurements = menu.addMenu("Measurements");
   new mqOpenDataReaction(submenuProject->addAction("Open Project") << mqSetName("actionOpenNTW"), 1);
   new mqSaveNTWDialogReaction(submenuProject->addAction("Save Project") << mqSetName("actionSaveNTW"));
   
@@ -114,6 +115,9 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveFlagsDialogReaction(submenuTagsAndFlags->addAction("SaveFlags") << mqSetName("actionSaveFLG"));
   new mqOpenDataReaction(submenuOrientationLabels->addAction("Open Orientation Labels") << mqSetName("actionOpenORI"), 7);
   new mqSaveDataReaction(submenuOrientationLabels->addAction("Save Orientation Labels") << mqSetName("actionSaveORI"), 7);
+
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save normalized shape index (complexity: deviation frome sphere)") << mqSetName("actionSaveComplexity"), 18);
+
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
   

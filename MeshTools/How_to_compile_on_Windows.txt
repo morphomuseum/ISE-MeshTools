@@ -23,4 +23,4 @@ http://www.vtk.org/Wiki/VTK/Tutorials/QtSetup
 Sometimes, link compilation errors arise 
 => in VC, sometimes (probably when there are path issues) you have to modify the project: link editor, change the name of all VTK libraries 
 
-When distributing the .exe file, add a  directory nameed "platforms"+ qwindows.dll inside.
+When distributing the .exe file, add a  directory named "platforms"+ qwindows.dll inside.
