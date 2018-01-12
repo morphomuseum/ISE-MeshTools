@@ -178,7 +178,8 @@ public:
 	int SaveSTVFile(QString fileName, int save_only_selected);
 	int SaveCURFile(QString fileName, int save_only_selected);
 	int SaveCURasVERFile(QString fileName, int decimation, int save_format, int save_other_lmks);
-	int SaveNormalizedShapeIndex(QString fileName);
+	
+	int SaveShapeComplexity(QString fileName, int mode);
 	
 	int SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms = 0, vtkMTActor *myActor = NULL);
 	int SaveLandmarkFile(QString fileName, int lm_type, int file_type, int save_only_selected);
@@ -315,6 +316,7 @@ public:
   vtkSmartPointer<vtkRenderer> getRenderer();
   vtkSmartPointer<vtkCamera> getCamera();
   vtkSmartPointer<vtkGridActor> getGridActor();
+  void addConvexHull();
   void Redo(); // calls the undoStack Redo function
   void Undo(); // callse the undoStack Undo function
   void Render(); // called when something has changed and the app needs to redraw
@@ -495,6 +497,7 @@ public slots:
 	virtual void slotLandmarkMoveUp();
 	virtual void slotLandmarkMoveDown();
 	virtual void slotUpdateAllSelectedFlagsColors();
+	virtual void slotConvexHULL();
 	virtual void  slotGrey();
 	virtual void slotYellow();
 	virtual void slotRed();

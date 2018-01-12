@@ -153,13 +153,32 @@ void mqSaveDataReaction::SaveCURInfos()
 
 }
 
-void mqSaveDataReaction::SaveNormalizedShapeIndex()
+void mqSaveDataReaction::SaveShapeComplexity(int mode)
 {
+	//mode: 1: normalized shape index
+	//mode: 2: mean radius normalized shape index
+	//mode: 3: convex hull normalized shape index
+	QString myText;
+	if (mode == 1)
+	{
+		cout << "Save normalized shape index" << endl;
+		myText = tr("Save normalized shape index");
+	}
+	else if (mode == 2)
+	{
+		cout << "Save mean readius normalized shape index" << endl;
+		myText = tr("Save mean readius normalized shape index");
+	}
+	else 
+	{
+		cout << "Save convex hull normalized shape index" << endl;
+		myText = tr("Save convex hull normalized shape index ");
+	}
 
-	cout << "Save Normalized Shape Index (measurement of shape complexity: deviation from spherical shape)" << endl;
+
 
 	QString fileName = QFileDialog::getSaveFileName(this->MainWindow,
-		tr("Save normalized shape index (measurement of shape complexity: deviation from spherical shape)"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+		myText, mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 		tr("text file (*.txt)"));
 
 	cout << fileName.toStdString() << endl;;
@@ -178,7 +197,7 @@ void mqSaveDataReaction::SaveNormalizedShapeIndex()
 		fileName.append(".txt");
 	}
 
-	mqMeshToolsCore::instance()->SaveNormalizedShapeIndex(fileName);
+	mqMeshToolsCore::instance()->SaveShapeComplexity(fileName, mode);
 
 
 

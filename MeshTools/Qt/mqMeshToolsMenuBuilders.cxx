@@ -115,8 +115,9 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveFlagsDialogReaction(submenuTagsAndFlags->addAction("SaveFlags") << mqSetName("actionSaveFLG"));
   new mqOpenDataReaction(submenuOrientationLabels->addAction("Open Orientation Labels") << mqSetName("actionOpenORI"), 7);
   new mqSaveDataReaction(submenuOrientationLabels->addAction("Save Orientation Labels") << mqSetName("actionSaveORI"), 7);
-
-  new mqSaveDataReaction(submenuMeasurements->addAction("Save normalized shape index (complexity: deviation frome sphere)") << mqSetName("actionSaveComplexity"), 18);
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save normalized shape index") << mqSetName("actionSaveNSI"), 18);
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save convex hull surface ratio (warning: slow)") << mqSetName("actionSaveCHSR"), 19);
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save convex hull normalized shape index (warning: slow)") << mqSetName("actionSaveCHNSI"), 20);
 
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 
@@ -152,6 +153,10 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	std::cout << "Menu object name" << objectName.toStdString() << std::endl;
 	menu.setObjectName(objectName);
 	QMenu* submenuStructureModification = menu.addMenu("Structure modification");
+
+
+	QAction *ConvexHULL = submenuStructureModification->addAction("Create convex hull for each selected surface");
+
 	QMenu* submenuRenderingModification = menu.addMenu("Rendering modification");
 	new mqEditAlphaDialogReaction(submenuRenderingModification->addAction("Change transparency") << mqSetName("actionEditAlpha"));
 
@@ -172,7 +177,8 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	QAction *Orange = submenuChangeObjectColor->addAction("Orange");
 	QAction *Brown = submenuChangeObjectColor->addAction("Brown");
 	
-
+	QAction::connect(ConvexHULL, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotConvexHULL()));
+	
 	QAction::connect(Grey, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotGrey()));
 	QAction::connect(Yellow, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotYellow()));
 	QAction::connect(Red, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotRed()));

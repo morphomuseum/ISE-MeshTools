@@ -35,6 +35,14 @@
 #include <vtkDoubleArray.h>
 #include <vtkMassProperties.h>
 
+#include <vtkDelaunay3D.h>
+#include <vtkQuadricDecimation.h>
+#include <vtkCenterOfMass.h>
+#include <vtkSphere.h>
+#include <vtkDataSetSurfaceFilter.h>
+
+#include <vtkGeometryFilter.h>
+
 #include <vtkCubeAxesActor.h>
 #include <vtkAppendPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -3809,15 +3817,29 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 
 }
 
-int mqMeshToolsCore::SaveNormalizedShapeIndex(QString fileName)
+int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
 {
+	//mode: 1: normalized shape index
+	//mode: 2: mean radius normalized shape index
+	//mode: 3: convex hull normalized shape index
 	
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream stream(&file);
-		
-		
+		if (mode == 1)
+		{
+			stream << "Surface_name	Normalized_shape_index Surface Volume" << endl;
+		}
+		else
+		if (mode == 2)
+		{
+			stream << "Surface_name	Convex_Hull_Area_Ratio Surface Volume Convex_hull_surface Convex_hull_volume" << endl;
+		}
+		else
+		{
+			stream << "Surface_name	Convex_Hull_Shape_Index Surface Volume Convex_hull_surface Convex_hull_volume" << endl;
+		}
 		
 		//this->ComputeSelectedNamesLists();
 	
@@ -3835,11 +3857,125 @@ int mqMeshToolsCore::SaveNormalizedShapeIndex(QString fileName)
 					if (mapper != NULL && vtkPolyData::SafeDownCast(mapper->GetInput()) != NULL)
 					{
 					
-						vtkSmartPointer<vtkPolyData> toMeasure = vtkSmartPointer<vtkPolyData>::New();
+						//vtkSmartPointer<vtkPolyData> toMeasure = vtkSmartPointer<vtkPolyData>::New();
 						vtkSmartPointer<vtkMassProperties> massProp = vtkSmartPointer<vtkMassProperties>::New();
+						
 						massProp->SetInputData(mapper->GetInput());
-						stream << myActor->GetName().c_str() << "_nsi:" << massProp->GetNormalizedShapeIndex() << endl;
+						massProp->Update();
+						double surface_area = massProp->GetSurfaceArea();
+						double volume = massProp->GetVolume();
+						if (mode == 1)
+						{
+							
+							stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << surface_area << "	" << volume <<  endl;
+						}
+						else if (mode == 2 || mode ==3)
+						{
+
+							/*vtkSmartPointer<vtkPolyData> myPD = vtkSmartPointer<vtkPolyData>::New();
+							vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter = vtkSmartPointer<vtkCenterOfMass>::New();
+							centerOfMassFilter->SetInputData(mapper->GetInput());
+							centerOfMassFilter->SetUseScalarsAsWeights(false);
+							double acenter[3];
+							centerOfMassFilter->Update();
+							centerOfMassFilter->GetCenter(acenter);
+							myPD = vtkPolyData::SafeDownCast(mapper->GetInput());
+							double ve[3];
+
+							
+
+							vtkIdType id_min = NULL;
+							for (vtkIdType j = 0; j < myPD->GetNumberOfPoints(); j++)
+							{
+								// for every triangle 
+								myPD->GetPoint(j, ve);
+								
+
+							}*/
+
+
+
 					
+							vtkSmartPointer<vtkMassProperties> massPropConvexHull = vtkSmartPointer<vtkMassProperties>::New();
+							vtkSmartPointer<vtkQuadricDecimation> decimate =
+								vtkSmartPointer<vtkQuadricDecimation>::New();
+
+							vtkSmartPointer<vtkDelaunay3D> delaunay3D =
+								vtkSmartPointer<vtkDelaunay3D>::New();
+							decimate->SetInputData(mapper->GetInput());
+							decimate->SetVolumePreservation(1);
+							double numvert = mapper->GetInput()->GetNumberOfPoints();
+							double reduction_factor = 0.1;
+							double target_number = 100000;
+							double new_factor = target_number/ numvert;
+							if (new_factor < 1)
+							{
+								reduction_factor = 1 - new_factor;
+							}
+							cout << "try to update quadric decimation by a factor of " << reduction_factor<< endl;
+
+
+							
+							if (new_factor < 1)
+							{
+								decimate->SetTargetReduction(reduction_factor);
+								decimate->Update();
+								delaunay3D->SetInputData(decimate->GetOutput());
+							}
+							else
+							{
+								delaunay3D->SetInputData(mapper->GetInput());
+							}
+							cout << "try to update Delaunay 3D" << endl;
+							delaunay3D->Update();
+							cout << "Delaunay 3D updated" << endl;
+							vtkSmartPointer<vtkGeometryFilter> geometryFilter =
+								vtkSmartPointer<vtkGeometryFilter>::New();
+
+							geometryFilter->SetInputConnection(delaunay3D->GetOutputPort());
+							cout << "Try to update geometry filter" << endl;
+							geometryFilter->Update();
+							cout << "Geometry filter updated" << endl;
+							/*vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter2 =
+								vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+							surfaceFilter2->SetInputData(geometryFilter->GetOutput());
+							surfaceFilter2->Update();*/
+
+
+							//delaunay3D->SetInputConnection(mapper->GetInputConnection();
+
+							massPropConvexHull->SetInputData(geometryFilter->GetOutput());
+							//massPropConvexHull->SetInputConnection(delaunay3D->GetOutputPort());
+							cout << "Try to update massPropConvexHull" << endl;
+							massPropConvexHull->Update();
+							cout << "massPropConvexHull updated" << endl;
+							
+							double sqrt_surface_area = sqrt(surface_area);
+
+							double surface_area_convex_hull = massPropConvexHull->GetSurfaceArea();
+							double sqrt_surface_area_convex_hull = sqrt(surface_area_convex_hull);
+
+
+							double volume_convex_hull = massPropConvexHull->GetVolume();
+							cout << myActor->GetName().c_str() << " volume=" << massProp->GetVolume() << " volume_convex_hull=" << massPropConvexHull->GetVolume() << endl;
+							double cbrt_volume_convex_hull = cbrt(volume_convex_hull);
+							double custom_complexity = sqrt_surface_area / (cbrt_volume_convex_hull*2.199085233);
+							double surface_ratio = 1;
+							if (surface_area_convex_hull > 0) { 
+									surface_ratio=surface_area / surface_area_convex_hull; 
+							}
+
+							if (mode == 2)
+							{
+
+								stream << myActor->GetName().c_str() << "	" << surface_ratio << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull<< endl;
+							}
+							else if (mode == 3)
+							{
+								//stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << custom_complexity << endl;
+								stream << myActor->GetName().c_str() << "	" << custom_complexity << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull <<  endl;
+							}
+						}
 						//@@@
 					}
 			
@@ -3848,6 +3984,103 @@ int mqMeshToolsCore::SaveNormalizedShapeIndex(QString fileName)
 		}
 	}
 	file.close();
+	return 1;
+}
+
+void mqMeshToolsCore::addConvexHull()
+{
+	this->ActorCollection->InitTraversal();
+
+	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	{
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+
+				vtkSmartPointer<vtkQuadricDecimation> decimate =
+					vtkSmartPointer<vtkQuadricDecimation>::New();
+				vtkSmartPointer<vtkDelaunay3D> delaunay3D =
+					vtkSmartPointer<vtkDelaunay3D>::New();
+				decimate->SetInputData(mymapper->GetInput());
+				decimate->SetVolumePreservation(1);
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+				double reduction_factor = 0.1;
+				double target_number = 100000;
+				double new_factor = target_number / numvert;
+				if (new_factor < 1)
+				{
+					reduction_factor = 1 - new_factor;
+				}
+				cout << "try to update quadric decimation by a factor of " << reduction_factor << endl;
+
+				if (new_factor < 1)
+				{
+					decimate->SetTargetReduction(reduction_factor);
+					decimate->Update();
+					delaunay3D->SetInputData(decimate->GetOutput());
+				}
+				else
+				{
+					delaunay3D->SetInputData(mymapper->GetInput());
+				}
+				cout << "try to update Delaunay 3D" << endl;
+				delaunay3D->Update();
+				cout << "Delaunay 3D updated" << endl;
+
+
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+
+				VTK_CREATE(vtkDataSetMapper, newmapper);
+				//VTK_CREATE(vtkSmartPointer<vtkDataSetMapper>
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+
+				newmapper->ScalarVisibilityOn();
+				newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+				//VTK_CREATE(vtkActor, actor);
+
+				int num = 2;
+
+				newactor->SetmColor(this->Getmui_MeshColor());
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+				newactor->SetName("CH" + myActor->GetName());
+				this->getActorCollection()->AddItem(newactor);
+
+			}
+		}
+	}
+
 }
 
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
@@ -6385,6 +6618,9 @@ void mqMeshToolsCore::slotLandmarkMoveDown()
 
 	this->LandmarksMoveDown();
 }
+
+void mqMeshToolsCore::slotConvexHULL() { this->addConvexHull(); }
+
 void mqMeshToolsCore::slotGrey() { this->SetSelectedActorsColor(150, 150, 150); }
 void mqMeshToolsCore::slotYellow(){ this->SetSelectedActorsColor(165, 142, 22); }
 void mqMeshToolsCore::slotRed(){ this->SetSelectedActorsColor(186, 37, 37); }
