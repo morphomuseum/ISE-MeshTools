@@ -37,7 +37,7 @@ public:
    
    
    void SaveCURInfos();
-   void SaveShapeComplexity(int mode);
+   void SaveShapeMeasures(int mode);
    void SaveORI();
    
    
@@ -115,15 +115,15 @@ protected:
 	}
 	else if (this->Mode == 18)
 	{
-		this->SaveShapeComplexity(1);
+		this->SaveShapeMeasures(1);
 	}
 	else if (this->Mode == 19)
 	{
-		this->SaveShapeComplexity(2);
+		this->SaveShapeMeasures(2);
 	}
 	else if (this->Mode == 20)
 	{
-		this->SaveShapeComplexity(3);
+		this->SaveShapeMeasures(3);
 	}
   }
 

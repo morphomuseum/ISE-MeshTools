@@ -13,6 +13,7 @@
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
 
+#include <vtkTransform.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkCellPicker.h>
 #include <vtkProperty.h>
@@ -3817,11 +3818,11 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 
 }
 
-int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
+int mqMeshToolsCore::SaveShapeMeasures(QString fileName, int mode)
 {
-	//mode: 1: normalized shape index
-	//mode: 2: mean radius normalized shape index
-	//mode: 3: convex hull normalized shape index
+	//mode: 1: area and volume 
+	//mode: 2: normalized shape index area and volume	
+	//mode: 3: convex hull area_ratio and ch_normalized_shape_index, area, volume, ch_area, ch_volume
 	
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -3829,16 +3830,16 @@ int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
 		QTextStream stream(&file);
 		if (mode == 1)
 		{
-			stream << "Surface_name	Normalized_shape_index Surface Volume" << endl;
+			stream << "Surface_name	Area Volume" << endl; 
 		}
 		else
 		if (mode == 2)
 		{
-			stream << "Surface_name	Convex_Hull_Area_Ratio Surface Volume Convex_hull_surface Convex_hull_volume" << endl;
+			stream << "Surface_name	Normalized_shape_index Area Volume" << endl;
 		}
 		else
 		{
-			stream << "Surface_name	Convex_Hull_Shape_Index Surface Volume Convex_hull_surface Convex_hull_volume" << endl;
+			stream << "Surface_name	Convex_Hull_Area_Ratio Convex_Hull_Shape_Index Area Volume Convex_hull_area Convex_hull_volume Normalized_shape_index" << endl;
 		}
 		
 		//this->ComputeSelectedNamesLists();
@@ -3867,9 +3868,14 @@ int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
 						if (mode == 1)
 						{
 							
-							stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << surface_area << "	" << volume <<  endl;
+							//stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << surface_area << "	" << volume <<  endl;
+							stream << myActor->GetName().c_str() << "	"  << surface_area << "	" << volume << endl;
 						}
-						else if (mode == 2 || mode ==3)
+						else if (mode == 2)
+						{
+							stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << surface_area << "	" << volume << endl;
+						}
+						else if (mode ==3)
 						{
 
 							/*vtkSmartPointer<vtkPolyData> myPD = vtkSmartPointer<vtkPolyData>::New();
@@ -3965,16 +3971,10 @@ int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
 									surface_ratio=surface_area / surface_area_convex_hull; 
 							}
 
-							if (mode == 2)
-							{
-
-								stream << myActor->GetName().c_str() << "	" << surface_ratio << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull<< endl;
-							}
-							else if (mode == 3)
-							{
-								//stream << myActor->GetName().c_str() << "	" << massProp->GetNormalizedShapeIndex() << "	" << custom_complexity << endl;
-								stream << myActor->GetName().c_str() << "	" << custom_complexity << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull <<  endl;
-							}
+							
+							
+							stream << myActor->GetName().c_str() << "	" << surface_ratio << "	" << custom_complexity << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull << "	"<< massProp->GetNormalizedShapeIndex()<<  endl;
+							
 						}
 						//@@@
 					}
@@ -3989,13 +3989,17 @@ int mqMeshToolsCore::SaveShapeComplexity(QString fileName, int mode)
 
 void mqMeshToolsCore::addConvexHull()
 {
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->InitTraversal();
-
-	for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
 	{
+		cout << "try to get next actor:" << i << endl;
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
+			myActor->SetSelected(0);
 
 			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
 			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
@@ -4016,6 +4020,7 @@ void mqMeshToolsCore::addConvexHull()
 					reduction_factor = 1 - new_factor;
 				}
 				cout << "try to update quadric decimation by a factor of " << reduction_factor << endl;
+				new_factor = 0.9;
 
 				if (new_factor < 1)
 				{
@@ -4031,7 +4036,19 @@ void mqMeshToolsCore::addConvexHull()
 				delaunay3D->Update();
 				cout << "Delaunay 3D updated" << endl;
 
+				//@@@
+				vtkSmartPointer<vtkGeometryFilter> geometryFilter =
+				vtkSmartPointer<vtkGeometryFilter>::New();
 
+				geometryFilter->SetInputConnection(delaunay3D->GetOutputPort());
+				cout << "Try to update geometry filter" << endl;
+				geometryFilter->Update();
+				cout << "Geometry filter updated" << endl;
+				
+
+
+			
+			//		@@@
 
 				VTK_CREATE(vtkMTActor, newactor);
 				if (this->mui_BackfaceCulling == 0)
@@ -4044,7 +4061,8 @@ void mqMeshToolsCore::addConvexHull()
 				}
 
 
-				VTK_CREATE(vtkDataSetMapper, newmapper);
+				//VTK_CREATE(vtkDataSetMapper, newmapper);
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
 				//VTK_CREATE(vtkSmartPointer<vtkDataSetMapper>
 				newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
@@ -4064,23 +4082,87 @@ void mqMeshToolsCore::addConvexHull()
 
 
 				newmapper->ScalarVisibilityOn();
-				newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+				VTK_CREATE(vtkPolyData, myData);
+				myData = geometryFilter->GetOutput();
+				cout << "myConvexHull: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+				newmapper->SetInputData(myData);
+				
 				//VTK_CREATE(vtkActor, actor);
 
 				int num = 2;
 
-				newactor->SetmColor(this->Getmui_MeshColor());
+				vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+				
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());						
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				double trans = 20;
+				if (trans >= 0 && trans <= 100)
+				{
+					color[3] = (double)((double)trans / 100);
+
+
+				}
+				
+				newactor->SetmColor(color);
 
 				newactor->SetMapper(newmapper);
 				newactor->SetSelected(0);
+				
 
 				newactor->SetName("CH" + myActor->GetName());
-				this->getActorCollection()->AddItem(newactor);
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+				
 
 			}
 		}
 	}
+	if (modified ==1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
 
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Convex Hull added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+		
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
 }
 
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)

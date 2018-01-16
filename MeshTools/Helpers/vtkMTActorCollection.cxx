@@ -167,6 +167,14 @@ void vtkMTActorCollection::AddItem(vtkActor *a)
 	mqMeshToolsCore::instance()->Initmui_ExistingScalars();
 
 }
+void vtkMTActorCollection::AddTmpItem(vtkActor *a)
+{
+	//cout << "Add item" << endl;
+	this->Superclass::AddItem(a);
+	
+	
+
+}
 void vtkMTActorCollection::CreateLoadUndoSet(int count, int creationcount)
 {
 	cout << "CreateLoadUndoSet(" << count << "," << creationcount << ")" << endl;

@@ -46,6 +46,7 @@ public:
 
 
 	void AddItem(vtkActor *a);
+	void AddTmpItem(vtkActor *a);
 	vtkMTActor* GetFirstSelectedActor();
 	vtkMTActor *GetActorBefore(vtkMTActor *Actor);
 	vtkMTActor *GetActorAfter(vtkMTActor *Actor);

@@ -115,9 +115,10 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   new mqSaveFlagsDialogReaction(submenuTagsAndFlags->addAction("SaveFlags") << mqSetName("actionSaveFLG"));
   new mqOpenDataReaction(submenuOrientationLabels->addAction("Open Orientation Labels") << mqSetName("actionOpenORI"), 7);
   new mqSaveDataReaction(submenuOrientationLabels->addAction("Save Orientation Labels") << mqSetName("actionSaveORI"), 7);
-  new mqSaveDataReaction(submenuMeasurements->addAction("Save normalized shape index") << mqSetName("actionSaveNSI"), 18);
-  new mqSaveDataReaction(submenuMeasurements->addAction("Save convex hull surface ratio (warning: slow)") << mqSetName("actionSaveCHSR"), 19);
-  new mqSaveDataReaction(submenuMeasurements->addAction("Save convex hull normalized shape index (warning: slow)") << mqSetName("actionSaveCHNSI"), 20);
+  
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save area and volume of selected surfaces") << mqSetName("actionSaveAV"), 18);
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save normalized shape index of selected surfaces") << mqSetName("actionSaveNSI"), 19);  
+  new mqSaveDataReaction(submenuMeasurements->addAction("Save convex hull area ratio and normalized shape index of selected surfaces (warning: slow)") << mqSetName("actionSaveCHNSI"), 20);
 
   new mqOpenDataReaction(submenuTagsAndFlags->addAction("Open Tag") << mqSetName("actionOpenTAG"), 9);
 

@@ -153,11 +153,11 @@ void mqSaveDataReaction::SaveCURInfos()
 
 }
 
-void mqSaveDataReaction::SaveShapeComplexity(int mode)
+void mqSaveDataReaction::SaveShapeMeasures(int mode)
 {
-	//mode: 1: normalized shape index
-	//mode: 2: mean radius normalized shape index
-	//mode: 3: convex hull normalized shape index
+	//mode: 1: area and volume 
+	//mode: 2: normalized shape index area and volume	
+	//mode: 3: convex hull area_ratio and ch_normalized_shape_index, area, volume, ch_area, ch_volume
 	QString myText;
 	if (mode == 1)
 	{
@@ -197,7 +197,7 @@ void mqSaveDataReaction::SaveShapeComplexity(int mode)
 		fileName.append(".txt");
 	}
 
-	mqMeshToolsCore::instance()->SaveShapeComplexity(fileName, mode);
+	mqMeshToolsCore::instance()->SaveShapeMeasures(fileName, mode);
 
 
 
