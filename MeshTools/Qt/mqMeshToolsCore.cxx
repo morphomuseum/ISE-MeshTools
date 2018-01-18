@@ -13,6 +13,8 @@
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
 
+#include <vtkUnstructuredGrid.h>
+#include <vtkReflectionFilter.h>
 #include <vtkTransform.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkCellPicker.h>
@@ -4164,7 +4166,185 @@ void mqMeshToolsCore::addConvexHull()
 		this->Render();
 	}
 }
+void mqMeshToolsCore::addMirrorXZ()
+{
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Mirror XZ try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
 
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+
+				
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+
+				//		@@@
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+				VTK_CREATE(vtkPolyData, myData);
+				vtkSmartPointer<vtkReflectionFilter> mfilter = vtkSmartPointer<vtkReflectionFilter>::New();
+				mfilter->CopyInputOff();
+				mfilter->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));
+				mfilter->SetPlaneToY();
+				
+				mfilter->Update();
+				vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+				grid = (vtkUnstructuredGrid*)mfilter->GetOutput();
+				vtkSmartPointer<vtkGeometryFilter> fgeo = vtkSmartPointer<vtkGeometryFilter>::New();
+
+				fgeo->SetInputData(grid);
+				fgeo->Update();
+				//MyObj = fgeo->GetOutput();
+
+				myData = fgeo->GetOutput();
+				cout << "myMirror: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+				
+
+				//VTK_CREATE(vtkActor, actor);
+
+				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+				ObjNormals->SetInputData(myData);
+				ObjNormals->ComputePointNormalsOn();
+				ObjNormals->ComputeCellNormalsOn();
+				ObjNormals->ConsistencyOff();
+				ObjNormals->Update();
+
+				vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+				cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+				cleanPolyDataFilter->PieceInvariantOff();
+				cleanPolyDataFilter->ConvertLinesToPointsOff();
+				cleanPolyDataFilter->ConvertPolysToLinesOff();
+				cleanPolyDataFilter->ConvertStripsToPolysOff();
+				cleanPolyDataFilter->PointMergingOn();
+				cleanPolyDataFilter->Update();
+
+				myData = cleanPolyDataFilter->GetOutput();
+
+				std::cout << "\nVtkReflection new Number of points:" << myData->GetNumberOfPoints() << std::endl;
+				std::cout << "VtkReflection new Number of cells:" << myData->GetNumberOfCells() << std::endl;
+
+				newmapper->SetInputData(myData);
+
+				
+
+				
+				vtkSmartPointer<vtkMatrix4x4> MatOrig = myActor->GetMatrix();
+				vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+				Mat->DeepCopy (myActor->GetMatrix());
+
+				double n1, n2, n3, n4;
+				n1 = -1 * MatOrig->GetElement(3, 1);
+				n2 = -1 * MatOrig->GetElement(0, 1);
+				n3 = -1 * MatOrig->GetElement(1, 0);
+				n4 = -1 * MatOrig->GetElement(2, 1);
+
+				Mat->SetElement(3, 1, n1);
+				Mat->SetElement(0, 1, n2);
+				Mat->SetElement(1, 0, n3);
+				Mat->SetElement(2, 1, n4);
+
+				
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName()+"_mir");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Mirror object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+			myActor->SetSelected(1);
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+}
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
 {
 	// Write_Type 0 : Binary LE or "Default Binary"
@@ -6702,6 +6882,8 @@ void mqMeshToolsCore::slotLandmarkMoveDown()
 }
 
 void mqMeshToolsCore::slotConvexHULL() { this->addConvexHull(); }
+void mqMeshToolsCore::slotMirror() { this->addMirrorXZ(); }
+
 
 void mqMeshToolsCore::slotGrey() { this->SetSelectedActorsColor(150, 150, 150); }
 void mqMeshToolsCore::slotYellow(){ this->SetSelectedActorsColor(165, 142, 22); }

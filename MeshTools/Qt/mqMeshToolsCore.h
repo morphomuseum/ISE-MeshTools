@@ -316,7 +316,8 @@ public:
   vtkSmartPointer<vtkRenderer> getRenderer();
   vtkSmartPointer<vtkCamera> getCamera();
   vtkSmartPointer<vtkGridActor> getGridActor();
-  void addConvexHull();
+  void addConvexHull();// create a convex hull for each selected surface
+  void addMirrorXZ(); //create a mirror surface through XZ plane for each selected surface
   void Redo(); // calls the undoStack Redo function
   void Undo(); // callse the undoStack Undo function
   void Render(); // called when something has changed and the app needs to redraw
@@ -498,6 +499,7 @@ public slots:
 	virtual void slotLandmarkMoveDown();
 	virtual void slotUpdateAllSelectedFlagsColors();
 	virtual void slotConvexHULL();
+	virtual void slotMirror();
 	virtual void  slotGrey();
 	virtual void slotYellow();
 	virtual void slotRed();
