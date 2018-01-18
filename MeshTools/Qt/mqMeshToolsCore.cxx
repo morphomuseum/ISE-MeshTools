@@ -13,6 +13,7 @@
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
 
+#include <vtkReverseSense.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkReflectionFilter.h>
 #include <vtkTransform.h>
@@ -4178,7 +4179,7 @@ void mqMeshToolsCore::addMirrorXZ()
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			myActor->SetSelected(0);
+			//myActor->SetSelected(0);
 
 			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
 			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
@@ -4325,7 +4326,7 @@ void mqMeshToolsCore::addMirrorXZ()
 			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
 			END_UNDO_SET();
 
-			myActor->SetSelected(1);
+			
 		}
 		//cout << "camera and grid adjusted" << endl;
 		cout << "new actor(s) added" << endl;
@@ -4345,6 +4346,271 @@ void mqMeshToolsCore::addMirrorXZ()
 		this->Render();
 	}
 }
+
+void mqMeshToolsCore::Invert()
+{
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Invert next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			//myActor->SetSelected(0);
+
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+
+
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+
+				//		@@@
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+				VTK_CREATE(vtkPolyData, myData);
+				vtkSmartPointer<vtkReverseSense> mfilter = vtkSmartPointer<vtkReverseSense>::New();
+				//
+				mfilter->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));			
+				mfilter->ReverseCellsOn();
+				//mfilter->SetReverseNormals(1); => causes MeshTools to crash... extremely odd!
+				mfilter->Update();
+				
+				myData = mfilter->GetOutput();
+				
+				// dirty hack because vtkReverseSense crashes when trying to reverse normales....
+				vtkSmartPointer<vtkFloatArray> normalsArray =
+					vtkSmartPointer<vtkFloatArray>::New();
+
+				normalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+				normalsArray->SetNumberOfTuples(myData->GetNumberOfPoints());
+				double *vn;
+				float vn2[3];
+				vtkFloatArray* norms = vtkFloatArray::SafeDownCast
+				(myData->GetPointData()->GetNormals());
+				//std::cout << "\n old norms :"<<norms->GetNumberOfTuples()
+				//  <<"\n Current object  number of points:"<<this->GetNumberOfPoints();
+
+				for (int i = 0; i<myData->GetNumberOfPoints(); i++) {
+					vn = norms->GetTuple((vtkIdType)i);
+					vn2[0] = (float)(-vn[0]); vn2[1] = (float)(-vn[1]); vn2[2] = (float)(-vn[2]);
+					normalsArray->SetTuple(i, vn2);
+					//std::cout << "\n i:"<<i<<"|vn2[0]"<<vn2[0]<<"|vn2[1]"<<vn2[1]<<"|vn2[2]"<<vn2[2];
+				}
+				normalsArray->SetName("Normals"); // MeshTools needs a name... 
+				myData->GetPointData()->SetNormals(normalsArray);
+
+
+				std::cout << "\nVtkInvert new Number of points:" << myData->GetNumberOfPoints() << std::endl;
+				std::cout << "VtkInvert new Number of cells:" << myData->GetNumberOfCells() << std::endl;
+
+				newmapper->SetInputData(myData);
+
+				vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+				
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName() + "_inv");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Inverted object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+
+
+}
+/*void mqMeshToolsCore::Invert()
+{
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Mirror XZ try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			myActor->SetSelected(0);
+			
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+
+
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+				
+				VTK_CREATE(vtkPolyData, myData);
+				myData = mymapper->GetInput();
+
+				//1) Modify normals
+				vtkSmartPointer<vtkFloatArray> normalsArray =
+					vtkSmartPointer<vtkFloatArray>::New();
+
+				normalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+				normalsArray->SetNumberOfTuples(myData->GetNumberOfPoints());
+				double *vn;
+				float vn2[3];
+				vtkFloatArray* norms = vtkFloatArray::SafeDownCast
+				(myData->GetPointData()->GetNormals());
+				//std::cout << "\n old norms :"<<norms->GetNumberOfTuples()
+				//  <<"\n Current object  number of points:"<<this->GetNumberOfPoints();
+
+				for (int i = 0; i<myData->GetNumberOfPoints(); i++) {
+					vn = norms->GetTuple((vtkIdType)i);
+					vn2[0] = (float)(-vn[0]); vn2[1] = (float)(-vn[1]); vn2[2] = (float)(-vn[2]);
+					normalsArray->SetTuple(i, vn2);
+					//std::cout << "\n i:"<<i<<"|vn2[0]"<<vn2[0]<<"|vn2[1]"<<vn2[1]<<"|vn2[2]"<<vn2[2];
+				}
+
+				//add the normals to the cells in the polydata
+				//std::cout << "\n Set Normals? Reference count:"<<normalsArray->GetReferenceCount();
+				//normalsArray->GetReferenceCount();
+				myData->GetPointData()->SetNormals(normalsArray);		
+
+				//2) invert triangle order
+				vtkIdType ve1, ve2, ve3;
+				vtkSmartPointer<vtkIdList> oldpoints = vtkSmartPointer<vtkIdList>::New();
+				vtkSmartPointer<vtkIdList> newpoints = vtkSmartPointer<vtkIdList>::New();
+
+				//std::cout << "\n Mesh invert";
+				//for every triangle
+				for (vtkIdType i = 0; i < myData->GetNumberOfCells(); i++)
+				{
+					myData->GetCellPoints(i, oldpoints);
+					ve1 = oldpoints->GetId(0);
+					ve2 = oldpoints->GetId(1);
+					ve3 = oldpoints->GetId(2);
+					if (i==10)
+					{  std::cout << "i:"<<i<<"BEFORE: ve1="<<ve1<<"|ve2="<<ve2<<"|ve3="<<ve3<<endl;
+
+					}
+
+					myData->ReverseCell(i);
+
+					myData->GetCellPoints(i, newpoints);
+					ve1 = newpoints->GetId(0);
+					ve2 = newpoints->GetId(1);
+					ve3 = newpoints->GetId(2);
+					if (i==10)
+					{
+						std::cout << "i:" << i << "AFTER: ve1=" << ve1 << "|ve2=" << ve2 << "|ve3=" << ve3 << endl;
+
+					}
+				}
+				for (vtkIdType i = 0; i < myData->GetNumberOfCells(); i++)
+				{
+					myData->GetCellPoints(i, newpoints);
+					ve1 = newpoints->GetId(0);
+					ve2 = newpoints->GetId(1);
+					ve3 = newpoints->GetId(2);
+					if (i == 10)
+					{
+						std::cout << "i:" << i << "AFTER: ve1=" << ve1 << "|ve2=" << ve2 << "|ve3=" << ve3 << endl;
+
+					}
+				}
+
+				modified = 1;
+
+
+			}
+		}
+		
+		//myActor->GetProperty()->SetRepresentationToWireframe();
+		//myActor->GetProperty()->SetRepresentationToSurface();
+	}
+	if (modified == 1)
+	{
+		
+		this->Render();
+	}
+}*/
+
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
 {
 	// Write_Type 0 : Binary LE or "Default Binary"
@@ -5660,6 +5926,7 @@ void mqMeshToolsCore::UnselectAll(int Count)
 
 void mqMeshToolsCore::Render()
 {
+	
 	this->RenderWindow->Render();
 }
 
@@ -6883,7 +7150,7 @@ void mqMeshToolsCore::slotLandmarkMoveDown()
 
 void mqMeshToolsCore::slotConvexHULL() { this->addConvexHull(); }
 void mqMeshToolsCore::slotMirror() { this->addMirrorXZ(); }
-
+void mqMeshToolsCore::slotInvert() { this->Invert(); }
 
 void mqMeshToolsCore::slotGrey() { this->SetSelectedActorsColor(150, 150, 150); }
 void mqMeshToolsCore::slotYellow(){ this->SetSelectedActorsColor(165, 142, 22); }

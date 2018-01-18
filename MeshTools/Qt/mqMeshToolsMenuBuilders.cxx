@@ -155,8 +155,8 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	menu.setObjectName(objectName);
 	QMenu* submenuStructureModification = menu.addMenu("Structure modification");
 
-
-	QAction *Mirror = submenuStructureModification->addAction("Mirror each selected surface along x-z plane");
+	QAction *Invert = submenuStructureModification->addAction("Invert each selected surface");
+	QAction *Mirror = submenuStructureModification->addAction("Mirror each selected surface along Y plane");
 	QAction *ConvexHULL = submenuStructureModification->addAction("Create convex hull for each selected surface");
 
 	QMenu* submenuRenderingModification = menu.addMenu("Rendering modification");
@@ -179,6 +179,7 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	QAction *Orange = submenuChangeObjectColor->addAction("Orange");
 	QAction *Brown = submenuChangeObjectColor->addAction("Brown");
 	
+	QAction::connect(Invert, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotInvert()));
 	QAction::connect(Mirror, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotMirror()));
 	QAction::connect(ConvexHULL, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotConvexHULL()));
 
