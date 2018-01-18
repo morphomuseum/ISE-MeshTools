@@ -137,6 +137,12 @@ QDoubleReleaseSlider.cxx
 QDoubleReleaseSlider.h
 QReleaseSliderValue.cxx
 QReleaseSliderValue.h
+ mqSmoothDialog.cxx
+  mqSmoothDialog.h
+  mqSmoothDialogReaction.cxx
+  mqSmoothDialogReaction.h
+
+
 )
 
 set (Qt_MOC_HDRS
@@ -172,6 +178,7 @@ mqScalarsControlsToolbar.ui
 mqGridSizeDialog.ui
 mqOrientationLabelsDialog.ui
 mqEditScalarsDialog.ui
+mqSmoothDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

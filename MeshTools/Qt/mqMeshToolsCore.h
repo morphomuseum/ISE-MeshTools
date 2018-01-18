@@ -316,6 +316,9 @@ public:
   vtkSmartPointer<vtkRenderer> getRenderer();
   vtkSmartPointer<vtkCamera> getCamera();
   vtkSmartPointer<vtkGridActor> getGridActor();
+  //void Invert();// Invert each selected surface
+  void addSmooth(int iteration, double relaxation);
+  void addInvert();// create an inverted surface for each selected surface
   void addConvexHull();// create a convex hull for each selected surface
   void addMirrorXZ(); //create a mirror surface through XZ plane for each selected surface
   void Redo(); // calls the undoStack Redo function
@@ -500,6 +503,7 @@ public slots:
 	virtual void slotUpdateAllSelectedFlagsColors();
 	virtual void slotConvexHULL();
 	virtual void slotMirror();
+	virtual void slotInvert();
 	virtual void  slotGrey();
 	virtual void slotYellow();
 	virtual void slotRed();

@@ -32,6 +32,7 @@
 #include "mqSaveSTVDialogReaction.h"
 #include "mqSaveNTWDialogReaction.h"
 #include "mqSelectLandmarkRangeDialogReaction.h"
+#include "mqSmoothDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -154,6 +155,12 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	std::cout << "Menu object name" << objectName.toStdString() << std::endl;
 	menu.setObjectName(objectName);
 	QMenu* submenuStructureModification = menu.addMenu("Structure modification");
+
+	
+	new mqSmoothDialogReaction(submenuStructureModification->addAction("Smooth each selected surface") << mqSetName("actionSmooth"));
+	
+
+
 
 	QAction *Invert = submenuStructureModification->addAction("Invert each selected surface");
 	QAction *Mirror = submenuStructureModification->addAction("Mirror each selected surface along Y plane");

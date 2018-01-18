@@ -4347,7 +4347,9 @@ void mqMeshToolsCore::addMirrorXZ()
 	}
 }
 
-void mqMeshToolsCore::Invert()
+void  mqMeshToolsCore::addSmooth(int iteration, double relaxation)
+{}
+void mqMeshToolsCore::addInvert()
 {
 	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->InitTraversal();
@@ -4504,8 +4506,14 @@ void mqMeshToolsCore::Invert()
 
 
 }
-/*void mqMeshToolsCore::Invert()
+
+/*
+void mqMeshToolsCore::Invert()
 {
+For some reason this function works... but the rendering of the modified surface is wrong. Needs to press "W" (wireframe rendering) and then "S" (surface rendering) 
+to achieve desired the correct rendering. Do not understand why yet.
+
+
 	this->ActorCollection->InitTraversal();
 	vtkIdType num = this->ActorCollection->GetNumberOfItems();
 	int modified = 0;
@@ -4582,6 +4590,9 @@ void mqMeshToolsCore::Invert()
 
 					}
 				}
+				myData->Modified();
+				
+				//myData->
 				for (vtkIdType i = 0; i < myData->GetNumberOfCells(); i++)
 				{
 					myData->GetCellPoints(i, newpoints);
@@ -4609,8 +4620,8 @@ void mqMeshToolsCore::Invert()
 		
 		this->Render();
 	}
-}*/
-
+}
+*/
 int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int position_mode, int file_type, int save_norms, vtkMTActor *myActor)
 {
 	// Write_Type 0 : Binary LE or "Default Binary"
@@ -7150,7 +7161,10 @@ void mqMeshToolsCore::slotLandmarkMoveDown()
 
 void mqMeshToolsCore::slotConvexHULL() { this->addConvexHull(); }
 void mqMeshToolsCore::slotMirror() { this->addMirrorXZ(); }
-void mqMeshToolsCore::slotInvert() { this->Invert(); }
+void mqMeshToolsCore::slotInvert() { 
+		this->addInvert(); 
+		//this->Invert();
+}
 
 void mqMeshToolsCore::slotGrey() { this->SetSelectedActorsColor(150, 150, 150); }
 void mqMeshToolsCore::slotYellow(){ this->SetSelectedActorsColor(165, 142, 22); }

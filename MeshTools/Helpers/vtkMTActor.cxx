@@ -24,6 +24,13 @@ vtkStandardNewMacro(vtkMTActor);
 //----------------------------------------------------------------------------
 vtkMTActor::vtkMTActor()
 {
+	vtkSmartPointer<vtkProperty> backFaces =
+		vtkSmartPointer<vtkProperty>::New();
+	//backFaces->SetDiffuseColor(.8, .8, .8);
+	backFaces->SetColor(.8, .8, .8);
+	backFaces->SetOpacity(0.5);
+
+	this->SetBackfaceProperty(backFaces);
 	this->UndoRedo = new vtkMTActorUndoRedo;
 	this->Selected = 1;
 	this->Changed = 0;
@@ -109,12 +116,26 @@ void vtkMTActor::SetSelected(int selected)
 			vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOff();
 		}
 		//vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOff();
-		this->GetProperty()->SetColor(0.5, 0.5, 0.5);
-		this->GetProperty()->SetOpacity(this->mColor[3]);
-		if (this->mColor[3] < 0.75)
+		/*double opac = 0.75;
+		if (this->mColor[3] > 0.75)
 		{
-			this->GetProperty()->SetOpacity(0.75);
+			opac = this->mColor[3];
 		}
+		this->SetmColor(0.5, 0.5, 0.5, opac);*/
+		double opac = 0.75;
+		if (this->mColor[3] > 0.75)
+		{
+			opac = this->mColor[3];
+		}
+		this->GetProperty()->SetColor(0.5, 0.5, 0.5);
+		this->GetProperty()->SetOpacity(opac);
+		
+		if (this->GetBackfaceProperty() != NULL)
+		{
+			this->GetBackfaceProperty()->SetColor(.25, .25, .25);
+			this->GetBackfaceProperty()->SetOpacity(opac);
+		}
+		//this->SetBackfaceProperty(NULL);
 	}
 	else
 	{
@@ -127,9 +148,21 @@ void vtkMTActor::SetSelected(int selected)
 			}
 		}
 		//vtkPolyDataMapper::SafeDownCast(this->GetMapper())->ScalarVisibilityOn();
+		
+		//this->SetmColor(this->mColor[0], this->mColor[1], this->mColor[2], this->mColor[3]);
+
 		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
 		//cout << "mColor[3](alpha) =" << this->mColor[3] << endl;
 		this->GetProperty()->SetOpacity(this->mColor[3]);
+		//this->SetBackfaceProperty(NULL);
+		if (this->GetBackfaceProperty() != NULL)
+		{
+			this->GetBackfaceProperty()->SetColor(0.5*this->mColor[0], 0.5*this->mColor[1], 0.5*this->mColor[2]);
+			this->GetBackfaceProperty()->SetOpacity(this->mColor[3]);
+		}
+		//this->SetBackfaceProperty
+		//this->GetBackfaceProperty()->SetColor(0.0, 0.0, 1.0);
+		//this->GetBackfaceProperty()->SetOpacity(1);
 	}
 }
 void vtkMTActor::SetmColor(double c[4])
@@ -146,6 +179,8 @@ void vtkMTActor::SetmColor(double r, double g, double b, double a)
 	{
 		this->GetProperty()->SetColor(this->mColor[0], this->mColor[1], this->mColor[2]);
 		this->GetProperty()->SetOpacity(this->mColor[3]);
+		//this->GetBackfaceProperty()->SetColor(0.0, 0.0, 1.0);
+		//this->GetBackfaceProperty()->SetOpacity(1);
 	}
 }
 
