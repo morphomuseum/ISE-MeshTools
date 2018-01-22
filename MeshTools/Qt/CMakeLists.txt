@@ -141,7 +141,10 @@ QReleaseSliderValue.h
   mqSmoothDialog.h
   mqSmoothDialogReaction.cxx
   mqSmoothDialogReaction.h
-
+ mqDecimateDialog.cxx
+  mqDecimateDialog.h
+  mqDecimateDialogReaction.cxx
+  mqDecimateDialogReaction.h
 
 )
 
@@ -179,6 +182,7 @@ mqGridSizeDialog.ui
 mqOrientationLabelsDialog.ui
 mqEditScalarsDialog.ui
 mqSmoothDialog.ui
+mqDecimateDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

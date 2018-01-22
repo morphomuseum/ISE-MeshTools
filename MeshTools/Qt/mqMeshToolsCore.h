@@ -318,6 +318,7 @@ public:
   vtkSmartPointer<vtkGridActor> getGridActor();
   //void Invert();// Invert each selected surface
   void addSmooth(int iteration, double relaxation);
+  void addDecimate(int quadric, double factor);
   void addInvert();// create an inverted surface for each selected surface
   void addConvexHull();// create a convex hull for each selected surface
   void addMirrorXZ(); //create a mirror surface through XZ plane for each selected surface

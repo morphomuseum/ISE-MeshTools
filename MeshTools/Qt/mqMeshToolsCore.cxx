@@ -12,6 +12,8 @@
 #include "vtkOrientationHelperWidget.h"
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
+#include <vtkDecimatePro.h>
+#include <vtkQuadricDecimation.h>
 #include <vtkSmoothPolyDataFilter.h>
 #include <vtkReverseSense.h>
 #include <vtkUnstructuredGrid.h>
@@ -4346,37 +4348,187 @@ void mqMeshToolsCore::addMirrorXZ()
 		this->Render();
 	}
 }
-
-void  mqMeshToolsCore::addSmooth(int iteration, double relaxation)
+void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 {
-/*				vtkSmartPointer<vtkSmoothPolyDataFilter> Sfilter = vtkSmartPointer<vtkSmoothPolyDataFilter>::New();
-				Sfilter->SetInputData((vtkPolyData*)My_Obj);
-				Sfilter->SetNumberOfIterations(iterationnumber);
-				Sfilter->SetRelaxationFactor(relaxation_factor);
-				Sfilter->Update();
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Decimate try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
 
-				vtkSmartPointer<vtkPolyData> MyObj = vtkSmartPointer<vtkPolyData>::New();
-				MyObj=Sfilter->GetOutput();
+				//		@@@
 
-				vtkSmartPointer<vtkPolyDataNormals> ObjNormals =  vtkSmartPointer<vtkPolyDataNormals>::New();		
-				ObjNormals->SetInputData(MyObj);
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+				double mfactor = (100 - factor)/100;
+				if (mfactor == 0 || mfactor == 1) { mfactor = 0.9; }
+				mfactor = 1 - mfactor;
+				cout << "decimation factor=" << mfactor << endl;
+				vtkSmartPointer<vtkDecimatePro> decimate =
+					vtkSmartPointer<vtkDecimatePro>::New();
+				decimate->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));
+				decimate->SetTargetReduction(mfactor);
+
+				vtkSmartPointer<vtkQuadricDecimation> decimate2 =
+					vtkSmartPointer<vtkQuadricDecimation>::New();
+				decimate2->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));
+				decimate2->SetTargetReduction(mfactor);
+
+				if (quadric == 0)
+				{
+					decimate->Update();
+				}
+				else
+				{
+					decimate2->Update();
+				}
+				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+				//ObjNormals->SetInputData(Sfilter->GetOutput());
+				if (quadric == 0)
+				{
+					ObjNormals->SetInputData(decimate->GetOutput());
+				}
+				else
+				{
+					ObjNormals->SetInputData(decimate2->GetOutput());
+				}
 				ObjNormals->ComputePointNormalsOn();
 				ObjNormals->ComputeCellNormalsOn();
 				//ObjNormals->AutoOrientNormalsOff();
 				ObjNormals->ConsistencyOff();
 
 				ObjNormals->Update();
-				
-				 vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
-				 cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
-				 cleanPolyDataFilter->PieceInvariantOff();
+
+				vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+				cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+				cleanPolyDataFilter->PieceInvariantOff();
 				cleanPolyDataFilter->ConvertLinesToPointsOff();
 				cleanPolyDataFilter->ConvertPolysToLinesOff();
 				cleanPolyDataFilter->ConvertStripsToPolysOff();
 				cleanPolyDataFilter->PointMergingOn();
-			   cleanPolyDataFilter->Update();
+				cleanPolyDataFilter->Update();
+				VTK_CREATE(vtkPolyData, myData);
 
-				MyObj= cleanPolyDataFilter->GetOutput();*/
+				myData = cleanPolyDataFilter->GetOutput();
+
+				cout << "decimate: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+
+
+
+
+
+				newmapper->SetInputData(myData);
+
+
+
+
+				vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+				Mat = myActor->GetMatrix();
+
+
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName() + "_decimate");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Decimated object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+}
+void  mqMeshToolsCore::addSmooth(int iteration, double relaxation)
+{
+
 	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
 	this->ActorCollection->InitTraversal();
 	vtkIdType num = this->ActorCollection->GetNumberOfItems();
