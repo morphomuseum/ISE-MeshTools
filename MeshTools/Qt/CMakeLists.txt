@@ -145,7 +145,14 @@ QReleaseSliderValue.h
   mqDecimateDialog.h
   mqDecimateDialogReaction.cxx
   mqDecimateDialogReaction.h
-
+ mqFillHolesDialog.cxx
+  mqFillHolesDialog.h
+  mqFillHolesDialogReaction.cxx
+  mqFillHolesDialogReaction.h
+ mqDensifyDialog.cxx
+  mqDensifyDialog.h
+  mqDensifyDialogReaction.cxx
+  mqDensifyDialogReaction.h
 )
 
 set (Qt_MOC_HDRS
@@ -183,6 +190,8 @@ mqOrientationLabelsDialog.ui
 mqEditScalarsDialog.ui
 mqSmoothDialog.ui
 mqDecimateDialog.ui
+mqDensifyDialog.ui
+mqFillHolesDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )

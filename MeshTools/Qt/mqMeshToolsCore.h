@@ -317,6 +317,8 @@ public:
   vtkSmartPointer<vtkCamera> getCamera();
   vtkSmartPointer<vtkGridActor> getGridActor();
   //void Invert();// Invert each selected surface
+  void addFillHoles(int maxsize);
+  void addDensify(int subdivisions);
   void addSmooth(int iteration, double relaxation);
   void addDecimate(int quadric, double factor);
   void addInvert();// create an inverted surface for each selected surface

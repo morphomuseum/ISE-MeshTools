@@ -12,6 +12,8 @@
 #include "vtkOrientationHelperWidget.h"
 #include "vtkBezierCurveSource.h"
 #include <vtkActor.h>
+#include <vtkFillHolesFilter.h>
+#include <vtkDensifyPolyData.h>
 #include <vtkDecimatePro.h>
 #include <vtkQuadricDecimation.h>
 #include <vtkSmoothPolyDataFilter.h>
@@ -2928,7 +2930,8 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 		}
 		std::string path = fileName.toStdString().substr(0, (fileName.toStdString().length() - only_filename.length()));
 		std::string posExt = ".pos";
-		std::string vtpExt = ".vtp";
+		//std::string vtpExt = ".vtp";
+		std::string vtkExt = ".vtk";
 		std::string plyExt = ".ply";
 		std::string tagExt = ".tag";
 		std::string oriExt = ".ori";
@@ -2954,7 +2957,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 		int mesh_exists = 0;
 		if (save_surfaces_as_ply == 0)
 		{
-			mesh_exists = this->selected_file_exists(path, vtpExt, no_postfix);
+			mesh_exists = this->selected_file_exists(path, vtkExt, no_postfix);
 		}
 		else
 		{
@@ -4347,6 +4350,318 @@ void mqMeshToolsCore::addMirrorXZ()
 		}
 		this->Render();
 	}
+}
+
+void mqMeshToolsCore::addFillHoles(int maxsize) 
+{
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Fill holes try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+
+				//		@@@
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+				
+				cout << "holes max size =" << maxsize << endl;
+				vtkSmartPointer<vtkFillHolesFilter> fillholes =
+					vtkSmartPointer<vtkFillHolesFilter>::New();
+				fillholes->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));
+				fillholes->SetHoleSize(maxsize);
+				fillholes->Update();
+				
+				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+				ObjNormals->SetInputData(fillholes->GetOutput());
+				ObjNormals->ComputePointNormalsOn();
+				ObjNormals->ComputeCellNormalsOn();
+				//ObjNormals->AutoOrientNormalsOff();
+				ObjNormals->ConsistencyOff();
+
+				ObjNormals->Update();
+
+				vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+				cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+				cleanPolyDataFilter->PieceInvariantOff();
+				cleanPolyDataFilter->ConvertLinesToPointsOff();
+				cleanPolyDataFilter->ConvertPolysToLinesOff();
+				cleanPolyDataFilter->ConvertStripsToPolysOff();
+				cleanPolyDataFilter->PointMergingOn();
+				cleanPolyDataFilter->Update();
+				VTK_CREATE(vtkPolyData, myData);
+
+				myData = cleanPolyDataFilter->GetOutput();
+
+				cout << "fill holes: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+
+
+
+
+
+				newmapper->SetInputData(myData);
+
+
+
+
+				vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+				Mat = myActor->GetMatrix();
+
+
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName() + "_holesfilled");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Hole filled object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+
+}
+void mqMeshToolsCore::addDensify(int subdivisions) 
+{
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Decimate try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+
+				//		@@@
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+				
+				cout << "densification subdivisions=" << subdivisions << endl;
+
+				vtkSmartPointer<vtkDensifyPolyData> densify =
+					vtkSmartPointer<vtkDensifyPolyData>::New();
+				densify->SetInputData(vtkPolyData::SafeDownCast(mymapper->GetInput()));
+				densify->SetNumberOfSubdivisions(subdivisions);
+
+				
+				
+				densify->Update();
+				
+				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+				//ObjNormals->SetInputData(Sfilter->GetOutput());
+				
+				ObjNormals->SetInputData(densify->GetOutput());
+				
+				ObjNormals->ComputePointNormalsOn();
+				ObjNormals->ComputeCellNormalsOn();
+				//ObjNormals->AutoOrientNormalsOff();
+				ObjNormals->ConsistencyOff();
+
+				ObjNormals->Update();
+
+				vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+				cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+				cleanPolyDataFilter->PieceInvariantOff();
+				cleanPolyDataFilter->ConvertLinesToPointsOff();
+				cleanPolyDataFilter->ConvertPolysToLinesOff();
+				cleanPolyDataFilter->ConvertStripsToPolysOff();
+				cleanPolyDataFilter->PointMergingOn();
+				cleanPolyDataFilter->Update();
+				VTK_CREATE(vtkPolyData, myData);
+
+				myData = cleanPolyDataFilter->GetOutput();
+
+				cout << "densify: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+				newmapper->SetInputData(myData);
+
+				vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+				Mat = myActor->GetMatrix();
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName() + "_densify");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "Densified object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+
 }
 void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 {

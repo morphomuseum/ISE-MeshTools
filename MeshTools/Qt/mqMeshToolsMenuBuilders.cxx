@@ -34,6 +34,8 @@
 #include "mqSelectLandmarkRangeDialogReaction.h"
 #include "mqSmoothDialogReaction.h"
 #include "mqDecimateDialogReaction.h"
+#include "mqDensifyDialogReaction.h"
+#include "mqFillHolesDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -161,7 +163,9 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	new mqSmoothDialogReaction(submenuStructureModification->addAction("Smooth each selected surface") << mqSetName("actionSmooth"));
 	new mqDecimateDialogReaction(submenuStructureModification->addAction("Decimate each selected surface") << mqSetName("actionDecimate"));
 
-
+	new mqDensifyDialogReaction(submenuStructureModification->addAction("Densify each selected surface") << mqSetName("actionDensify"));
+	new mqFillHolesDialogReaction(submenuStructureModification->addAction("Fill holes of each selected surface") << mqSetName("actionFillHoles"));
+	
 
 
 
