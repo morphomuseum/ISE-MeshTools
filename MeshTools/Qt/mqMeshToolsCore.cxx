@@ -3134,7 +3134,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 				_pos_file = myActor->GetName();
 				if (save_surfaces_as_ply == 0)
 				{
-					_mesh_file.append(".vtp");
+					_mesh_file.append(".vtk");
 				}
 				else
 				{
@@ -4517,7 +4517,7 @@ void mqMeshToolsCore::addDensify(int subdivisions)
 	int modified = 0;
 	for (vtkIdType i = 0; i < num; i++)
 	{
-		cout << "Decimate try to get next actor:" << i << endl;
+		cout << "Densify try to get next actor:" << i << endl;
 		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
@@ -4734,6 +4734,8 @@ void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 				}
 				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
 				//ObjNormals->SetInputData(Sfilter->GetOutput());
+				//ObjNormals->SetComputeCellNormals(1);
+				//ObjNormals->SetComputePointNormals(0);
 				if (quadric == 0)
 				{
 					ObjNormals->SetInputData(decimate->GetOutput());
@@ -4742,7 +4744,7 @@ void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 				{
 					ObjNormals->SetInputData(decimate2->GetOutput());
 				}
-				ObjNormals->ComputePointNormalsOn();
+				ObjNormals->ComputePointNormalsOff();
 				ObjNormals->ComputeCellNormalsOn();
 				//ObjNormals->AutoOrientNormalsOff();
 				ObjNormals->ConsistencyOff();
@@ -5296,10 +5298,10 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 
 	std::string STLext(".stl");
 	std::string STLext2(".STL");
-	std::string VTPext(".vtk");
-	std::string VTPext2(".VTK");
-	std::string VTPext3(".vtp");
-	std::string VTPext4(".VTP");
+	std::string VTKext(".vtk");
+	std::string VTKext2(".VTK");
+	std::string VTKext3(".vtp");
+	std::string VTKext4(".VTP");
 	std::string PLYext(".ply");
 	std::string PLYext2(".PLY");
 
@@ -5441,13 +5443,13 @@ int mqMeshToolsCore::SaveSurfaceFile(QString fileName, int write_type, int posit
 		{
 			Writer->SetFileTypeToASCII();
 		}
-		std::size_t found = fileName.toStdString().find(VTPext);
-		std::size_t found2 = fileName.toStdString().find(VTPext2);
-		std::size_t found3 = fileName.toStdString().find(VTPext3);
-		std::size_t found4 = fileName.toStdString().find(VTPext4);
+		std::size_t found = fileName.toStdString().find(VTKext);
+		std::size_t found2 = fileName.toStdString().find(VTKext2);
+		std::size_t found3 = fileName.toStdString().find(VTKext3);
+		std::size_t found4 = fileName.toStdString().find(VTKext4);
 		if (found == std::string::npos && found2 == std::string::npos && found3 == std::string::npos && found4 == std::string::npos)
 		{
-			fileName.append(".vtp");
+			fileName.append(".vtk");
 		}
 		
 		Writer->SetFileName(fileName.toStdString().c_str());
