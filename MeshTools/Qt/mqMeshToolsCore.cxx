@@ -4771,7 +4771,7 @@ void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 
 
 				newmapper->SetInputData(myData);
-
+				
 
 
 
@@ -4797,7 +4797,7 @@ void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 				newactor->SetMapper(newmapper);
 				newactor->SetSelected(0);
 
-
+				
 				newactor->SetName(myActor->GetName() + "_decimate");
 				cout << "try to add new actor=" << endl;
 				newcoll->AddTmpItem(newactor);
