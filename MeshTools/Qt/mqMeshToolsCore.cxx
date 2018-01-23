@@ -30,6 +30,8 @@
 #include <vtkSTLWriter.h>
 #include <vtkPLYWriter.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkThinPlateSplineTransform.h>
+#include <vtkTransformPolyDataFilter.h>
 
 #include <vtkSmartPointer.h>
 #include <vtkDataSetMapper.h>
@@ -3984,7 +3986,7 @@ int mqMeshToolsCore::SaveShapeMeasures(QString fileName, int mode)
 							stream << myActor->GetName().c_str() << "	" << surface_ratio << "	" << custom_complexity << "	" << surface_area << "	" << volume << "	" << surface_area_convex_hull << "	" << volume_convex_hull << "	"<< massProp->GetNormalizedShapeIndex()<<  endl;
 							
 						}
-						//@@@
+						
 					}
 			
 			
@@ -4044,7 +4046,6 @@ void mqMeshToolsCore::addConvexHull()
 				delaunay3D->Update();
 				cout << "Delaunay 3D updated" << endl;
 
-				//@@@
 				vtkSmartPointer<vtkGeometryFilter> geometryFilter =
 				vtkSmartPointer<vtkGeometryFilter>::New();
 
@@ -4056,7 +4057,7 @@ void mqMeshToolsCore::addConvexHull()
 
 
 			
-			//		@@@
+			
 
 				VTK_CREATE(vtkMTActor, newactor);
 				if (this->mui_BackfaceCulling == 0)
@@ -4192,8 +4193,6 @@ void mqMeshToolsCore::addMirrorXZ()
 
 				
 				double numvert = mymapper->GetInput()->GetNumberOfPoints();
-
-				//		@@@
 
 				VTK_CREATE(vtkMTActor, newactor);
 				if (this->mui_BackfaceCulling == 0)
@@ -4352,6 +4351,352 @@ void mqMeshToolsCore::addMirrorXZ()
 	}
 }
 
+bool mqMeshToolsCore::RecoverLandmarks(vtkSmartPointer< vtkPoints > landmarks_list_source, vtkSmartPointer< vtkPoints > landmarks_list_target, int all) {
+
+	//all = 0 : only selected landmarks
+	//all = 1 : all landmarks
+	
+	if (this->NormalLandmarkCollection->GetNumberOfItems() ==0)
+	{
+		QMessageBox msgBox;
+		msgBox.setText("ERROR:: RecoverLandmarks : no landmarks.");
+		msgBox.exec();
+		return false;
+	}
+
+	if (all == 0)
+	{
+		if (this->NormalLandmarkCollection->GetNumberOfSelectedActors() != this->TargetLandmarkCollection->GetNumberOfSelectedActors())
+		{
+			QMessageBox msgBox;
+			msgBox.setText("ERROR:: RecoverLandmarks : not the same number of landmarks.");
+			msgBox.exec();
+			return false;
+		}
+		if (this->NormalLandmarkCollection->GetNumberOfSelectedActors() ==0)
+		{
+			QMessageBox msgBox;
+			msgBox.setText("ERROR:: RecoverLandmarks : no selected landmarks.");
+			msgBox.exec();
+			return false;
+			
+		}
+	}
+
+	if (this->NormalLandmarkCollection->GetNumberOfItems() != this->TargetLandmarkCollection->GetNumberOfItems())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("ERROR:: RecoverLandmarks : not the same number of landmarks.");
+		msgBox.exec();		
+		return false;
+	}
+	
+	// 
+		
+	if (all == 1)
+	{
+		landmarks_list_source->SetNumberOfPoints(this->NormalLandmarkCollection->GetNumberOfItems());
+		landmarks_list_target->SetNumberOfPoints(this->NormalLandmarkCollection->GetNumberOfItems());
+	}
+	else
+	{
+		landmarks_list_source->SetNumberOfPoints(this->NormalLandmarkCollection->GetNumberOfSelectedActors());
+		landmarks_list_target->SetNumberOfPoints(this->NormalLandmarkCollection->GetNumberOfSelectedActors());
+	}
+
+		
+		vtkIdType cpt = 0;
+		this->NormalLandmarkCollection->InitTraversal();
+		this->TargetLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < NormalLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *mySourceActor = vtkLMActor::SafeDownCast(NormalLandmarkCollection->GetNextActor());
+			vtkLMActor *myTargetActor = vtkLMActor::SafeDownCast(TargetLandmarkCollection->GetNextActor());
+			if (mySourceActor->GetSelected() == 1 || all == 1)
+			{
+
+				double lmsourcepos[3];
+				mySourceActor->GetLMOrigin(lmsourcepos);
+
+				double lmtargetpos[3];
+				myTargetActor->GetLMOrigin(lmtargetpos);
+				//cout << "source" << i <<":"<< lmsourcepos[0] << "," << lmsourcepos[1] << "," << lmsourcepos[2] << endl;
+				landmarks_list_source->SetPoint(cpt, lmsourcepos);
+				//cout << "target" << i << ":" << lmtargetpos[0] << ","<< lmtargetpos[1]<<","<< lmtargetpos[2]<< endl;
+				landmarks_list_target->SetPoint(cpt, lmtargetpos);
+				cpt++;
+			}
+
+		}
+						
+		return true;
+	
+}
+
+
+void mqMeshToolsCore::addTPS(int r, double factor, int all)
+{
+
+	if (this->NormalLandmarkCollection->GetNumberOfItems() == 0)
+	{
+		QMessageBox msgBox;
+		msgBox.setText("ERROR:: RecoverLandmarks : no landmarks.");
+		msgBox.exec();
+		return;
+	}
+
+	if (all == 0)
+	{
+		if (this->NormalLandmarkCollection->GetNumberOfSelectedActors() != this->TargetLandmarkCollection->GetNumberOfSelectedActors())
+		{
+			QMessageBox msgBox;
+			msgBox.setText("ERROR:: RecoverLandmarks : not the same number of landmarks.");
+			msgBox.exec();
+			return;
+		}
+		if (this->NormalLandmarkCollection->GetNumberOfSelectedActors() == 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setText("ERROR:: RecoverLandmarks : no selected landmarks.");
+			msgBox.exec();
+			return;
+
+		}
+	}
+
+	if (this->NormalLandmarkCollection->GetNumberOfItems() != this->TargetLandmarkCollection->GetNumberOfItems())
+	{
+		QMessageBox msgBox;
+		msgBox.setText("ERROR:: RecoverLandmarks : not the same number of landmarks.");
+		msgBox.exec();
+		return;
+	}
+
+	
+
+	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();
+	this->ActorCollection->InitTraversal();
+	vtkIdType num = this->ActorCollection->GetNumberOfItems();
+	int modified = 0;
+	for (vtkIdType i = 0; i < num; i++)
+	{
+		cout << "Fill holes try to get next actor:" << i << endl;
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+		if (myActor->GetSelected() == 1)
+		{
+			vtkPolyDataMapper *mymapper = vtkPolyDataMapper::SafeDownCast(myActor->GetMapper());
+			if (mymapper != NULL && vtkPolyData::SafeDownCast(mymapper->GetInput()) != NULL)
+			{
+				double numvert = mymapper->GetInput()->GetNumberOfPoints();
+
+				//		@@@
+
+				VTK_CREATE(vtkMTActor, newactor);
+				if (this->mui_BackfaceCulling == 0)
+				{
+					newactor->GetProperty()->BackfaceCullingOff();
+				}
+				else
+				{
+					newactor->GetProperty()->BackfaceCullingOn();
+				}
+
+				VTK_CREATE(vtkPolyDataMapper, newmapper);
+				newmapper->ImmediateModeRenderingOn();
+				newmapper->SetColorModeToDefault();
+
+				if (
+					(this->mui_ActiveScalars->DataType == VTK_INT || this->mui_ActiveScalars->DataType == VTK_UNSIGNED_INT)
+					&& this->mui_ActiveScalars->NumComp == 1
+					)
+				{
+					newmapper->SetScalarRange(0, this->TagTableSize - 1);
+					newmapper->SetLookupTable(this->GetTagLut());
+				}
+				else
+				{
+					newmapper->SetLookupTable(this->Getmui_ActiveColorMap()->ColorMap);
+				}
+
+				newmapper->ScalarVisibilityOn();
+
+				cout << "TPS basis=" << r<< endl;
+			
+				///@@@ TPS
+				vtkSmartPointer<vtkThinPlateSplineTransform> tps =
+				vtkSmartPointer<vtkThinPlateSplineTransform>::New();
+
+				if (r == 1)
+				{
+					tps->SetBasisToR();
+				}
+				else
+				{
+					tps->SetBasisToR2LogR();
+				}
+				vtkSmartPointer< vtkPoints > p1 = vtkSmartPointer< vtkPoints >::New();
+				vtkSmartPointer< vtkPoints > p2 = vtkSmartPointer< vtkPoints >::New();
+
+				// fetch source and target landmarks
+				RecoverLandmarks(p1, p2, all);
+
+				tps->SetSourceLandmarks(p1);
+				tps->SetTargetLandmarks(p2);
+				tps->Update();
+
+				vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+				vtkSmartPointer<vtkPolyData> MyTPSInput = vtkSmartPointer<vtkPolyData>::New();
+				vtkSmartPointer<vtkPolyData> MyInput = vtkSmartPointer<vtkPolyData>::New();
+				MyInput=mymapper->GetInput();
+				MyTPSInput->DeepCopy(mymapper->GetInput());
+
+				// recupère la position de l'object s'il a bougé
+				double ve_init_pos[3];;
+				double ve_final_pos[3];
+				double ve_trans_pos[3];
+				vtkSmartPointer<vtkMatrix4x4> Mat = myActor->GetMatrix();
+
+
+				for (vtkIdType i = 0; i < MyTPSInput->GetNumberOfPoints(); i++) {
+					// for every triangle 
+					MyTPSInput->GetPoint(i, ve_init_pos);
+					mqMeshToolsCore::TransformPoint(Mat, ve_init_pos, ve_final_pos);
+
+					MyTPSInput->GetPoints()->SetPoint((vtkIdType)i, ve_final_pos);
+				}
+				
+
+
+				transformFilter->SetInputData(MyTPSInput);
+
+				/// applique le calcul du tps à l'objet
+				transformFilter->SetTransform(tps);
+				transformFilter->Update();
+
+				// mise à jour du maillage sortant pour le tps
+				vtkSmartPointer<vtkPolyData> My_Output = vtkSmartPointer<vtkPolyData>::New();
+				My_Output = transformFilter->GetOutput();
+
+			
+
+				// % deformation
+
+				double mfactor = factor / 100;
+
+				for (vtkIdType i = 0; i<My_Output->GetNumberOfPoints(); i++) {
+					// for every triangle 
+					MyTPSInput->GetPoint(i, ve_init_pos);
+					My_Output->GetPoint(i, ve_final_pos);
+					ve_trans_pos[0] = mfactor*(float)ve_final_pos[0] + (1 - mfactor)*ve_init_pos[0];
+					ve_trans_pos[1] = mfactor*(float)ve_final_pos[1] + (1 - mfactor)*ve_init_pos[1];
+					ve_trans_pos[2] = mfactor*(float)ve_final_pos[2] + (1 - mfactor)*ve_init_pos[2];
+
+					My_Output->GetPoints()->SetPoint(i, ve_trans_pos);
+				}
+				
+
+
+				vtkSmartPointer<vtkPolyDataNormals> ObjNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
+				ObjNormals->SetInputData(My_Output);
+				ObjNormals->ComputePointNormalsOn();
+				ObjNormals->ComputeCellNormalsOn();
+				//ObjNormals->AutoOrientNormalsOff();
+				ObjNormals->ConsistencyOff();
+
+				ObjNormals->Update();
+
+				vtkSmartPointer<vtkCleanPolyData> cleanPolyDataFilter = vtkSmartPointer<vtkCleanPolyData>::New();
+				cleanPolyDataFilter->SetInputData(ObjNormals->GetOutput());
+				cleanPolyDataFilter->PieceInvariantOff();
+				cleanPolyDataFilter->ConvertLinesToPointsOff();
+				cleanPolyDataFilter->ConvertPolysToLinesOff();
+				cleanPolyDataFilter->ConvertStripsToPolysOff();
+				cleanPolyDataFilter->PointMergingOn();
+				cleanPolyDataFilter->Update();
+				VTK_CREATE(vtkPolyData, myData);
+
+				myData = cleanPolyDataFilter->GetOutput();
+
+				cout << "TPS: nv=" << myData->GetNumberOfPoints() << endl;
+				//newmapper->SetInputConnection(delaunay3D->GetOutputPort());
+
+
+
+				newmapper->SetInputData(myData);
+
+
+
+
+				/*vtkSmartPointer<vtkMatrix4x4> Mat = vtkSmartPointer<vtkMatrix4x4>::New();
+				Mat = myActor->GetMatrix();
+
+
+				vtkTransform *newTransform = vtkTransform::New();
+				newTransform->PostMultiply();
+
+				newTransform->SetMatrix(Mat);
+				newactor->SetPosition(newTransform->GetPosition());
+				newactor->SetScale(newTransform->GetScale());
+				newactor->SetOrientation(newTransform->GetOrientation());
+				newTransform->Delete();*/
+
+
+				double color[4] = { 0.5, 0.5, 0.5, 1 };
+				myActor->GetmColor(color);
+				newactor->SetmColor(color);
+
+				newactor->SetMapper(newmapper);
+				newactor->SetSelected(0);
+
+
+				newactor->SetName(myActor->GetName() + "_tps");
+				cout << "try to add new actor=" << endl;
+				newcoll->AddTmpItem(newactor);
+				modified = 1;
+
+
+			}
+		}
+	}
+	if (modified == 1)
+	{
+		newcoll->InitTraversal();
+		vtkIdType num = newcoll->GetNumberOfItems();
+		for (vtkIdType i = 0; i < num; i++)
+		{
+			cout << "try to get next actor from newcoll:" << i << endl;
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(newcoll->GetNextActor());
+
+
+			this->getActorCollection()->AddItem(myActor);
+			std::string action = "TPS object added: " + myActor->GetName();
+			int mCount = BEGIN_UNDO_SET(action);
+			this->getActorCollection()->CreateLoadUndoSet(mCount, 1);
+			END_UNDO_SET();
+
+
+		}
+		//cout << "camera and grid adjusted" << endl;
+		cout << "new actor(s) added" << endl;
+		this->Initmui_ExistingScalars();
+
+		cout << "Set actor collection changed" << endl;
+		this->getActorCollection()->SetChanged(1);
+		cout << "Actor collection changed" << endl;
+
+		this->AdjustCameraAndGrid();
+		cout << "Camera and grid adjusted" << endl;
+
+		if (this->Getmui_AdjustLandmarkRenderingSize() == 1)
+		{
+			this->UpdateLandmarkSettings();
+		}
+		this->Render();
+	}
+
+
+
+}
 void mqMeshToolsCore::addFillHoles(int maxsize) 
 {
 	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();

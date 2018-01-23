@@ -153,6 +153,10 @@ QReleaseSliderValue.h
   mqDensifyDialog.h
   mqDensifyDialogReaction.cxx
   mqDensifyDialogReaction.h
+ mqTPSDialog.cxx
+  mqTPSDialog.h
+  mqTPSDialogReaction.cxx
+  mqTPSDialogReaction.h
 )
 
 set (Qt_MOC_HDRS
@@ -192,6 +196,7 @@ mqSmoothDialog.ui
 mqDecimateDialog.ui
 mqDensifyDialog.ui
 mqFillHolesDialog.ui
+mqTPSDialog.ui
 )
 
 set( Qt_RCs ../Icons/icons.qrc )
