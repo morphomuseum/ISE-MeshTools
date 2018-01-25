@@ -37,6 +37,7 @@
 #include "mqDensifyDialogReaction.h"
 #include "mqFillHolesDialogReaction.h"
 #include "mqTPSDialogReaction.h"
+#include "mqDecomposeDialogReaction.h"
 #include "mqSetName.h"
 
 //#include "ui_mqEditMenuBuilder.h" // no .ui Edit menu file yet
@@ -84,7 +85,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   
   new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
   new mqSavePLYDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .PLY file") << mqSetName("actionSavePLY"));
-  new mqSaveVTPDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTP) file") << mqSetName("actionSaveVTP"));
+  new mqSaveVTPDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTK or .VTP) file") << mqSetName("actionSaveVTP"));
   new mqSaveSTLDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .STL file") << mqSetName("actionSaveSTL"));
   
   
@@ -167,8 +168,8 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	new mqDensifyDialogReaction(submenuStructureModification->addAction("Densify each selected surface") << mqSetName("actionDensify"));
 	new mqFillHolesDialogReaction(submenuStructureModification->addAction("Fill holes of each selected surface") << mqSetName("actionFillHoles"));
 	new mqTPSDialogReaction(submenuStructureModification->addAction("TPS deformation of each selected surface") << mqSetName("actionTPS"));
-
-
+	new mqDecomposeDialogReaction(submenuStructureModification->addAction("Connectivity : decompose each selected surface into independent regions") << mqSetName("actionDecompose"));
+	QAction *KeepLargest = submenuStructureModification->addAction("Connectivity : keep largest region for each selected surface");
 
 	QAction *Invert = submenuStructureModification->addAction("Invert each selected surface");
 	QAction *Mirror = submenuStructureModification->addAction("Mirror each selected surface along Y plane");
@@ -194,6 +195,7 @@ void mqMeshToolsMenuBuilders::buildEditSelectedSurfacesMenu(QMenu& menu)
 	QAction *Orange = submenuChangeObjectColor->addAction("Orange");
 	QAction *Brown = submenuChangeObjectColor->addAction("Brown");
 	
+	QAction::connect(KeepLargest, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotKeepLargest()));
 	QAction::connect(Invert, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotInvert()));
 	QAction::connect(Mirror, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotMirror()));
 	QAction::connect(ConvexHULL, SIGNAL(triggered()), mqMeshToolsCore::instance(), SLOT(slotConvexHULL()));

@@ -85,14 +85,7 @@ protected:
 	{
 		this->SavePOS();
 	}	
-	/*else if (this->Mode == 10)
-	{
-		this->SaveSTL();
-	}
-	else if (this->Mode == 11)
-	{
-		this->SaveVTP();
-	}*/
+	
 	else if (this->Mode == 13)
 	{
 		
