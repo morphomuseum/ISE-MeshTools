@@ -64,6 +64,8 @@ vtkStandardNewMacro(vtkMTInteractorStyle);
 #define VTKISMT_SELECT 1
 #define CTRL_RELEASED 0
 #define CTRL_PRESSED 1
+#define ALT_PRESSED 4
+#define ALT_RELEASED 5
 #define L_PRESSED 2
 #define L_RELEASED 3
 #define VTK_CREATE(type, name) \
@@ -74,6 +76,8 @@ vtkStandardNewMacro(vtkMTInteractorStyle);
 vtkMTInteractorStyle::vtkMTInteractorStyle()
 {
 	this->CurrentMode = VTKISMT_ORIENT;
+	this->Alt = ALT_RELEASED;
+
 	this->L = L_RELEASED;
 	this->Ctrl = CTRL_RELEASED;
 	this->LM_Button = LBUTTON_UP;
@@ -244,6 +248,11 @@ void vtkMTInteractorStyle::StartSelect()
 	std::string key = rwi->GetKeySym();
 	
 	// Output the key that was pressed
+	cout << key << endl;
+	if (key.compare("Alt_L")==0)
+	{
+		this->Alt = ALT_PRESSED;
+	}
 	if (key.compare("l") == 0)
 	{
 		//cout << "l pressed" << endl;
@@ -723,6 +732,10 @@ void vtkMTInteractorStyle::StartSelect()
 		  this->Ctrl = CTRL_RELEASED;
 		 // std::cout << key << "Released" << '\n';
 	  }
+	  if (key.compare("Alt_L") == 0)
+	  {
+		  this->Alt = ALT_RELEASED;
+	  }
 	  if (key.compare("l") == 0)
 	  {
 		  this->L = L_RELEASED;
@@ -962,9 +975,13 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 			  //this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetDefaultRenderer()->AddActor(actor);
 			
 		  
-		  }
+		  }		  
 		  else
 		  {
+			  if (this->Alt == ALT_PRESSED)
+			  {
+				  this->StartSpin();
+			  }
 			  this->Superclass::OnLeftButtonDown();		
 			
 		  }
@@ -1751,7 +1768,7 @@ void vtkMTInteractorStyle::TransformPoint(vtkMatrix4x4* matrix, double pointin[3
 
 void vtkMTInteractorStyle::RotateActors()
 {
-	cout << "ROTATE! " << endl;
+	//cout << "ROTATE! " << endl;
 	if (this->CurrentRenderer == NULL 
 		|| this->ActorCollection == NULL
 		)

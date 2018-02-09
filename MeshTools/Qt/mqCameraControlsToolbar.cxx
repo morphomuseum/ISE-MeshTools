@@ -15,10 +15,11 @@
 #include "mqCameraReaction.h"
 #include <vtkRenderer.h>
 #include "QDoubleSlider.h"
+#include "QReleaseDial.h"
 #include "QReleaseSlider.h"
 #include "QDoubleReleaseSlider.h"
 #include "QReleaseSliderValue.h"
-#include <QDial>
+//#include <QDial>
 #include <QToolButton>
 #include <QComboBox>
 #include <QSlider>
@@ -75,8 +76,13 @@ void mqCameraControlsToolbar::constructor()
   this->zoom->setDoubleMaximum(100);
   this->zoom->setDoubleValue(10);
   //this->zRot = new QReleaseSlider;
-  this->zRot = new QDial;
-  this->zRot->setFixedSize(30, 30);
+  this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  //this->zRot = new QReleaseDial;
+  //this->zRot = new QDial;
+  this->zRot->setMaximum(90);
+  this->zRot->setMinimum(-90);
+  
+  //this->zRot->setFixedSize(30, 30);
   this->zRot->setObjectName("zRot");
  // this->setFixedWidth(200);
   //this->zRot->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);"    );
@@ -108,8 +114,7 @@ void mqCameraControlsToolbar::constructor()
   background: pink;
   }*/
 
-  this->zRot->setMaximum(90);
-  this->zRot->setMinimum(-90);
+  
 
   this->zRot->setToolTip(QString("Rotate camera along viewing axis"));
   
@@ -155,7 +160,7 @@ void mqCameraControlsToolbar::constructor()
   connect(this->ui->actionBackfaceCullingOnOff, SIGNAL(triggered()), this, SLOT(slotBackfaceCullingOnOff()));
   connect(this->ui->actionClippingPlaneOnOff, SIGNAL(triggered()), this, SLOT(slotClippingPlaneOnOff()));
  
-  //connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
+  connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
   connect(zoom, SIGNAL(valueChanged(int)), this, SLOT(slotZoom()));
   
 }
@@ -179,7 +184,32 @@ void mqCameraControlsToolbar::slotZoom()
 
 void mqCameraControlsToolbar::slotZrot(int val)
 {
-	if (val > 1)
+	cout << "Rot val=" << val << endl;
+	if (val == 0) { this->lastzrot = 0;  return; }
+	
+		
+		mqMeshToolsCore::instance()->getCamera()->Roll(this->lastzrot -val);
+		mqMeshToolsCore::instance()->getCamera()->OrthogonalizeViewUp();					
+	
+	mqMeshToolsCore::instance()->Render();
+	this->lastzrot = val;
+	/*
+	
+	  double *center = this->CurrentRenderer->GetCenter();
+
+  double newAngle =
+    vtkMath::DegreesFromRadians( atan2( rwi->GetEventPosition()[1] - center[1],
+                                        rwi->GetEventPosition()[0] - center[0] ) );
+
+  double oldAngle =
+    vtkMath::DegreesFromRadians( atan2( rwi->GetLastEventPosition()[1] - center[1],
+                                        rwi->GetLastEventPosition()[0] - center[0] ) );
+
+  vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+  camera->Roll( newAngle - oldAngle );
+  camera->OrthogonalizeViewUp();
+	*/
+	/*if (val > 1)
 	{
 		mqMeshToolsCore::instance()->getCamera()->Zoom(1.1);
 	}
@@ -187,7 +217,7 @@ void mqCameraControlsToolbar::slotZrot(int val)
 	{
 		mqMeshToolsCore::instance()->getCamera()->Zoom(0.9);
 	}
-	mqMeshToolsCore::instance()->Render();
+	mqMeshToolsCore::instance()->Render();*/
 }
 
 void mqCameraControlsToolbar::slotClippingPlaneOnOff()

@@ -47,10 +47,12 @@ public:
   virtual void slotZoom();
   
 private:
+	int lastzrot;
 	double lastzoom;
 	Q_DISABLE_COPY(mqCameraControlsToolbar);
 	//QReleaseSlider * zRot;
-	QDial * zRot;
+	QReleaseSliderValue * zRot;
+	//QDial * zRot;
 	//QDial * camzRot;
 	QReleaseSliderValue *cP;
 	//QDoubleSlider * cP;
