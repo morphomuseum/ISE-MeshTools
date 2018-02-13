@@ -45,16 +45,19 @@ public:
   virtual void slotZrot(int val);
   //virtual void slotZoom(double val);
   virtual void slotZoom();
+  virtual void slotCp(int val);
   
 private:
 	int lastzrot;
+	int lastcp;
 	double lastzoom;
 	Q_DISABLE_COPY(mqCameraControlsToolbar);
 	//QReleaseSlider * zRot;
 	QReleaseSliderValue * zRot;
 	//QDial * zRot;
 	//QDial * camzRot;
-	QReleaseSliderValue *cP;
+	//QReleaseSliderValue *cP;
+	QReleaseSlider *cP;
 	//QDoubleSlider * cP;
 	QDoubleReleaseSlider * zoom;
   Ui_mqCameraControlsToolbar *ui;

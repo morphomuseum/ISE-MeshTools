@@ -31,6 +31,7 @@
 void mqCameraControlsToolbar::constructor()
 {
 	this->lastzoom = 0;
+	this->lastcp = 0;
  // Ui::mqCameraControlsToolbar ui;
  // ui.setupUi(this);
   this->ui = new Ui_mqCameraControlsToolbar;
@@ -64,7 +65,8 @@ void mqCameraControlsToolbar::constructor()
 
  /* */
   // this->cP = new QDoubleSlider;
-  this->cP = new QReleaseSliderValue(Qt::Vertical, tr("")); 
+  //this->cP = new QReleaseSliderValue(Qt::Vertical, tr("")); 
+  this->cP = new QReleaseSlider;
   //this->cP->set
    this->cP->setToolTip(QString("Clipping plane"));
    this->cP->setMaximum(100);
@@ -124,14 +126,23 @@ void mqCameraControlsToolbar::constructor()
   QWidget* grid = new QWidget();
  layout->addWidget(this->zRot);
  
- 
 
   grid->setLayout(layout);
   this->addWidget(grid);
+
   // Add values in the combo box
   /*this->addWidget(this->zRot);
   this->addWidget(this->cP);
   this->addWidget(this->zoom);*/
+  QHBoxLayout *layout2 = new QHBoxLayout;
+
+
+  QWidget* grid2 = new QWidget();
+  layout2->addWidget(this->cP);
+
+
+  grid2->setLayout(layout2);
+  this->addWidget(grid2);
 
  
 
@@ -140,7 +151,9 @@ void mqCameraControlsToolbar::constructor()
   layout2->addWidget(this->cP);
   grid2->setLayout(layout2);
   this->addWidget(grid2);*/
-  this->addWidget(this->cP);
+  
+  //this->addWidget(this->cP);
+  
 
   QWidget* spacer = new QWidget();
   spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -160,6 +173,7 @@ void mqCameraControlsToolbar::constructor()
   connect(this->ui->actionBackfaceCullingOnOff, SIGNAL(triggered()), this, SLOT(slotBackfaceCullingOnOff()));
   connect(this->ui->actionClippingPlaneOnOff, SIGNAL(triggered()), this, SLOT(slotClippingPlaneOnOff()));
  
+  connect(cP, SIGNAL(valueChanged(int)), this, SLOT(slotCp(int)));
   connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
   connect(zoom, SIGNAL(valueChanged(int)), this, SLOT(slotZoom()));
   
@@ -180,6 +194,48 @@ void mqCameraControlsToolbar::slotZoom()
 		mqMeshToolsCore::instance()->getCamera()->Zoom(0.9);
 	}
 	mqMeshToolsCore::instance()->Render();
+}
+void mqCameraControlsToolbar::slotCp(int val)
+{
+	if (val == 0) { this->lastcp = 0;  return; }
+
+	double cr[2];
+	double cameracentre[3];
+	double camerafocalpoint[3];
+	mqMeshToolsCore::instance()->getRenderer()->GetActiveCamera()->GetPosition(cameracentre);
+	mqMeshToolsCore::instance()->getRenderer()->GetActiveCamera()->GetFocalPoint(camerafocalpoint);
+	/*double dist = sqrt((cameracentre[0] - camerafocalpoint[0])*(cameracentre[0] - camerafocalpoint[0])
+		+ (cameracentre[1] - camerafocalpoint[1])*(cameracentre[1] - camerafocalpoint[1])
+		+ (cameracentre[2] - camerafocalpoint[2])*(cameracentre[2] - camerafocalpoint[2])
+	);
+	*/
+	
+	mqMeshToolsCore::instance()->getRenderer()->GetActiveCamera()->GetClippingRange(cr);
+	double dist = cr[1] - cr[0];
+	//this->getRenderer()->GetActiveCamera()->SetClippingRange(dist, cr[1]);
+	if (val == 0) { this->lastcp = 0;  return; }
+	double newnear = cr[0]; // current near clipping plane.
+	double newfar = cr[1];
+	if (lastcp < val)
+	{
+		newnear = newnear + (cr[1] - cr[0]) *(val - lastcp) / 1000;
+	}
+	else
+	{
+		newnear = newnear - cr[0] * (lastcp-val) / 1000;
+	}
+	if (newnear <= 0) { return; }
+	if (newnear > cr[1]) {
+		return;
+	}
+	//cout << "old near=" << cr[0] << endl;
+	//cout << "new near=" << newnear << endl;
+	//cout << "old far=" << cr[1] << endl;
+	newfar = newnear + dist;
+	//cout << "new far=" << newfar << endl;
+	mqMeshToolsCore::instance()->getRenderer()->GetActiveCamera()->SetClippingRange(newnear, newfar);
+	mqMeshToolsCore::instance()->Render();
+	this->lastcp = val;
 }
 
 void mqCameraControlsToolbar::slotZrot(int val)
