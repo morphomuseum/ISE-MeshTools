@@ -5750,6 +5750,16 @@ void mqMeshToolsCore::addKeepLargest()
 	}
 
 }
+void mqMeshToolsCore::DeleteSelectedActors()
+{
+	this->ActorCollection->DeleteSelectedActors();
+	this->NormalLandmarkCollection->DeleteSelectedActors();
+	this->TargetLandmarkCollection->DeleteSelectedActors();
+	this->NodeLandmarkCollection->DeleteSelectedActors();
+	this->HandleLandmarkCollection->DeleteSelectedActors();
+	this->FlagLandmarkCollection->DeleteSelectedActors();
+	
+}
 void mqMeshToolsCore::addInvert()
 {
 	vtkSmartPointer<vtkMTActorCollection> newcoll = vtkSmartPointer<vtkMTActorCollection>::New();

@@ -18,6 +18,7 @@
 #include "mqCameraControlsToolbar.h"
 #include "mqMainControlsToolbar.h"
 #include "mqLightControlsToolbar.h"
+#include "mqObjectsControlsToolbar.h"
 #include "mqScalarsControlsToolbar.h"
 #include "mqDesktopServicesReaction.h"
 #include "mqOpenDataReaction.h"
@@ -291,6 +292,11 @@ void mqMeshToolsMenuBuilders::buildToolbars(QMainWindow& mainWindow)
 		<< mqSetName("LightControlsToolbar");
 	lightToolBar->layout()->setSpacing(0);
 	mainWindow.addToolBar(Qt::BottomToolBarArea, lightToolBar);
+
+	QToolBar* ObjectsToolBar = new mqObjectsControlsToolbar(&mainWindow)
+		<< mqSetName("ObjectsControlsToolbar");
+	ObjectsToolBar->layout()->setSpacing(0);
+	mainWindow.addToolBar(Qt::RightToolBarArea, ObjectsToolBar);
 
 	QToolBar* scalarsToolBar = new mqScalarsControlsToolbar(&mainWindow)
 		<< mqSetName("ScalarsControlsToolbar");

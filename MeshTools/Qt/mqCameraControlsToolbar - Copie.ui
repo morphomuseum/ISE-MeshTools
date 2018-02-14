@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>35</width>
-    <height>319</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,6 +72,19 @@
    </property>
    <property name="toolTip">
     <string>Move Camera: view objects from left side</string>
+   </property>
+  </action>
+  <action name="actionCameraRight">
+   <property name="icon">
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/Icons/camera_right.png</normaloff>
+     <normalon>:/Icons/camera_right.png</normalon>:/Icons/camera_right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera: right</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Camera: view objects from right side</string>
    </property>
   </action>
   <action name="actionCameraAbove">
@@ -143,19 +156,6 @@
    </property>
    <property name="toolTip">
     <string>Toggle camera : orthonormal or perspective projection</string>
-   </property>
-  </action>
-  <action name="actionCameraRight">
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/Icons/camera_right.png</normaloff>
-     <normalon>:/Icons/camera_right.png</normalon>:/Icons/camera_right.png</iconset>
-   </property>
-   <property name="text">
-    <string>Camera: right</string>
-   </property>
-   <property name="toolTip">
-    <string>Move Camera: view objects from right side</string>
    </property>
   </action>
   <addaction name="actionCameraCentreOfMassToggle"/>

@@ -75,6 +75,8 @@ mqEditAllFLGLengthDialogReaction.h
   mqUndoRedoReaction.cxx
   mqUndoStack.h
   mqUndoStack.cxx
+  mqObjectsControlsToolbar.h
+  mqObjectsControlsToolbar.cxx
   mqCameraControlsToolbar.h
   mqCameraControlsToolbar.cxx
   mqMainControlsToolbar.h
@@ -135,6 +137,10 @@ QReleaseSlider.cxx
 QReleaseSlider.h
 QReleaseDial.cxx
 QReleaseDial.h
+QReleaseScrollBar.cxx
+QReleaseScrollBar.h
+QReleaseScrollBarValue.cxx
+QReleaseScrollBarValue.h
 QDoubleReleaseSlider.cxx
 QDoubleReleaseSlider.h
 QReleaseSliderValue.cxx
@@ -174,6 +180,7 @@ set (Qt_UIs mqAboutDialog.ui
 mqColorDialog.ui 
 mqLandmarkDialog.ui  
 mqCameraControlsToolbar.ui 
+mqObjectsControlsToolbar.ui 
 mqMainControlsToolbar.ui 
 mqSavePLYDialog.ui 
 mqSaveVTPDialog.ui 

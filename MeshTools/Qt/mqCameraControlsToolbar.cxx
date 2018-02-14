@@ -19,6 +19,7 @@
 #include "QReleaseSlider.h"
 #include "QDoubleReleaseSlider.h"
 #include "QReleaseSliderValue.h"
+#include "QReleaseScrollBarValue.h"
 //#include <QDial>
 #include <QToolButton>
 #include <QComboBox>
@@ -35,12 +36,56 @@ void mqCameraControlsToolbar::constructor()
  // Ui::mqCameraControlsToolbar ui;
  // ui.setupUi(this);
   this->ui = new Ui_mqCameraControlsToolbar;
-  this->ui->setupUi(this);
 
+
+  this->ui->setupUi(this);
+  this->setStyleSheet(
+	  
+	  "QSlider::groove:vertical{"
+  "border: 1px solid #999999;"
+  "width: 15px;" /* the groove expands to the size of the slider by default. by giving it a width, it has a fixed size */
+  "margin: 2px 0;"
+  "}"
+
+	"QSlider::handle:vertical{"
+  "background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #b4b4b4, stop:1 #8f8f8f);"
+  "border: 1px solid #5c5c5c;"
+  "height: 10px;"
+  "margin: 1px 0;" /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+	  "border - radius: 3px;"
+  "}"
+	  "QSlider::add-page:vertical{background:yellow;} QSlider::sub-page:vertical{background:orange;}"
+
+
+	  "QScrollBar{background-color:orange}"
+
+	  "QScrollBar::handle:vertical{background:yellow;max-height:10px;} "  
+
+		
+ 
+
+ 
+  
+  );
+  /*
+  
+  "QSlider::handle:vertical{background:qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #b4b4b4, stop:1 #8f8f8f);"
+	  "border: 1px solid #5c5c5c;  width: 18px;  margin: -2px 0; "
+  	  "border - radius: 3px;}"
+
+  "QSlider::add-page:vertical{background:yellow;} QSlider::sub-page:vertical{background:orange;}"
+
+  */
+
+  /*
+  
+    "QSlider::groove:vertical{border: 1px solid #999999;height:100px;}"
+	
+  */
   new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
   new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back
   new mqCameraReaction(this->ui->actionCameraLeft, 2); //2 = camera Left
-  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
+//  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
   new mqCameraReaction(this->ui->actionCameraAbove, 4); //4 = camera Above
   new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
 
@@ -78,9 +123,11 @@ void mqCameraControlsToolbar::constructor()
   this->zoom->setDoubleMaximum(100);
   this->zoom->setDoubleValue(10);
   //this->zRot = new QReleaseSlider;
+  //this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
   this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
   //this->zRot = new QReleaseDial;
   //this->zRot = new QDial;
+  //this->zRot->setFixedSize(20, 300);
   this->zRot->setMaximum(90);
   this->zRot->setMinimum(-90);
   

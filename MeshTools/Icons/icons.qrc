@@ -10,7 +10,8 @@
     <file>fileopen.png</file>
     <file>filesave.png</file>
  
-
+    <file>delete.png</file>
+    <file>delete2.png</file>
     <!-- Help -->
     <file>backface_off.png</file>
     <file>backface_on.png</file>
