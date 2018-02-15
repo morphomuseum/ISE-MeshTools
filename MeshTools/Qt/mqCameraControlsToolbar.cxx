@@ -43,29 +43,24 @@ void mqCameraControlsToolbar::constructor()
 	  
 	  "QSlider::groove:vertical{"
   "border: 1px solid #999999;"
-  "width: 15px;" /* the groove expands to the size of the slider by default. by giving it a width, it has a fixed size */
-  "margin: 2px 0;"
+  "width: 10px;" /* the groove expands to the size of the slider by default. by giving it a width, it has a fixed size */
+  "margin: 2px -5;"
   "}"
 
 	"QSlider::handle:vertical{"
   "background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #b4b4b4, stop:1 #8f8f8f);"
   "border: 1px solid #5c5c5c;"
   "height: 10px;"
-  "margin: 1px 0;" /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
-	  "border - radius: 3px;"
+  "margin: 0px -2;" /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+	  
   "}"
-	  "QSlider::add-page:vertical{background:yellow;} QSlider::sub-page:vertical{background:orange;}"
+	  "QSlider::add-page:vertical{background:blue;} QSlider::sub-page:vertical{background:orange;}"
 
 
 	  "QScrollBar{background-color:orange}"
 
 	  "QScrollBar::handle:vertical{background:yellow;max-height:10px;} "  
 
-		
- 
-
- 
-  
   );
   /*
   
@@ -114,6 +109,7 @@ void mqCameraControlsToolbar::constructor()
   this->cP = new QReleaseSlider;
   //this->cP->set
    this->cP->setToolTip(QString("Clipping plane"));
+   
    this->cP->setMaximum(100);
    this->cP->setMinimum(-100);
   this->zoom = new QDoubleReleaseSlider;
@@ -121,7 +117,7 @@ void mqCameraControlsToolbar::constructor()
   
   this->zoom->setDoubleMinimum(-100);
   this->zoom->setDoubleMaximum(100);
-  this->zoom->setDoubleValue(10);
+  this->zoom->setDoubleValue(0);
   //this->zRot = new QReleaseSlider;
   //this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
   this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
@@ -171,8 +167,9 @@ void mqCameraControlsToolbar::constructor()
   
   
   QWidget* grid = new QWidget();
- layout->addWidget(this->zRot);
- 
+ //layout->addWidget(this->zRot);
+ layout->addWidget(this->cP);
+ layout->addWidget(this->zoom);
 
   grid->setLayout(layout);
   this->addWidget(grid);
@@ -185,11 +182,11 @@ void mqCameraControlsToolbar::constructor()
 
 
   QWidget* grid2 = new QWidget();
-  layout2->addWidget(this->cP);
+//  layout2->addWidget(this->cP);
 
 
   grid2->setLayout(layout2);
-  this->addWidget(grid2);
+  //this->addWidget(grid2);
 
  
 
@@ -208,9 +205,9 @@ void mqCameraControlsToolbar::constructor()
 
   QHBoxLayout *layout3 = new QHBoxLayout;
   QWidget* grid3 = new QWidget();
-  layout3->addWidget(this->zoom);
+  //layout3->addWidget(this->zoom);
   grid3->setLayout(layout3);
-  this->addWidget(grid3);
+ // this->addWidget(grid3);
 
   //this->setLayout(layout);
   //this->ui->actionTagEdit->setDisabled(true);
