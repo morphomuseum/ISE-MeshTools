@@ -16,7 +16,7 @@ QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QStr
 	//this->spinbox->setMinimum(-90);
 	//this->spinbox->setFixedWidth(20);
 	//this->spinbox->setFixedSize(15, 15);
-	this->spinbox->setFixedSize(20, 15);
+	this->spinbox->setFixedSize(16, 15);
 	QFont font(this->spinbox->font());
 	font.setPointSize(4);
 	this->spinbox->setFont(font);
@@ -48,7 +48,7 @@ QReleaseSliderValue::QReleaseSliderValue(Qt::Orientation orientation, const QStr
 
 	//QBoxLayout *slidersLayout = new QBoxLayout(direction);
 	QVBoxLayout *layout2 = new QVBoxLayout;
-
+	layout2->setAlignment(Qt::AlignCenter);
 	layout2->addWidget(slider);
 	layout2->addWidget(spinbox);
 	setLayout(layout2);

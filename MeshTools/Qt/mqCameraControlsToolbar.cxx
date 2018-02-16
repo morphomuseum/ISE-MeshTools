@@ -44,7 +44,7 @@ void mqCameraControlsToolbar::constructor()
 	  "QSlider::groove:vertical{"
   "border: 1px solid #999999;"
   "width: 10px;" /* the groove expands to the size of the slider by default. by giving it a width, it has a fixed size */
-  "margin: 2px -5;"
+  "margin: 0px -5;"
   "}"
 
 	"QSlider::handle:vertical{"
@@ -167,9 +167,11 @@ void mqCameraControlsToolbar::constructor()
   
   
   QWidget* grid = new QWidget();
- //layout->addWidget(this->zRot);
- layout->addWidget(this->cP);
- layout->addWidget(this->zoom);
+ layout->addWidget(this->zRot);
+  layout->setSpacing(1);
+  layout->setMargin(1);
+ //layout->addWidget(this->cP);
+ //layout->addWidget(this->zoom);
 
   grid->setLayout(layout);
   this->addWidget(grid);
@@ -179,14 +181,15 @@ void mqCameraControlsToolbar::constructor()
   this->addWidget(this->cP);
   this->addWidget(this->zoom);*/
   QHBoxLayout *layout2 = new QHBoxLayout;
-
+  layout2->setSpacing(1);
+  layout2->setMargin(1);
 
   QWidget* grid2 = new QWidget();
-//  layout2->addWidget(this->cP);
+  layout2->addWidget(this->cP);
 
 
   grid2->setLayout(layout2);
-  //this->addWidget(grid2);
+  this->addWidget(grid2);
 
  
 
@@ -204,10 +207,12 @@ void mqCameraControlsToolbar::constructor()
   this->addWidget(spacer);
 
   QHBoxLayout *layout3 = new QHBoxLayout;
+  layout3->setSpacing(1);
+  layout3->setMargin(1);
   QWidget* grid3 = new QWidget();
-  //layout3->addWidget(this->zoom);
+  layout3->addWidget(this->zoom);
   grid3->setLayout(layout3);
- // this->addWidget(grid3);
+  this->addWidget(grid3);
 
   //this->setLayout(layout);
   //this->ui->actionTagEdit->setDisabled(true);
