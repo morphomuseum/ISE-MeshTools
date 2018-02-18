@@ -12,6 +12,9 @@ endif()
 if(POLICY CMP0053)
   cmake_policy(SET CMP0053 NEW) # CMake 3.1
 endif()
+if(POLICY CMP0071)
+  cmake_policy(SET CMP0071 NEW) # CMake 3.10
+endif()
 
 project(MeshTools)
 
@@ -137,6 +140,12 @@ install(TARGETS MeshTools
         COMPONENT applications)
 #set (QT5_BINARIES "C:/Qt/5.8/msvc2015_64/bin") 
 
+file(TO_CMAKE_PATH "$ENV{QTDIR}/bin/Qt5Core.dll" qtcore)
+file(TO_CMAKE_PATH "$ENV{QTDIR}/bin/Qt5Widgets.dll" qtwidgets)
+file(TO_CMAKE_PATH "$ENV{QTDIR}/bin/Qt5GUI.dll" qtgui)
+file(TO_CMAKE_PATH "$ENV{QTDIR}/plugins/platforms/qwindows.dll" qtwindows)
+
+
 install(
 	FILES
  "${VTK_DIR}/bin/Release/vtkGUISupportQt-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}.dll"
@@ -188,13 +197,16 @@ install(
 "${VTK_DIR}/bin/Release/vtkImagingColor-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}.dll"
 "${VTK_DIR}/bin/Release/vtkRenderingVolume-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}.dll"
 "${VTK_DIR}/bin/Release/vtksys-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}.dll"
-		 "$ENV{QTDIR}/bin/Qt5Core.dll"
-                 "$ENV{QTDIR}/bin/Qt5Widgets.dll"
-		 "$ENV{QTDIR}/bin/QT5Gui.dll"                
+
+
+		"${qtcore}"
+		"${qtwidgets}"
+		"${qtgui}"
+	                
         DESTINATION programs
         COMPONENT applications)
 install(
 	FILES
-		 "$ENV{QTDIR}/plugins/platforms/qwindows.dll"                
+		"${qtwindows}"                
         DESTINATION programs/platforms
         COMPONENT applications)

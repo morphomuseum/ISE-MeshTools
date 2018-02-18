@@ -1,4 +1,6 @@
 On windows: 
+Install NSIS
+Install CMAKE
 
 Install Visual Studio 2015
 Install QT (http://qt.io )
