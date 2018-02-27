@@ -33,6 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ui_mqObjectsControlsToolbar.h"
 
 // For later!
+#include "QReleaseSlider.h"
+#include "QReleaseSliderValue.h"
+
 #include "mqSaveNTWDialogReaction.h"
 #include "mqUndoRedoReaction.h"
 #include "mqEditLMKDialogReaction.h"
@@ -46,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vtkRenderer.h>
 
 #include <QToolButton>
-
+#include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
 void mqObjectsControlsToolbar::constructor()
@@ -55,7 +58,96 @@ void mqObjectsControlsToolbar::constructor()
  // ui.setupUi(this);
   this->ui = new Ui_mqObjectsControlsToolbar;
   this->ui->setupUi(this);
- 
+  this->setStyleSheet(
+
+	  "QSlider::groove:vertical{"
+	  "border: 1px solid #999999;"
+	  "width: 10px;" /* the groove expands to the size of the slider by default. by giving it a width, it has a fixed size */
+	  "margin: 0px -4;"
+	  "}"
+
+	  "QSlider::handle:vertical{"
+	  "background: qlineargradient(x1 : 0, y1 : 0, x2 : 1, y2 : 1, stop : 0 #b4b4b4, stop:1 #8f8f8f);"
+	  "border: 1px solid #5c5c5c;"
+	  "height: 10px;"
+	  "margin: 0px -2;" /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+	  "}"
+
+	  "QSlider::add-page:vertical{"
+	  "background:yellow;"
+	  "margin: 1px;}"
+	  
+	  "QSlider::sub-page:vertical{"
+	  "background:white;"
+	 "margin: 1px;"
+	  "}"
+
+
+	  "QScrollBar{background-color:orange}"
+
+	  "QScrollBar::handle:vertical{background:yellow;max-height:10px;} "
+
+  );
+  this->zTr = new QReleaseSlider;
+  this->zTr->setMaximum(100);
+  this->zTr->setMinimum(-100);
+  this->zTr->setToolTip(QString("Translate along z viewing axis"));
+
+
+  this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->zRot->setMaximum(90);
+  this->zRot->setMinimum(-90);
+  this->zRot->setToolTip(QString("Rotation along z viewing axis"));
+
+
+  this->yTr = new QReleaseSlider;
+  this->yTr->setMaximum(100);
+  this->yTr->setMinimum(-100);
+  this->yTr->setToolTip(QString("Translate along y viewing axis"));
+
+  this->yRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->yRot->setMaximum(90);
+  this->yRot->setMinimum(-90);
+  this->yRot->setToolTip(QString("Rotation along y viewing axis"));
+
+  
+  this->xTr = new QReleaseSlider;
+  this->xTr->setMaximum(100);
+  this->xTr->setMinimum(-100);
+  this->xTr->setToolTip(QString("Translate along x viewing axis"));
+
+  this->xRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->xRot->setMaximum(90);
+  this->xRot->setMinimum(-90);
+  this->xRot->setToolTip(QString("Rotation along x viewing axis"));
+
+  QHBoxLayout *zlayout = new QHBoxLayout;
+  QWidget* zgrid = new QWidget();
+  zlayout->addWidget(this->zRot);
+  zlayout->addWidget(this->zTr);
+  zlayout->setSpacing(1);
+  zlayout->setMargin(1);
+  zgrid->setLayout(zlayout);
+  this->addWidget(zgrid);
+
+  QHBoxLayout *ylayout = new QHBoxLayout;
+  QWidget* ygrid = new QWidget();
+  ylayout->addWidget(this->yRot);
+  ylayout->addWidget(this->yTr);
+  ylayout->setSpacing(1);
+  ylayout->setMargin(1);
+  ygrid->setLayout(ylayout);
+  this->addWidget(ygrid);
+
+  QHBoxLayout *xlayout = new QHBoxLayout;
+  QWidget* xgrid = new QWidget();
+  xlayout->addWidget(this->xRot);
+  xlayout->addWidget(this->xTr);
+  xlayout->setSpacing(1);
+  xlayout->setMargin(1);
+  xgrid->setLayout(xlayout);
+  this->addWidget(xgrid);
+
   connect(this->ui->actionDelete, SIGNAL(triggered()), this, SLOT(slotDeleteObjects()));
   
  

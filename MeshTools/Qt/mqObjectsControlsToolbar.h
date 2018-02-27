@@ -29,6 +29,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ========================================================================*/
+class QReleaseSlider;
+class QReleaseSliderValue;
 #ifndef mqObjectsControlsToolbar_h
 #define mqObjectsControlsToolbar_h
 
@@ -61,7 +63,12 @@ public:
   
 private:
 	Q_DISABLE_COPY(mqObjectsControlsToolbar)
-  
+		QReleaseSliderValue * zRot;
+	QReleaseSlider *zTr;
+	QReleaseSliderValue * yRot;
+	QReleaseSlider *yTr;
+	QReleaseSliderValue * xRot;
+	QReleaseSlider *xTr;
   Ui_mqObjectsControlsToolbar *ui;
   void constructor();
 };
