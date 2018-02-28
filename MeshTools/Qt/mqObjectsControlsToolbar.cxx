@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // For later!
 #include "QReleaseSlider.h"
-#include "QReleaseSliderValue.h"
+//#include "QReleaseSliderValue.h"
 
 #include "mqSaveNTWDialogReaction.h"
 #include "mqUndoRedoReaction.h"
@@ -94,7 +94,8 @@ void mqObjectsControlsToolbar::constructor()
   this->zTr->setToolTip(QString("Translate along z viewing axis"));
 
 
-  this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  //this->zRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->zRot = new QReleaseSlider;
   this->zRot->setMaximum(90);
   this->zRot->setMinimum(-90);
   this->zRot->setToolTip(QString("Rotation along z viewing axis"));
@@ -105,7 +106,8 @@ void mqObjectsControlsToolbar::constructor()
   this->yTr->setMinimum(-100);
   this->yTr->setToolTip(QString("Translate along y viewing axis"));
 
-  this->yRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  //this->yRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->yRot = new QReleaseSlider;
   this->yRot->setMaximum(90);
   this->yRot->setMinimum(-90);
   this->yRot->setToolTip(QString("Rotation along y viewing axis"));
@@ -116,45 +118,260 @@ void mqObjectsControlsToolbar::constructor()
   this->xTr->setMinimum(-100);
   this->xTr->setToolTip(QString("Translate along x viewing axis"));
 
-  this->xRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  //this->xRot = new QReleaseSliderValue(Qt::Vertical, tr(""));
+  this->xRot = new QReleaseSlider;
   this->xRot->setMaximum(90);
   this->xRot->setMinimum(-90);
   this->xRot->setToolTip(QString("Rotation along x viewing axis"));
 
   QHBoxLayout *zlayout = new QHBoxLayout;
   QWidget* zgrid = new QWidget();
-  zlayout->addWidget(this->zRot);
-  zlayout->addWidget(this->zTr);
   zlayout->setSpacing(1);
-  zlayout->setMargin(1);
+  zlayout->setMargin(5);
+  zlayout->addWidget(this->zRot);
+ // zlayout->addWidget(this->xTr);
+  //zlayout->addWidget(this->yTr);
+  zlayout->addWidget(this->zTr);
+
   zgrid->setLayout(zlayout);
   this->addWidget(zgrid);
 
   QHBoxLayout *ylayout = new QHBoxLayout;
   QWidget* ygrid = new QWidget();
+ ylayout->setSpacing(1);
+  ylayout->setMargin(5);
   ylayout->addWidget(this->yRot);
   ylayout->addWidget(this->yTr);
-  ylayout->setSpacing(1);
-  ylayout->setMargin(1);
+
   ygrid->setLayout(ylayout);
   this->addWidget(ygrid);
 
   QHBoxLayout *xlayout = new QHBoxLayout;
   QWidget* xgrid = new QWidget();
-  xlayout->addWidget(this->xRot);
-  xlayout->addWidget(this->xTr);
   xlayout->setSpacing(1);
-  xlayout->setMargin(1);
+  xlayout->setMargin(5);
+ xlayout->addWidget(this->xRot);
+ xlayout->addWidget(this->xTr);
+
   xgrid->setLayout(xlayout);
   this->addWidget(xgrid);
 
   connect(this->ui->actionDelete, SIGNAL(triggered()), this, SLOT(slotDeleteObjects()));
   
- 
+  connect(zRot, SIGNAL(valueChanged(int)), this, SLOT(slotZrot(int)));
+  connect(yRot, SIGNAL(valueChanged(int)), this, SLOT(slotYrot(int)));
+  connect(xRot, SIGNAL(valueChanged(int)), this, SLOT(slotXrot(int)));
   
 }
 
+void mqObjectsControlsToolbar::RotateActors(int axis, int degrees)
+{
+	cout << "Rotate axis: " << axis << ", degrees:" << degrees << endl;
+//axis: 0=X, 1=Y, 2=z
+	/*
+	double rot_center[3] = { 0,0,0 };
 
+	mqMeshToolsCore::instance()->GetCenterOfMassOfSelectedActors(rot_center);
+	//cout << "rotation center: " << rot_centerendl;
+	//cout << "Rotation center: " << rot_center[0] << "," << rot_center[1] << "," << rot_center[2] << endl;
+	//cout << "bb length...." << endl;
+	double boundRadius = mqMeshToolsCore::instance()->GetBoundingBoxLengthOfSelectedActors();
+	//cout << "Bound Radius: " << boundRadius << endl;
+	if (boundRadius == std::numeric_limits<double>::infinity())
+	{
+		boundRadius = 60;
+	}
+	else
+	{
+		boundRadius *= 0.5;
+	}
+	// GetLength gets the length of the diagonal of the bounding box
+	
+
+	// Get the view up and view right vectors
+	double view_up[3], view_look[3], view_right[3];
+
+	mqMeshToolsCore::instance()->getCamera()->OrthogonalizeViewUp();
+	mqMeshToolsCore::instance()->getCamera()->ComputeViewPlaneNormal();
+	mqMeshToolsCore::instance()->getCamera()->GetViewUp(view_up);
+	vtkMath::Normalize(view_up);
+	mqMeshToolsCore::instance()->getCamera()->GetViewPlaneNormal(view_look);
+	vtkMath::Cross(view_up, view_look, view_right);
+	vtkMath::Normalize(view_right);
+
+	// Get the furtherest point from object position+origin
+	double outsidept[3];
+
+	outsidept[0] = rot_center[0] + view_right[0] * boundRadius;
+	outsidept[1] = rot_center[1] + view_right[1] * boundRadius;
+	outsidept[2] = rot_center[2] + view_right[2] * boundRadius;
+
+	// Convert them to display coord
+	double disp_obj_center[3];
+
+	this->ComputeWorldToDisplay(rot_center[0], rot_center[1], rot_center[2],
+		disp_obj_center);
+
+	this->ComputeWorldToDisplay(outsidept[0], outsidept[1], outsidept[2],
+		outsidept);
+
+	double radius = sqrt(vtkMath::Distance2BetweenPoints(disp_obj_center,
+		outsidept));
+	double nxf = (rwi->GetEventPosition()[0] - disp_obj_center[0]) / radius;
+
+	double nyf = (rwi->GetEventPosition()[1] - disp_obj_center[1]) / radius;
+
+	double oxf = (rwi->GetLastEventPosition()[0] - disp_obj_center[0]) / radius;
+
+	double oyf = (rwi->GetLastEventPosition()[1] - disp_obj_center[1]) / radius;
+
+	if (((nxf * nxf + nyf * nyf) <= 1.0) &&
+		((oxf * oxf + oyf * oyf) <= 1.0))
+	{
+		double newXAngle = vtkMath::DegreesFromRadians(asin(nxf));
+		double newYAngle = vtkMath::DegreesFromRadians(asin(nyf));
+		double oldXAngle = vtkMath::DegreesFromRadians(asin(oxf));
+		double oldYAngle = vtkMath::DegreesFromRadians(asin(oyf));
+
+		double scale[3];
+		scale[0] = scale[1] = scale[2] = 1.0;
+
+		double **rotate = new double*[2];
+
+		rotate[0] = new double[4];
+		rotate[1] = new double[4];
+
+		rotate[0][0] = newXAngle - oldXAngle;
+		rotate[0][1] = view_up[0];
+		rotate[0][2] = view_up[1];
+		rotate[0][3] = view_up[2];
+
+		rotate[1][0] = oldYAngle - newYAngle;
+		rotate[1][1] = view_right[0];
+		rotate[1][2] = view_right[1];
+		rotate[1][3] = view_right[2];
+
+		this->ActorCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->ActorCollection->GetNumberOfItems(); i++)
+		{
+			vtkMTActor *myActor = vtkMTActor::SafeDownCast(this->ActorCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				//cout << "Apply prop3Dtransform" << endl;
+				for (vtkIdType j = 0; j < 2; j++)
+				{
+					for (vtkIdType k = 0; k < 4; k++)
+					{
+						//cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
+
+					}
+				}
+
+				//cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
+
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				myActor->SetChanged(1);
+			}
+		}
+		this->NormalLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NormalLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->TargetLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->TargetLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->NodeLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->NodeLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->HandleLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->HandleLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->HandleLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+		this->FlagLandmarkCollection->InitTraversal();
+		for (vtkIdType i = 0; i < this->FlagLandmarkCollection->GetNumberOfItems(); i++)
+		{
+			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
+			vtkProp3D *myPropr = vtkProp3D::SafeDownCast(myActor);
+			if (myActor->GetSelected() == 1)
+			{
+				this->Prop3DTransform(myPropr,
+					rot_center,
+					2,
+					rotate,
+					scale);
+				this->ChangeAttachmentPoint(myPropr->GetMatrix(), myActor);
+				myActor->SetChanged(1);
+			}
+		}
+
+		delete[] rotate[0];
+		delete[] rotate[1];
+		delete[] rotate;
+
+		if (this->AutoAdjustCameraClippingRange)
+		{
+			this->CurrentRenderer->ResetCameraClippingRange();
+			mqMeshToolsCore::instance()->ActivateClippingPlane();
+		}
+
+		rwi->Render();
+	}*/
+}
 void mqObjectsControlsToolbar::slotDeleteObjects()
 {
 	mqMeshToolsCore::instance()->DeleteSelectedActors();
@@ -164,4 +381,35 @@ void mqObjectsControlsToolbar::slotDeleteObjects()
 	
 	
 	
+}
+void mqObjectsControlsToolbar::slotZrot(int val)
+{
+	
+	if (val == 0) {
+		// here the actors should be updated for good!
+		return; }
+
+	this->RotateActors(2, val);
+
+	
+}
+void mqObjectsControlsToolbar::slotXrot(int val)
+{	
+	if (val == 0) {
+		// here the actors should be updated for good!
+		return;
+	}
+
+	this->RotateActors(0, val);
+
+}
+void mqObjectsControlsToolbar::slotYrot(int val)
+{
+	if (val == 0) {
+		// here the actors should be updated for good!
+		return;
+	}
+
+	this->RotateActors(1, val);
+
 }

@@ -107,7 +107,8 @@ public:
 	void Setmui_Anaglyph(int anaglyph);
 	int Getmui_DefaultAnaglyph();
 	int Getmui_Anaglyph();
-
+	void GetCenterOfMassOfSelectedActors(double com[3]);
+	double GetBoundingBoxLengthOfSelectedActors();
 	void Setmui_ScalarVisibility(int scalarvisibility);
 	int Getmui_DefaultScalarVisibility();
 	int Getmui_ScalarVisibility();

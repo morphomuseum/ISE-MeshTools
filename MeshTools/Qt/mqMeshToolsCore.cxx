@@ -6775,6 +6775,175 @@ void mqMeshToolsCore::ReplaceCameraAndGrid()
 
 
 }
+double mqMeshToolsCore::GetBoundingBoxLengthOfSelectedActors()
+{
+	double boundsa[6];
+	this->ActorCollection->GetBoundingBoxSelected(boundsa);
+	double Normalboundslm[6];
+	this->NormalLandmarkCollection->GetBoundingBoxSelected(Normalboundslm);
+	double Targetboundslm[6];
+	this->TargetLandmarkCollection->GetBoundingBoxSelected(Targetboundslm);
+	double Nodeboundslm[6];
+	this->NodeLandmarkCollection->GetBoundingBoxSelected(Nodeboundslm);
+	double Handleboundslm[6];
+	this->HandleLandmarkCollection->GetBoundingBoxSelected(Handleboundslm);
+	double Flagboundslm[6];
+	this->FlagLandmarkCollection->GetBoundingBoxSelected(Flagboundslm);
+
+
+
+	double largestboundsselected[6];
+	largestboundsselected[0] = DBL_MAX;
+	largestboundsselected[1] = -DBL_MAX;
+	largestboundsselected[2] = DBL_MAX;
+	largestboundsselected[3] = -DBL_MAX;
+	largestboundsselected[4] = DBL_MAX;
+	largestboundsselected[5] = -DBL_MAX;
+
+	if (boundsa[0] < largestboundsselected[0]) { largestboundsselected[0] = boundsa[0]; }
+	if (boundsa[1] > largestboundsselected[1]) { largestboundsselected[1] = boundsa[1]; }
+	if (boundsa[2] < largestboundsselected[2]) { largestboundsselected[2] = boundsa[2]; }
+	if (boundsa[3] > largestboundsselected[3]) { largestboundsselected[3] = boundsa[3]; }
+	if (boundsa[4] < largestboundsselected[4]) { largestboundsselected[4] = boundsa[4]; }
+	if (boundsa[5] > largestboundsselected[5]) { largestboundsselected[5] = boundsa[5]; }
+
+	if (Normalboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Normalboundslm[0]; }
+	if (Normalboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Normalboundslm[1]; }
+	if (Normalboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Normalboundslm[2]; }
+	if (Normalboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Normalboundslm[3]; }
+	if (Normalboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Normalboundslm[4]; }
+	if (Normalboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Normalboundslm[5]; }
+
+	if (Targetboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Targetboundslm[0]; }
+	if (Targetboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Targetboundslm[1]; }
+	if (Targetboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Targetboundslm[2]; }
+	if (Targetboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Targetboundslm[3]; }
+	if (Targetboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Targetboundslm[4]; }
+	if (Targetboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Targetboundslm[5]; }
+
+	if (Nodeboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Nodeboundslm[0]; }
+	if (Nodeboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Nodeboundslm[1]; }
+	if (Nodeboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Nodeboundslm[2]; }
+	if (Nodeboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Nodeboundslm[3]; }
+	if (Nodeboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Nodeboundslm[4]; }
+	if (Nodeboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Nodeboundslm[5]; }
+
+	if (Handleboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Handleboundslm[0]; }
+	if (Handleboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Handleboundslm[1]; }
+	if (Handleboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Handleboundslm[2]; }
+	if (Handleboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Handleboundslm[3]; }
+	if (Handleboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Handleboundslm[4]; }
+	if (Handleboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Handleboundslm[5]; }
+
+	if (Flagboundslm[0] < largestboundsselected[0]) { largestboundsselected[0] = Flagboundslm[0]; }
+	if (Flagboundslm[1] > largestboundsselected[1]) { largestboundsselected[1] = Flagboundslm[1]; }
+	if (Flagboundslm[2] < largestboundsselected[2]) { largestboundsselected[2] = Flagboundslm[2]; }
+	if (Flagboundslm[3] > largestboundsselected[3]) { largestboundsselected[3] = Flagboundslm[3]; }
+	if (Flagboundslm[4] < largestboundsselected[4]) { largestboundsselected[4] = Flagboundslm[4]; }
+	if (Flagboundslm[5] > largestboundsselected[5]) { largestboundsselected[5] = Flagboundslm[5]; }
+
+	double A[3];
+	double B[3];
+	double diag[3];
+	A[0] = largestboundsselected[0];
+	A[1] = largestboundsselected[2];
+	A[2] = largestboundsselected[4];
+	B[0] = largestboundsselected[1];
+	B[1] = largestboundsselected[3];
+	B[2] = largestboundsselected[5];
+	diag[0] = B[0] - A[0];
+	diag[1] = B[1] - A[1];
+	diag[2] = B[2] - A[2];
+	double lengthxyz = sqrt((diag[0])*(diag[0]) + (diag[1])*(diag[1]) + (diag[2])*(diag[2]));
+	return lengthxyz;
+
+}
+void mqMeshToolsCore::GetCenterOfMassOfSelectedActors(double com[3])
+{
+	com[0] = 0;
+	com[1] = 0;
+	com[2] = 0;
+	//cout << "start a com:" << endl;
+	//double com[3] = { 0, 0,0 };	
+	//Conception weakness : call COM before VN otherwise computation may not have been triggered!!
+
+
+
+	int nv = 0;
+	double *coma = this->ActorCollection->GetCenterOfMassOfSelectedActors();
+	int nva = this->ActorCollection->GetGlobalSelectedVN();
+	if (nva>0) {
+		com[0] += coma[0] * nva;
+		com[1] += coma[1] * nva;
+		com[2] += coma[2] * nva;
+	}
+	//cout << " com:" << com[0] << "," << com[1] << "," << com[2] << endl;
+	//cout << "selected nva:" << nva << endl;
+	//cout << "start  lm com:" << endl;
+	//Conception weakness : call COM before VN otherwise computation may not have been triggered!!
+	nv = nva;
+	double *Normalcomlm = this->NormalLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Normalnvlm = this->NormalLandmarkCollection->GetGlobalSelectedVN();
+	if (Normalnvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Normalcomlm[0] * Normalnvlm;
+		com[1] += Normalcomlm[1] * Normalnvlm;
+		com[2] += Normalcomlm[2] * Normalnvlm;
+	}
+	nv += Normalnvlm;
+
+	double *Targetcomlm = this->TargetLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Targetnvlm = this->TargetLandmarkCollection->GetGlobalSelectedVN();
+	if (Targetnvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Targetcomlm[0] * Targetnvlm;
+		com[1] += Targetcomlm[1] * Targetnvlm;
+		com[2] += Targetcomlm[2] * Targetnvlm;
+	}
+	nv += Targetnvlm;
+
+	double *Nodecomlm = this->NodeLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Nodenvlm = this->NodeLandmarkCollection->GetGlobalSelectedVN();
+	if (Nodenvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Nodecomlm[0] * Nodenvlm;
+		com[1] += Nodecomlm[1] * Nodenvlm;
+		com[2] += Nodecomlm[2] * Nodenvlm;
+	}
+	nv += Nodenvlm;
+
+	double *Handlecomlm = this->HandleLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Handlenvlm = this->HandleLandmarkCollection->GetGlobalSelectedVN();
+	if (Handlenvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Handlecomlm[0] * Handlenvlm;
+		com[1] += Handlecomlm[1] * Handlenvlm;
+		com[2] += Handlecomlm[2] * Handlenvlm;
+	}
+	nv += Handlenvlm;
+
+	double *Flagcomlm = this->FlagLandmarkCollection->GetCenterOfMassOfSelectedActors();
+	int Flagnvlm = this->FlagLandmarkCollection->GetGlobalSelectedVN();
+	if (Flagnvlm > 0) {
+		//cout << "nvlm>0" << endl;
+
+		com[0] += Flagcomlm[0] * Flagnvlm;
+		com[1] += Flagcomlm[1] * Flagnvlm;
+		com[2] += Flagcomlm[2] * Flagnvlm;
+	}
+	nv += Flagnvlm;
+
+	if (nv > 0) {
+		com[0] /= nv; com[1] /= nv; com[2] /= nv;
+	}
+	//cout << "global selected com:" << com[0] << ","<<com[1] << "," << com[2] << endl;
+	//cout << "global selected nv:" << nv << endl;
+	//return com;
+}
 void mqMeshToolsCore::AdjustCameraAndGrid()
 {
 	double newcamerafocalpoint[3] = { 0,0,0 };

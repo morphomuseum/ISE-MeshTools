@@ -59,18 +59,25 @@ public:
 
   public slots :
   virtual void slotDeleteObjects();
- 
+  
+  virtual void slotXrot(int val);
+  virtual void slotYrot(int val);
+  virtual void slotZrot(int val);
   
 private:
 	Q_DISABLE_COPY(mqObjectsControlsToolbar)
-		QReleaseSliderValue * zRot;
+	//QReleaseSliderValue * zRot;
+	QReleaseSlider * zRot;
 	QReleaseSlider *zTr;
-	QReleaseSliderValue * yRot;
+	//QReleaseSliderValue * yRot;
+	QReleaseSlider * yRot;
 	QReleaseSlider *yTr;
-	QReleaseSliderValue * xRot;
+	//QReleaseSliderValue * xRot;
+	QReleaseSlider * xRot;
 	QReleaseSlider *xTr;
   Ui_mqObjectsControlsToolbar *ui;
   void constructor();
+  void RotateActors(int axis, int degrees);
 };
 
 #endif
