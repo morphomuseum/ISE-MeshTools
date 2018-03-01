@@ -31,6 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ========================================================================*/
 class QReleaseSlider;
 class QReleaseSliderValue;
+class vtkProp3D;
+class vtkMatrix4x4;
+//class LMActor;
+class vtkLMActor;
 #ifndef mqObjectsControlsToolbar_h
 #define mqObjectsControlsToolbar_h
 
@@ -55,6 +59,13 @@ public:
   {
     this->constructor();
   }
+  void TransformPoint(vtkMatrix4x4* matrix, double pointin[3], double pointout[3]);
+  void ChangeAttachmentPoint(vtkMatrix4x4 *NewMat, vtkLMActor *LMActor);
+  void Prop3DTransform(vtkProp3D *prop3D,
+	  double *boxCenter,
+	  int numRotation,
+	  double **rotate,
+	  double *scale);
   
 
   public slots :
@@ -63,9 +74,22 @@ public:
   virtual void slotXrot(int val);
   virtual void slotYrot(int val);
   virtual void slotZrot(int val);
-  
+  virtual void slotXtr(int val);
+  virtual void slotYtr(int val);
+  virtual void slotZtr(int val);
+  virtual void slotZrotPressed();
+  virtual void slotYrotPressed();
+  virtual void slotXrotPressed();
+  virtual void slotZtrPressed();
+  virtual void slotYtrPressed();
+  virtual void slotXtrPressed();
+
 private:
 	Q_DISABLE_COPY(mqObjectsControlsToolbar)
+		int oldrotval;
+		int oldtrval;
+	void SavePositions(int val);
+	
 	//QReleaseSliderValue * zRot;
 	QReleaseSlider * zRot;
 	QReleaseSlider *zTr;
@@ -78,6 +102,8 @@ private:
   Ui_mqObjectsControlsToolbar *ui;
   void constructor();
   void RotateActors(int axis, int degrees);
+  void GetDisplayToWorld(double x, double y, double worldpt[3]);
+  void PanActors(int axis, int value);
 };
 
 #endif

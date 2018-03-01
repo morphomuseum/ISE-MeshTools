@@ -68,6 +68,7 @@ public:
   void SetNodeLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
   void SetHandleLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
   void SetFlagLandmarkCollection(vtkSmartPointer<vtkLMActorCollection>LmkColl);
+
 protected:
   
   vtkMTInteractorStyle();
