@@ -102,7 +102,7 @@ private:
   Ui_mqObjectsControlsToolbar *ui;
   void constructor();
   void RotateActors(int axis, int degrees);
-  void GetDisplayToWorld(double x, double y, double worldpt[3]);
+  void GetDisplayToWorld(double x, double y, double z, double worldpt[4]);
   void PanActors(int axis, int value);
 };
 

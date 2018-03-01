@@ -205,10 +205,23 @@ ren->GetDisplayPoint(displayPt);
 
 
 */
-void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double worldpt[3])
+void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double z, double worldpt[4])
 {
+	
+	mqMeshToolsCore::instance()->getRenderer()->SetDisplayPoint(x, y, z);
+	mqMeshToolsCore::instance()->getRenderer()->DisplayToWorld();
+	mqMeshToolsCore::instance()->getRenderer()->GetWorldPoint(worldpt);
+  if (worldpt[3])
+  {
+    worldpt[0] /= worldpt[3];
+    worldpt[1] /= worldpt[3];
+    worldpt[2] /= worldpt[3];
+    worldpt[3] = 1.0;
+}
+	
+	
 
-	double coordinates[3];
+	/*double coordinates[3];
 	coordinates[0] =x;
 	coordinates[1] =y;
 	coordinates[2] = 0;
@@ -219,7 +232,7 @@ void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double worl
 	mqMeshToolsCore::instance()->getRenderer()->ViewToWorld();
 	
 	mqMeshToolsCore::instance()->getRenderer()->GetWorldPoint(worldpt);
-	
+	*/
 }
 void mqObjectsControlsToolbar::PanActors(int axis, int value)
 {
@@ -236,17 +249,23 @@ void mqObjectsControlsToolbar::PanActors(int axis, int value)
 		double motion_vector[3];
 
 
-		double origin[3];
-		double away[3];
+		double origin[4] = { 0, 0, 1,1 };
+		double away[4] = { 0, 0, 2,1 };
+		
 		cout << "try  DTW" << endl;
-		this->GetDisplayToWorld(0, 0, origin);
+		this->GetDisplayToWorld(0, 0, 1,origin);
 		cout << "try  DTW2" << endl;
-		this->GetDisplayToWorld(0, 10, away); //example : 10px away from origin!
-		cout << origin << endl;
-		cout << away << endl;
+		this->GetDisplayToWorld(0, 5, 1,away); //example : 10px away from origin!
+		cout << origin[0]<<","<<origin[1]<<","<<origin[2] << endl;
+		
+		cout << away[0] << "," << away[1] << "," << away[2] << endl;
+
 		motion_vector[0] = value*(origin[0] - away[0]);
 		motion_vector[1] = value*(origin[1] - away[1]);
 		motion_vector[2] = value*(origin[2] - away[2]);
+
+		cout << motion_vector[0] << "," << motion_vector[1] << "," << motion_vector[2] << endl;
+
 
 		cout << "ok?" << endl;
 		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
@@ -420,8 +439,9 @@ void mqObjectsControlsToolbar::PanActors(int axis, int value)
 		this->CurrentRenderer->ResetCameraClippingRange();
 		mqMeshToolsCore::instance()->ActivateClippingPlane();
 	}*/
-
-	//mqMeshToolsCore::instance()->Render();
+	cout << "try to render" << endl;
+	mqMeshToolsCore::instance()->Render();
+	cout << "rendering ok" << endl;
 }
 
 void mqObjectsControlsToolbar::RotateActors(int axis, int degrees)
@@ -821,6 +841,7 @@ void mqObjectsControlsToolbar::slotZtr(int val)
 	}
 	this->PanActors(2, val - this->oldtrval);
 	this->oldtrval = val;
+	cout << "hereZ!" << endl;
 }
 
 void mqObjectsControlsToolbar::slotYtr(int val)
@@ -831,6 +852,7 @@ void mqObjectsControlsToolbar::slotYtr(int val)
 	}
 	this->PanActors(1, val - this->oldtrval);
 	this->oldtrval = val;
+	cout << "hereY!" << endl;
 }
 
 void mqObjectsControlsToolbar::slotXtr(int val)
@@ -841,6 +863,7 @@ void mqObjectsControlsToolbar::slotXtr(int val)
 	}
 	this->PanActors(0, val - this->oldtrval);
 	this->oldtrval = val;
+	cout << "hereX!" << endl;
 }
 
 void mqObjectsControlsToolbar::slotZrot(int val)
