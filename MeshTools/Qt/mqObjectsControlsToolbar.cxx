@@ -246,24 +246,35 @@ void mqObjectsControlsToolbar::PanActors(int axis, int value)
 	if (value != 0)
 	{
 
-		double motion_vector[3];
+		double motion_vector[3] = { 0,0,0 };
 
 
 		double origin[4] = { 0, 0, 1,1 };
 		double away[4] = { 0, 0, 2,1 };
 		
 		cout << "try  DTW" << endl;
-		this->GetDisplayToWorld(0, 0, 1,origin);
+		this->GetDisplayToWorld(0, 0, 0,origin);
 		cout << "try  DTW2" << endl;
-		this->GetDisplayToWorld(0, 5, 1,away); //example : 10px away from origin!
+		int move = 10;
+		
+		this->GetDisplayToWorld(0,30, 0, away); //example : 10px away from origin!
+		
 		cout << origin[0]<<","<<origin[1]<<","<<origin[2] << endl;
 		
 		cout << away[0] << "," << away[1] << "," << away[2] << endl;
-
-		motion_vector[0] = value*(origin[0] - away[0]);
-		motion_vector[1] = value*(origin[1] - away[1]);
-		motion_vector[2] = value*(origin[2] - away[2]);
-
+		if (axis==2)
+		{
+			motion_vector[0] = value*(origin[2] - away[2])/30;
+		}
+		if (axis ==0)
+		{ 
+			motion_vector[1] = value*(origin[2] - away[2]) / 12;
+		}
+			
+		if (axis == 1)
+		{
+			motion_vector[2] = value*(origin[2] - away[2]) / 15;
+		}
 		cout << motion_vector[0] << "," << motion_vector[1] << "," << motion_vector[2] << endl;
 
 
@@ -839,7 +850,7 @@ void mqObjectsControlsToolbar::slotZtr(int val)
 		this->oldtrval = 0;
 		return;
 	}
-	this->PanActors(2, val - this->oldtrval);
+	this->PanActors(2,  this->oldtrval- val);
 	this->oldtrval = val;
 	cout << "hereZ!" << endl;
 }
@@ -895,7 +906,7 @@ void mqObjectsControlsToolbar::slotYrot(int val)
 		return;
 	}
 
-	this->RotateActors(1, val- this->oldrotval);
+	this->RotateActors(1, this->oldrotval-val);
 	this->oldrotval = val;
 
 }

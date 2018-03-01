@@ -80,7 +80,7 @@ void mqCameraControlsToolbar::constructor()
   new mqCameraReaction(this->ui->actionCameraFront, 0); //0 = camera Front
   new mqCameraReaction(this->ui->actionCameraBack, 1); //1 = camera Back
   new mqCameraReaction(this->ui->actionCameraLeft, 2); //2 = camera Left
-//  new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
+ new mqCameraReaction(this->ui->actionCameraRight, 3); //3 = camera Right
   new mqCameraReaction(this->ui->actionCameraAbove, 4); //4 = camera Above
   new mqCameraReaction(this->ui->actionCameraBelow, 5); //5 = camera Below
 
