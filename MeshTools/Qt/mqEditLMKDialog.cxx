@@ -169,7 +169,8 @@ void mqEditLMKDialog::GetFirstSelectedLandmark()
 	this->LMK = NULL;
 	this->current_coll = -1;
 
-	this->LMK_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
+	this->LMK_Coll = mqMeshToolsCore::instance()->getNormalLandmarkCollection();
+
 	int num_selected = 0;
 	num_selected = this->LMK_Coll->GetNumberOfSelectedActors();
 	if (num_selected > 0) {
@@ -215,7 +216,7 @@ void mqEditLMKDialog::GetFirstSelectedLandmark()
 
 void mqEditLMKDialog::GetFirstLandmark()
 {
-	this->LMK_Coll = mqMeshToolsCore::instance()->getNodeLandmarkCollection();
+	this->LMK_Coll = mqMeshToolsCore::instance()->getNormalLandmarkCollection();
 	int num = 0;
 	num = this->LMK_Coll->GetNumberOfItems();
 	if (num > 0) {

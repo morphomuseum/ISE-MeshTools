@@ -527,6 +527,7 @@ void mqEditACTORDialog::slotapplyMatrixToAllSelectedActors()
 			}
 		}
 		END_UNDO_SET();
+		mqMeshToolsCore::instance()->Render();
 	}
 
 }

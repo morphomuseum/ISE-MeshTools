@@ -248,12 +248,12 @@ void vtkMTInteractorStyle::StartSelect()
 	std::string key = rwi->GetKeySym();
 	
 	// Output the key that was pressed
-	cout << key << endl;
+	//cout << key << endl;
 	if (key.compare("Alt_L")==0)
 	{
 		this->Alt = ALT_PRESSED;
 	}
-	if (key.compare("l") == 0)
+	if (key.compare("l") == 0 || key.compare("L") == 0)
 	{
 		//cout << "l pressed" << endl;
 		this->L = L_PRESSED;
@@ -267,7 +267,7 @@ void vtkMTInteractorStyle::StartSelect()
 	//cout << rwi->GetKeySym() << endl;
 	if (key.compare("Delete") == 0)
 	{
-		std::cout << "Pressed " << key << std::endl;
+		//std::cout << "Pressed " << key << std::endl;
 		this->DeleteSelectedActors();
 		
 		
@@ -444,7 +444,7 @@ void vtkMTInteractorStyle::StartSelect()
 				QObject::tr("Load data"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
 				QObject::tr("meshtools data or project (*.ntw *.ver *.cur *.stv *.tag *.pos *.ori *.flg *.lmk *.ply *.stl *.vtk *.vtp)"));
 
-			cout << fileName.toStdString() << endl;
+			//cout << fileName.toStdString() << endl;
 			if (fileName.isEmpty()) return;
 			QFileInfo fileInfo(fileName);
 			mqMeshToolsCore::instance()->Setmui_LastUsedDir(fileInfo.path());
@@ -685,7 +685,7 @@ void vtkMTInteractorStyle::StartSelect()
 
 			}
 
-			cout << "Save NTW Dialog Triggered!" << endl;
+			//cout << "Save NTW Dialog Triggered!" << endl;
 
 
 			mqSaveNTWDialog SaveNTW_dialog(mqCoreUtilities::mainWidget());
@@ -698,7 +698,7 @@ void vtkMTInteractorStyle::StartSelect()
 	{
 		if (this->Ctrl == CTRL_PRESSED)
 		{
-			cout << "CTRL-Z detected!" << endl;
+			//cout << "CTRL-Z detected!" << endl;
 			mqMeshToolsCore::instance()->Undo();
 			rwi->Render();
 		}
@@ -709,7 +709,7 @@ void vtkMTInteractorStyle::StartSelect()
 
 		if (this->Ctrl == CTRL_PRESSED)
 		{
-			cout << "CTRL-Y detected!" << endl;
+			//cout << "CTRL-Y detected!" << endl;
 			mqMeshToolsCore::instance()->Redo();
 			rwi->Render();
 		}
@@ -872,16 +872,18 @@ void vtkMTInteractorStyle::OnRightButtonDown()
 
 
 					double* pos = picker->GetPickPosition();
-					std::cout << "Pick position (world coordinates) is: "
-						<< pos[0] << " " << pos[1]
-						<< " " << pos[2] << std::endl;
+					//std::cout << "Pick position (world coordinates) is: "
+					//	<< pos[0] << " " << pos[1]
+					//	<< " " << pos[2] << std::endl;
 					double* norm = picker->GetPickNormal();
-					std::cout << "Pick normal : "
-						<< norm[0] << " " << norm[1]
-						<< " " << norm[2] << std::endl;
+					//std::cout << "Pick normal : "
+					//	<< norm[0] << " " << norm[1]
+					//	<< " " << norm[2] << std::endl;
 
-					std::cout << "Picked actor: " << picker->GetActor() << std::endl;
-					if (picker->GetActor() == NULL) { cout << "Picked Null actor" << endl; }
+					//std::cout << "Picked actor: " << picker->GetActor() << std::endl;
+					if (picker->GetActor() == NULL) { 
+						cout << "Picked Null actor" << endl; 
+					}
 					else
 					{
 						mqMeshToolsCore::instance()->UpdateFirstSelectedLandmark(pos, norm);
@@ -936,12 +938,12 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 			  //int* clickPos = this->GetInteractor()->GetEventPosition();
 			  int x = this->Interactor->GetEventPosition()[0];
 			  int y = this->Interactor->GetEventPosition()[1];
-			  std::cout << "Clicked at "
-				  << x << " " << y   << std::endl;
+			 // std::cout << "Clicked at "
+			//	  << x << " " << y   << std::endl;
 			  if (this->CurrentRenderer == NULL) { cout << "Current renderer null" << endl; }
 			  if (this->CurrentRenderer != NULL)
 			  {
-				  std::cout << "Current renderer:" << this->CurrentRenderer << endl;
+			//	  std::cout << "Current renderer:" << this->CurrentRenderer << endl;
 				  // Pick from this location.
 				 /* vtkSmartPointer<vtkPropPicker>  picker =
 					  vtkSmartPointer<vtkPropPicker>::New();*/
@@ -954,15 +956,15 @@ void vtkMTInteractorStyle::OnLeftButtonDown()
 
 				 
 				  double* pos = picker->GetPickPosition();
-				  std::cout << "Pick position (world coordinates) is: "
-					  << pos[0] << " " << pos[1]
-					  << " " << pos[2] << std::endl;
+				//  std::cout << "Pick position (world coordinates) is: "
+				//	  << pos[0] << " " << pos[1]
+				//	  << " " << pos[2] << std::endl;
 				  double* norm = picker->GetPickNormal();
-				  std::cout << "Pick normal : "
-					  << norm[0] << " " << norm[1]
-					  << " " << norm[2] << std::endl;
+				//  std::cout << "Pick normal : "
+				//	  << norm[0] << " " << norm[1]
+				//	  << " " << norm[2] << std::endl;
 
-				  std::cout << "Picked actor: " << picker->GetActor() << std::endl;
+				//  std::cout << "Picked actor: " << picker->GetActor() << std::endl;
 				  if (picker->GetActor() == NULL) { cout << "Picked Null actor" << endl; }
 				  else
 				  {
@@ -1145,7 +1147,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NormalLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				cout << "Call myLMActor Save Position with count" << Count << endl;
+				//cout << "Call myLMActor Save Position with count" << Count << endl;
 				myActor->SaveState(Count);
 			}
 		}
@@ -1155,7 +1157,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->TargetLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				cout << "Call myLMActor Save Position with count" << Count << endl;
+				//cout << "Call myLMActor Save Position with count" << Count << endl;
 				myActor->SaveState(Count);
 			}
 		}
@@ -1165,7 +1167,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->NodeLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				cout << "Call myLMActor Save Position with count" << Count << endl;
+			//	cout << "Call myLMActor Save Position with count" << Count << endl;
 				myActor->SaveState(Count);
 			}
 		}
@@ -1186,7 +1188,7 @@ void vtkMTInteractorStyle::SaveSelectedActorsPositions()
 			vtkLMActor *myActor = vtkLMActor::SafeDownCast(this->FlagLandmarkCollection->GetNextActor());
 			if (myActor->GetSelected() == 1)
 			{
-				cout << "Call myLMActor Save Position with count" << Count << endl;
+				//cout << "Call myLMActor Save Position with count" << Count << endl;
 				myActor->SaveState(Count);
 			}
 		}

@@ -350,7 +350,7 @@ void vtkGridActor::CreateGridLabelText()
 		property1->SetColor(yellow);
 
 		//FirstAxisLabel->GetTextProperty()->SetColor(yellow);
-		myStr2 = "x";
+		myStr2 = "x";//NO
 		pos2[0] += this->GridSize*(this->GridSpacing);
 		//FirstAxisLabel2->GetTextProperty()->SetColor(red);
 		property2->SetColor(red);
@@ -372,7 +372,7 @@ void vtkGridActor::CreateGridLabelText()
 		myStr1 = "-x";
 		pos1[0] -= this->GridSize*(this->GridSpacing);
 		property1->SetColor(yellow);
-		myStr2 = "x";
+		myStr2 = "x";//NO
 		pos2[0] += this->GridSize*(this->GridSpacing);
 		property2->SetColor(red);
 		myStr3 = "-z";
@@ -388,7 +388,7 @@ void vtkGridActor::CreateGridLabelText()
 		myStr1 = "-y";
 		pos1[1] -= this->GridSize*(this->GridSpacing);
 		property1->SetColor(cyan);
-		myStr2 = "y";
+		myStr2 = "y"; //NO!
 		pos2[1] += this->GridSize*(this->GridSpacing);
 		property2->SetColor(green);
 		myStr3 = "-z";
@@ -483,7 +483,7 @@ void vtkGridActor::CreateGridLabelText()
 	this->SecondAxisLabel->SetCaption(this->SecondAxisLabelText);
 	this->SecondAxisLabel2->SetCaption(this->SecondAxisLabelText2);*/
 	FirstAxisLabel->SetInput(this->FirstAxisLabelText);
-	FirstAxisLabel2->SetInput(this->FirstAxisLabelText);
+	FirstAxisLabel2->SetInput(this->FirstAxisLabelText2);
 	SecondAxisLabel->SetInput(this->SecondAxisLabelText);
 	SecondAxisLabel2->SetInput(this->SecondAxisLabelText2);
 

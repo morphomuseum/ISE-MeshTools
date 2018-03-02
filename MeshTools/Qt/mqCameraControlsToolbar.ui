@@ -142,7 +142,7 @@
     <string>Camera projection mode: toggle</string>
    </property>
    <property name="toolTip">
-    <string>Toggle camera : orthonormal or perspective projection</string>
+    <string>Toggle camera : orthographic or perspective projection</string>
    </property>
   </action>
   <action name="actionCameraRight">
