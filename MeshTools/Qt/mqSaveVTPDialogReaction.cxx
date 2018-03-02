@@ -41,14 +41,26 @@ void mqSaveVTPDialogReaction::onTriggered()
 
 		}
 		cout << "Save VTP Dialog Triggered!" << endl;
+		QString fileName;
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+			//+QDir::separator() + mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
+			 fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save VTK PolyData files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir() + QDir::separator() + mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
+				tr("VTK PolyData file (*.vtk *.vtp)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
+		}
+		else
+		{
+			 fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save VTK PolyData files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+				tr("VTK PolyData file (*.vtk *.vtp)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
 
-
-		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save VTK PolyData files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
-			tr("VTK PolyData file (*.vtk *.vtp)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
+		}
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;

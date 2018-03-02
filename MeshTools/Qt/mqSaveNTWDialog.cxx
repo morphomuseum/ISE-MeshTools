@@ -94,7 +94,7 @@ void mqSaveNTWDialog::slotSaveNTWFile()
 	if (mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors() == 1)
 	{
 		mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
-		cout << "preferred name:" << mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
+		//cout << "preferred name:" << mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
 			tr("Save NTW files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+ QDir::separator()+ mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
 			tr("NTW file (*.ntw)"), NULL

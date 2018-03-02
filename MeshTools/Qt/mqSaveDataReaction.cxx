@@ -66,10 +66,10 @@ void mqSaveDataReaction::SavePOS()
 	if (FirstSelectedActor != NULL) {	
 
 		vtkSmartPointer<vtkMatrix4x4> Mat = FirstSelectedActor->GetMatrix();		
-
+		mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
 
 		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save POS files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Save POS files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir() + QDir::separator() + mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
 			tr("Pos file (*.pos)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);

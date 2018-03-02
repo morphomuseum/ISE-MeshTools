@@ -41,14 +41,24 @@ void mqSavePLYDialogReaction::onTriggered()
 
 		}
 		cout << "Save PLY Dialog Triggered!" << endl;
-
-
-		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save PLY files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
-			tr("Ply file (*.ply)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
+		QString fileName;
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+			 fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save PLY files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir() + QDir::separator() + mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
+				tr("Ply file (*.ply)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
+		}
+		else
+		{
+			 fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save PLY files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+				tr("Ply file (*.ply)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
+		}
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;

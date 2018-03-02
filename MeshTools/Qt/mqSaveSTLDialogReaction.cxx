@@ -41,14 +41,26 @@ void mqSaveSTLDialogReaction::onTriggered()
 
 		}
 		cout << "Save STL Dialog Triggered!" << endl;
+		QString fileName;
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
 
+			fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save STL files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir() + QDir::separator() + mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
+				tr("STL file (*.stl)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
+		}
+		else
+		{
+			fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+				tr("Save STL files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+				tr("STL file (*.stl)"), NULL
+				//, QFileDialog::DontConfirmOverwrite
+			);
 
-		QString fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save STL files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
-			tr("STL file (*.stl)"), NULL
-			//, QFileDialog::DontConfirmOverwrite
-		);
-
+		}
 
 		cout << fileName.toStdString();
 		if (fileName.isEmpty()) return;
