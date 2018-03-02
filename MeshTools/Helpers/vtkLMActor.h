@@ -125,8 +125,8 @@ protected:
 	int LMNumber; // landmark number in sequence
 	int LMBodyType; //0; sphere //1 needle needle 
 	int LMType; // 0; normal landmark (red) // 1 target landmark (yellow)
-				// 2; curve node (depends on LMNodeType) // 3; curve handle (orange) // 4 curve starting point (green)
-				// 5 curve milestone (blue) // 6 curve ending point (cyann)
+				// 2; curve node (depends on LMNodeType) // 3; curve handle (orange) // 4 Flag
+				
 	int LMNodeType;
 				//-1 : NOT a curve node=> color according to LMType
 				// 0; curve normal node (dark red) 

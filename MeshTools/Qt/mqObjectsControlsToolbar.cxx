@@ -205,18 +205,27 @@ ren->GetDisplayPoint(displayPt);
 
 
 */
-void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double z, double worldpt[4])
+
+
+void mqObjectsControlsToolbar::GetWorldToDisplay(double x,	double y,	double z,	double displayPt[3])
+{
+	mqMeshToolsCore::instance()->getRenderer()->SetWorldPoint(x, y, z, 1.0);
+	mqMeshToolsCore::instance()->getRenderer()->WorldToDisplay();
+	mqMeshToolsCore::instance()->getRenderer()->GetDisplayPoint(displayPt);
+}
+
+void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double z, double worldPt[4])
 {
 	
 	mqMeshToolsCore::instance()->getRenderer()->SetDisplayPoint(x, y, z);
 	mqMeshToolsCore::instance()->getRenderer()->DisplayToWorld();
-	mqMeshToolsCore::instance()->getRenderer()->GetWorldPoint(worldpt);
-  if (worldpt[3])
+	mqMeshToolsCore::instance()->getRenderer()->GetWorldPoint(worldPt);
+  if (worldPt[3])
   {
-    worldpt[0] /= worldpt[3];
-    worldpt[1] /= worldpt[3];
-    worldpt[2] /= worldpt[3];
-    worldpt[3] = 1.0;
+    worldPt[0] /= worldPt[3];
+    worldPt[1] /= worldPt[3];
+    worldPt[2] /= worldPt[3];
+    worldPt[3] = 1.0;
 }
 	
 	
@@ -237,48 +246,72 @@ void mqObjectsControlsToolbar::GetDisplayToWorld(double x, double y, double z, d
 void mqObjectsControlsToolbar::PanActors(int axis, int value)
 {
 	
-	cout << "Pan axis: " << axis << ", value:" << value<< endl;
+	//cout << "Pan axis: " << axis << ", value:" << value<< endl;
+
 	// Use initial center as the origin from which to pan
 	//double pan_center[3];
 	//mqMeshToolsCore::instance()->GetCenterOfMassOfSelectedActors(pan_center);
 	//this->GetCenterOfMassOfSelectedActors(pan_center);
+	double pan_center[3] = { 0,0,0 };
+	mqMeshToolsCore::instance()->GetCenterOfMassOfSelectedActors(pan_center);
 
 	if (value != 0)
 	{
 
 		double motion_vector[3] = { 0,0,0 };
+		double dPanCenter[3] = { 0,0,0 };
 
 
 		double origin[4] = { 0, 0, 1,1 };
 		double away[4] = { 0, 0, 2,1 };
+
+	//	cout << "try  DTW" << endl;
 		
-		cout << "try  DTW" << endl;
-		this->GetDisplayToWorld(0, 0, 0,origin);
-		cout << "try  DTW2" << endl;
+		//cout << "try  DTW2" << endl;
 		int move = 10;
+		this->GetWorldToDisplay(pan_center[0], pan_center[1], pan_center[2], dPanCenter);
+		this->GetDisplayToWorld(dPanCenter[0], dPanCenter[1], dPanCenter[2], origin);
+		this->GetDisplayToWorld(dPanCenter[0], dPanCenter[1]+30, dPanCenter[2], away); //example : 10px away from origin!
 		
-		this->GetDisplayToWorld(0,30, 0, away); //example : 10px away from origin!
-		
-		cout << origin[0]<<","<<origin[1]<<","<<origin[2] << endl;
-		
-		cout << away[0] << "," << away[1] << "," << away[2] << endl;
+		// origin[2] -away[2] will give the amplitude of the movement. Now, let us compute the direction!
+		double ampli = value*(origin[2] - away[2]) / 12;
+		double view_up[3], view_look[3], view_right[3];
+
+		mqMeshToolsCore::instance()->getCamera()->OrthogonalizeViewUp();
+		mqMeshToolsCore::instance()->getCamera()->ComputeViewPlaneNormal();
+		mqMeshToolsCore::instance()->getCamera()->GetViewUp(view_up);
+		vtkMath::Normalize(view_up);
+		mqMeshToolsCore::instance()->getCamera()->GetViewPlaneNormal(view_look);
+		vtkMath::Cross(view_up, view_look, view_right);
+		vtkMath::Normalize(view_right);
+		vtkMath::Normalize(view_look);
+		vtkMath::MultiplyScalar(view_right, ampli);
+		vtkMath::MultiplyScalar(view_up, ampli);
+		vtkMath::MultiplyScalar(view_look, ampli);
+
 		if (axis==2)
 		{
-			motion_vector[0] = value*(origin[2] - away[2])/30;
+			motion_vector[0] = view_look[0];
+			motion_vector[1] = view_look[1];
+			motion_vector[2] = view_look[2];
 		}
 		if (axis ==0)
 		{ 
-			motion_vector[1] = value*(origin[2] - away[2]) / 12;
+			motion_vector[0] = view_right[0];
+			motion_vector[1] = view_right[1];
+			motion_vector[2] = view_right[2]; 
 		}
 			
 		if (axis == 1)
 		{
-			motion_vector[2] = value*(origin[2] - away[2]) / 15;
+			motion_vector[0] = view_up[0];
+			motion_vector[1] = view_up[1];
+			motion_vector[2] = view_up[2];
 		}
-		cout << motion_vector[0] << "," << motion_vector[1] << "," << motion_vector[2] << endl;
+	//	cout << "motion vector:"<< motion_vector[0] << "," << motion_vector[1] << "," << motion_vector[2] << endl;
 
 
-		cout << "ok?" << endl;
+	//	cout << "ok?" << endl;
 		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
 		for (vtkIdType i = 0; i < mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems(); i++)
 		{
@@ -442,7 +475,7 @@ void mqObjectsControlsToolbar::PanActors(int axis, int value)
 				myActor->SetChanged(1);
 			}
 		}
-		cout << "ok???" << endl;
+	//	cout << "ok???" << endl;
 
 	}
 	/*if (this->AutoAdjustCameraClippingRange)
@@ -450,14 +483,14 @@ void mqObjectsControlsToolbar::PanActors(int axis, int value)
 		this->CurrentRenderer->ResetCameraClippingRange();
 		mqMeshToolsCore::instance()->ActivateClippingPlane();
 	}*/
-	cout << "try to render" << endl;
+//	cout << "try to render" << endl;
 	mqMeshToolsCore::instance()->Render();
-	cout << "rendering ok" << endl;
+	//cout << "rendering ok" << endl;
 }
 
 void mqObjectsControlsToolbar::RotateActors(int axis, int degrees)
 {
-	cout << "Rotate axis: " << axis << ", degrees:" << degrees << endl;
+	//cout << "Rotate axis: " << axis << ", degrees:" << degrees << endl;
 //axis: 0=X, 1=Y, 2=z
 	
 	double rot_center[3] = { 0,0,0 };
@@ -587,12 +620,12 @@ void mqObjectsControlsToolbar::RotateActors(int axis, int degrees)
 				{
 					for (vtkIdType k = 0; k < 4; k++)
 					{
-						cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
+						//cout << "rotate["<<j<<"]"<<"["<<k<<"]="<< rotate[j][k] << endl;
 
 					}
 				}
 
-				cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
+				//cout << "scale:" << scale[0] << ","<< scale[1] << ","<< scale[2] << endl;
 
 				this->Prop3DTransform(myPropr,
 					rot_center,
@@ -761,7 +794,7 @@ void mqObjectsControlsToolbar::SavePositions(int val)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(mqMeshToolsCore::instance()->getNormalLandmarkCollection()->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			cout << "Call myLMActor Save Position with count" << Count << endl;
+		//	cout << "Call myLMActor Save Position with count" << Count << endl;
 			myActor->SaveState(Count);
 		}
 	}
@@ -771,7 +804,7 @@ void mqObjectsControlsToolbar::SavePositions(int val)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(mqMeshToolsCore::instance()->getTargetLandmarkCollection()->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			cout << "Call myLMActor Save Position with count" << Count << endl;
+		//	cout << "Call myLMActor Save Position with count" << Count << endl;
 			myActor->SaveState(Count);
 		}
 	}
@@ -781,7 +814,7 @@ void mqObjectsControlsToolbar::SavePositions(int val)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(mqMeshToolsCore::instance()->getNodeLandmarkCollection()->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			cout << "Call myLMActor Save Position with count" << Count << endl;
+		//	cout << "Call myLMActor Save Position with count" << Count << endl;
 			myActor->SaveState(Count);
 		}
 	}
@@ -791,7 +824,7 @@ void mqObjectsControlsToolbar::SavePositions(int val)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(mqMeshToolsCore::instance()->getHandleLandmarkCollection()->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			cout << "Call myLMActor Save Position with count" << Count << endl;
+		//	cout << "Call myLMActor Save Position with count" << Count << endl;
 			myActor->SaveState(Count);
 		}
 	}
@@ -802,7 +835,7 @@ void mqObjectsControlsToolbar::SavePositions(int val)
 		vtkLMActor *myActor = vtkLMActor::SafeDownCast(mqMeshToolsCore::instance()->getFlagLandmarkCollection()->GetNextActor());
 		if (myActor->GetSelected() == 1)
 		{
-			cout << "Call myLMActor Save Position with count" << Count << endl;
+			//cout << "Call myLMActor Save Position with count" << Count << endl;
 			myActor->SaveState(Count);
 		}
 	}
@@ -850,9 +883,9 @@ void mqObjectsControlsToolbar::slotZtr(int val)
 		this->oldtrval = 0;
 		return;
 	}
-	this->PanActors(2,  this->oldtrval- val);
+	this->PanActors(2,   val- this->oldtrval);
 	this->oldtrval = val;
-	cout << "hereZ!" << endl;
+	//cout << "hereZ!" << endl;
 }
 
 void mqObjectsControlsToolbar::slotYtr(int val)
@@ -861,9 +894,9 @@ void mqObjectsControlsToolbar::slotYtr(int val)
 		this->oldtrval = 0;
 		return;
 	}
-	this->PanActors(1, val - this->oldtrval);
+	this->PanActors(1,  this->oldtrval-val);
 	this->oldtrval = val;
-	cout << "hereY!" << endl;
+	//cout << "hereY!" << endl;
 }
 
 void mqObjectsControlsToolbar::slotXtr(int val)
@@ -872,7 +905,7 @@ void mqObjectsControlsToolbar::slotXtr(int val)
 		this->oldtrval = 0;
 		return;
 	}
-	this->PanActors(0, val - this->oldtrval);
+	this->PanActors(0, this->oldtrval-val);
 	this->oldtrval = val;
 	cout << "hereX!" << endl;
 }

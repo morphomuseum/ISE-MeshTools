@@ -272,7 +272,7 @@ vtkLMActor* vtkLMActorCollection::GetLandmarkAfter(int num, int only_selected)
 }
 vtkLMActor* vtkLMActorCollection::GetLandmarkBefore(int num, int only_selected)
 {
-	cout << "Get landmark before" << num << endl;
+	//cout << "Get landmark before" << num << endl;
 	if (this->AreLandmarksWellOrdered() == 0)
 	{
 		ReorderLandmarks();
