@@ -102,6 +102,9 @@ class  mqMeshToolsCore : public QObject
 	Q_OBJECT
 		typedef QObject Superclass;
 public:
+	std::vector<std::string> g_selected_names;
+	std::vector<std::string> g_distinct_selected_names;
+
 	void UnselectAll(int Count);
 	void SelectAll(int Count);
 	void Setmui_Anaglyph(int anaglyph);
@@ -374,7 +377,7 @@ public:
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRainbowLut();
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetScalarRedLut();
   void InitLuts();
-  
+  void ComputeSelectedNamesLists();
 signals:
 
   void lmSelectionChanged();
@@ -529,9 +532,8 @@ public slots:
 
 private:
 	static mqMeshToolsCore* Instance;
-	std::vector<std::string> g_selected_names;
-	std::vector<std::string> g_distinct_selected_names;
-	void ComputeSelectedNamesLists();
+
+	
 	int selected_file_exists(std::string path, std::string ext, std::string postfix);
 	int context_file_exists(std::string path, std::string ext, std::string postfix);
 

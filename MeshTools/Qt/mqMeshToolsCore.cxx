@@ -2930,7 +2930,7 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 		std::string only_filename = onlyfilename.toStdString();
 		std::string project_name = only_filename.c_str();
 		size_t nPos = project_name.find_last_of(".");
-		if (nPos >0 && nPos<= project_name.length())
+		if (nPos > 0 && nPos <= project_name.length())
 		{
 			project_name = project_name.substr(0, nPos);
 		}
@@ -2958,7 +2958,18 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 		std::string postfix = "_";
 		postfix.append(project_name.c_str());
 		std::string no_postfix = "";
-		int pos_exists = this->selected_file_exists(path, posExt, postfix);
+		int pos_exists = 0;
+		int pos_special = 0;
+		if (g_distinct_selected_names.size() == 1 && project_name.compare(g_distinct_selected_names.at(0)) == 0)
+		{
+			pos_special = 1;
+			pos_exists = this->selected_file_exists(path, posExt, no_postfix);
+		}
+		else
+		{
+			pos_exists = this->selected_file_exists(path, posExt, postfix);
+		}
+			
 
 		int mesh_exists = 0;
 		if (save_surfaces_as_ply == 0)
@@ -3146,7 +3157,10 @@ int mqMeshToolsCore::SaveNTWFile(QString fileName, int save_ori, int save_tag, i
 				{
 					_mesh_file.append(".ply");
 				}
-				_pos_file.append(postfix.c_str());
+				if (pos_special==0)
+				{
+					_pos_file.append(postfix.c_str());
+				}
 				_pos_file.append(".pos");
 
 				_mesh_fullpath = path.c_str();

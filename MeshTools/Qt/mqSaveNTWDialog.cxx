@@ -83,12 +83,35 @@ void mqSaveNTWDialog::slotSaveNTWFile()
 
 	QString fileName;
 	
-	
+	/*std::string filename;
+	int exists = 0;
+	for (int i = 0; i<g_distinct_selected_names.size(); i++)
+	{
+		filename = path.c_str();
+		filename.append(g_distinct_selected_names.at(i).c_str());*/
+
+	cout << "SAVE NTW: number of distinct selected surfaces:" << mqMeshToolsCore::instance()->g_distinct_selected_names.size() << endl;
+	if (mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors() == 1)
+	{
+		mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+		cout << "preferred name:" << mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save NTW files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Save NTW files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+ QDir::separator()+ mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str(),
 			tr("NTW file (*.ntw)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
+	}
+
+	else
+	{
+		
+		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
+			tr("Save NTW files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("NTW file (*.ntw)"),NULL
+			//, QFileDialog::DontConfirmOverwrite
+		);
+	}
+	
 	
 	
 	if (fileName.isEmpty()) return;
