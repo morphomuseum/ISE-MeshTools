@@ -10,7 +10,7 @@
 #include "mqEditAllFLGLengthDialogReaction.h"
 #include "mqEditAllFLGColorDialogReaction.h"
 #include "mqSavePLYDialogReaction.h"
-#include "mqSaveVTPDialogReaction.h"
+#include "mqSaveVTKDialogReaction.h"
 #include "mqSaveSTLDialogReaction.h"
 #include "mqColorDialogReaction.h"
 #include "mqLandmarkDialogReaction.h"
@@ -86,7 +86,7 @@ void mqMeshToolsMenuBuilders::buildFileMenu(QMenu& menu)
   
   new mqOpenDataReaction(submenuSurface->addAction("Open surface") << mqSetName("actionOpenMesh"), 2);
   new mqSavePLYDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .PLY file") << mqSetName("actionSavePLY"));
-  new mqSaveVTPDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTK or .VTP) file") << mqSetName("actionSaveVTP"));
+  new mqSaveVTKDialogReaction(submenuSurface->addAction("Save selected surfaces in one single VTK PolyData (.VTK or .VTP) file") << mqSetName("actionSaveVTP"));
   new mqSaveSTLDialogReaction(submenuSurface->addAction("Save selected surfaces in one single .STL file") << mqSetName("actionSaveSTL"));
   
   

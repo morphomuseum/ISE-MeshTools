@@ -78,13 +78,31 @@ mqSaveLandmarksDialog::~mqSaveLandmarksDialog()
 void mqSaveLandmarksDialog::slotSaveLandmarkFile()
 {
 	cout << "Landmark File Saved!" << endl;
-	
+
 	QString fileName;
-	
+	QString proposedName = "";
+	vtkIdType num_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems();
+	if (num_meshes == 1)
+	{
+		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(mqMeshToolsCore::instance()->getActorCollection()->GetNextActor());
+		proposedName += QDir::separator();
+		proposedName += myActor->GetName().c_str();
+	}
+	else
+	{
+		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+			proposedName += QDir::separator();
+			proposedName += +mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
+		}
+	}
 	if (this->Ui->VER->isChecked())
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+ proposedName,
 			tr("Landmark file (*.ver)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -92,7 +110,7 @@ void mqSaveLandmarksDialog::slotSaveLandmarkFile()
 	if (this->Ui->LMK->isChecked())
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Save Landmark files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+ proposedName,
 			tr("Landmark file (*.lmk)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);

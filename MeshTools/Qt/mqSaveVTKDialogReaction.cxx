@@ -5,9 +5,9 @@
 
 
 ========================================================================*/
-#include "mqSaveVTPDialogReaction.h"
+#include "mqSaveVTKDialogReaction.h"
 #include "mqCoreUtilities.h"
-#include "mqSaveVTPDialog.h"
+#include "mqSaveVTKDialog.h"
 #include "mqReaction.h"
 #include "mqMeshToolsCore.h"
 #include <vtkType.h>
@@ -15,12 +15,12 @@
 #include <QMessageBox>
 
 //-----------------------------------------------------------------------------
-mqSaveVTPDialogReaction::mqSaveVTPDialogReaction(QAction* parentObject)
+mqSaveVTKDialogReaction::mqSaveVTKDialogReaction(QAction* parentObject)
   : Superclass(parentObject)
 {
 }
 
-void mqSaveVTPDialogReaction::onTriggered()
+void mqSaveVTKDialogReaction::onTriggered()
 {
 	
 		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
@@ -40,7 +40,7 @@ void mqSaveVTPDialogReaction::onTriggered()
 			if (ret == QMessageBox::Cancel) { return; }
 
 		}
-		cout << "Save VTP Dialog Triggered!" << endl;
+		cout << "Save VTK Dialog Triggered!" << endl;
 		QString fileName;
 		if (num_selected_meshes == 1)
 		{
@@ -81,15 +81,15 @@ void mqSaveVTPDialogReaction::onTriggered()
 
 		}*/
 
-		mqSaveVTPDialogReaction::showSaveVTPDialog(fileName);
+		mqSaveVTKDialogReaction::showSaveVTKDialog(fileName);
 }
 
 //-----------------------------------------------------------------------------
-void mqSaveVTPDialogReaction::showSaveVTPDialog(QString fileName)
+void mqSaveVTKDialogReaction::showSaveVTKDialog(QString fileName)
 {
-	// fonction statique. C'est à dire que lorsqu'on clique sur SAVE VTP, on crée un nouvel objet.
+	// fonction statique. C'est à dire que lorsqu'on clique sur SAVE VTK, on crée un nouvel objet.
 	// la réaction, elle, est bien instanciée à la création du menu, mais pas la fenêtre. 
 
-  mqSaveVTPDialog SaveVTP_dialog(mqCoreUtilities::mainWidget(), fileName);
-  SaveVTP_dialog.exec();
+  mqSaveVTKDialog SaveVTK_dialog(mqCoreUtilities::mainWidget(), fileName);
+  SaveVTK_dialog.exec();
 }

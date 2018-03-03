@@ -1,33 +1,33 @@
 /*=========================================================================
 
    Program: MeshTools
-   Module:    mqSaveVTPDialogReaction.h
+   Module:    mqSaveVTKDialogReaction.h
 
 
 ========================================================================*/
-#ifndef mqSaveVTPDialogReaction_h
-#define mqSaveVTPDialogReaction_h
+#ifndef mqSaveVTKDialogReaction_h
+#define mqSaveVTKDialogReaction_h
 
 
 #include "mqReaction.h"
 
 /**
 * @ingroup Reactions
-* mqSaveVTPDialogReaction used to show the standard VTP Save dialog for the
+* mqSaveVTKDialogReaction used to show the standard VTK Save dialog for the
 * application.
 */
-class  mqSaveVTPDialogReaction : public mqReaction
+class  mqSaveVTKDialogReaction : public mqReaction
 {
   Q_OBJECT
   typedef mqReaction Superclass;
 
 public:
-  mqSaveVTPDialogReaction(QAction* parent);
+  mqSaveVTKDialogReaction(QAction* parent);
 
   /**
-  * Shows the SaveVTP dialog for the application.
+  * Shows the SaveVTK dialog for the application.
   */
-  static void showSaveVTPDialog(QString fileName);
+  static void showSaveVTKDialog(QString fileName);
 
 protected:
   /**
@@ -37,7 +37,7 @@ protected:
 
 
 private:
-  Q_DISABLE_COPY(mqSaveVTPDialogReaction)
+  Q_DISABLE_COPY(mqSaveVTKDialogReaction)
 };
 
 #endif

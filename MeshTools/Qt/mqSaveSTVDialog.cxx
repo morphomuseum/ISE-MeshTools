@@ -78,13 +78,33 @@ void mqSaveSTVDialog::slotSaveSTVFile()
 	cout << "STV File Saved!" << endl;
 	
 	QString fileName;
-	
-	
+	QString proposedName = "";
+	vtkIdType num_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems();
+	if (num_meshes == 1)
+	{
+		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(mqMeshToolsCore::instance()->getActorCollection()->GetNextActor());
+		proposedName += QDir::separator();
+		proposedName += myActor->GetName().c_str();
+	}
+	else
+	{
+		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+			proposedName += QDir::separator();
+			proposedName += +mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
+		}
+	}
+
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Save STV files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Save STV files"), mqMeshToolsCore::instance()->Getmui_LastUsedDir() + proposedName,
 			tr("STV file (*.stv)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
-		);
+			);
+	
+
 	
 	
 	if (fileName.isEmpty()) return;

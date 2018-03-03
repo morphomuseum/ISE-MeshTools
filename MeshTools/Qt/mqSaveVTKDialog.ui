@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mqSaveVTPDialog</class>
- <widget class="QDialog" name="mqSaveVTPDialog">
+ <class>mqSaveVTKDialog</class>
+ <widget class="QDialog" name="mqSaveVTKDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -450,7 +450,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="SaveVTPBox">
+  <widget class="QGroupBox" name="SaveVTKBox">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -875,9 +875,9 @@
     </palette>
    </property>
    <property name="title">
-    <string>Save VTP</string>
+    <string>Save VTK Polydata</string>
    </property>
-   <widget class="QGroupBox" name="VTPFileType">
+   <widget class="QGroupBox" name="VTKFileType">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -916,7 +916,7 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="VTPPosition">
+   <widget class="QGroupBox" name="VTKPosition">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -962,7 +962,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>mqSaveVTPDialog</receiver>
+   <receiver>mqSaveVTKDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -978,7 +978,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>mqSaveVTPDialog</receiver>
+   <receiver>mqSaveVTKDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

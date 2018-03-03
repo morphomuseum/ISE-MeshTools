@@ -6,8 +6,8 @@
  
 =========================================================================*/
 
-#include "mqSaveVTPDialog.h"
-#include "ui_mqSaveVTPDialog.h"
+#include "mqSaveVTKDialog.h"
+#include "ui_mqSaveVTKDialog.h"
 #include "MeshToolsVersion.h"
 #include "mqMeshToolsCore.h"
 
@@ -41,13 +41,13 @@
 #endif
 
 //-----------------------------------------------------------------------------
-mqSaveVTPDialog::mqSaveVTPDialog(QWidget* Parent, QString fileName)
+mqSaveVTKDialog::mqSaveVTKDialog(QWidget* Parent, QString fileName)
   : QDialog(Parent)
-  , Ui(new Ui::mqSaveVTPDialog())
+  , Ui(new Ui::mqSaveVTKDialog())
 {
 
 	this->Ui->setupUi(this);
-	this->setObjectName("mqSaveVTPDialog");
+	this->setObjectName("mqSaveVTKDialog");
 	this->m_fileName = fileName;
 	// This is where we 
   //
@@ -58,7 +58,7 @@ mqSaveVTPDialog::mqSaveVTPDialog(QWidget* Parent, QString fileName)
  
   // Should connect...
   
- connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotSaveVTPFile()));
+ connect(this->Ui->buttonBox, SIGNAL(accepted()), this, SLOT(slotSaveVTKFile()));
 
 }
 
@@ -66,16 +66,16 @@ mqSaveVTPDialog::mqSaveVTPDialog(QWidget* Parent, QString fileName)
 
 
 //-----------------------------------------------------------------------------
-mqSaveVTPDialog::~mqSaveVTPDialog()
+mqSaveVTKDialog::~mqSaveVTKDialog()
 {
 
  //depending on what is 
 	
   delete this->Ui;
 }
-void mqSaveVTPDialog::slotSaveVTPFile()
+void mqSaveVTKDialog::slotSaveVTKFile()
 {
-	cout << "VTP File Saved!" << endl;
+	cout << "VTK File Saved!" << endl;
 	int position_mode = 0; // 0 Original position , 1 Modified position
 	int file_type = 1; // 0 STL 1 VTK/VTP, 2 PLY
 	int save_norms = 0; //0 no, 1 yes

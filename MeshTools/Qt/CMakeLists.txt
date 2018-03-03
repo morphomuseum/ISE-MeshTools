@@ -91,10 +91,10 @@ mqEditAllFLGLengthDialogReaction.h
   mqSavePLYDialog.h
   mqSavePLYDialogReaction.cxx
   mqSavePLYDialogReaction.h
-  mqSaveVTPDialog.cxx
-  mqSaveVTPDialog.h
-  mqSaveVTPDialogReaction.cxx
-  mqSaveVTPDialogReaction.h
+  mqSaveVTKDialog.cxx
+  mqSaveVTKDialog.h
+  mqSaveVTKDialogReaction.cxx
+  mqSaveVTKDialogReaction.h
   mqSaveSTLDialog.cxx
   mqSaveSTLDialog.h
   mqSaveSTLDialogReaction.cxx
@@ -183,7 +183,7 @@ mqCameraControlsToolbar.ui
 mqObjectsControlsToolbar.ui 
 mqMainControlsToolbar.ui 
 mqSavePLYDialog.ui 
-mqSaveVTPDialog.ui 
+mqSaveVTKDialog.ui 
 mqSaveSTLDialog.ui 
 mqSaveLandmarksDialog.ui 
 mqSaveFlagsDialog.ui 

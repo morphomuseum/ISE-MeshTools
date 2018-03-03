@@ -78,11 +78,29 @@ void mqSaveCURasVERDialog::slotSaveCURasVERFile()
 	cout << "Export Cur as Landmarks !" << endl;
 	
 	QString fileName;
-	
+	QString proposedName = "";
+	vtkIdType num_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfItems();
+	if (num_meshes == 1)
+	{
+		mqMeshToolsCore::instance()->getActorCollection()->InitTraversal();
+		vtkMTActor *myActor = vtkMTActor::SafeDownCast(mqMeshToolsCore::instance()->getActorCollection()->GetNextActor());
+		proposedName += QDir::separator();
+		proposedName += myActor->GetName().c_str();
+	}
+	else
+	{
+		vtkIdType num_selected_meshes = mqMeshToolsCore::instance()->getActorCollection()->GetNumberOfSelectedActors();
+		if (num_selected_meshes == 1)
+		{
+			mqMeshToolsCore::instance()->ComputeSelectedNamesLists();
+			proposedName += QDir::separator();
+			proposedName += +mqMeshToolsCore::instance()->g_distinct_selected_names.at(0).c_str();
+		}
+	}
 	if (this->Ui->VER->isChecked())
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Export as .VER file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Export as .VER file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+proposedName,
 			tr("VER file (*.ver)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
@@ -91,7 +109,7 @@ void mqSaveCURasVERDialog::slotSaveCURasVERFile()
 	else
 	{
 		fileName = QFileDialog::getSaveFileName(mqMeshToolsCore::instance()->GetMainWindow(),
-			tr("Export as LMK file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir(),
+			tr("Export as LMK file"), mqMeshToolsCore::instance()->Getmui_LastUsedDir()+proposedName,
 			tr("LMK file (*.lmk)"), NULL
 			//, QFileDialog::DontConfirmOverwrite
 		);
