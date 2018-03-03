@@ -3413,16 +3413,16 @@ int mqMeshToolsCore::SaveSTVFile(QString fileName, int save_only_selected)
 						
 						if (j < 2)
 						{
-							stream << "Landmark" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
+							stream << "Landmark" << i+1 << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
 						}
 						else if (j==2)
 						{
 							int lmnodetype = myActor->GetLMNodeType();
-							stream << "CurveNode" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << lmnodetype <<endl;
+							stream << "CurveNode" << i+1 << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << lmnodetype <<endl;
 						}
 						else
 						{
-							stream << "CurveHandle" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
+							stream << "CurveHandle" << i+1 << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << " " << lmori[0] << " " << lmori[1] << " " << lmori[2] << " " << endl;
 						}
 
 						
@@ -3826,11 +3826,11 @@ int mqMeshToolsCore::SaveLandmarkFile(QString fileName, int lm_type, int file_ty
 				double lmori[3] = { lmpos[0] + ori[0],lmpos[1] + ori[1] ,lmpos[2] + ori[2] };
 				if (file_type == 0)
 				{
-					stream << "Landmark" << i << ": " << lmpos[0]<<" "<<lmpos[1]<<" "<<lmpos[2]<<" "<<lmori[0]<< " "<< lmori[1] << " " <<  lmori[2] << " " << endl;
+					stream << "Landmark" << i+1 << ": " << lmpos[0]<<" "<<lmpos[1]<<" "<<lmpos[2]<<" "<<lmori[0]<< " "<< lmori[1] << " " <<  lmori[2] << " " << endl;
 				}
 				else
 				{
-					stream << "Landmark" << i << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << endl;
+					stream << "Landmark" << i+1 << ": " << lmpos[0] << " " << lmpos[1] << " " << lmpos[2] << endl;
 				}
 
 			}
