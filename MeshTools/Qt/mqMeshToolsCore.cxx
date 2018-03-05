@@ -1995,7 +1995,7 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 
 			// Mapper
 			VTK_CREATE(vtkPolyDataMapper, mapper);
-			mapper->ImmediateModeRenderingOn();
+			//mapper->ImmediateModeRenderingOn();
 			//mapper->SetColorModeToDirectScalars();
 			mapper->SetColorModeToDefault();
 
@@ -4091,7 +4091,7 @@ void mqMeshToolsCore::addConvexHull()
 				//VTK_CREATE(vtkDataSetMapper, newmapper);
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
 				//VTK_CREATE(vtkSmartPointer<vtkDataSetMapper>
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -4223,7 +4223,7 @@ void mqMeshToolsCore::addMirrorXZ()
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -4520,7 +4520,7 @@ void mqMeshToolsCore::addTPS(int r, double factor, int all)
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//new//mapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -4747,7 +4747,7 @@ void mqMeshToolsCore::addFillHoles(int maxsize)
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -4904,7 +4904,7 @@ void mqMeshToolsCore::addDensify(int subdivisions)
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -5058,7 +5058,7 @@ void  mqMeshToolsCore::addDecimate(int quadric, double factor)
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -5243,7 +5243,7 @@ void  mqMeshToolsCore::addSmooth(int iteration, double relaxation)
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -5464,7 +5464,7 @@ void mqMeshToolsCore::addDecompose(int color_mode, int min_region_size)
 						}
 
 						VTK_CREATE(vtkPolyDataMapper, newmapper);
-						newmapper->ImmediateModeRenderingOn();
+						//newmapper->ImmediateModeRenderingOn();
 						newmapper->SetColorModeToDefault();
 
 						if (
@@ -5647,7 +5647,7 @@ void mqMeshToolsCore::addKeepLargest()
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
@@ -5808,7 +5808,7 @@ void mqMeshToolsCore::addInvert()
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (
