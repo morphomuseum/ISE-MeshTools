@@ -2024,7 +2024,7 @@ void mqMeshToolsCore::OpenMesh(QString fileName)
 			//mapper->ScalarVisibilityOff();
 			mapper->SetInputData(MyPolyData);
 			//VTK_CREATE(vtkActor, actor);
-
+			mapper->Update();
 			int num = 2;
 
 			actor->SetmColor(this->Getmui_MeshColor());
@@ -4223,7 +4223,7 @@ void mqMeshToolsCore::addMirrorXZ()
 				}
 
 				VTK_CREATE(vtkPolyDataMapper, newmapper);
-				newmapper->ImmediateModeRenderingOn();
+				//newmapper->ImmediateModeRenderingOn();
 				newmapper->SetColorModeToDefault();
 
 				if (

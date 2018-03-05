@@ -8,6 +8,9 @@
  */
 // QT includes
 #include <QApplication>
+#include <QSurfaceFormat>
+
+#include <QVTKOpenGLWidget.h> 
 #if QT_VERSION < 0x050000
   #include <QCleanlooksStyle>
 #endif
@@ -20,6 +23,8 @@ int main( int argc, char** argv )
 {
 
   // QT Stuff
+	QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+
   QApplication app( argc, argv );
 
   #if QT_VERSION >= 0x050000

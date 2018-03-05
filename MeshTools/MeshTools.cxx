@@ -24,7 +24,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkPoints.h>
 #include <vtkPlaneSource.h>
 #include <vtkTextProperty.h>
@@ -289,7 +289,7 @@ MeshTools::MeshTools()
 		this->MeshToolsCore->Getmui_DefaultMoveAll()
 	).toInt());
 	settings.endGroup();
-
+	cout << "MeshTools 1" << endl;
 	settings.beginGroup("display_options");
 	this->MeshToolsCore->Setmui_ShowGrid(settings.value("ShowGrid", 
 		this->MeshToolsCore->Getmui_DefaultShowGrid()
@@ -307,7 +307,7 @@ MeshTools::MeshTools()
 		this->MeshToolsCore->Getmui_DefaultShowOrientationHelper()
 		).toInt());
 
-	
+	cout << "MeshTools 2" << endl;
 	this->MeshToolsCore->Setmui_X1Label(settings.value("X1Label", this->MeshToolsCore->Getmui_DefaultX1Label()).toString());
 	this->MeshToolsCore->Setmui_X2Label(settings.value("X2Label", this->MeshToolsCore->Getmui_DefaultX2Label()).toString());
 	this->MeshToolsCore->Setmui_Y1Label(settings.value("Y1Label", this->MeshToolsCore->Getmui_DefaultY1Label()).toString());
@@ -323,6 +323,7 @@ MeshTools::MeshTools()
 		).toInt());
 	settings.endGroup();
 	settings.beginGroup("color_settings");
+	cout << "MeshTools 3" << endl;
 	double defaultMeshColor[4];
 	double defaultFlagColor[3];
 	double defaultBackGroundColor[3];
@@ -333,7 +334,9 @@ MeshTools::MeshTools()
 	this->MeshToolsCore->Getmui_DefaultBackGroundColor(defaultBackGroundColor);
 	this->MeshToolsCore->Getmui_DefaultBackGroundColor2(defaultBackGroundColor2);
 	//cout << "defaultMeshColor[3]=" << defaultMeshColor[3] << endl;
+	cout << "MeshTools 4" << endl;
 	this->MeshToolsCore->Setmui_MeshColor(
+
 	settings.value("MeshRed", 
 		defaultMeshColor[0]
 		).toDouble(),
@@ -384,6 +387,7 @@ MeshTools::MeshTools()
 	settings.endGroup();
 
 	settings.beginGroup("landmark_settings");
+	cout << "MeshTools 5" << endl;
 	this->MeshToolsCore->Setmui_LandmarkBodyType(
 		settings.value("LandmarkBodyType",
 			this->MeshToolsCore->Getmui_DefaultLandmarkBodyType()
@@ -401,7 +405,7 @@ MeshTools::MeshTools()
 			this->MeshToolsCore->Getmui_DefaultFlagRenderingSize()
 			).toDouble()
 		);
-
+	cout << "MeshTools 6" << endl;
 	this->MeshToolsCore->Setmui_LandmarkRenderingSize(
 		settings.value("LandmarkRenderingSize",
 			this->MeshToolsCore->Getmui_DefaultLandmarkRenderingSize()
@@ -420,7 +424,7 @@ MeshTools::MeshTools()
 	settings.endGroup();
 
 	
-
+	cout << "MeshTools 7" << endl;
 	
 
 	
@@ -430,18 +434,28 @@ MeshTools::MeshTools()
 	
 	// Place the table view in the designer form
 	//this->ui->tableFrame->layout()->addWidget(this->TableView->GetWidget());
-
-	this->MeshToolsCore->SetRenderWindow(this->ui->qvtkWidget->GetRenderWindow());
-
-
+	auto window = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+	window->AddRenderer(this->MeshToolsCore->getRenderer());
+	cout << "MeshTools 7.2" << endl;
+	this->ui->qvtkWidget->SetRenderWindow(window);
+	cout << "MeshTools 7.3" << endl;
+	//this->MeshToolsCore->SetRenderWindow(this->ui->qvtkWidget->GetRenderWindow());
+	this->MeshToolsCore->SetRenderWindow(window);
+	cout << "MeshTools 8" << endl;
+	cout << this->ui->qvtkWidget->GetRenderWindow() << endl;
+	//this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
 	this->ui->qvtkWidget->GetRenderWindow()->SetAlphaBitPlanes(1);
+	cout << "MeshTools 9" << endl;
 	this->ui->qvtkWidget->GetRenderWindow()->SetMultiSamples(0);
-	
+	cout << "MeshTools 10" << endl;
 	//this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToRedBlue();
-	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToAnaglyph();
-	this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
 
+	this->ui->qvtkWidget->GetRenderWindow()->SetStereoTypeToAnaglyph();
+	cout << "MeshTools 11" << endl;
+	this->ui->qvtkWidget->GetRenderWindow()->StereoCapableWindowOn();
+	cout << "MeshTools 12" << endl;
 	settings.beginGroup("renderer_settings");
+	cout << "MeshTools 13" << endl;
 	this->MeshToolsCore->Setmui_Anaglyph(settings.value("Anaglyph", "0").toInt());
 	settings.endGroup();
 
@@ -452,13 +466,15 @@ MeshTools::MeshTools()
 
 	// VTK/Qt wedded
 
-
+	cout << "MeshTools 14" << endl;
 	this->ui->qvtkWidget->GetRenderWindow()->AddRenderer(this->MeshToolsCore->getRenderer());
-
+	cout << "MeshTools 15" << endl;
 	this->MeshToolsCore->getRenderer()->GradientBackgroundOn();
-	
+	cout << "MeshTools 16" << endl;
 	this->MeshToolsCore->getRenderer()->SetBackground(this->MeshToolsCore->Getmui_BackGroundColor());
+	cout << "MeshTools 17" << endl;
 	this->MeshToolsCore->getRenderer()->SetBackground2(this->MeshToolsCore->Getmui_BackGroundColor2());
+	cout << "MeshTools 18" << endl;
 	//actor->SetmColor(this->MeshToolsCore->Getmui_MeshColor());
 	//cout<< "Peeling was used:"<< this->MeshToolsCore->getRenderer()->GetLastRenderingUsedDepthPeeling();
 
@@ -466,9 +482,11 @@ MeshTools::MeshTools()
 
 	// 448/120 seems to be a good ratio!!! 3.73
 	double multfactor = 1 / tan(this->MeshToolsCore->getCamera()->GetViewAngle() *  vtkMath::Pi() / 360.0);
-
+	cout << "MeshTools 19" << endl;
 	this->MeshToolsCore->getCamera()->SetPosition(120* multfactor, 0, 0);
+	cout << "MeshTools 20" << endl;
 	this->MeshToolsCore->getCamera()->SetFocalPoint(0, 0, 0);
+	cout << "MeshTools 21" << endl;
 	this->MeshToolsCore->getCamera()->SetViewUp(0, 0, 1);
 	//double *viewup;
 	//viewup= this->MeshToolsCore->getCamera()->GetViewUp();
@@ -476,11 +494,12 @@ MeshTools::MeshTools()
 	/*this->MeshToolsCore->getCamera()->Azimuth(90);// > Roll(-90); // Around "z" (profondeur) viewing axis!
 	this->MeshToolsCore->getCamera()->Roll(90); // around "x" (horizontal) viewing axis
 	this->MeshToolsCore->getCamera()->Elevation(180); // around "y" (vertical) viewing axis
-	*/
+	*/	cout << "MeshTools 22" << endl;
 	this->MeshToolsCore->getCamera()->SetParallelScale(120); 
+	cout << "MeshTools 23" << endl;
 	this->MeshToolsCore->ResetCameraOrthoPerspective();
 	//this->MeshToolsCore->getCamera()->ParallelProjectionOn();
-
+	cout << "MeshTools 24" << endl;
 
 
 
@@ -523,7 +542,7 @@ MeshTools::MeshTools()
 
 
 	//@@ rubber band selection!
-	
+	cout << "MeshTools 25" << endl;
 	 vtkSmartPointer<vtkMTInteractorStyle> style =
     vtkSmartPointer<vtkMTInteractorStyle>::New();
 	 style->SetActorCollection(this->MeshToolsCore->getActorCollection());
@@ -544,15 +563,17 @@ MeshTools::MeshTools()
 	 pickCallback->SetCallback(RubberBandSelect);
 	 this->AreaPicker =
 		 vtkSmartPointer<vtkAreaPicker>::New();
-
+	 cout << "MeshTools 26" << endl;
 		  /*this->AreaPicker =
 		 vtkSmartPointer<vtkRenderedAreaPicker>::New();*/
 	 this->AreaPicker->AddObserver(vtkCommand::EndPickEvent, pickCallback);
 	
 // style->SetCurrentRenderer(this->MeshToolsCore->getRenderer());
+	 cout << "MeshTools 27" << endl;
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetPicker(this->AreaPicker);
+  cout << "MeshTools 28" << endl;
   this->ui->qvtkWidget->GetRenderWindow()->GetInteractor()->SetInteractorStyle(style);
-  
+  cout << "MeshTools 29" << endl;
   /*double coordn[3], coordh[3];
   int ntype = 0;
   double ori[3] = { 0,0,1 };
@@ -608,15 +629,16 @@ MeshTools::MeshTools()
   mqMeshToolsCore::instance()->CreateLandmark(coordh, ori, 3);
 
   */
+  cout << "MeshTools 30" << endl;
 
   mqMeshToolsCore::instance()->getBezierCurveSource()->SetHandles(mqMeshToolsCore::instance()->getHandleLandmarkCollection());
   mqMeshToolsCore::instance()->getBezierCurveSource()->SetNodes(mqMeshToolsCore::instance()->getNodeLandmarkCollection());
   
-  
+  cout << "MeshTools 31" << endl;
 
   mqMeshToolsCore::instance()->getBezierCurveSource()->Update();
 
-
+  cout << "MeshTools 32" << endl;
   vtkSmartPointer<vtkMyNodeHandleCallBack> callback = vtkSmartPointer<vtkMyNodeHandleCallBack>::New();
   mqMeshToolsCore::instance()->getNodeLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
   mqMeshToolsCore::instance()->getHandleLandmarkCollection()->AddObserver(vtkCommand::ModifiedEvent, callback);
@@ -732,7 +754,7 @@ MeshTools::MeshTools()
   this->MeshToolsCore->SetGridInfos();
   this->MeshToolsCore->InitializeOrientationHelper(); // creates orientation helper...
   this->MeshToolsCore->SetOrientationHelperVisibility();
-
+  cout << "MeshTools creator done" << endl;
   //@@ end rubber band selection!
 
 
